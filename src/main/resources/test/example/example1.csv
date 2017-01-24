@@ -1,0 +1,4 @@
+street,city,flag,size,width,roles
+150 main street,Kingston,true,100,48.5,admin;editor
+160 main street,Kingston,false,100,48.5,admin
+

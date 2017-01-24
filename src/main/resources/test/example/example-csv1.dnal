@@ -1,0 +1,14 @@
+//example
+type NEString string
+ len > 0
+end
+
+type Address struct {
+  street string
+  city NEString
+  flag boolean
+  size int
+  width number
+  roles list<NEString>
+} end
+

@@ -1,0 +1,10 @@
+type:com.foo.NEString:string
+endtype
+type:com.foo.X:struct
+ s:string
+ s2:com.foo.NEString
+endtype
+value:com.foo.z:X {
+ vs:abc
+ vs2:def
+}

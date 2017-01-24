@@ -1,0 +1,5 @@
+type X string end
+let x X = 'abc'
+let x2 X = "def"
+let x3 X = ""
+

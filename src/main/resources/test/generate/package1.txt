@@ -1,0 +1,6 @@
+type:com.foo.X:enum
+ RED:string
+ GREEN:string
+ BLUE:string
+endtype
+value:com.foo.z:com.foo.X:BLUE

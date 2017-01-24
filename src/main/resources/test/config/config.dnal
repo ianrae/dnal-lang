@@ -1,0 +1,9 @@
+type Options struct {
+ outputPath string
+ outputType string
+} end
+
+let options Options = {
+ "/tmp/abc",
+ "java/dnal"
+}

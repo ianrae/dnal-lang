@@ -1,0 +1,6 @@
+package com.foo.core
+
+type SerialNumber string end
+
+let ser SerialNumber = 'a55'
+

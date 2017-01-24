@@ -1,0 +1,6 @@
+templateExample(param, items) ::= <<
+This is a template with the following param: (<param>)
+
+<items:{it|<it.id>: <it.lastName>, <it.firstName>
+}>
+>>

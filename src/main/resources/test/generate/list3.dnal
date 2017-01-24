@@ -1,0 +1,9 @@
+type X struct {
+  x int
+  y string
+} end
+type A list<X> end
+
+  
+let z A = [ { 44, 'abc' }, { 45, 'def' }]
+

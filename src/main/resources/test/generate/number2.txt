@@ -1,0 +1,4 @@
+type:X:number
+endtype
+value:x:X:15.0
+value:x2:X:15.0

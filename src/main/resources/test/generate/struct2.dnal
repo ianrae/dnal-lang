@@ -1,0 +1,14 @@
+type X struct {
+  x int
+  y string
+} end
+
+//a comment
+let other int = 55
+
+let x X = {  
+  other,
+  "abc"  
+}
+  
+

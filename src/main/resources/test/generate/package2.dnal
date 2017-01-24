@@ -1,0 +1,13 @@
+package com.foo
+
+type NEString string 
+end
+
+type X struct {
+  s string
+  s2 NEString
+} end
+
+let z X = { 'abc', 'def' }
+  
+

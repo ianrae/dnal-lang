@@ -1,0 +1,4 @@
+type:A:list<boolean>
+endtype
+value:a:A [
+]

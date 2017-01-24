@@ -1,0 +1,3 @@
+type A list<int> end
+
+let z A = [ 10 ]

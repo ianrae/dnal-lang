@@ -1,0 +1,18 @@
+//example
+type NEString string
+ len > 0
+end
+
+type Address struct {
+  street string
+  city NEString
+  flag boolean
+  size int
+  width number
+  roles list<NEString>
+} end
+
+let addresses list<Address> = [
+ { '150 Main st.', "ABC", false, -15, 102.4, [ 'abc' ] },
+ { '160 Main st.', "DEF", true, 23, -102.4, [] }
+]

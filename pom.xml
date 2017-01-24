@@ -15,24 +15,72 @@
     </properties>  
   
   <dependencies>
-	<!-- https://mvnrepository.com/artifact/junit/junit -->
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<version>4.12</version>
-	</dependency>
 	
-   	<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-	<dependency>
-    	<groupId>ch.qos.logback</groupId>
-    	<artifactId>logback-classic</artifactId>
-    	<version>1.1.7</version>
-	</dependency>	
  	<!-- https://mvnrepository.com/artifact/net.sf.opencsv/opencsv -->
 	<dependency>
     	<groupId>net.sf.opencsv</groupId>
     	<artifactId>opencsv</artifactId>
     	<version>2.3</version>
 	</dependency>    
+	
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+		<version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+	<dependency>
+		<groupId>org.hamcrest</groupId>
+		<artifactId>hamcrest-library</artifactId>
+		<version>1.3</version>
+		<scope>test</scope>
+	</dependency>	
+	<dependency>
+	    <groupId>org.reflections</groupId>
+    	<artifactId>reflections</artifactId>
+    	<version>0.9.10</version>
+	</dependency>
+	<dependency>
+		<groupId>org.jparsec</groupId>
+		<artifactId>jparsec</artifactId>
+		<version>2.3</version>
+    </dependency>	
+	<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>19.0</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+	<dependency>
+		<groupId>commons-lang</groupId>
+		<artifactId>commons-lang</artifactId>
+		<version>2.6</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
+	<dependency>
+    <groupId>commons-io</groupId>
+    	<artifactId>commons-io</artifactId>
+    	<version>2.5</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+	<dependency>
+    	<groupId>ch.qos.logback</groupId>
+    	<artifactId>logback-classic</artifactId>
+    	<version>1.1.7</version>
+	</dependency>	
+	 <dependency>
+    	<groupId>com.fasterxml.jackson.core</groupId>
+    	<artifactId>jackson-databind</artifactId>
+    	<version>2.7.0</version>
+	</dependency>
+	<!-- https://mvnrepository.com/artifact/org.antlr/stringtemplate -->
+	<dependency>
+ 	   <groupId>org.antlr</groupId>
+	    <artifactId>stringtemplate</artifactId>
+	    <version>4.0.2</version>
+	</dependency>
+
+	
   </dependencies>
 </project>

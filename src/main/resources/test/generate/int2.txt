@@ -1,0 +1,4 @@
+type:X:int
+endtype
+value:x:X:1500
+value:x2:X:1500

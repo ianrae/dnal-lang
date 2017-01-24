@@ -1,0 +1,19 @@
+//example
+type Coord struct {
+  x int
+  y int
+}
+end
+
+
+type Address struct {
+  flag boolean
+  size int
+  origin Coord
+  points list<Coord>
+} end
+
+let addresses list<Address> = [
+ { false, -15, { 10, 20}, [ { 210, 220}  ] },
+ { true, 23, { 100, 120 }, [  { 10, 20}, { 10, 20}  ]  }
+]

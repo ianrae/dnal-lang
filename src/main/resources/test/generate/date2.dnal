@@ -1,0 +1,3 @@
+type X date end
+let x X = 1481482266089
+let x2 X = x

@@ -1,0 +1,22 @@
+//example
+
+type Shape struct {
+  x int
+  y int
+}
+ x >= 0
+ y >= 0
+end
+
+type Coord int 
+end
+
+
+type Rect XX {
+ width int
+ height int
+}
+ width < 100
+ height < 100
+end
+

@@ -1,0 +1,3 @@
+type X long end
+let x X = 2147483648
+let x2 X = -343

@@ -1,0 +1,3 @@
+type X number end
+let x X = 15.00
+let x2 X = x

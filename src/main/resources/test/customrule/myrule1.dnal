@@ -1,0 +1,9 @@
+rule myrule string
+
+type X string 
+ myrule()
+end
+
+let x X = 'abc'
+let x2 X = "deaf"
+

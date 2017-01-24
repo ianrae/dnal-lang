@@ -1,0 +1,4 @@
+type:X:number
+endtype
+value:x:X:1500.43
+value:x2:X:-3.43

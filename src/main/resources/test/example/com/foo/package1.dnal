@@ -1,0 +1,13 @@
+package com.foo
+
+import com.foo.core.Core
+
+type X enum {
+  RED
+  GREEN
+  BLUE
+} end
+
+let z X = BLUE
+  
+

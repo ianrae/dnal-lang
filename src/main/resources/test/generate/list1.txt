@@ -1,0 +1,5 @@
+type:A:list<int>
+endtype
+value:z:A [
+ 10
+]

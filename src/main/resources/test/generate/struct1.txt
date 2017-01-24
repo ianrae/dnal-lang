@@ -1,0 +1,8 @@
+type:X:struct
+ x:int
+ y:string
+endtype
+value:x:X {
+ vx:-15
+ vy:abc
+}

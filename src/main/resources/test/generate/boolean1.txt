@@ -1,0 +1,4 @@
+type:X:boolean
+endtype
+value:x:X:true
+value:x2:X:false

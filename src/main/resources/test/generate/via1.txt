@@ -1,0 +1,19 @@
+type:Address:struct
+ street:string
+ city:string
+endtype
+type:Person:struct
+ name:string
+ addr:Address
+endtype
+value:a10:Address {
+ vcity:Ottawa
+ vstreet:queen st
+}
+value:x:Person {
+value:addr:Address {
+  vcity:Ottawa
+  vstreet:queen st
+}
+ vname:abc
+}

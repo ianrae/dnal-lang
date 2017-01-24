@@ -1,0 +1,4 @@
+type:X:struct
+endtype
+value:x:X {
+}

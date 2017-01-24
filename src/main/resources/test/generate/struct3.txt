@@ -1,0 +1,9 @@
+type:X:struct
+ x:int
+ y:string
+endtype
+value:other:int:55
+value:x:X {
+ vx:55
+ vy:abc
+}

@@ -1,0 +1,24 @@
+type:X:enum
+ RED:string
+ GREEN:string
+ BLUE:string
+endtype
+type:Address:struct
+ street:X
+ city:string
+endtype
+type:Person:struct
+ name:string
+ addr:Address
+endtype
+value:a10:Address {
+ vcity:Ottawa
+ vstreet:RED
+}
+value:x:Person {
+value:addr:Address {
+  vcity:Ottawa
+  vstreet:RED
+}
+ vname:abc
+}

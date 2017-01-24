@@ -1,0 +1,5 @@
+type X struct {
+} end
+let x X = {  }
+  
+

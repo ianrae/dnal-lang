@@ -1,0 +1,3 @@
+type X number end
+let x X = 1500.43
+let x2 X = -3.43
