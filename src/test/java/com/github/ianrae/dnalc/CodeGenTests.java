@@ -2,11 +2,10 @@ package com.github.ianrae.dnalc;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dnal.compiler.codegen.java.JavaCodeGen;
+import org.dnal.compiler.codegen.java.JavaOutputRenderer;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.codegen.java.JavaCodeGen;
-import com.github.ianrae.dnalparse.codegen.java.JavaOutputRenderer;
 
 
 public class CodeGenTests {

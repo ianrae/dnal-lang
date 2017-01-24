@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.api.impl.DataSetImpl;
+import org.dnal.compiler.nrule.IsaRule;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -22,8 +24,6 @@ import org.junit.Test;
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
 import com.github.ianrae.dnalparse.Transaction;
-import com.github.ianrae.dnalparse.impl.DataSetImpl;
-import com.github.ianrae.dnalparse.nrule.IsaRule;
 
 /*
  * TODO

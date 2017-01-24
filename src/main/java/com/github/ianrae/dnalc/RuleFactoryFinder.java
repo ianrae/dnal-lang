@@ -4,14 +4,13 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-
-import com.github.ianrae.dnalparse.dnalgenerate.RuleFactory;
 
 
 public class RuleFactoryFinder {

@@ -3,10 +3,9 @@ package com.github.ianrae.dnalparse.compiler;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.dnal.compiler.dnalgenerate.DateFormatParser;
 import org.dnal.core.nrule.virtual.VirtualDate;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.dnalgenerate.DateFormatParser;
 
 public class ValidationDateTests extends BaseValidationTests {
     private long same = 1481482266089L;

@@ -5,9 +5,8 @@ import static org.junit.Assert.*;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
+import org.dnal.core.util.TextComparer;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.utils.TextComparer;
 
 public class StringReaderTests {
 

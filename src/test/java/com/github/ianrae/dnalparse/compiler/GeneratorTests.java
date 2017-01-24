@@ -5,6 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
+import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
@@ -12,14 +19,7 @@ import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.MyWorld;
 import org.junit.Test;
 
-import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;
-import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
 import com.github.ianrae.dnalparse.DNALCompiler;
-import com.github.ianrae.dnalparse.generate.DNALGeneratePhase;
-import com.github.ianrae.dnalparse.generate.SimpleMinimumFormatVisitor;
-import com.github.ianrae.dnalparse.nrule.StandardRuleFactory;
-import com.github.ianrae.dnalparse.parser.FullParser;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
 
 public class GeneratorTests extends BaseTest {
 

@@ -1,16 +1,15 @@
 package com.github.ianrae.dnalparse.compiler;
 
+import org.dnal.compiler.dnalgenerate.RuleDeclaration;
+import org.dnal.compiler.dnalgenerate.RuleFactory;
+import org.dnal.compiler.nrule.Custom1Rule;
+import org.dnal.compiler.nrule.NeedsCustomRule;
+import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualDate;
-
-import com.github.ianrae.dnalparse.dnalgenerate.RuleDeclaration;
-import com.github.ianrae.dnalparse.dnalgenerate.RuleFactory;
-import com.github.ianrae.dnalparse.nrule.Custom1Rule;
-import com.github.ianrae.dnalparse.nrule.NeedsCustomRule;
-import com.github.ianrae.dnalparse.parser.ast.CustomRule;
 
 
 public class MyCustomDateRule extends Custom1Rule<VirtualDate> implements NeedsCustomRule { 

@@ -6,31 +6,34 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.TerminalParser;
+import org.dnal.compiler.parser.VarParser;
+import org.dnal.compiler.parser.ast.BooleanExp;
+import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
+import org.dnal.compiler.parser.ast.CustomRule;
+import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.FullAssignmentExp;
+import org.dnal.compiler.parser.ast.FullEnumTypeExp;
+import org.dnal.compiler.parser.ast.FullListTypeExp;
+import org.dnal.compiler.parser.ast.FullStructTypeExp;
+import org.dnal.compiler.parser.ast.FullTypeExp;
+import org.dnal.compiler.parser.ast.IdentExp;
+import org.dnal.compiler.parser.ast.ImportExp;
+import org.dnal.compiler.parser.ast.IntegerExp;
+import org.dnal.compiler.parser.ast.IsaRuleExp;
+import org.dnal.compiler.parser.ast.ListAssignExp;
+import org.dnal.compiler.parser.ast.LongExp;
+import org.dnal.compiler.parser.ast.NumberExp;
+import org.dnal.compiler.parser.ast.PackageExp;
+import org.dnal.compiler.parser.ast.StringExp;
+import org.dnal.compiler.parser.ast.StructAssignExp;
+import org.dnal.compiler.parser.ast.StructMemberAssignExp;
+import org.dnal.compiler.parser.ast.StructMemberExp;
+import org.dnal.compiler.parser.ast.ViaExp;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.ListChecker;
-import com.github.ianrae.dnalparse.parser.ast.BooleanExp;
-import com.github.ianrae.dnalparse.parser.ast.ComparisonOrRuleExp;
-import com.github.ianrae.dnalparse.parser.ast.CustomRule;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
-import com.github.ianrae.dnalparse.parser.ast.FullAssignmentExp;
-import com.github.ianrae.dnalparse.parser.ast.FullEnumTypeExp;
-import com.github.ianrae.dnalparse.parser.ast.FullListTypeExp;
-import com.github.ianrae.dnalparse.parser.ast.FullStructTypeExp;
-import com.github.ianrae.dnalparse.parser.ast.FullTypeExp;
-import com.github.ianrae.dnalparse.parser.ast.IdentExp;
-import com.github.ianrae.dnalparse.parser.ast.ImportExp;
-import com.github.ianrae.dnalparse.parser.ast.IntegerExp;
-import com.github.ianrae.dnalparse.parser.ast.IsaRuleExp;
-import com.github.ianrae.dnalparse.parser.ast.ListAssignExp;
-import com.github.ianrae.dnalparse.parser.ast.LongExp;
-import com.github.ianrae.dnalparse.parser.ast.NumberExp;
-import com.github.ianrae.dnalparse.parser.ast.PackageExp;
-import com.github.ianrae.dnalparse.parser.ast.StringExp;
-import com.github.ianrae.dnalparse.parser.ast.StructAssignExp;
-import com.github.ianrae.dnalparse.parser.ast.StructMemberAssignExp;
-import com.github.ianrae.dnalparse.parser.ast.StructMemberExp;
-import com.github.ianrae.dnalparse.parser.ast.ViaExp;
 
 public class B2Tests {
 

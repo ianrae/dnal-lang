@@ -5,6 +5,11 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.generate.json.JSONGenerator;
+import org.dnal.compiler.impoter.MockImportLoader;
+import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
@@ -13,11 +18,6 @@ import org.junit.Test;
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
 import com.github.ianrae.dnalparse.Generator;
-import com.github.ianrae.dnalparse.et.XErrorTracker;
-import com.github.ianrae.dnalparse.generate.json.JSONGenerator;
-import com.github.ianrae.dnalparse.impl.CompilerImpl;
-import com.github.ianrae.dnalparse.impoter.MockImportLoader;
-import com.github.ianrae.dnalparse.parser.error.ErrorTrackingBase;
 
 public class ExampleTests extends BaseWorldTest {
     

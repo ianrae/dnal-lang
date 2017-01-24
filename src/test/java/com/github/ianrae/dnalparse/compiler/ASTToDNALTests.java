@@ -6,6 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.impl.SourceCompiler;
+import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
+import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -17,13 +23,6 @@ import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.MyWorld;
 import org.dnal.core.repository.Repository;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;
-import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
-import com.github.ianrae.dnalparse.impl.SourceCompiler;
-import com.github.ianrae.dnalparse.nrule.StandardRuleFactory;
-import com.github.ianrae.dnalparse.parser.FullParser;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
 
 public class ASTToDNALTests extends BaseTest {
 	

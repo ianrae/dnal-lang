@@ -2,10 +2,9 @@ package com.github.ianrae.dnalparse;
 
 import java.util.List;
 
+import org.dnal.compiler.dnalgenerate.RuleFactory;
+import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.ErrorMessage;
-
-import com.github.ianrae.dnalparse.dnalgenerate.RuleFactory;
-import com.github.ianrae.dnalparse.generate.GenerateVisitor;
 
 /**
  * The public compiler for DNAL

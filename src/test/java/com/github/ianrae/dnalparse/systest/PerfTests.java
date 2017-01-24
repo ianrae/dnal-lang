@@ -1,10 +1,9 @@
 package com.github.ianrae.dnalparse.systest;
 
 
+import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.performance.PerfTimer;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.impl.CompilerImpl;
-import com.github.ianrae.dnalparse.performance.PerfTimer;
 
 public class PerfTests extends SysTestBase {
     

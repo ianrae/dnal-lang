@@ -1,8 +1,7 @@
 package com.github.ianrae.dnalc;
 
+import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
 import org.dnal.core.logger.Log;
-
-import com.github.ianrae.dnalparse.generate.SimpleMinimumFormatVisitor;
 
 
 public class MySimpleVisitor extends SimpleMinimumFormatVisitor {

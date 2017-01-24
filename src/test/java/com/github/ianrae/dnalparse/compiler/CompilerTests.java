@@ -4,16 +4,16 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.dnal.api.impl.CompilerContext;
+import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.FullAssignmentExp;
+import org.dnal.compiler.parser.ast.FullStructTypeExp;
+import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.CompilerOptions;
-import com.github.ianrae.dnalparse.et.XErrorTracker;
-import com.github.ianrae.dnalparse.impl.CompilerContext;
-import com.github.ianrae.dnalparse.parser.FullParser;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
-import com.github.ianrae.dnalparse.parser.ast.FullAssignmentExp;
-import com.github.ianrae.dnalparse.parser.ast.FullStructTypeExp;
-import com.github.ianrae.dnalparse.parser.error.ParseErrorChecker;
 
 public class CompilerTests {
 	

@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import org.dnal.api.impl.CompilerContext;
+import org.dnal.api.impl.DataSetImpl;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -16,8 +18,6 @@ import com.github.ianrae.dnalparse.DValueLoader;
 import com.github.ianrae.dnalparse.DataSet;
 import com.github.ianrae.dnalparse.Transaction;
 import com.github.ianrae.dnalparse.WorldException;
-import com.github.ianrae.dnalparse.impl.CompilerContext;
-import com.github.ianrae.dnalparse.impl.DataSetImpl;
 
 public class BeanTests extends BaseWorldTest {
     

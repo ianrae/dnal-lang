@@ -6,6 +6,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
+import org.dnal.api.impl.CompilerImpl;
+import org.dnal.api.impl.DataSetImpl;
+import org.dnal.compiler.dnalgenerate.DateFormatParser;
+import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.impoter.ImportLoader;
+import org.dnal.compiler.impoter.MockImportLoader;
+import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -15,13 +22,6 @@ import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.dnalgenerate.DateFormatParser;
-import com.github.ianrae.dnalparse.et.XErrorTracker;
-import com.github.ianrae.dnalparse.impl.CompilerImpl;
-import com.github.ianrae.dnalparse.impl.DataSetImpl;
-import com.github.ianrae.dnalparse.impoter.ImportLoader;
-import com.github.ianrae.dnalparse.impoter.MockImportLoader;
-import com.github.ianrae.dnalparse.parser.error.ErrorTrackingBase;
 
 public class SysTestBase {
     protected boolean useMockImportLoader = false;

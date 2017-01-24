@@ -4,15 +4,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.json.JSONGenerator;
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.MyWorld;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;
-import com.github.ianrae.dnalparse.generate.DNALGeneratePhase;
-import com.github.ianrae.dnalparse.generate.json.JSONGenerator;
-import com.github.ianrae.dnalparse.parser.FullParser;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
 
 public class JSONGeneratorTests extends BaseTest {
     

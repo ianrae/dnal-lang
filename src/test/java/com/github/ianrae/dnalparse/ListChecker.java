@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import com.github.ianrae.dnalparse.parser.ast.Exp;
-import com.github.ianrae.dnalparse.parser.ast.IntegerExp;
+import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.IntegerExp;
 
 
 public class ListChecker<T> {

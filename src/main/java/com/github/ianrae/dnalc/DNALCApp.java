@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.dnalgenerate.RuleFactory;
+import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
 
@@ -14,9 +17,6 @@ import com.github.ianrae.dnalc.cmdline.ValidateCommand;
 import com.github.ianrae.dnalc.cmdline.VersionCommand;
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.dnalgenerate.RuleFactory;
-import com.github.ianrae.dnalparse.generate.GenerateVisitor;
-import com.github.ianrae.dnalparse.impl.CompilerImpl;
 
 /**
 	 * Does not use slf4j logging

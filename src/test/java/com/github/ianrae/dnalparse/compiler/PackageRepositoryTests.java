@@ -7,10 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.compiler.impoter.PackageRepository;
+import org.dnal.compiler.parser.ast.ImportExp;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.impoter.PackageRepository;
-import com.github.ianrae.dnalparse.parser.ast.ImportExp;
 
 public class PackageRepositoryTests {
     

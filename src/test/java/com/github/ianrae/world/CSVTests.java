@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.impoter.MockImportLoader;
+import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
@@ -19,9 +22,6 @@ import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
 import com.github.ianrae.dnalparse.Generator;
 import com.github.ianrae.dnalparse.Transaction;
-import com.github.ianrae.dnalparse.et.XErrorTracker;
-import com.github.ianrae.dnalparse.impoter.MockImportLoader;
-import com.github.ianrae.dnalparse.parser.error.ErrorTrackingBase;
 
 public class CSVTests extends BaseWorldTest {
 

@@ -2,6 +2,8 @@ package com.github.ianrae.dnalc;
 
 import static org.junit.Assert.*;
 
+import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
@@ -10,8 +12,6 @@ import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.impl.CompilerImpl;
-import com.github.ianrae.dnalparse.impoter.MockImportLoader;
 
 public class ConfigLoaderTests {
     

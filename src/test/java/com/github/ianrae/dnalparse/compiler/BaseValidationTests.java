@@ -5,6 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
+import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.parser.FullParser;
+import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -12,13 +18,6 @@ import org.dnal.core.ErrorMessage;
 import org.dnal.core.ValidationState;
 import org.dnal.core.repository.MyWorld;
 import org.junit.Before;
-
-import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;
-import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
-import com.github.ianrae.dnalparse.nrule.StandardRuleFactory;
-import com.github.ianrae.dnalparse.parser.FullParser;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
-import com.github.ianrae.dnalparse.validate.ValidationPhase;
 
 public class BaseValidationTests extends BaseTest {
     

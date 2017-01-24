@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.dnal.compiler.nrule.Custom1Rule;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.ErrorMessage;
@@ -20,8 +21,6 @@ import org.dnal.core.nrule.OrRule;
 import org.dnal.core.nrule.StaticRule;
 import org.dnal.core.nrule.virtual.VirtualString;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.nrule.Custom1Rule;
 
 public class RuleEngineTests {
 	

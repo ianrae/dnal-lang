@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
+import org.dnal.compiler.parser.TerminalParser;
+import org.dnal.compiler.parser.ast.ComparisonRuleExp;
+import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.NumberExp;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.parser.ast.ComparisonRuleExp;
-import com.github.ianrae.dnalparse.parser.ast.Exp;
-import com.github.ianrae.dnalparse.parser.ast.NumberExp;
 
 public class TerminalParserTests {
 

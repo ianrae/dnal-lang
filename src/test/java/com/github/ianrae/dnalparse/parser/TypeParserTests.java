@@ -3,9 +3,11 @@ package com.github.ianrae.dnalparse.parser;
 import static org.junit.Assert.assertEquals;
 
 import org.codehaus.jparsec.Parsers;
+import org.dnal.compiler.parser.TerminalParser;
+import org.dnal.compiler.parser.TypeParser;
+import org.dnal.compiler.parser.VarParser;
+import org.dnal.compiler.parser.ast.Exp;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.parser.ast.Exp;
 
 public class TypeParserTests {
     

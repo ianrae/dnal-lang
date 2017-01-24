@@ -3,6 +3,12 @@ package com.github.ianrae.dnalparse.compiler;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.impl.CompilerContext;
+import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
+import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.impoter.MockImportLoader;
+import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
@@ -10,12 +16,6 @@ import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.CompilerOptions;
-import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;
-import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
-import com.github.ianrae.dnalparse.et.XErrorTracker;
-import com.github.ianrae.dnalparse.impl.CompilerContext;
-import com.github.ianrae.dnalparse.impoter.MockImportLoader;
-import com.github.ianrae.dnalparse.nrule.StandardRuleFactory;
 
 public class BaseTest {
     protected CustomRuleFactory crf;

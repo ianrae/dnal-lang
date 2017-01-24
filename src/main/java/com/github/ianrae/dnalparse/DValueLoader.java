@@ -1,10 +1,9 @@
 package com.github.ianrae.dnalparse;
 
+import org.dnal.api.impl.CompilerContext;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.MyWorld;
-
-import com.github.ianrae.dnalparse.impl.CompilerContext;
 
 public interface DValueLoader<T> {
     Class<?> willLoad();
