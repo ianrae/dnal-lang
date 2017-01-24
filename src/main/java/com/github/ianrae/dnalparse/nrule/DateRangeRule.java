@@ -2,9 +2,9 @@ package com.github.ianrae.dnalparse.nrule;
 
 import java.util.Date;
 
-import org.dval.DValue;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.virtual.VirtualDate;
+import org.dnal.core.DValue;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.VirtualDate;
 
 import com.github.ianrae.dnalparse.dnalgenerate.DateFormatParser;
 import com.github.ianrae.dnalparse.parser.ast.CustomRule;

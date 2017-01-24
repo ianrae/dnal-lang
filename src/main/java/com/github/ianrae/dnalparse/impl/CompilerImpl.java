@@ -2,11 +2,11 @@ package com.github.ianrae.dnalparse.impl;
 
 import java.util.List;
 
-import org.dval.DTypeRegistry;
-import org.dval.DTypeRegistryBuilder;
-import org.dval.ErrorMessage;
-import org.dval.repository.MockRepositoryFactory;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DTypeRegistryBuilder;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.repository.MockRepositoryFactory;
+import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.CompilerOptions;
 import com.github.ianrae.dnalparse.DNALCompiler;

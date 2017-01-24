@@ -5,12 +5,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.ValidationState;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.ValidationState;
+import org.dnal.core.repository.MyWorld;
 import org.junit.Before;
 
 import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;

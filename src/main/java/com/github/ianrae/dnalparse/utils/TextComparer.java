@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.dval.logger.Log;
+import org.dnal.core.logger.Log;
 
 
 public class TextComparer {

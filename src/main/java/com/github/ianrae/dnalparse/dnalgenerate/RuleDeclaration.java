@@ -3,7 +3,7 @@ package com.github.ianrae.dnalparse.dnalgenerate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.Shape;
+import org.dnal.core.Shape;
 
 public class RuleDeclaration {
     public String ruleName;

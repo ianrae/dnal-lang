@@ -3,10 +3,10 @@ package com.github.ianrae.dnalparse.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.DValueLoader;
 import com.github.ianrae.dnalparse.DataSet;

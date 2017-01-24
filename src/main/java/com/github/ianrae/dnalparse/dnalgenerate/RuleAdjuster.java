@@ -2,8 +2,8 @@ package com.github.ianrae.dnalparse.dnalgenerate;
 
 import java.util.Date;
 
-import org.dval.DType;
-import org.dval.Shape;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
 
 import com.github.ianrae.dnalparse.parser.ast.ComparisonAndRuleExp;
 import com.github.ianrae.dnalparse.parser.ast.ComparisonOrRuleExp;

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dval.DListType;
-import org.dval.DType;
-import org.dval.DValue;
-import org.dval.nrule.NRule;
+import org.dnal.core.DListType;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.nrule.NRule;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

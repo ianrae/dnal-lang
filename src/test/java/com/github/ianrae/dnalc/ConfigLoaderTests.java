@@ -2,10 +2,10 @@ package com.github.ianrae.dnalc;
 
 import static org.junit.Assert.*;
 
-import org.dval.DStructHelper;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

@@ -2,14 +2,14 @@ package com.github.ianrae.dnalparse.validate;
 
 import java.util.Map;
 
-import org.dval.DType;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.SimpleNRuleRunner;
-import org.dval.repository.Repository;
-import org.dval.repository.WorldListener;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.SimpleNRuleRunner;
+import org.dnal.core.repository.Repository;
+import org.dnal.core.repository.WorldListener;
 
 import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
 import com.github.ianrae.dnalparse.et.XErrorTracker;

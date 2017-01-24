@@ -1,20 +1,20 @@
 package com.github.ianrae.dnalparse.dnalgenerate;
 
-import org.dval.DType;
-import org.dval.Shape;
-import org.dval.nrule.virtual.VirtualDataItem;
-import org.dval.nrule.virtual.VirtualDate;
-import org.dval.nrule.virtual.VirtualDateMember;
-import org.dval.nrule.virtual.VirtualInt;
-import org.dval.nrule.virtual.VirtualIntMember;
-import org.dval.nrule.virtual.VirtualLong;
-import org.dval.nrule.virtual.VirtualLongMember;
-import org.dval.nrule.virtual.VirtualNumber;
-import org.dval.nrule.virtual.VirtualNumberMember;
-import org.dval.nrule.virtual.VirtualPseudoLen;
-import org.dval.nrule.virtual.VirtualPseudoLenMember;
-import org.dval.nrule.virtual.VirtualString;
-import org.dval.nrule.virtual.VirtualStringMember;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.virtual.VirtualDataItem;
+import org.dnal.core.nrule.virtual.VirtualDate;
+import org.dnal.core.nrule.virtual.VirtualDateMember;
+import org.dnal.core.nrule.virtual.VirtualInt;
+import org.dnal.core.nrule.virtual.VirtualIntMember;
+import org.dnal.core.nrule.virtual.VirtualLong;
+import org.dnal.core.nrule.virtual.VirtualLongMember;
+import org.dnal.core.nrule.virtual.VirtualNumber;
+import org.dnal.core.nrule.virtual.VirtualNumberMember;
+import org.dnal.core.nrule.virtual.VirtualPseudoLen;
+import org.dnal.core.nrule.virtual.VirtualPseudoLenMember;
+import org.dnal.core.nrule.virtual.VirtualString;
+import org.dnal.core.nrule.virtual.VirtualStringMember;
 
 import com.github.ianrae.dnalparse.parser.ast.ComparisonRuleExp;
 

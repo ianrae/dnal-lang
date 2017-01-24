@@ -2,7 +2,9 @@ package org.dval;
 
 import static org.junit.Assert.*;
 
-import org.dval.fluent.type.TypeBuilder;
+import org.dnal.core.DStructType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.fluent.type.TypeBuilder;
 import org.junit.Test;
 
 public class FluentTests extends BaseDValTest {

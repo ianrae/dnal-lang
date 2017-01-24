@@ -1,9 +1,9 @@
 package com.github.ianrae.dnalparse.nrule;
 
-import org.dval.DValue;
-import org.dval.nrule.NRuleBase;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.virtual.VirtualDataItem;
+import org.dnal.core.DValue;
+import org.dnal.core.nrule.NRuleBase;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.VirtualDataItem;
 
 public abstract class Custom1Rule<T extends VirtualDataItem> extends NRuleBase {
 	public T arg1;

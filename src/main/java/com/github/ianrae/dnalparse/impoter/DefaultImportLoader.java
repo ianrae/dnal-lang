@@ -1,7 +1,7 @@
 package com.github.ianrae.dnalparse.impoter;
 
-import org.dval.ErrorMessage;
-import org.dval.ErrorType;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.ErrorType;
 
 import com.github.ianrae.dnalparse.impl.CompilerContext;
 import com.github.ianrae.dnalparse.impl.SourceCompiler;

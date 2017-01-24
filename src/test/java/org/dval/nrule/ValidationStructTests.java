@@ -1,18 +1,18 @@
 package org.dval.nrule;
 
+import org.dnal.core.DStructType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.fluent.type.TypeBuilder;
+import org.dnal.core.nrule.NEmptyRule;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.SimpleNRuleRunner;
+import org.dnal.core.nrule.virtual.VirtualString;
+import org.dnal.core.nrule.virtual.VirtualStringMember;
+import org.dnal.core.oldbuilder.XStructValueBuilder;
 import org.dval.BaseDValTest;
-import org.dval.DStructType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
 import org.dval.PersonHelper;
-import org.dval.fluent.type.TypeBuilder;
-import org.dval.nrule.NEmptyRule;
-import org.dval.nrule.NRule;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.SimpleNRuleRunner;
-import org.dval.nrule.virtual.VirtualString;
-import org.dval.nrule.virtual.VirtualStringMember;
-import org.dval.oldbuilder.XStructValueBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

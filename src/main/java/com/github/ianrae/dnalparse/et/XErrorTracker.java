@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
 
 import com.github.ianrae.dnalparse.parser.ast.Exp;
 import com.github.ianrae.dnalparse.parser.error.ErrorScope;

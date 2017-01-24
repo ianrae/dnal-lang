@@ -2,11 +2,11 @@ package com.github.ianrae.world;
 
 import static org.junit.Assert.assertNotNull;
 
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.nrule.NRule;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.virtual.VirtualString;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.VirtualString;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

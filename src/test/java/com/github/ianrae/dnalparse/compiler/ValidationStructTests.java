@@ -2,8 +2,8 @@ package com.github.ianrae.dnalparse.compiler;
 
 import static org.junit.Assert.assertEquals;
 
-import org.dval.DValue;
-import org.dval.ValidationState;
+import org.dnal.core.DValue;
+import org.dnal.core.ValidationState;
 import org.junit.Test;
 
 public class ValidationStructTests extends BaseValidationTests {

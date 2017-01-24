@@ -4,11 +4,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.builder.IntBuilder;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.builder.IntBuilder;
+import org.dnal.core.repository.MyWorld;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

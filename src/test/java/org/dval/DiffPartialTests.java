@@ -5,9 +5,14 @@ import static org.junit.Assert.assertEquals;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.dval.compare.DStructComparer;
-import org.dval.fluent.type.TypeBuilder;
-import org.dval.oldbuilder.XStructValueBuilder;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.DValueImpl;
+import org.dnal.core.compare.DStructComparer;
+import org.dnal.core.fluent.type.TypeBuilder;
+import org.dnal.core.oldbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class DiffPartialTests extends BaseDValTest {

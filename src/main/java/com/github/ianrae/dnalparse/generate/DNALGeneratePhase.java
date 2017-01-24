@@ -2,15 +2,15 @@ package com.github.ianrae.dnalparse.generate;
 
 import java.util.List;
 
-import org.dval.DListType;
-import org.dval.DStructHelper;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.nrule.NRule;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.et.XErrorTracker;
 import com.github.ianrae.dnalparse.parser.error.ErrorTrackingBase;

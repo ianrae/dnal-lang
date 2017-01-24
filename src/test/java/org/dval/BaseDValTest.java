@@ -4,19 +4,26 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.dval.logger.Log;
-import org.dval.nrule.SimpleNRuleRunner;
-import org.dval.nrule.ValidationScorer;
-import org.dval.oldbuilder.XBooleanValueBuilder;
-import org.dval.oldbuilder.XDValueBuilder;
-import org.dval.oldbuilder.XDateValueBuilder;
-import org.dval.oldbuilder.XEnumValueBuilder;
-import org.dval.oldbuilder.XIntegerValueBuilder;
-import org.dval.oldbuilder.XLongValueBuilder;
-import org.dval.oldbuilder.XNumberValueBuilder;
-import org.dval.oldbuilder.XStringValueBuilder;
-import org.dval.repository.MockRepositoryFactory;
-import org.dval.repository.MyWorld;
+import org.dnal.core.BuiltInTypes;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DTypeRegistryBuilder;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.ValidationState;
+import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.SimpleNRuleRunner;
+import org.dnal.core.nrule.ValidationScorer;
+import org.dnal.core.oldbuilder.XBooleanValueBuilder;
+import org.dnal.core.oldbuilder.XDValueBuilder;
+import org.dnal.core.oldbuilder.XDateValueBuilder;
+import org.dnal.core.oldbuilder.XEnumValueBuilder;
+import org.dnal.core.oldbuilder.XIntegerValueBuilder;
+import org.dnal.core.oldbuilder.XLongValueBuilder;
+import org.dnal.core.oldbuilder.XNumberValueBuilder;
+import org.dnal.core.oldbuilder.XStringValueBuilder;
+import org.dnal.core.repository.MockRepositoryFactory;
+import org.dnal.core.repository.MyWorld;
 import org.junit.Before;
 
 public class BaseDValTest {

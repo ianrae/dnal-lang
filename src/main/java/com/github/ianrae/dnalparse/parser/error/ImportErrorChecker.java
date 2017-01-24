@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse.parser.error;
 
-import org.dval.util.NameUtils;
+import org.dnal.core.util.NameUtils;
 
 import com.github.ianrae.dnalparse.et.XErrorTracker;
 import com.github.ianrae.dnalparse.parser.DNALDocument;

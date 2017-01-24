@@ -3,9 +3,9 @@ package com.github.ianrae.dnalparse.codegen.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.logger.Log;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.logger.Log;
 
 import com.github.ianrae.dnalc.ConfigFileOptions;
 import com.github.ianrae.dnalparse.parser.ast.FullTypeExp;

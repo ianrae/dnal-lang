@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse;
 
-import org.dval.DValue;
+import org.dnal.core.DValue;
 
 
 public interface DataSet {

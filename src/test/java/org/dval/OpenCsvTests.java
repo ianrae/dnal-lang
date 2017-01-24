@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.dval.csv.CSVLoader;
-import org.dval.util.StringTrail;
+import org.dnal.core.csv.CSVLoader;
+import org.dnal.core.util.StringTrail;
 import org.junit.Test;
 
 public class OpenCsvTests {

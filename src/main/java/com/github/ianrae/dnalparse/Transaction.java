@@ -2,20 +2,20 @@ package com.github.ianrae.dnalparse;
 
 import java.util.List;
 
-import org.dval.DListType;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.builder.BooleanBuilder;
-import org.dval.builder.DateBuilder;
-import org.dval.builder.EnumBuilder;
-import org.dval.builder.IntBuilder;
-import org.dval.builder.ListBuilder;
-import org.dval.builder.LongBuilder;
-import org.dval.builder.NumberBuilder;
-import org.dval.builder.StringBuilder;
-import org.dval.builder.StructBuilder;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.builder.BooleanBuilder;
+import org.dnal.core.builder.DateBuilder;
+import org.dnal.core.builder.EnumBuilder;
+import org.dnal.core.builder.IntBuilder;
+import org.dnal.core.builder.ListBuilder;
+import org.dnal.core.builder.LongBuilder;
+import org.dnal.core.builder.NumberBuilder;
+import org.dnal.core.builder.StringBuilder;
+import org.dnal.core.builder.StructBuilder;
 
 public interface Transaction {
     

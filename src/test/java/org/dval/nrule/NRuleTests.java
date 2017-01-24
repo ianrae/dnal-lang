@@ -2,17 +2,17 @@ package org.dval.nrule;
 
 import static org.junit.Assert.assertEquals;
 
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.nrule.AndRule;
-import org.dval.nrule.CompareRule;
-import org.dval.nrule.EqRule;
-import org.dval.nrule.NRule;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.NRuleRunner;
-import org.dval.nrule.NotRule;
-import org.dval.nrule.OrRule;
-import org.dval.nrule.StaticRule;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.nrule.AndRule;
+import org.dnal.core.nrule.CompareRule;
+import org.dnal.core.nrule.EqRule;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.NRuleRunner;
+import org.dnal.core.nrule.NotRule;
+import org.dnal.core.nrule.OrRule;
+import org.dnal.core.nrule.StaticRule;
 import org.junit.Test;
 
 public class NRuleTests {

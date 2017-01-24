@@ -1,10 +1,10 @@
 package com.github.ianrae.dnalparse.codegen.java;
 
-import org.dval.DListType;
-import org.dval.DType;
-import org.dval.Shape;
-import org.dval.logger.Log;
-import org.dval.nrule.NRule;
+import org.dnal.core.DListType;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
+import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.NRule;
 
 import com.github.ianrae.dnalc.ConfigFileOptions;
 import com.github.ianrae.dnalparse.parser.ast.Exp;

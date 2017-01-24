@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse.nrule;
 
-import org.dval.nrule.NRuleBase;
+import org.dnal.core.nrule.NRuleBase;
 
 public abstract class Custom2Rule<T> extends NRuleBase {
 	protected T arg1;

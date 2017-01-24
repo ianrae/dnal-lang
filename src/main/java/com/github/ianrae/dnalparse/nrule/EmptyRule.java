@@ -1,10 +1,10 @@
 package com.github.ianrae.dnalparse.nrule;
 
-import org.dval.DStructHelper;
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.virtual.VirtualString;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.VirtualString;
 
 import com.github.ianrae.dnalparse.parser.ast.CustomRule;
 

@@ -2,8 +2,8 @@ package com.github.ianrae.dnalparse.systest;
 
 import static org.junit.Assert.assertEquals;
 
-import org.dval.DStructHelper;
-import org.dval.DValue;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DValue;
 import org.junit.Test;
 
 public class ViaSysTests extends SysTestBase {

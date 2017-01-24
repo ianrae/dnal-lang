@@ -3,8 +3,8 @@ package com.github.ianrae.dnalparse.dnalgenerate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.Shape;
-import org.dval.nrule.NRule;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
 
 public class CustomRuleFactory {
 

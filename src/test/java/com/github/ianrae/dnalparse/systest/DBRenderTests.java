@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dval.DListType;
-import org.dval.DStructHelper;
-import org.dval.DValue;
-import org.dval.DValueImpl;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DValue;
+import org.dnal.core.DValueImpl;
 import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;

@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
-import org.dval.DTypeRegistry;
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
+import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.DataSet;
 import com.github.ianrae.dnalparse.Generator;

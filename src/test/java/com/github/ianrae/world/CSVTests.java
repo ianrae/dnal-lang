@@ -5,13 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.DStructType;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.builder.IntBuilder;
-import org.dval.builder.StructBuilder;
-import org.dval.csv.CSVLoader;
-import org.dval.logger.Log;
+import org.dnal.core.DStructType;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.builder.IntBuilder;
+import org.dnal.core.builder.StructBuilder;
+import org.dnal.core.csv.CSVLoader;
+import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 import com.github.ianrae.dnalc.MySimpleVisitor;

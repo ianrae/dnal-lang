@@ -6,16 +6,16 @@ import static org.junit.Assert.assertNotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.DStructHelper;
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DTypeRegistryBuilder;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.Shape;
-import org.dval.repository.MockRepositoryFactory;
-import org.dval.repository.MyWorld;
-import org.dval.repository.Repository;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DTypeRegistryBuilder;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.Shape;
+import org.dnal.core.repository.MockRepositoryFactory;
+import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.Repository;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.dnalgenerate.ASTToDNALGenerator;

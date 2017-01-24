@@ -2,7 +2,7 @@ package com.github.ianrae.dnalc;
 
 import static org.junit.Assert.assertEquals;
 
-import org.dval.logger.Log;
+import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.codegen.java.JavaCodeGen;

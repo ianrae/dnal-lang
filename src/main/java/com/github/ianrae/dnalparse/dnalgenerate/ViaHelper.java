@@ -1,10 +1,10 @@
 package com.github.ianrae.dnalparse.dnalgenerate;
 
-import org.dval.DListType;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.Shape;
-import org.dval.nrule.NRule;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
 
 import com.github.ianrae.dnalparse.nrule.IsaRule;
 import com.github.ianrae.dnalparse.parser.ast.Exp;

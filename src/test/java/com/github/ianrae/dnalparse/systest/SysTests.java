@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import java.util.Date;
 
-import org.dval.DType;
-import org.dval.DValue;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
 import org.junit.Test;
 
 public class SysTests extends SysTestBase {

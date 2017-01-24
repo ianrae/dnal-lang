@@ -3,7 +3,7 @@ package com.github.ianrae.dnalparse;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.ErrorMessage;
+import org.dnal.core.ErrorMessage;
 
 
 public class WorldException extends Exception {

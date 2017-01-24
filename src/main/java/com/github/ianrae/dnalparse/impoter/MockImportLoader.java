@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse.impoter;
 
-import org.dval.logger.Log;
+import org.dnal.core.logger.Log;
 
 import com.github.ianrae.dnalparse.impl.CompilerContext;
 

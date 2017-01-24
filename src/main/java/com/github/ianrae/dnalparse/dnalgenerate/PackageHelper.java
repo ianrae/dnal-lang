@@ -1,8 +1,8 @@
 package com.github.ianrae.dnalparse.dnalgenerate;
 
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.util.NameUtils;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.util.NameUtils;
 
 public class PackageHelper  {
     protected DTypeRegistry registry;

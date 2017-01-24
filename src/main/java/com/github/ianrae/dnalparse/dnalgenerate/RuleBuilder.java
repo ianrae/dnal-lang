@@ -2,19 +2,19 @@ package com.github.ianrae.dnalparse.dnalgenerate;
 
 import java.util.Date;
 
-import org.dval.DType;
-import org.dval.Shape;
-import org.dval.nrule.CompareRule;
-import org.dval.nrule.EqRule;
-import org.dval.nrule.NRule;
-import org.dval.nrule.virtual.StructMember;
-import org.dval.nrule.virtual.VirtualDataItem;
-import org.dval.nrule.virtual.VirtualDate;
-import org.dval.nrule.virtual.VirtualInt;
-import org.dval.nrule.virtual.VirtualLong;
-import org.dval.nrule.virtual.VirtualNumber;
-import org.dval.nrule.virtual.VirtualPseudoLen;
-import org.dval.nrule.virtual.VirtualString;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.CompareRule;
+import org.dnal.core.nrule.EqRule;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.virtual.StructMember;
+import org.dnal.core.nrule.virtual.VirtualDataItem;
+import org.dnal.core.nrule.virtual.VirtualDate;
+import org.dnal.core.nrule.virtual.VirtualInt;
+import org.dnal.core.nrule.virtual.VirtualLong;
+import org.dnal.core.nrule.virtual.VirtualNumber;
+import org.dnal.core.nrule.virtual.VirtualPseudoLen;
+import org.dnal.core.nrule.virtual.VirtualString;
 
 import com.github.ianrae.dnalparse.nrule.LenRule;
 import com.github.ianrae.dnalparse.parser.ast.ComparisonRuleExp;

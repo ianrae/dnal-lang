@@ -2,8 +2,8 @@ package com.github.ianrae.dnalparse.parser.error;
 
 import java.util.List;
 
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
 
 import com.github.ianrae.dnalparse.et.XErrorTracker;
 import com.github.ianrae.dnalparse.parser.DNALDocument;

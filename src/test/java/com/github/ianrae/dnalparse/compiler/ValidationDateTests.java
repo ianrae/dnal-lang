@@ -3,7 +3,7 @@ package com.github.ianrae.dnalparse.compiler;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.dval.nrule.virtual.VirtualDate;
+import org.dnal.core.nrule.virtual.VirtualDate;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.dnalgenerate.DateFormatParser;

@@ -2,9 +2,12 @@ package org.dval;
 
 import static org.junit.Assert.*;
 
-import org.dval.repository.MockRepository;
-import org.dval.repository.MockRepositoryFactory;
-import org.dval.repository.MyWorld;
+import org.dnal.core.BuiltInTypes;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.repository.MockRepository;
+import org.dnal.core.repository.MockRepositoryFactory;
+import org.dnal.core.repository.MyWorld;
 import org.junit.Test;
 
 public class RepositoryTests  extends BaseDValTest {

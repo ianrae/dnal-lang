@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
 
 import com.github.ianrae.dnalc.cmdline.CmdLineArgParser;
 import com.github.ianrae.dnalc.cmdline.Command;

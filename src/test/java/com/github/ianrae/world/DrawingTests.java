@@ -5,13 +5,13 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
-import org.dval.DStructHelper;
-import org.dval.DStructType;
-import org.dval.DValue;
-import org.dval.logger.ErrorMessageLogger;
-import org.dval.logger.Log;
-import org.dval.nrule.NRuleRunnerImpl;
-import org.dval.nrule.SimpleNRuleRunner;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DValue;
+import org.dnal.core.logger.ErrorMessageLogger;
+import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.NRuleRunnerImpl;
+import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

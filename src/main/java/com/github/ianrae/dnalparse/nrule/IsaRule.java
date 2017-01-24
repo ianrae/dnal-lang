@@ -2,13 +2,13 @@ package com.github.ianrae.dnalparse.nrule;
 
 import java.util.List;
 
-import org.dval.DStructHelper;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.nrule.NRuleBase;
-import org.dval.nrule.NRuleContext;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRuleBase;
+import org.dnal.core.nrule.NRuleContext;
 
 import com.github.ianrae.dnalparse.dnalgenerate.ViaFinder;
 import com.github.ianrae.dnalparse.impl.CompilerContext;

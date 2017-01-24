@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse.codegen.java;
 
-import org.dval.Shape;
+import org.dnal.core.Shape;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
 import org.stringtemplate.v4.STGroupFile;

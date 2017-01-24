@@ -1,7 +1,7 @@
 package com.github.ianrae.dnalparse.impl;
 
-import org.dval.DTypeRegistry;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.repository.MyWorld;
 
 public class Internals {
     private DTypeRegistry registry;

@@ -1,7 +1,7 @@
 package com.github.ianrae.dnalparse.dnalgenerate;
 
-import org.dval.Shape;
-import org.dval.nrule.NRule;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
 
 public interface RuleFactory {
 

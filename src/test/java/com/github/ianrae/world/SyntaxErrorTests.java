@@ -3,9 +3,9 @@ package com.github.ianrae.world;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.dval.ErrorMessage;
-import org.dval.logger.ErrorMessageLogger;
-import org.dval.logger.Log;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.ErrorMessageLogger;
+import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

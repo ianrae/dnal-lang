@@ -2,7 +2,7 @@ package com.github.ianrae.dnalparse.nrule;
 
 import java.util.List;
 
-import org.dval.nrule.NRuleBase;
+import org.dnal.core.nrule.NRuleBase;
 
 public abstract class CustomMultiRule<T> extends NRuleBase {
 	protected List<T> argL;

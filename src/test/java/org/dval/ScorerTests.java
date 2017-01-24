@@ -1,6 +1,13 @@
 package org.dval;
 
-import org.dval.oldbuilder.XStructValueBuilder;
+import org.dnal.core.BuiltInTypes;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.OrderedMap;
+import org.dnal.core.Shape;
+import org.dnal.core.oldbuilder.XStructValueBuilder;
 
 public class ScorerTests extends BaseDValTest {
 	

@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dval.DStructHelper;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.repository.MyWorld;
-import org.dval.repository.Repository;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.Repository;
 
 import com.github.ianrae.dnalparse.et.XErrorTracker;
 import com.github.ianrae.dnalparse.parser.ast.ViaExp;

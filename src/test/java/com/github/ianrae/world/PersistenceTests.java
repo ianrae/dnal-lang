@@ -8,15 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dval.DStructHelper;
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.DValue;
-import org.dval.DValueImpl;
-import org.dval.Shape;
-import org.dval.builder.StructBuilder;
-import org.dval.nrule.NRule;
-import org.dval.util.StringTrail;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.DValueImpl;
+import org.dnal.core.Shape;
+import org.dnal.core.builder.StructBuilder;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.util.StringTrail;
 import org.junit.Test;
 
 import com.github.ianrae.dnalparse.DNALCompiler;

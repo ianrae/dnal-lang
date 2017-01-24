@@ -3,8 +3,8 @@ package com.github.ianrae.dnalparse.codegen.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dval.DType;
-import org.dval.Shape;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
 
 
 public class ImportObserver {

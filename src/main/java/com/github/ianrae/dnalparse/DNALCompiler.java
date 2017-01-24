@@ -2,7 +2,7 @@ package com.github.ianrae.dnalparse;
 
 import java.util.List;
 
-import org.dval.ErrorMessage;
+import org.dnal.core.ErrorMessage;
 
 import com.github.ianrae.dnalparse.dnalgenerate.RuleFactory;
 import com.github.ianrae.dnalparse.generate.GenerateVisitor;

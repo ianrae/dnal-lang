@@ -2,10 +2,10 @@ package com.github.ianrae.dnalparse.impl;
 
 import java.util.List;
 
-import org.dval.DStructHelper;
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.repository.WorldAdder;
+import org.dnal.core.DStructHelper;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.repository.WorldAdder;
 
 public class AddObserver {
 

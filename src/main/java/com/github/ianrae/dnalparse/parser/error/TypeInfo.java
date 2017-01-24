@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.dval.BuiltInTypes;
-import org.dval.DType;
-import org.dval.Shape;
+import org.dnal.core.BuiltInTypes;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
 
 import com.github.ianrae.dnalparse.parser.ast.IdentExp;
 

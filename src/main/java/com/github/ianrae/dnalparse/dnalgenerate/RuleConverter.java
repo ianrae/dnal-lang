@@ -2,12 +2,12 @@ package com.github.ianrae.dnalparse.dnalgenerate;
 
 import java.util.List;
 
-import org.dval.DStructType;
-import org.dval.DType;
-import org.dval.Shape;
-import org.dval.nrule.AndRule;
-import org.dval.nrule.NRule;
-import org.dval.nrule.OrRule;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.AndRule;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.OrRule;
 
 import com.github.ianrae.dnalparse.et.XErrorTracker;
 import com.github.ianrae.dnalparse.impl.CompilerContext;

@@ -6,7 +6,12 @@ import static org.junit.Assert.assertSame;
 
 import java.util.List;
 
-import org.dval.fluent.type.TypeBuilder;
+import org.dnal.core.BuiltInTypes;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeHierarchy;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.fluent.type.TypeBuilder;
 import org.junit.Test;
 
 public class DTypeHierarchyTests extends BaseDValTest {

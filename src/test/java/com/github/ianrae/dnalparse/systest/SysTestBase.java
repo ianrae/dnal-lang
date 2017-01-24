@@ -6,12 +6,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
-import org.dval.DType;
-import org.dval.DTypeRegistry;
-import org.dval.DValue;
-import org.dval.ErrorMessage;
-import org.dval.logger.Log;
-import org.dval.repository.MyWorld;
+import org.dnal.core.DType;
+import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.logger.Log;
+import org.dnal.core.repository.MyWorld;
 
 import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.DataSet;

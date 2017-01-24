@@ -3,11 +3,11 @@ package com.github.ianrae.dnalparse.nrule;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.dval.DValue;
-import org.dval.Shape;
-import org.dval.logger.Log;
-import org.dval.nrule.NRuleContext;
-import org.dval.nrule.virtual.VirtualString;
+import org.dnal.core.DValue;
+import org.dnal.core.Shape;
+import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.VirtualString;
 
 import com.github.ianrae.dnalparse.parser.ast.CustomRule;
 

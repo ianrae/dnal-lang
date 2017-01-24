@@ -1,13 +1,13 @@
 package com.github.ianrae.dnalparse.nrule;
 
-import org.dval.Shape;
-import org.dval.nrule.NRule;
-import org.dval.nrule.virtual.VirtualDataItem;
-import org.dval.nrule.virtual.VirtualDate;
-import org.dval.nrule.virtual.VirtualInt;
-import org.dval.nrule.virtual.VirtualList;
-import org.dval.nrule.virtual.VirtualPseudoLen;
-import org.dval.nrule.virtual.VirtualString;
+import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
+import org.dnal.core.nrule.virtual.VirtualDataItem;
+import org.dnal.core.nrule.virtual.VirtualDate;
+import org.dnal.core.nrule.virtual.VirtualInt;
+import org.dnal.core.nrule.virtual.VirtualList;
+import org.dnal.core.nrule.virtual.VirtualPseudoLen;
+import org.dnal.core.nrule.virtual.VirtualString;
 
 import com.github.ianrae.dnalparse.dnalgenerate.CustomRuleFactory;
 import com.github.ianrae.dnalparse.dnalgenerate.RuleDeclaration;
