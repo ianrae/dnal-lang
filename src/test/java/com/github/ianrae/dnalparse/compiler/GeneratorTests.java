@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.DNALCompiler;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.generate.DNALGeneratePhase;
@@ -18,8 +19,6 @@ import org.dnal.core.ErrorMessage;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.MyWorld;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.DNALCompiler;
 
 public class GeneratorTests extends BaseTest {
 

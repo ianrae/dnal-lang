@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.codegen.java.JavaOutputRenderer;
 import org.dnal.core.logger.Log;
+import org.dnal.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.DNALCApp;
+import org.dnal.dnalc.MySimpleVisitor;
 import org.junit.Test;
 
 

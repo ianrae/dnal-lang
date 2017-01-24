@@ -2,6 +2,8 @@ package com.github.ianrae.world;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.dnal.api.DNALCompiler;
+import org.dnal.api.DataSet;
 import org.dnal.compiler.dnalgenerate.RuleDeclaration;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.impoter.MockImportLoader;
@@ -14,9 +16,6 @@ import org.dnal.core.nrule.NRule;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualString;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.DNALCompiler;
-import com.github.ianrae.dnalparse.DataSet;
 
 public class WorldCustomRuleTests extends BaseWorldTest {
     

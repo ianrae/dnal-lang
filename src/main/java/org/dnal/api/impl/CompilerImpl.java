@@ -2,6 +2,9 @@ package org.dnal.api.impl;
 
 import java.util.List;
 
+import org.dnal.api.CompilerOptions;
+import org.dnal.api.DNALCompiler;
+import org.dnal.api.DataSet;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
@@ -15,10 +18,6 @@ import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.MyWorld;
-
-import com.github.ianrae.dnalparse.CompilerOptions;
-import com.github.ianrae.dnalparse.DNALCompiler;
-import com.github.ianrae.dnalparse.DataSet;
 
 /**
  * The public compiler for DNAL

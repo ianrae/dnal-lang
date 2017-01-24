@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
+import org.dnal.api.DataSet;
+import org.dnal.api.Generator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
@@ -21,9 +23,6 @@ import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.MyWorld;
 import org.dnal.core.util.TextFileReader;
-
-import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.Generator;
 
 public class SourceCompiler extends ErrorTrackingBase {
     protected MyWorld world;

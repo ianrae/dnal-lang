@@ -3,6 +3,7 @@ package org.dnal.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.CompilerOptions;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.ImportLoader;
@@ -11,8 +12,6 @@ import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.repository.MyWorld;
-
-import com.github.ianrae.dnalparse.CompilerOptions;
 
 
 public class CompilerContext {

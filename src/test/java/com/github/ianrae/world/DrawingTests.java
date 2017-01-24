@@ -5,6 +5,9 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.List;
 
+import org.dnal.api.DNALCompiler;
+import org.dnal.api.DataSet;
+import org.dnal.api.Transaction;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -16,10 +19,6 @@ import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleRunnerImpl;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.DNALCompiler;
-import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.Transaction;
 
 public class DrawingTests extends BaseWorldTest {
     

@@ -1,6 +1,6 @@
 package org.dnal.compiler.codegen.java;
 
-import com.github.ianrae.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.ConfigFileOptions;
 
 public class JavaOutputRenderer {
     private ConfigFileOptions options;

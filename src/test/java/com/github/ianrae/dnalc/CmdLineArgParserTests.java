@@ -2,11 +2,11 @@ package com.github.ianrae.dnalc;
 
 import static org.junit.Assert.*;
 
+import org.dnal.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.cmdline.CmdLineArgParser;
+import org.dnal.dnalc.cmdline.Command;
+import org.dnal.dnalc.cmdline.GenerateCommand;
 import org.junit.Test;
-
-import com.github.ianrae.dnalc.cmdline.CmdLineArgParser;
-import com.github.ianrae.dnalc.cmdline.Command;
-import com.github.ianrae.dnalc.cmdline.GenerateCommand;
 
 public class CmdLineArgParserTests {
 	

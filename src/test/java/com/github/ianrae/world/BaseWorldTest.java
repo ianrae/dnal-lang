@@ -2,11 +2,10 @@ package com.github.ianrae.world;
 
 import java.util.Date;
 
+import org.dnal.api.DNALCompiler;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.dnalgenerate.DateFormatParser;
-
-import com.github.ianrae.dnalparse.DNALCompiler;
 
 public class BaseWorldTest {
     

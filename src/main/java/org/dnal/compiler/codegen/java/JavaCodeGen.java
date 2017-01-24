@@ -7,8 +7,7 @@ import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DListType;
 import org.dnal.core.DType;
 import org.dnal.core.nrule.NRule;
-
-import com.github.ianrae.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.ConfigFileOptions;
 
 public class JavaCodeGen extends CodeGenBase {
     public List<GenerateVisitor> list = new ArrayList<>();

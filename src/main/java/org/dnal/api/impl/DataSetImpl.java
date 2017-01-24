@@ -3,15 +3,14 @@ package org.dnal.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dnal.api.DValueLoader;
+import org.dnal.api.DataSet;
+import org.dnal.api.Generator;
+import org.dnal.api.Transaction;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.MyWorld;
-
-import com.github.ianrae.dnalparse.DValueLoader;
-import com.github.ianrae.dnalparse.DataSet;
-import com.github.ianrae.dnalparse.Generator;
-import com.github.ianrae.dnalparse.Transaction;
 
 public class DataSetImpl implements DataSet {
     private MyWorld world;

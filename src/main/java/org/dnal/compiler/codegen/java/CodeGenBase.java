@@ -9,8 +9,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.logger.Log;
 import org.dnal.core.util.TextFileWriter;
-
-import com.github.ianrae.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.ConfigFileOptions;
 
 public abstract class CodeGenBase extends TypeOnlyGenerator {
     public List<String> outputL = new ArrayList<>();

@@ -3,6 +3,8 @@ package com.github.ianrae.dnalc;
 import static org.junit.Assert.assertEquals;
 
 import org.dnal.core.logger.Log;
+import org.dnal.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.DNALCApp;
 import org.junit.Test;
 
 

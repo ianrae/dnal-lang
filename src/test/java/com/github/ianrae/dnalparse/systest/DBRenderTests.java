@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.dnal.api.DataSet;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
@@ -17,7 +18,6 @@ import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.ianrae.dnalparse.DataSet;
 
 public class DBRenderTests extends SysTestBase {
 

@@ -3,6 +3,8 @@ package com.github.ianrae.world;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import org.dnal.api.DNALCompiler;
+import org.dnal.api.DataSet;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -10,9 +12,6 @@ import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.ErrorMessageLogger;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.DNALCompiler;
-import com.github.ianrae.dnalparse.DataSet;
 
 public class SyntaxErrorTests extends BaseWorldTest {
     

@@ -3,13 +3,12 @@ package org.dnal.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.Generator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.repository.MyWorld;
-
-import com.github.ianrae.dnalparse.Generator;
 
 public class GeneratorImpl implements Generator {
     private List<ErrorMessage> errL = new ArrayList<>();

@@ -10,8 +10,7 @@ import org.dnal.core.DType;
 import org.dnal.core.Shape;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
-
-import com.github.ianrae.dnalc.ConfigFileOptions;
+import org.dnal.dnalc.ConfigFileOptions;
 
 public class InterfaceCodeGen extends CodeGenBase {
     

@@ -2,10 +2,10 @@ package com.github.ianrae.dnalparse.systest;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dnal.api.DNALCompiler;
 import org.dnal.core.DValue;
 import org.junit.Test;
 
-import com.github.ianrae.dnalparse.DNALCompiler;
 import com.github.ianrae.dnalparse.compiler.MyCustomRule;
 
 public class RulesSysTests extends SysTestBase {

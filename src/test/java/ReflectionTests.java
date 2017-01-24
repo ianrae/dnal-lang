@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.dnal.compiler.dnalgenerate.RuleDeclaration;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
+import org.dnal.dnalc.RuleFactoryFinder;
 import org.junit.Test;
 import org.reflections.Reflections;
 import org.reflections.scanners.ResourcesScanner;
@@ -17,7 +18,6 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
-import com.github.ianrae.dnalc.RuleFactoryFinder;
 import com.google.common.reflect.ClassPath;
 
 //https://github.com/ronmamo/reflections

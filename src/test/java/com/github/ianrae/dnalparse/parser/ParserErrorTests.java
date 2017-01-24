@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.dnal.api.CompilerOptions;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.FullParser;
@@ -13,8 +14,6 @@ import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.junit.Test;
-
-import com.github.ianrae.dnalparse.CompilerOptions;
 
 public class ParserErrorTests {
 
