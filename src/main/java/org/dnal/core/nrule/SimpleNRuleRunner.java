@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -12,6 +13,7 @@ import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 import org.dnal.core.ValidationState;
 import org.dnal.core.logger.Log;
+
 
 public class SimpleNRuleRunner  {
     
@@ -64,15 +66,17 @@ public class SimpleNRuleRunner  {
 	private void evalStruct(DValue dval, NRuleContext ctx) {
 		ValidationScorer scorer = new ValidationScorer();
 		stack.push(scorer);
-		Map<String,DValue> map = dval.asMap();
+//		Map<String,DValue> map = dval.asMap();
+		DStructType structType = (DStructType) dval.getType();
+		Map<String, DType> map = structType.getFields();
+		DStructHelper helper = dval.asStruct();
 		
 		for(String fieldName : map.keySet()) {
-			DValue inner = map.get(fieldName);
+			DValue inner = helper.getField(fieldName);
 			
 	        //optional is not a rule, but evalauate it like a rule
 			if (inner == null) {
 			    if (dval.getType() instanceof DStructType) {
-			        DStructType structType = (DStructType) dval.getType();
 			        if (!structType.fieldIsOptional(fieldName)) {
 			            ErrorMessage err = new ErrorMessage(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
 			            ctx.addError(err);

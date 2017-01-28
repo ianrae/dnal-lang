@@ -108,6 +108,11 @@ public class SysTests extends SysTestBase {
         assertEquals(null, dval.asMap().get("x"));
         assertEquals("abc", dval.asMap().get("y").asString());
     }
+    @Test
+    public void testT4c() {
+        String err = "fieldName 'y' can't be null. is not optional";
+        chkFail("type Foo struct { x int y string } end let x Foo = { 15 }", 1, err);
+    }
 
     @Test
     public void testT5a() {
