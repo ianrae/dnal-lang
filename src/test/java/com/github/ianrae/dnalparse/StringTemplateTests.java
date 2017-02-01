@@ -27,8 +27,9 @@ public class StringTemplateTests {
         templateExample.add("param", "Hello World");
 
         Integer k = 99;
-        templateExample.addAggr("items.{ firstName ,lastName, id }", "Ter", "Parr", k); // add() uses varargs
-        templateExample.addAggr("items.{firstName, lastName ,id}", "Tom", "Burns", k);
+        Object[] ar = new Object[] { "Ter", "Parr", k };
+        templateExample.addAggr("items.{ firstName ,lastName, id }", ar); // add() uses varargs
+        templateExample.addAggr("items.{firstName, lastName ,id}", ar);
         
         // Render
         final String render = templateExample.render();
