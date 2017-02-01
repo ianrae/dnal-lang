@@ -17,7 +17,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class GeneratorTests extends BaseTest {

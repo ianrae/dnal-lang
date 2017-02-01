@@ -20,7 +20,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class SysTestBase {
     protected boolean useMockImportLoader = false;
@@ -77,7 +77,7 @@ public class SysTestBase {
     protected DataSet dataSetLoaded;
     protected List<ErrorMessage> errors;
     protected DTypeRegistry registry;
-    protected MyWorld world;
+    protected World world;
     protected  static final int NUM_INTERNAL_TYPES = 7;
     
     protected  DataSet load(String source, boolean pass) {

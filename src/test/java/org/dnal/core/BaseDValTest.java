@@ -23,11 +23,11 @@ import org.dnal.core.oldbuilder.XLongValueBuilder;
 import org.dnal.core.oldbuilder.XNumberValueBuilder;
 import org.dnal.core.oldbuilder.XStringValueBuilder;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Before;
 
 public class BaseDValTest {
-	protected MyWorld world = new MyWorld();
+	protected World world = new World();
 	
 	//---------
 	protected DTypeRegistry registry;

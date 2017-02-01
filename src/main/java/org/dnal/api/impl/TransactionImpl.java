@@ -28,19 +28,19 @@ import org.dnal.core.builder.LongBuilder;
 import org.dnal.core.builder.NumberBuilder;
 import org.dnal.core.builder.StringBuilder;
 import org.dnal.core.builder.StructBuilder;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class TransactionImpl implements Transaction {
     protected List<ErrorMessage> errorList = new ArrayList<>();
     private DTypeRegistry registry;
-    private MyWorld world;
+    private World world;
     private CustomRuleFactory crf;
     private List<Pair<String, DValue>> pendingL = new ArrayList<>();
     private BuilderFactory factory;
     private CompilerContext context;
     private Map<Class<?>, DValueLoader<?>> loaderRegistry;
 
-    public TransactionImpl(DTypeRegistry registry, MyWorld world, CompilerContext context, Map<Class<?>, DValueLoader<?>> loaderRegistry) {
+    public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, DValueLoader<?>> loaderRegistry) {
         this.world = world;
         this.registry = registry;
         StandardRuleFactory standard = new StandardRuleFactory();

@@ -8,18 +8,18 @@ import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class GeneratorImpl implements Generator {
     private List<ErrorMessage> errL = new ArrayList<>();
-    protected MyWorld world;
+    protected World world;
     protected DTypeRegistry registry;
     protected CompilerContext context;
     
 //    public Generator(DTypeRegistry registry, MyWorld world) {
 //        this(registry, world, null);
 //    }
-    public GeneratorImpl(DTypeRegistry registry, MyWorld world, CompilerContext context) {
+    public GeneratorImpl(DTypeRegistry registry, World world, CompilerContext context) {
         this.registry = registry;
         this.world = world;
         if (context.errL != null) {

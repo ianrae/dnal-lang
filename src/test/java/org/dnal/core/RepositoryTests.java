@@ -7,7 +7,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.MockRepository;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class RepositoryTests  extends BaseDValTest {
@@ -27,7 +27,7 @@ public class RepositoryTests  extends BaseDValTest {
 	public void test2() {
 		DType type = registry.getType(BuiltInTypes.INTEGER_SHAPE);
 
-		MyWorld world = new MyWorld();
+		World world = new World();
 		world.setRepositoryFactory(new MockRepositoryFactory());
 		world.typeRegistered(type);
 		DValue dval = buildIntVal(registry, 45);
@@ -40,7 +40,7 @@ public class RepositoryTests  extends BaseDValTest {
 	public void test3() {
 		DType type = registry.getType(BuiltInTypes.ENUM_SHAPE);
 
-		MyWorld world = new MyWorld();
+		World world = new World();
 		world.setRepositoryFactory(new MockRepositoryFactory());
 		world.typeRegistered(type);
 		DValue dval = buildEnumVal(registry, "RED");

@@ -10,7 +10,7 @@ import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class JSONGeneratorTests extends BaseTest {
@@ -57,7 +57,7 @@ public class JSONGeneratorTests extends BaseTest {
 	private void chkGen(String input, String expectedOutput, int expectedSize) {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
 
-		MyWorld world = getContext().world;
+		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
 		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world);
 		JSONGenerator visitor = new JSONGenerator();
