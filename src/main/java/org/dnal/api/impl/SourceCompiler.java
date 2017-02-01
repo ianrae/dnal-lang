@@ -21,16 +21,16 @@ import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.dnal.core.util.TextFileReader;
 
 public class SourceCompiler extends ErrorTrackingBase {
-    protected MyWorld world;
+    protected World world;
     protected DTypeRegistry registry;
     private CustomRuleFactory crf;
     private CompilerContext context;
     
-    public SourceCompiler(MyWorld world, DTypeRegistry registry, CustomRuleFactory crf, 
+    public SourceCompiler(World world, DTypeRegistry registry, CustomRuleFactory crf, 
             XErrorTracker et, CompilerContext context) {
         super(et);
         this.crf = crf;

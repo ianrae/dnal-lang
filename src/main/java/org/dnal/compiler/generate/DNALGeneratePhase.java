@@ -13,13 +13,13 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class DNALGeneratePhase extends ErrorTrackingBase {
     private DTypeRegistry registry;
-    private MyWorld world;
+    private World world;
 
-    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, MyWorld world) {
+    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world) {
         super(et);
         this.registry = registry;
         this.world = world;

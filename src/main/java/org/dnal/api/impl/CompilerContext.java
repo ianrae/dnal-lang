@@ -11,14 +11,14 @@ import org.dnal.compiler.impoter.PackageRepository;
 import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 
 public class CompilerContext {
     
     //set manually
     public List<ErrorMessage> errL = new ArrayList<>();
-    public MyWorld world;
+    public World world;
     public DTypeRegistry registry;
     public CustomRuleFactory crf;
 //    public ErrorScopeStack scopeStack = new ErrorScopeStack();

@@ -8,11 +8,11 @@ import org.dnal.core.DValue;
 import org.dnal.core.OrderedMap;
 import org.dnal.core.Shape;
 import org.dnal.core.oldbuilder.XStructValueBuilder;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class PersonHelper extends BaseDValTest {
 	
-	public PersonHelper(DTypeRegistry registry, MyWorld world) {
+	public PersonHelper(DTypeRegistry registry, World world) {
 		this.registry = registry;
 		this.world = world;
 	}

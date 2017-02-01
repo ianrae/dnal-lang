@@ -11,7 +11,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.ValidationScorer;
 
-public class MyWorld implements WorldListener {
+public class World implements WorldListener {
 	private Map<DType, Repository> repoMap = new HashMap<>();
 	private RepositoryFactory factory;
 	public static boolean debug = false;

@@ -16,7 +16,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.ValidationState;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Before;
 
 public class BaseValidationTests extends BaseTest {
@@ -40,7 +40,7 @@ public class BaseValidationTests extends BaseTest {
         List<ErrorMessage> errL = new ArrayList<>();
         ASTToDNALGenerator dnalGenerator = parse(errL, input, "Foo", shape, crf);
         errL.addAll(dnalGenerator.getErrL());
-        MyWorld world = getContext().world;
+        World world = getContext().world;
         ValidationPhase validator = new ValidationPhase(world, getContext().et);
     
 //      DType type = dnalGenerator.getRegistry().getType("Foo");
@@ -63,7 +63,7 @@ public class BaseValidationTests extends BaseTest {
         dnalGenerator.dumpErrors();
         assertEquals(generateOk, b);
 
-        MyWorld world = getContext().world;
+        World world = getContext().world;
         world.dump();
 
         DTypeRegistry registry = getContext().registry;

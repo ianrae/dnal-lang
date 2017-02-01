@@ -1,13 +1,13 @@
 package org.dnal.api.impl;
 
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class Internals {
     private DTypeRegistry registry;
-    private MyWorld world;
+    private World world;
     
-    public Internals(DTypeRegistry registry, MyWorld world) {
+    public Internals(DTypeRegistry registry, World world) {
         this.world = world;
         this.registry = registry;
     }
@@ -16,7 +16,7 @@ public class Internals {
         return registry;
     }
 
-    public MyWorld getWorld() {
+    public World getWorld() {
         return world;
     }
     

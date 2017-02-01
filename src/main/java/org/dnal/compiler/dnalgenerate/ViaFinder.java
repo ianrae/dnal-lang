@@ -13,15 +13,15 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.dnal.core.repository.Repository;
 
 public class ViaFinder extends ErrorTrackingBase {
 
-    private MyWorld world;
+    private World world;
     private DTypeRegistry registry;
 
-    public ViaFinder(MyWorld world, DTypeRegistry registry, XErrorTracker et) {
+    public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et) {
         super(et);
         this.world = world;
         this.registry = registry;

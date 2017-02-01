@@ -14,7 +14,7 @@ import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class BaseTest {
     protected CustomRuleFactory crf;
@@ -23,7 +23,7 @@ public class BaseTest {
     protected ASTToDNALGenerator createASTGenerator() {
         XErrorTracker.logErrors = true;
         Log.debugLogging = true;
-        MyWorld world = new MyWorld();
+        World world = new World();
         world.setRepositoryFactory(new MockRepositoryFactory());
         DTypeRegistryBuilder regBuilder = new DTypeRegistryBuilder();
         regBuilder.init(world);

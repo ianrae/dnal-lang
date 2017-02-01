@@ -10,15 +10,15 @@ import org.dnal.api.Transaction;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class DataSetImpl implements DataSet {
-    private MyWorld world;
+    private World world;
     private DTypeRegistry registry;
     private Map<Class<?>, DValueLoader<?>> loaderRegistry = new HashMap<>();
     private CompilerContext context;
     
-    public DataSetImpl(DTypeRegistry registry, MyWorld listener, CompilerContext context) {
+    public DataSetImpl(DTypeRegistry registry, World listener, CompilerContext context) {
         this.registry = registry;
         this.world = listener;
         this.context = context;
@@ -77,7 +77,7 @@ public class DataSetImpl implements DataSet {
      */
     @Override
     public DataSetImpl cloneEmptyDataSet() {
-        MyWorld newWorld = new MyWorld();
+        World newWorld = new World();
         newWorld.setRepositoryFactory(world.getRepositoryFactory());
         for(String typeName: registry.getAll()) {
             DType type = registry.getType(typeName);

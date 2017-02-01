@@ -47,10 +47,10 @@ import org.dnal.core.builder.NumberBuilder;
 import org.dnal.core.builder.StringBuilder;
 import org.dnal.core.builder.StructBuilder;
 import org.dnal.core.logger.Log;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
-    protected MyWorld world;
+    protected World world;
     protected DTypeRegistry registry;
     private BuilderFactory factory;
     private List<ErrorMessage> valErrorList;
@@ -60,7 +60,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     private StructBuilder currentStructBuilder;
     private boolean useProxyDVals = false;
 
-    public ASTToDNALValueGenerator(MyWorld world, CompilerContext context, DNALDocument doc, DTypeRegistry registry, PackageHelper packageHelper) {
+    public ASTToDNALValueGenerator(World world, CompilerContext context, DNALDocument doc, DTypeRegistry registry, PackageHelper packageHelper) {
         super(doc, context.et);
         this.world = world;
         this.registry = registry;

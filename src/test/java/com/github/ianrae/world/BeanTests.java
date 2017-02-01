@@ -15,7 +15,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.builder.IntBuilder;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class BeanTests extends BaseWorldTest {
@@ -45,7 +45,7 @@ public class BeanTests extends BaseWorldTest {
     
     public static class FooLoader implements DValueLoader<FooValue> {
         private DTypeRegistry registry;
-        private MyWorld world;
+        private World world;
         private CompilerContext context;
         
         @Override
@@ -75,7 +75,7 @@ public class BeanTests extends BaseWorldTest {
         }
 
         @Override
-        public void attach(DTypeRegistry registry, MyWorld world, CompilerContext context) {
+        public void attach(DTypeRegistry registry, World world, CompilerContext context) {
             this.registry = registry;
             this.world = world;
             this.context = context;

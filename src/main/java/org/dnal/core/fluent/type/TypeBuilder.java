@@ -22,7 +22,7 @@ import org.dnal.core.nrule.virtual.VirtualNumberMember;
 import org.dnal.core.nrule.virtual.VirtualPseudoLen;
 import org.dnal.core.nrule.virtual.VirtualPseudoLenMember;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.dnal.core.repository.WorldListener;
 import org.dnal.core.util.NameUtils;
 
@@ -286,7 +286,7 @@ public class TypeBuilder {
     }
  
 	private void initRegistry() {
-		world = new MyWorld();
+		world = new World();
 		world.setRepositoryFactory(new MockRepositoryFactory());
 
 		DTypeRegistryBuilder regBuilder = new DTypeRegistryBuilder();

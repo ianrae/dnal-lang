@@ -33,10 +33,10 @@ import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.fluent.type.TypeBuilder.Inner;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 
 public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor, ValueVisitor {
-    protected MyWorld world;
+    protected World world;
     protected DTypeRegistry registry;
     private ASTToDNALValueGenerator valueGenerator;
     private CustomRuleFactory crf;
@@ -44,7 +44,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
     private PackageHelper packageHelper;
     private CompilerContext context;
 
-    public ASTToDNALGenerator(MyWorld world, DTypeRegistry registry, XErrorTracker et, 
+    public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
             CustomRuleFactory crf, CompilerContext context) {
         super(et);
         this.world = world;

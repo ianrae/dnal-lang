@@ -20,7 +20,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.MyWorld;
+import org.dnal.core.repository.World;
 import org.dnal.core.repository.Repository;
 import org.junit.Test;
 
@@ -123,7 +123,7 @@ public class ASTToDNALTests extends BaseTest {
 		dnalGenerator.dumpErrors();
 		assertEquals(true, b);
 		
-		MyWorld world = this.getContext().world;
+		World world = this.getContext().world;
 		world.dump();
 		
 		DTypeRegistry registry = getContext().registry;
@@ -148,7 +148,7 @@ public class ASTToDNALTests extends BaseTest {
 		}
 		assertEquals(true, b);
 		
-		MyWorld world = getContext().world;
+		World world = getContext().world;
 		world.dump();
 		
         DTypeRegistry registry = getContext().registry;
