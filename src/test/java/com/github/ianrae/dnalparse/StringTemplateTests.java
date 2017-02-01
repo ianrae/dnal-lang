@@ -28,8 +28,8 @@ public class StringTemplateTests {
         // Pass on values to use when rendering
         templateExample.add("param", "Hello World");
 
-        templateExample.addAggr("items.{ firstName ,lastName, id }", "Ter", "Parr", 99); // add() uses varargs
-        templateExample.addAggr("items.{firstName, lastName ,id}", "Tom", "Burns", 34);
+//        templateExample.addAggr("items.{ firstName ,lastName, id }", "Ter", "Parr", 99); // add() uses varargs
+//        templateExample.addAggr("items.{firstName, lastName ,id}", "Tom", "Burns", 34);
         
         // Render
         final String render = templateExample.render();

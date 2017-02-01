@@ -57,7 +57,7 @@ public class ListChecker<T> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void checkContents(List<?> list, int... objects) {
+	public static void checkContentsInt(List<?> list, int... objects) {
 		int i = 0;
 		for(final int val: objects) {
 			Object obj = list.get(i);
