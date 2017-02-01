@@ -43,7 +43,6 @@ public class ListChecker<T> {
 		ListChecker checker = new ListChecker<>(list);
 		checker.isSize(expected);
 	}
-	@SuppressWarnings("unchecked")
 	public static void checkContents(List<? extends Comparable> list, Comparable... objects) {
 		int i = 0;
 		for(final Comparable val: objects) {
@@ -56,8 +55,7 @@ public class ListChecker<T> {
 		assertEquals(objects.length, list.size());
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static void checkContents(List<?> list, int... objects) {
+	public static void checkContentsInt(List<?> list, int... objects) {
 		int i = 0;
 		for(final int val: objects) {
 			Object obj = list.get(i);

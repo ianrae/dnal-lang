@@ -1,5 +1,7 @@
 package com.github.ianrae.dnalparse.compiler;
 
+import java.util.Calendar;
+
 import org.dnal.compiler.dnalgenerate.RuleDeclaration;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.nrule.Custom1Rule;
@@ -20,8 +22,10 @@ public class MyCustomDateRule extends Custom1Rule<VirtualDate> implements NeedsC
 
     @Override
     protected boolean onEval(DValue dval, NRuleContext ctx) {
-        int yr = arg1.val.getYear();
-        return yr == (2016 - 1900);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(arg1.val);
+        int yr = cal.get(Calendar.YEAR);
+        return yr == (2016);
     }
 
     @Override

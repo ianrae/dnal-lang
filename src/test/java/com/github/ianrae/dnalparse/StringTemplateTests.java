@@ -1,7 +1,5 @@
 package com.github.ianrae.dnalparse;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
 import org.stringtemplate.v4.ST;
 import org.stringtemplate.v4.STGroup;
@@ -28,8 +26,9 @@ public class StringTemplateTests {
         // Pass on values to use when rendering
         templateExample.add("param", "Hello World");
 
-        templateExample.addAggr("items.{ firstName ,lastName, id }", "Ter", "Parr", 99); // add() uses varargs
-        templateExample.addAggr("items.{firstName, lastName ,id}", "Tom", "Burns", 34);
+        Integer k = 99;
+        templateExample.addAggr("items.{ firstName ,lastName, id }", "Ter", "Parr", k); // add() uses varargs
+        templateExample.addAggr("items.{firstName, lastName ,id}", "Tom", "Burns", k);
         
         // Render
         final String render = templateExample.render();
