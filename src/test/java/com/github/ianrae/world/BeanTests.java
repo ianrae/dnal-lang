@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import org.dnal.api.DNALCompiler;
-import org.dnal.api.DValueLoader;
+import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
@@ -43,7 +43,7 @@ public class BeanTests extends BaseWorldTest {
     //FooBean would have getters/setters
     //needs own loader FooBeanLoader
     
-    public static class FooLoader implements DValueLoader<FooValue> {
+    public static class FooLoader implements BeanLoader<FooValue> {
         private DTypeRegistry registry;
         private World world;
         private CompilerContext context;
@@ -116,7 +116,7 @@ public class BeanTests extends BaseWorldTest {
     @Test
     public void testBean() {
         DataSet dataSet = createWorld();
-        dataSet.registerLoader(new FooLoader());
+        dataSet.registerBeanLoader(new FooLoader());
         
         Foo x = dataSet.getAsBean("nosuchname", FooValue.class);
         assertNull(x);
@@ -128,7 +128,7 @@ public class BeanTests extends BaseWorldTest {
     @Test
     public void testLoadFromBean() {
         DataSet dataSet = createWorld();
-        dataSet.registerLoader(new FooLoader());
+        dataSet.registerBeanLoader(new FooLoader());
         
         Foo x = dataSet.getAsBean("nosuchname", FooValue.class);
         assertNull(x);

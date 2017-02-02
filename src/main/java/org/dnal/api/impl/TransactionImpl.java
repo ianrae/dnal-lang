@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.codehaus.jparsec.functors.Pair;
-import org.dnal.api.DValueLoader;
+import org.dnal.api.BeanLoader;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerContext;
@@ -38,9 +38,9 @@ public class TransactionImpl implements Transaction {
     private List<Pair<String, DValue>> pendingL = new ArrayList<>();
     private BuilderFactory factory;
     private CompilerContext context;
-    private Map<Class<?>, DValueLoader<?>> loaderRegistry;
+    private Map<Class<?>, BeanLoader<?>> loaderRegistry;
 
-    public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, DValueLoader<?>> loaderRegistry) {
+    public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry) {
         this.world = world;
         this.registry = registry;
         StandardRuleFactory standard = new StandardRuleFactory();
@@ -102,7 +102,7 @@ public class TransactionImpl implements Transaction {
         }
         
         @SuppressWarnings("unchecked")
-        DValueLoader<?> loader = (DValueLoader<?>) loaderRegistry.get(bean.getClass());
+        BeanLoader<?> loader = (BeanLoader<?>) loaderRegistry.get(bean.getClass());
         if (loader == null) {
             throw new WorldException(String.format("bean class '%s' not registered. Use loadRegister()", bean.getClass().getSimpleName()));
         }

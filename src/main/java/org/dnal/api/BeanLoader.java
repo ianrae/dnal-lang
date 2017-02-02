@@ -5,7 +5,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
 
-public interface DValueLoader<T> {
+public interface BeanLoader<T> {
     Class<?> willLoad();
     T create(DValue dval);
     DValue createDValue(Object bean);

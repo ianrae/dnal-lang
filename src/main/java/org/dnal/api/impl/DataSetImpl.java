@@ -3,7 +3,7 @@ package org.dnal.api.impl;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dnal.api.DValueLoader;
+import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
@@ -15,7 +15,7 @@ import org.dnal.core.repository.World;
 public class DataSetImpl implements DataSet {
     private World world;
     private DTypeRegistry registry;
-    private Map<Class<?>, DValueLoader<?>> loaderRegistry = new HashMap<>();
+    private Map<Class<?>, BeanLoader<?>> beanLoaderRegistry = new HashMap<>();
     private CompilerContext context;
     
     public DataSetImpl(DTypeRegistry registry, World listener, CompilerContext context) {
@@ -30,13 +30,13 @@ public class DataSetImpl implements DataSet {
     
     @Override
     public Transaction createTransaction() {
-        return new TransactionImpl(registry, world, context, loaderRegistry);
+        return new TransactionImpl(registry, world, context, beanLoaderRegistry);
     }
     
     @Override
-    public void registerLoader(DValueLoader<?> loader) {
+    public void registerBeanLoader(BeanLoader<?> loader) {
         Class<?> clazz = loader.willLoad();
-        this.loaderRegistry.put(clazz, loader);
+        this.beanLoaderRegistry.put(clazz, loader);
         loader.attach(registry, world, context);
     }
     
@@ -51,7 +51,7 @@ public class DataSetImpl implements DataSet {
             return null;
         }
         @SuppressWarnings("unchecked")
-        DValueLoader<T> loader = (DValueLoader<T>) loaderRegistry.get(clazz);
+        BeanLoader<T> loader = (BeanLoader<T>) beanLoaderRegistry.get(clazz);
         if (loader == null) {
             return null;
         }
