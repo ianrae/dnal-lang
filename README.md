@@ -1,4 +1,4 @@
-#DNAL - Data Needs a Language
+DNAL - Data Needs a Language
 =======
 
 A compiler for data. DNAL is a JSON-like language that includes types and data validation rules.  
@@ -24,6 +24,7 @@ Add the following fragment to your `<dependencies>` section:
 
 DNAL is a language for data.  It supports types, relations, and validation rules.  Here is a sample:
 
+		//define a type
 		type Person struct {
 		 firstName string
 		 lastName string
@@ -33,12 +34,16 @@ DNAL is a language for data.  It supports types, relations, and validation rules
 		  !empty(lastName)
 		 end
 
-		let people Person = [
-		 { 'Gillian', 'Smith', '1965-12-31' },
+		//define some values
+		let customer Person = { 'Gillian', 'Smith', '1965-12-31' }
+		
+		let people list<Person> = [
+		 { 'Simone', 'Tremblay', '1965-12-31' },
 		 { 'Jason', 'Ackerman', '1991-01-15' }
 		]
 
-The *dnalc* compiler converts DNAL into other formats such as JSON, XML, or to do code generation of bean or DTO classes.
+The *dnalc* compiler converts DNAL into other formats.  Use it to create JSON, XML, or to do code generation of bean or DTO classes.
+The compiler is extensible; add your own output generators.
 
 The DNAL API is a Java API for loading and querying DNAL data.
 
@@ -48,4 +53,12 @@ The DNAL API is a Java API for loading and querying DNAL data.
 * lists and structs
 * package and import
 * type inheritance
+
+## Uses
+
+* producing valid configuration files (JSON, XML, SQL, etc).
+* used as configuration directly by a program
+* used for validating data received by a program.
+* code generation for creating bean and DTO classes.
+
 
