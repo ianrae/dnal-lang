@@ -30,4 +30,9 @@ public class StartsWithRule extends Custom1Rule<VirtualString> implements NeedsC
         this.polarity = exp.polarity;
         crule = exp;
     }
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
+    }
 }

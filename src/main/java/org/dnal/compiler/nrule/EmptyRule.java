@@ -33,4 +33,9 @@ public class EmptyRule extends Custom1Rule<VirtualString> implements NeedsCustom
         this.polarity = exp.polarity;
         crule = exp;
     }
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
+    }
 }

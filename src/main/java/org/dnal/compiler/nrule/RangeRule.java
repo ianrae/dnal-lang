@@ -35,4 +35,10 @@ public class RangeRule extends Custom1Rule<VirtualInt> implements NeedsCustomRul
 	    this.polarity = exp.polarity;
 		crule = exp;
 	}
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
+    }
+	
 }

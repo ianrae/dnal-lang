@@ -35,4 +35,9 @@ public class InRule extends Custom1Rule<VirtualInt> implements NeedsCustomRule {
 	    this.polarity = exp.polarity;
 		crule = exp;
 	}
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
+    }
 }

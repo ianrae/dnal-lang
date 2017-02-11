@@ -41,10 +41,10 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
     @Test
     public void testRangeRuleInt() {
         String str = "range(15,20)";
-//        chkRuleInt(str, 15, true);
+        chkRuleInt(str, 15, true);
         
         str = String.format("range(%d..%d)", 15, 20);
-//        chkRuleInt(str, 14, false);
+        chkRuleInt(str, 14, false);
         chkRuleInt(str, 15, true);
         chkRuleInt(str, 19, true);
         chkRuleInt(str, 20, false);

@@ -29,14 +29,17 @@ public abstract class Custom1Rule<T extends VirtualDataItem> extends NRuleBase {
     }
     
     protected abstract boolean onEval(DValue dval, NRuleContext ctx);
+    
+    protected abstract String generateRuleText();
 
     @Override
     public String getRuleText() {
         if (super.getRuleText() != null) {
             return super.getRuleText();
         }
-        
-        String s = String.format("%s(x)", this.getName());
-        return s;
+        String s = generateRuleText();
+        setRuleText(s);
+        return super.getRuleText();
     }
+
 }

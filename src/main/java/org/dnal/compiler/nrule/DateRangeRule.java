@@ -69,4 +69,9 @@ public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCust
         this.polarity = exp.polarity;
         crule = exp;
     }
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
+    }
 }

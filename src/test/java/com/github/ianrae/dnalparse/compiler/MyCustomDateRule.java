@@ -49,4 +49,10 @@ public class MyCustomDateRule extends Custom1Rule<VirtualDate> implements NeedsC
             return decl;
         }
     }
+    
+
+    @Override
+    protected String generateRuleText() {
+        return getName();
+    }
 }

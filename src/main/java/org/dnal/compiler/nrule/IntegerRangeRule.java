@@ -4,6 +4,7 @@ import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.LongExp;
+import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
@@ -25,27 +26,26 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
     
     
     protected void addWrongArgumentsError(NRuleContext ctx, String ruleText, CustomRule crulex) {
-        String s = "";
-        for(Exp arg: crulex.argL) {
-            if (s.isEmpty()) {
-                s = arg.strValue();
-            } else {
-                s += "," + arg.strValue();
-            }
-        }
         ErrorMessage err = new ErrorMessage(ErrorType.INVALIDRULE, 
-                String.format("wrong number of arguments %s('%s')", getName(), s));
+                String.format("wrong number of arguments: %s", crulex.strValue()));
         ctx.addError(err);
     }
 
     @Override
     protected boolean onEval(DValue dval, NRuleContext ctx) {
-        if (crule.argL.size() != 2) {
+        if (crule.argL.size() == 1) {
+            return evalRangeExp(dval, ctx);
+        } else if (crule.argL.size() == 2) {
+            return evalCommaRange(dval, ctx);
+        } else {
             addWrongArgumentsError(ctx, "", crule);
 //          this.addInvalidRuleError(ruleText);
             return false;
         }
 
+    }
+
+    private boolean evalCommaRange(DValue dval, NRuleContext ctx) {
         Integer from = getInt(crule.argL.get(0));
         Integer to = getInt(crule.argL.get(1));
         if (to == null || from == null) {
@@ -53,6 +53,10 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
             return false;
         }
 
+        return evaluate(from, to);
+    }
+    
+    private boolean evaluate(Integer from, Integer to) {
         Integer target = arg1.val;
         
         if (target.equals(from)) {
@@ -61,6 +65,13 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
             return (target >= from && target < to);
         }
     }
+
+
+    private boolean evalRangeExp(DValue dval, NRuleContext ctx) {
+        RangeExp rexp = (RangeExp) crule.argL.get(0);
+        return evaluate(rexp.from, rexp.to);
+    }
+
 
     private Integer getInt(Exp exp) {
         if (exp instanceof LongExp) {
@@ -78,5 +89,10 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
     public void rememberCustomRule(CustomRule exp) {
         this.polarity = exp.polarity;
         crule = exp;
+    }
+
+    @Override
+    protected String generateRuleText() {
+        return crule.strValue();
     }
 }
