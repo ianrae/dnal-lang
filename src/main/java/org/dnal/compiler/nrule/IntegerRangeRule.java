@@ -5,6 +5,8 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.LongExp;
 import org.dnal.core.DValue;
+import org.dnal.core.ErrorMessage;
+import org.dnal.core.ErrorType;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualInt;
 
@@ -20,11 +22,26 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
     public IntegerRangeRule(String name, VirtualInt arg1) {
         super(name, arg1);
     }
+    
+    
+    protected void addWrongArgumentsError(NRuleContext ctx, String ruleText, CustomRule crulex) {
+        String s = "";
+        for(Exp arg: crulex.argL) {
+            if (s.isEmpty()) {
+                s = arg.strValue();
+            } else {
+                s += "," + arg.strValue();
+            }
+        }
+        ErrorMessage err = new ErrorMessage(ErrorType.INVALIDRULE, 
+                String.format("wrong number of arguments %s('%s')", getName(), s));
+        ctx.addError(err);
+    }
 
     @Override
     protected boolean onEval(DValue dval, NRuleContext ctx) {
         if (crule.argL.size() != 2) {
-            this.addInvalidRuleError(ctx, this.getRuleText());
+            addWrongArgumentsError(ctx, "", crule);
 //          this.addInvalidRuleError(ruleText);
             return false;
         }
