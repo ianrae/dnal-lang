@@ -65,6 +65,31 @@ public class StandardRuleFactory  {
                     rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape), false);
                 }
                 break;
+            case "ieq":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringCompareCaseInsensitiveRule(ruleName, (VirtualString)createForShape(shape), "==");
+                }
+                break;
+            case "ilt":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringCompareCaseInsensitiveRule(ruleName, (VirtualString)createForShape(shape), "<");
+                }
+                break;
+            case "ile":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringCompareCaseInsensitiveRule(ruleName, (VirtualString)createForShape(shape), "<=");
+                }
+                break;
+            case "igt":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringCompareCaseInsensitiveRule(ruleName, (VirtualString)createForShape(shape), ">");
+                }
+                break;
+            case "ige":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringCompareCaseInsensitiveRule(ruleName, (VirtualString)createForShape(shape), ">=");
+                }
+                break;
             case "len":
                 rule = new LenRule(ruleName, new VirtualPseudoLen());
                 break;
@@ -114,7 +139,13 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
         crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.STRING));
-        crf.addFactory(new Factory("irange", Shape.DATE, Shape.STRING));
+        crf.addFactory(new Factory("irange", Shape.STRING));
+        crf.addFactory(new Factory("ieq", Shape.STRING));
+        crf.addFactory(new Factory("ilt", Shape.STRING));
+        crf.addFactory(new Factory("ile", Shape.STRING));
+        crf.addFactory(new Factory("igt", Shape.STRING));
+        crf.addFactory(new Factory("ige", Shape.STRING));
+        crf.addFactory(new Factory("ieq", Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER));
         return crf;

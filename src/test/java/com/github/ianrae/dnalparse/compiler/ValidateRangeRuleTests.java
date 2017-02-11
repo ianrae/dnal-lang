@@ -83,6 +83,45 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
         
         //.. format not supported for string
     }
+    @Test
+    public void testIEqString() {
+        String str = "ieq('aa')";
+        chkRuleString(str, "aa", true);
+        chkRuleString(str, "AA", true);
+        chkRuleString(str, "BB", false);
+    }
+    @Test
+    public void testILtString() {
+        String str = "ilt('cc')";
+        chkRuleString(str, "cc", false);
+        chkRuleString(str, "CC", false);
+        chkRuleString(str, "bb", true);
+        chkRuleString(str, "BB", true);
+    }
+    @Test
+    public void testILeString() {
+        String str = "ile('cc')";
+        chkRuleString(str, "cc", true);
+        chkRuleString(str, "CC", true);
+        chkRuleString(str, "bb", true);
+        chkRuleString(str, "BB", true);
+    }
+    @Test
+    public void testIGtString() {
+        String str = "igt('cc')";
+        chkRuleString(str, "cc", false);
+        chkRuleString(str, "CC", false);
+        chkRuleString(str, "dd", true);
+        chkRuleString(str, "DD", true);
+    }
+    @Test
+    public void testIGeString() {
+        String str = "ige('cc')";
+        chkRuleString(str, "cc", true);
+        chkRuleString(str, "CC", true);
+        chkRuleString(str, "dd", true);
+        chkRuleString(str, "DD", true);
+    }
 	
 	private void chkRuleDate(String text, long n, boolean ok) {
 		String s = String.format("type Foo date %s end let x Foo = %d", text, n);
