@@ -56,6 +56,16 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
         chkRuleLong(str, 15, true);
         //.. format not supported for long
     }
+    @Test
+    public void testRangeRuleString() {
+        String str = "range('aa', 'zz')";
+        chkRuleString(str, "aa", true);
+        chkRuleString(str, "a@", false);
+        chkRuleString(str, "bb", true);
+        chkRuleString(str, "yz", true);
+        chkRuleString(str, "zz", false);
+        //.. format not supported for string
+    }
 	
 	private void chkRuleDate(String text, long n, boolean ok) {
 		String s = String.format("type Foo date %s end let x Foo = %d", text, n);
@@ -68,6 +78,10 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
     private void chkRuleLong(String text, long n, boolean ok) {
         String s = String.format("type Foo long %s end let x Foo = %d", text, n);
         parseAndValidate(s, ok, "LONG_SHAPE");
+    }
+    private void chkRuleString(String text, String target, boolean ok) {
+        String s = String.format("type Foo string %s end let x Foo = '%s'", text, target);
+        parseAndValidate(s, ok, "STRING_SHAPE");
     }
 
 }

@@ -31,6 +31,12 @@ public class StandardRuleFactory  {
             this.decl.shapeL.add(shape2);
             this.decl.shapeL.add(shape3);
         }
+        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3, Shape shape4) {
+            this.decl = new RuleDeclaration(ruleName, shape1);
+            this.decl.shapeL.add(shape2);
+            this.decl.shapeL.add(shape3);
+            this.decl.shapeL.add(shape4);
+        }
 
         //support long later!!
         @Override
@@ -48,8 +54,10 @@ public class StandardRuleFactory  {
                     rule = new DateRangeRule(ruleName, (VirtualDate) createForShape(shape));
                 } else if (shape.equals(Shape.INTEGER)) {
                     rule = new IntegerRangeRule(ruleName, (VirtualInt) createForShape(shape));
-                } else {
+                } else if (shape.equals(Shape.LONG)){
                     rule = new LongRangeRule(ruleName, (VirtualLong) createForShape(shape));
+                } else if (shape.equals(Shape.STRING)) {
+                    rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape));
                 }
                 break;
             case "len":
@@ -100,7 +108,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("regex", Shape.STRING));
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
-        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG));
+        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER));
         return crf;
