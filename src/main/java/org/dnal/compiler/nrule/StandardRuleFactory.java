@@ -9,6 +9,7 @@ import org.dnal.core.nrule.virtual.VirtualDataItem;
 import org.dnal.core.nrule.virtual.VirtualDate;
 import org.dnal.core.nrule.virtual.VirtualInt;
 import org.dnal.core.nrule.virtual.VirtualList;
+import org.dnal.core.nrule.virtual.VirtualLong;
 import org.dnal.core.nrule.virtual.VirtualPseudoLen;
 import org.dnal.core.nrule.virtual.VirtualString;
 
@@ -24,6 +25,11 @@ public class StandardRuleFactory  {
         public Factory(String ruleName, Shape shape1, Shape shape2) {
             this.decl = new RuleDeclaration(ruleName, shape1);
             this.decl.shapeL.add(shape2);
+        }
+        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3) {
+            this.decl = new RuleDeclaration(ruleName, shape1);
+            this.decl.shapeL.add(shape2);
+            this.decl.shapeL.add(shape3);
         }
 
         //support long later!!
@@ -73,6 +79,8 @@ public class StandardRuleFactory  {
                 return new VirtualDate();
             case INTEGER:
                 return new VirtualInt();
+            case LONG:
+                return new VirtualLong();
             case LIST:
                 return new VirtualList();
             case STRUCT:
@@ -92,7 +100,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("regex", Shape.STRING));
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
-        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER));
+        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER));
         return crf;

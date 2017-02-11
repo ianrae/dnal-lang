@@ -54,12 +54,7 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
     public void testRangeRuleLong() {
         String str = "range(15,20)";
         chkRuleLong(str, 15, true);
-        
-//        str = String.format("range(%d..%d)", 15, 20);
-//        chkRuleInt(str, 14, false);
-//        chkRuleInt(str, 15, true);
-//        chkRuleInt(str, 19, true);
-//        chkRuleInt(str, 20, false);
+        //.. format not supported for long
     }
 	
 	private void chkRuleDate(String text, long n, boolean ok) {
