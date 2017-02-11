@@ -68,7 +68,7 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
     }
     @Test
     public void testRangeIRuleString() {
-        String str = "rangei('aa', 'zz')";
+        String str = "irange('aa', 'zz')";
         chkRuleString(str, "aa", true);
         chkRuleString(str, "a@", false);
         chkRuleString(str, "bb", true);
