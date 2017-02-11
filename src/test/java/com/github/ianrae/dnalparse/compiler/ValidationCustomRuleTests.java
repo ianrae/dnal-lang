@@ -98,8 +98,5 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
 		String s = String.format("type Foo int %s end let x Foo = %d", text, n);
 		parseAndValidate(s, ok, "INTEGER_SHAPE");
 	}
-	private void parseAndValidate(String input, boolean expected) {
-		parseAndValidate(input, expected, "INTEGER_SHAPE");
-	}
 
 }
