@@ -106,6 +106,9 @@ public class StandardRuleFactory  {
             case "endsWith":
                 rule = new EndsWithRule(ruleName, (VirtualString) createForShape(shape));
                 break;
+            case "contains":
+                rule = new ContainsRule(ruleName, (VirtualString) createForShape(shape));
+                break;
             default:
                 break;        
             }
@@ -142,6 +145,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("regex", Shape.STRING));
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
+        crf.addFactory(new Factory("contains", Shape.STRING));
         crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.STRING));
         crf.addFactory(new Factory("irange", Shape.STRING));
         crf.addFactory(new Factory("ieq", Shape.STRING));

@@ -81,6 +81,12 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
         chkCustomRule(decl, "endsWith('ab')", "", false);
         chkCustomRule(decl, "endsWith('')", "", true);
     }
+    @Test
+    public void testContains() {
+        String decl = "";
+        chkCustomRule(decl, "contains('ab')", "cab", true);
+        chkCustomRule(decl, "contains('ab')", "CAB", false);
+    }
 	
 	
 	private void chkCustomRule(String decl, String rule, String str, boolean ok) {
