@@ -1,13 +1,10 @@
 package org.dnal.compiler.nrule;
 
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.LongExp;
 import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
-import org.dnal.core.ErrorType;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualInt;
 
@@ -17,37 +14,16 @@ import org.dnal.core.nrule.virtual.VirtualInt;
  * @author ian
  *
  */
-public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCustomRule { 
-    public CustomRule crule;
+public class IntegerRangeRule extends Custom1RuleBase<VirtualInt>  { 
 
     public IntegerRangeRule(String name, VirtualInt arg1) {
         super(name, arg1);
     }
     
-    
-    protected void addWrongArgumentsError(NRuleContext ctx, String ruleText, CustomRule crulex) {
-        ErrorMessage err = new ErrorMessage(ErrorType.INVALIDRULE, 
-                String.format("wrong number of arguments: %s", crulex.strValue()));
-        ctx.addError(err);
-    }
-
     @Override
-    protected boolean onEval(DValue dval, NRuleContext ctx) {
-        if (crule.argL.size() == 1) {
-            return evalRangeExp(dval, ctx);
-        } else if (crule.argL.size() == 2) {
-            return evalCommaRange(dval, ctx);
-        } else {
-            addWrongArgumentsError(ctx, "", crule);
-//          this.addInvalidRuleError(ruleText);
-            return false;
-        }
-
-    }
-
-    private boolean evalCommaRange(DValue dval, NRuleContext ctx) {
-        Integer from = getInt(crule.argL.get(0));
-        Integer to = getInt(crule.argL.get(1));
+    protected boolean evalDoubleArg(DValue dval, NRuleContext ctx, Exp exp1, Exp exp2) {
+        Integer from = getInt(exp1);
+        Integer to = getInt(exp2);
         if (to == null || from == null) {
             //!!err
             return false;
@@ -66,9 +42,9 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
         }
     }
 
-
-    private boolean evalRangeExp(DValue dval, NRuleContext ctx) {
-        RangeExp rexp = (RangeExp) crule.argL.get(0);
+    @Override
+    protected boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp) {
+        RangeExp rexp = (RangeExp) exp;
         return evaluate(rexp.from, rexp.to);
     }
 
@@ -83,16 +59,5 @@ public class IntegerRangeRule extends Custom1Rule<VirtualInt> implements NeedsCu
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void rememberCustomRule(CustomRule exp) {
-        this.polarity = exp.polarity;
-        crule = exp;
-    }
-
-    @Override
-    protected String generateRuleText() {
-        return crule.strValue();
     }
 }

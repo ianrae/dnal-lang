@@ -18,27 +18,24 @@ import org.dnal.core.nrule.virtual.VirtualDate;
  * @author ian
  *
  */
-public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCustomRule { 
-    public CustomRule crule;
+public class DateRangeRule extends Custom1RuleBase<VirtualDate> { 
 
     public DateRangeRule(String name, VirtualDate arg1) {
         super(name, arg1);
     }
-
+    
     @Override
-    protected boolean onEval(DValue dval, NRuleContext ctx) {
-        if (crule.argL.size() != 2) {
-//          this.addInvalidRuleError(ruleText);
-            return false;
-        }
-
-        Date from = getDate(crule.argL.get(0));
-        Date to = getDate(crule.argL.get(1));
+    protected boolean evalDoubleArg(DValue dval, NRuleContext ctx, Exp exp1, Exp exp2) {
+        Date from = getDate(exp1);
+        Date to = getDate(exp2);
         if (to == null || from == null) {
             //!!err
             return false;
         }
-
+        return evaluate(from, to);
+    }
+    
+    private boolean evaluate(Date from, Date to) {
         Date target = arg1.val;
         
         if (target.equals(from)) {
@@ -48,6 +45,12 @@ public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCust
             boolean b2 = target.before(to);
             return (b1 && b2);
         }
+    }
+
+    @Override
+    protected boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp) {
+        addWrongArgumentsError(ctx);
+        return false;
     }
 
     private Date getDate(Exp exp) {
@@ -62,16 +65,5 @@ public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCust
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void rememberCustomRule(CustomRule exp) {
-        this.polarity = exp.polarity;
-        crule = exp;
-    }
-
-    @Override
-    protected String generateRuleText() {
-        return crule.strValue();
     }
 }
