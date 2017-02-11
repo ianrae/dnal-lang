@@ -50,6 +50,17 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
         chkRuleInt(str, 20, false);
     }
     
+    @Test
+    public void testRangeRuleLong() {
+        String str = "range(15,20)";
+        chkRuleLong(str, 15, true);
+        
+//        str = String.format("range(%d..%d)", 15, 20);
+//        chkRuleInt(str, 14, false);
+//        chkRuleInt(str, 15, true);
+//        chkRuleInt(str, 19, true);
+//        chkRuleInt(str, 20, false);
+    }
 	
 	private void chkRuleDate(String text, long n, boolean ok) {
 		String s = String.format("type Foo date %s end let x Foo = %d", text, n);
@@ -58,6 +69,10 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
     private void chkRuleInt(String text, long n, boolean ok) {
         String s = String.format("type Foo int %s end let x Foo = %d", text, n);
         parseAndValidate(s, ok, "INTEGER_SHAPE");
+    }
+    private void chkRuleLong(String text, long n, boolean ok) {
+        String s = String.format("type Foo long %s end let x Foo = %d", text, n);
+        parseAndValidate(s, ok, "LONG_SHAPE");
     }
 
 }

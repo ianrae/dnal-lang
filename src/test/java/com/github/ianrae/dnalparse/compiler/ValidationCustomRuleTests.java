@@ -1,6 +1,6 @@
 package com.github.ianrae.dnalparse.compiler;
 
-import org.dnal.compiler.nrule.RangeRule;
+import org.dnal.compiler.nrule.IntegerRangeRule;
 import org.dnal.core.nrule.virtual.VirtualInt;
 import org.junit.Test;
 
@@ -37,7 +37,7 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
 	@Test
 	public void testRangeRule() {
 		VirtualInt vs = new VirtualInt();
-		RangeRule rule = new RangeRule("range", vs);
+		IntegerRangeRule rule = new IntegerRangeRule("range", vs);
 //		CustomRuleRegistry.addRule(rule);
 		
 		chkCustomIntRule("range(4..8)", 4, true);

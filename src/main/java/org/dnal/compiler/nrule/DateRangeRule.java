@@ -3,10 +3,8 @@ package org.dnal.compiler.nrule;
 import java.util.Date;
 
 import org.dnal.compiler.dnalgenerate.DateFormatParser;
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.LongExp;
-import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRuleContext;
@@ -45,12 +43,6 @@ public class DateRangeRule extends Custom1RuleBase<VirtualDate> {
             boolean b2 = target.before(to);
             return (b1 && b2);
         }
-    }
-
-    @Override
-    protected boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp) {
-        addWrongArgumentsError(ctx);
-        return false;
     }
 
     private Date getDate(Exp exp) {

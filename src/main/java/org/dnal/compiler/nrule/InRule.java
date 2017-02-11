@@ -1,6 +1,5 @@
 package org.dnal.compiler.nrule;
 
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.core.DValue;
@@ -9,8 +8,7 @@ import org.dnal.core.nrule.virtual.VirtualInt;
 
 
 //support Long later!!
-public class InRule extends Custom1Rule<VirtualInt> implements NeedsCustomRule { 
-	public CustomRule crule;
+public class InRule extends Custom1RuleBase<VirtualInt> { 
 	
 	public InRule(String name, VirtualInt arg1) {
 		super(name, arg1);
@@ -29,15 +27,4 @@ public class InRule extends Custom1Rule<VirtualInt> implements NeedsCustomRule {
 		}		
 		return found;
 	}
-
-	@Override
-	public void rememberCustomRule(CustomRule exp) {
-	    this.polarity = exp.polarity;
-		crule = exp;
-	}
-
-    @Override
-    protected String generateRuleText() {
-        return crule.strValue();
-    }
 }

@@ -40,7 +40,9 @@ public abstract class Custom1RuleBase<T extends VirtualDataItem> extends Custom1
     
     @Override
     protected boolean onEval(DValue dval, NRuleContext ctx) {
-        if (crule.argL.size() == 1) {
+        if (crule.argL.size() == 0) {
+            return evalNoArg(dval, ctx);
+        } else if (crule.argL.size() == 1) {
             return evalSingleArg(dval, ctx, crule.argL.get(0));
         } else if (crule.argL.size() == 2) {
             return evalDoubleArg(dval, ctx, crule.argL.get(0), crule.argL.get(1));
@@ -50,7 +52,17 @@ public abstract class Custom1RuleBase<T extends VirtualDataItem> extends Custom1
         }
     }
 
-    protected abstract boolean evalDoubleArg(DValue dval, NRuleContext ctx, Exp exp1, Exp exp2);
-    protected abstract boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp);
+    protected boolean evalNoArg(DValue dval, NRuleContext ctx) {
+        addWrongArgumentsError(ctx);
+        return false;
+    }
+    protected boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp) {
+        addWrongArgumentsError(ctx);
+        return false;
+    }
+    protected boolean evalDoubleArg(DValue dval, NRuleContext ctx, Exp exp1, Exp exp2) {
+        addWrongArgumentsError(ctx);
+        return false;
+    }
 
 }

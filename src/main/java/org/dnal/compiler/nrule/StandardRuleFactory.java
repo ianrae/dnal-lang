@@ -40,8 +40,10 @@ public class StandardRuleFactory  {
             case "range":
                 if (shape.equals(Shape.DATE)) {
                     rule = new DateRangeRule(ruleName, (VirtualDate) createForShape(shape));
-                } else {
+                } else if (shape.equals(Shape.INTEGER)) {
                     rule = new IntegerRangeRule(ruleName, (VirtualInt) createForShape(shape));
+                } else {
+                    rule = new LongRangeRule(ruleName, (VirtualLong) createForShape(shape));
                 }
                 break;
             case "len":
