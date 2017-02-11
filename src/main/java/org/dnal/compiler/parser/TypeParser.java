@@ -97,6 +97,7 @@ public class TypeParser extends ParserBase {
 				(Token notToken, IdentExp exp1, Token tok, List<List<Exp>> arg, Token tok2) -> new CustomRule(exp1.name(), arg, (notToken == null) ? null : notToken.toString()));
 	}
 	public static Parser<CustomRule> ruleCustom02() {
+		return Parsers.sequence(not(), VarParser.ident(), term("("), Parsers.or(ruleRange(), ruleSpaceRange()), term(")"), 
 				(Token notToken, IdentExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1.name(), range, (notToken == null) ? null : notToken.toString()));
 	}
 	public static Parser<CustomRule> ruleCustom() {

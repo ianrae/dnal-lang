@@ -38,7 +38,11 @@ public class StandardRuleFactory  {
                 rule = new RegexRule(ruleName, (VirtualString) createForShape(shape));
                 break;
             case "range":
-                rule = new DateRangeRule(ruleName, (VirtualDate) createForShape(shape));
+                if (shape.equals(Shape.DATE)) {
+                    rule = new DateRangeRule(ruleName, (VirtualDate) createForShape(shape));
+                } else {
+                    rule = new IntegerRangeRule(ruleName, (VirtualInt) createForShape(shape));
+                }
                 break;
             case "len":
                 rule = new LenRule(ruleName, new VirtualPseudoLen());
@@ -86,7 +90,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("regex", Shape.STRING));
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
-        crf.addFactory(new Factory("range", Shape.DATE));
+        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER));
         return crf;
