@@ -112,7 +112,7 @@ public class RuleConverter extends ErrorTrackingBase {
         return checkForRuleDecl(fieldType, rule); //**recursion**
     }
     private DType getFieldType(DType type, CustomRule rule) {
-        String fieldName = rule.argL.get(0).strValue();
+        String fieldName = getFieldName(rule);
 
         DStructType structType = (DStructType) type;
         DType fieldType = structType.getFields().get(fieldName);
@@ -122,6 +122,15 @@ public class RuleConverter extends ErrorTrackingBase {
         }
         
         return fieldType;
+    }
+    private String getFieldName(CustomRule rule) {
+        String fieldName = rule.fieldName;
+        
+        //legacy syntax len(x)
+        if (fieldName == null) {
+            fieldName = rule.argL.get(0).strValue();
+        }
+        return fieldName;
     }
 
     private NRule doComparisonOrRule(DType type, ComparisonOrRuleExp exp) {
@@ -210,7 +219,7 @@ public class RuleConverter extends ErrorTrackingBase {
     private NRule specialHandling(CustomRule rule, DType type) {
         RuleBuilder builder = new RuleBuilder(type);
         ComparisonRuleExp exp = (ComparisonRuleExp) rule.hackExtra;
-        String fieldName = rule.argL.get(0).strValue();
+        String fieldName = getFieldName(rule);
         
         
         LenRule newRule = null;

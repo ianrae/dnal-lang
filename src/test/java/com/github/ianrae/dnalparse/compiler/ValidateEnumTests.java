@@ -83,7 +83,7 @@ public class ValidateEnumTests extends BaseValidationTests {
 //    }
     @Test
     public void testContains() {
-        chkCustomRule("contains('RED')", "RED", true);
+        chkCustomRule("col.contains('RED')", "RED", true);
 //        chkCustomRule("contains('ab')", "CAB", false);
     }
 	
