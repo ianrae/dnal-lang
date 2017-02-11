@@ -13,9 +13,11 @@ import org.dnal.core.nrule.virtual.VirtualString;
  *
  */
 public class StringRangeRule extends Custom1RuleBase<VirtualString>  { 
+    private boolean isCaseSensitive;
 
-    public StringRangeRule(String name, VirtualString arg1) {
+    public StringRangeRule(String name, VirtualString arg1, boolean isCaseSensitive) {
         super(name, arg1);
+        this.isCaseSensitive = isCaseSensitive;
     }
     
     @Override
@@ -27,7 +29,7 @@ public class StringRangeRule extends Custom1RuleBase<VirtualString>  {
             return false;
         }
 
-        return evaluate(from, to);
+        return (isCaseSensitive) ? evaluate(from, to) : evaluatei(from, to);
     }
     
     private boolean evaluate(String from, String to) {
@@ -38,6 +40,17 @@ public class StringRangeRule extends Custom1RuleBase<VirtualString>  {
         } else {
             int cmp1 = target.compareTo(from);
             int cmp2 = target.compareTo(to);
+            return (cmp1 >= 0 && cmp2 < 0);
+        }
+    }
+    private boolean evaluatei(String from, String to) {
+        String target = arg1.val;
+        
+        if (target.equals(from)) {
+            return true;
+        } else {
+            int cmp1 = target.compareToIgnoreCase(from);
+            int cmp2 = target.compareToIgnoreCase(to);
             return (cmp1 >= 0 && cmp2 < 0);
         }
     }

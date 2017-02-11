@@ -66,6 +66,23 @@ public class ValidateRangeRuleTests extends BaseValidationTests {
         chkRuleString(str, "zz", false);
         //.. format not supported for string
     }
+    @Test
+    public void testRangeIRuleString() {
+        String str = "rangei('aa', 'zz')";
+        chkRuleString(str, "aa", true);
+        chkRuleString(str, "a@", false);
+        chkRuleString(str, "bb", true);
+        chkRuleString(str, "yz", true);
+        chkRuleString(str, "zz", false);
+
+        chkRuleString(str, "AA", true);
+        chkRuleString(str, "A@", false);
+        chkRuleString(str, "BB", true);
+        chkRuleString(str, "YY", true);
+        chkRuleString(str, "ZZ", false);
+        
+        //.. format not supported for string
+    }
 	
 	private void chkRuleDate(String text, long n, boolean ok) {
 		String s = String.format("type Foo date %s end let x Foo = %d", text, n);

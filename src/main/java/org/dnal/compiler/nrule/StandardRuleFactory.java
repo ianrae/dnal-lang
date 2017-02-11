@@ -57,7 +57,12 @@ public class StandardRuleFactory  {
                 } else if (shape.equals(Shape.LONG)){
                     rule = new LongRangeRule(ruleName, (VirtualLong) createForShape(shape));
                 } else if (shape.equals(Shape.STRING)) {
-                    rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape));
+                    rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape), true);
+                }
+                break;
+            case "rangei":
+                if (shape.equals(Shape.STRING)) {
+                    rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape), false);
                 }
                 break;
             case "len":
@@ -109,6 +114,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
         crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.STRING));
+        crf.addFactory(new Factory("rangei", Shape.DATE, Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER));
         return crf;
