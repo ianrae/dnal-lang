@@ -18,6 +18,7 @@ import org.dnal.compiler.parser.ast.FullListTypeExp;
 import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
+import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
 import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.RuleExp;
@@ -52,26 +53,36 @@ public class TypeParser extends ParserBase {
 				(Exp exp1, Token ortok, Exp exp2) -> new ComparisonAndRuleExp((ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
 	}
 	
-//    private static Parser<Exp> numberArg() {
-//        return TerminalParser.numberSyntacticParser
-//        .map(new org.codehaus.jparsec.functors.Map<String, NumberExp>() {
-//            @Override
-//            public NumberExp map(String arg) {
-//                Double nval = Double.parseDouble(arg);
-//
-//                return new NumberExp(nval);
-//            }
-//        });
-//    }
+	/*
+	 * The parser gets confused with "15..20" and sees "15.". The workaround is
+	 * to accept 15. followed by another .
+	 */
+    public static Parser<Exp> intWithDotArg() {
+        return TerminalParser.numberSyntacticParser
+        .map(new org.codehaus.jparsec.functors.Map<String, IntegerExp>() {
+            @Override
+            public IntegerExp map(String arg) {
+                if (arg != null && ! arg.endsWith(".")) {
+                    throw new IllegalArgumentException("intWithDotArg: invalid " + arg);
+                }
+                Integer nval = Integer.parseInt(arg.substring(0, arg.length() - 1));
+
+                return new IntegerExp(nval);
+            }
+        });
+    }
 	
+    //handles 15..20
 	public static Parser<RangeExp> ruleRange() {
-		return Parsers.sequence(intArg(), term(".."), intArg(), 
-				(Exp exp1, Token ortok, Exp exp2) -> new RangeExp(exp1, exp2));
+		return Parsers.sequence(intWithDotArg().followedBy(term(".")), intArg(), 
+				(Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
 	}
-//    public static Parser<RangeExp> ruleRange() {
-//        return Parsers.sequence(VarParser.someNumberValueassign().followedBy(term(".")), intArg(), 
-//                (Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
-//    }
+	
+	//handles 15 .. 20
+    public static Parser<RangeExp> ruleSpaceRange() {
+        return Parsers.sequence(intArg(), term(".."), intArg(), 
+                (Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(exp1, exp2));
+    }
 	
 	public static Parser<Exp> ruleArg() {
 		return Parsers.or(VarParser.someNumberValueassign(), strArg(), VarParser.ident());
@@ -85,13 +96,12 @@ public class TypeParser extends ParserBase {
 		return Parsers.sequence(not(), VarParser.ident(), term("("), ruleArg().many().sepBy(term(",")), term(")"), 
 				(Token notToken, IdentExp exp1, Token tok, List<List<Exp>> arg, Token tok2) -> new CustomRule(exp1.name(), arg, (notToken == null) ? null : notToken.toString()));
 	}
-//	public static Parser<CustomRule> ruleCustom02() {
-//		return Parsers.sequence(not(), VarParser.ident(), term("("), ruleRange(), term(")"), 
-//				(Token notToken, IdentExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1.name(), range, (notToken == null) ? null : notToken.toString()));
-//	}
+	public static Parser<CustomRule> ruleCustom02() {
+				(Token notToken, IdentExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1.name(), range, (notToken == null) ? null : notToken.toString()));
+	}
 	public static Parser<CustomRule> ruleCustom() {
-//	    return Parsers.or(ruleCustom02(), ruleCustom01());
-		return Parsers.or(ruleCustom01());
+	    return Parsers.or(ruleCustom01(), ruleCustom02());
+//		return Parsers.or(ruleCustom01());
 	}
 	
 	public static Parser<RuleExp> rule() {

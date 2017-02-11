@@ -1,5 +1,7 @@
 package com.github.ianrae.dnalparse.compiler;
 
+import org.dnal.compiler.nrule.RangeRule;
+import org.dnal.core.nrule.virtual.VirtualInt;
 import org.junit.Test;
 
 public class ValidationCustomRuleTests extends BaseValidationTests {
@@ -32,17 +34,17 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
 	}
 	
 //fix!!	
-//	@Test
-//	public void testRangeRule() {
-//		VirtualInt vs = new VirtualInt();
-//		RangeRule rule = new RangeRule("range", vs);
+	@Test
+	public void testRangeRule() {
+		VirtualInt vs = new VirtualInt();
+		RangeRule rule = new RangeRule("range", vs);
 //		CustomRuleRegistry.addRule(rule);
-//		
-//		chkCustomIntRule("range(4..8)", 4, true);
-//		chkCustomIntRule("range(4..8)", 8, false);
-//		chkCustomIntRule("!range(4..8)", 8, true);
-//	}
-//	
+		
+		chkCustomIntRule("range(4..8)", 4, true);
+		chkCustomIntRule("range(4..8)", 8, false);
+		chkCustomIntRule("!range(4..8)", 8, true);
+	}
+	
     @Test
     public void testEmptyRule() {
         String decl = "";
