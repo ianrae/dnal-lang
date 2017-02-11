@@ -94,7 +94,11 @@ public class StandardRuleFactory  {
                 rule = new LenRule(ruleName, new VirtualPseudoLen());
                 break;
             case "in":
-                rule = new InRule(ruleName, (VirtualInt) createForShape(shape));
+                if (shape.equals(Shape.STRING)) {
+                    rule = new InStringRule(ruleName, (VirtualString) createForShape(shape));
+                } else if (shape.equals(Shape.INTEGER)) {
+                    rule = new InRule(ruleName, (VirtualInt) createForShape(shape));
+                }
                 break;
             case "startsWith":
                 rule = new StartsWithRule(ruleName, (VirtualString) createForShape(shape));
@@ -147,7 +151,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("ige", Shape.STRING));
         crf.addFactory(new Factory("ieq", Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
-        crf.addFactory(new Factory("in", Shape.INTEGER));
+        crf.addFactory(new Factory("in", Shape.INTEGER, Shape.STRING));
         return crf;
     }
 
