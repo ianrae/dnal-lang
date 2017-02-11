@@ -26,20 +26,20 @@ DNAL is a language for data.  It supports types, relations, and validation rules
 
 		//define a type
 		type Person struct {
-		 firstName string
-		 lastName string
-		 birthDate date
-		 }
+		    firstName string
+		    lastName string
+		    birthDate date
+		  }
 		  !empty(firstName)
 		  !empty(lastName)
-		 end
+		end
 
 		//define some values
 		let customer Person = { 'Gillian', 'Smith', '1965-12-31' }
 		
 		let people list<Person> = [
-		 { 'Simone', 'Tremblay', '1965-12-31' },
-		 { 'Jason', 'Ackerman', '1991-01-15' }
+		  { 'Simone', 'Tremblay', '1965-12-31' },
+		  { 'Jason', 'Ackerman', '1991-01-15' }
 		]
 
 The *dnalc* compiler converts DNAL into other formats.  Use it to create JSON, XML, or to do code generation of bean or DTO classes.
