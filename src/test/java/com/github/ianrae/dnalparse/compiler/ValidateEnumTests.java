@@ -92,7 +92,7 @@ public class ValidateEnumTests extends BaseValidationTests {
         expected = 3;
         String senum = "type X enum { RED BLUE GREEN } end";
 		String s = String.format("%s type Foo struct { col X } %s end let x Foo = {%s}", senum, rule, str);
-		parseAndValidate(s, ok, "STRING_SHAPE");
+		parseAndValidate(s, ok, null); //enum has no base type
 	}
 
 }
