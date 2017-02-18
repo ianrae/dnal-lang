@@ -19,4 +19,10 @@ public class VirtualLongMember extends VirtualLong implements StructMember {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+
+    @Override
+    public String getFieldName() {
+        return fieldName;
+    }
+    
 }

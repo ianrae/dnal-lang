@@ -269,7 +269,7 @@ public class RuleConverter extends ErrorTrackingBase {
         case "<=":
         case ">=":
         {
-            if (! builder.isCompatibleType(exp)) {
+            if (! builder.isCompatibleMemberType(exp)) {
                 this.addError2s("MEMBcannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                 return null;
             }

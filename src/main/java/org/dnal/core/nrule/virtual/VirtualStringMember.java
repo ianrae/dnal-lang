@@ -18,4 +18,10 @@ public class VirtualStringMember extends VirtualString implements StructMember {
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+
+    @Override
+    public String getFieldName() {
+        return fieldName;
+    }
+    
 }

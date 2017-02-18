@@ -68,6 +68,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             try {
                 visitType(exp);
             } catch (Exception e) {
+                e.printStackTrace();
                 this.addError2s("ASTtype '%s': %s", exp.strValue(), e.getMessage());
             }
         }

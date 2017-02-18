@@ -20,4 +20,10 @@ public class VirtualPseudoLenMember extends VirtualPseudoLen implements StructMe
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+
+    @Override
+    public String getFieldName() {
+        return fieldName;
+    }
+    
 }
