@@ -13,7 +13,9 @@ public class AllRulesTests extends SysTestBase {
     @Test
     public void test0() {
 //        chkNumber("contains(11.1, 12.5)", true);
-        chkList("contains('2015')", true);
+//        chkList("contains('2015')", true);
+        
+        chkList("empty()", true, "[]");
         
     }
     
@@ -85,8 +87,19 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("contains(10)", false);
         chkString("contains('abc')", true);
         chkDate("contains('2015')", false);
-        chkList("contains('abc')", true);
+        chkList("contains('2015')", true);
         chkEnum("contains(RED)", true);
+    }
+    @Test
+    public void testEmpty() {
+        chkInt("empty()", false);
+        chkLong("empty()", false);
+        chkNumber("empty()", false);
+        chkBoolean("empty()", false);
+        chkString("empty()", true, "''");
+        chkDate("empty()", false);
+        chkList("empty()", true, "[]");
+        chkEnum("empty()", false);
     }
     
     private void chkBoolean(String rule, boolean pass) {
@@ -118,10 +131,13 @@ public class AllRulesTests extends SysTestBase {
         }
     }
     private void chkString(String rule, boolean pass) {
+        chkString(rule, pass, "'abc'");
+    }
+    private void chkString(String rule, boolean pass, String value) {
         if (pass) {
-            chkRule(rule, "string", "'abc'");
+            chkRule(rule, "string", value);
         } else {
-            chkRuleFail(rule, "string", "'abc'");
+            chkRuleFail(rule, "string", value);
         }
     }
     private void chkDate(String rule, boolean pass) {
@@ -132,10 +148,13 @@ public class AllRulesTests extends SysTestBase {
         }
     }
     private void chkList(String rule, boolean pass) {
+        chkList(rule, pass, "['2015']");
+    }
+    private void chkList(String rule, boolean pass, String value) {
         if (pass) {
-            chkRule(rule, "list<string>", "['2015']");
+            chkRule(rule, "list<string>", value);
         } else {
-            chkRuleFail(rule, "list<string>", "['2015']");
+            chkRuleFail(rule, "list<string>", value);
         }
     }
     private void chkEnum(String rule, boolean pass) {

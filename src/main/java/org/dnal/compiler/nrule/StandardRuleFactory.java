@@ -55,7 +55,11 @@ public class StandardRuleFactory  {
             NRule rule = null;
             switch(ruleName) {
             case "empty":
-                rule = new EmptyRule(ruleName, (VirtualString) createForShape(shape));
+                if (shape.equals(Shape.STRING)) {
+                    rule = new EmptyRule(ruleName, (VirtualString) createForShape(shape));
+                } else if (shape.equals(Shape.LIST)) {
+                    rule = new EmptyRuleList(ruleName, (VirtualList) createForShape(shape));
+                }
                 break;
             case "regex":
                 rule = new RegexRule(ruleName, (VirtualString) createForShape(shape));
