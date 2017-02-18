@@ -13,9 +13,9 @@ public class AllRulesTests extends SysTestBase {
     public void test0() {
 //        chkNumber("contains(11.1, 12.5)", true);
 //        chkList("contains('2015')", true);
-        
-        chkList("empty()", true, "[]");
-        
+//        chkList("empty()", true, "[]");
+        chkDate("> '2013'", true);
+
     }
     
     @Test

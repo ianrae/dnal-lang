@@ -121,7 +121,11 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return doBuildNumberEq(exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            return doBuildStringEq(exp, (VirtualString)vs);
+            if (dtype.isShape(Shape.STRING)) {
+                return doBuildStringEq(exp, (VirtualString)vs);
+            } else {
+                return doBuildDateEq(exp, (VirtualDate)vs);
+            }
         } else if (exp.longVal != null) {
             if (dtype.isShape(Shape.LONG)) {
                 return doBuildLongEq(exp, (VirtualLong)vs);

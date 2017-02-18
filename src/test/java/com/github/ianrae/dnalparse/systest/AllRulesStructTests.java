@@ -11,8 +11,10 @@ public class AllRulesStructTests extends SysTestBase {
 
     @Test
     public void test0() {
-      chkInt("fld > 10", true);
-        
+//        chkDate("fld == '2015'", false);  //must test exact date
+//      chkDate("fld == '2001-07-04T12:08:56.235-0700'", false, "'2001-07-04T12:08:56.235-0700'");  //must test exact date
+      chkBoolean("fld > 10", false);
+
     }
     
     @Test
@@ -34,7 +36,7 @@ public class AllRulesStructTests extends SysTestBase {
         chkNumber("fld == 11.1", true);
         chkBoolean("fld == 10", false);
         chkString("fld == 'abc'", true);
-        chkDate("fld == '2015'", true);
+        chkDate("fld == '2001-07-04T12:08:56.235-0700'", false, "'2001-07-04T12:08:56.235-0700'");  //must test exact date
         chkList("fld == 10", false); 
         chkEnum("fld == RED", true);
     }
@@ -174,10 +176,13 @@ public class AllRulesStructTests extends SysTestBase {
         }
     }
     private void chkDate(String rule, boolean pass) {
+        chkDate(rule, pass, "'2015'");
+    }
+    private void chkDate(String rule, boolean pass, String value) {
         if (pass) {
-            chkRule(rule, "date", "'2015'");
+            chkRule(rule, "date", value);
         } else {
-            chkRuleFail(rule, "date", "'2015'");
+            chkRuleFail(rule, "date", value);
         }
     }
     private void chkList(String rule, boolean pass) {
@@ -208,7 +213,7 @@ public class AllRulesStructTests extends SysTestBase {
         chkValue("x", source, 1, 1);
     }
     private void chkRuleFail(String rule, String type, String value) {
-        String source = String.format("type Foo %s %s end let x Foo = %s", type, rule, value);
+        String source = String.format("type Foo struct { fld %s } %s end let x Foo = { %s }", type, rule, value);
         load(source, false);
     }
     

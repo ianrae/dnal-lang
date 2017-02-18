@@ -62,8 +62,13 @@ public class VirtualFactory {
             VirtualNumberMember vs = new VirtualNumberMember();
             return vs;
         } else if (exp.strVal != null) {
-            VirtualStringMember vs = new VirtualStringMember();
-            return vs;
+            if (dtype.isShape(Shape.STRING)) {
+                VirtualStringMember vs = new VirtualStringMember();
+                return vs;
+            } else {
+                VirtualDateMember vs = new VirtualDateMember();
+                return vs;
+            }
         } else if (exp.longVal != null) {
             if (dtype.isShape(Shape.LONG)) {
                 return new VirtualLongMember();
