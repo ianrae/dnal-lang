@@ -23,20 +23,30 @@ public class StandardRuleFactory  {
         public Factory(String ruleName, Shape shape) {
             this.decl = new RuleDeclaration(ruleName, shape);
         }
-        public Factory(String ruleName, Shape shape1, Shape shape2) {
-            this.decl = new RuleDeclaration(ruleName, shape1);
-            this.decl.shapeL.add(shape2);
-        }
-        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3) {
-            this.decl = new RuleDeclaration(ruleName, shape1);
-            this.decl.shapeL.add(shape2);
-            this.decl.shapeL.add(shape3);
-        }
-        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3, Shape shape4) {
-            this.decl = new RuleDeclaration(ruleName, shape1);
-            this.decl.shapeL.add(shape2);
-            this.decl.shapeL.add(shape3);
-            this.decl.shapeL.add(shape4);
+//        public Factory(String ruleName, Shape shape1, Shape shape2) {
+//            this.decl = new RuleDeclaration(ruleName, shape1);
+//            this.decl.shapeL.add(shape2);
+//        }
+//        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3) {
+//            this.decl = new RuleDeclaration(ruleName, shape1);
+//            this.decl.shapeL.add(shape2);
+//            this.decl.shapeL.add(shape3);
+//        }
+//        public Factory(String ruleName, Shape shape1, Shape shape2, Shape shape3, Shape shape4) {
+//            this.decl = new RuleDeclaration(ruleName, shape1);
+//            this.decl.shapeL.add(shape2);
+//            this.decl.shapeL.add(shape3);
+//            this.decl.shapeL.add(shape4);
+//        }
+        public Factory(String ruleName, Shape... shapes) {
+            Shape first = (shapes.length == 0) ? null : shapes[0];
+            
+            this.decl = new RuleDeclaration(ruleName, first);
+            for(Shape shape : shapes) {
+                if (shape != first) {
+                    this.decl.shapeL.add(shape);
+                }
+            }
         }
 
         //support long later!!
@@ -59,6 +69,8 @@ public class StandardRuleFactory  {
                     rule = new LongRangeRule(ruleName, (VirtualLong) createForShape(shape));
                 } else if (shape.equals(Shape.STRING)) {
                     rule = new StringRangeRule(ruleName, (VirtualString)createForShape(shape), true);
+                } else if (shape.equals(Shape.NUMBER)){
+                    rule = new NumberRangeRule(ruleName, (VirtualNumber) createForShape(shape));
                 }
                 break;
             case "irange":
@@ -159,7 +171,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
         crf.addFactory(new Factory("contains", Shape.STRING, Shape.ENUM));
-        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.STRING));
+        crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.NUMBER, Shape.STRING));
         crf.addFactory(new Factory("irange", Shape.STRING));
         crf.addFactory(new Factory("ieq", Shape.STRING));
         crf.addFactory(new Factory("ilt", Shape.STRING));
