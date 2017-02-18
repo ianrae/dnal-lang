@@ -174,6 +174,11 @@ public class RuleConverter extends ErrorTrackingBase {
 		    if (isPseudoLen(exp)) {
 		        return builder.buildPseudoLenCompare(exp, false, null);
 		    } else {
+		        if (! builder.isCompatibleType(exp)) {
+	                this.addError2s("cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+		            return null;
+		        }
+		        
 		        return builder.buildCompare(exp, false);
 		    }
 		        

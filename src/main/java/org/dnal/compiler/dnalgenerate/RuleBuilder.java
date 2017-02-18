@@ -24,6 +24,21 @@ public class RuleBuilder {
     public RuleBuilder(DType type) {
         this.dtype = type;
     }
+    
+    public boolean isCompatibleType(ComparisonRuleExp exp) {
+        
+        if (exp.val != null) {
+            return dtype.isShape(Shape.INTEGER) || dtype.isShape(Shape.LONG);
+        } else if (exp.zval != null) {
+            return dtype.isShape(Shape.NUMBER);
+        } else if (exp.strVal != null) {
+            return dtype.isShape(Shape.STRING) || dtype.isShape(Shape.ENUM);
+        } else if (exp.longVal != null) {
+            return dtype.isShape(Shape.LONG) || dtype.isShape(Shape.DATE);
+        } else {
+            return false;
+        }
+    }
 
     public NRule buildCompare(ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);

@@ -38,7 +38,7 @@ public class ComparisonRuleExp extends RuleExp {
 	    if (val != null) {
 	        s = String.format("%d", val);
 	    } else if (zval != null) {
-	        s = String.format("%d", zval);
+	        s = String.format("%g", zval);
 	    } else if (strVal != null) {
 	        s = strVal;
         } else if (longVal != null) {
