@@ -1,6 +1,7 @@
 package org.dnal.compiler.dnalgenerate;
 
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
+import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
@@ -54,7 +55,10 @@ public class VirtualFactory {
         return vs;
     }
 
-    public static VirtualDataItem createMember(ComparisonRuleExp exp, DType dtype) {
+    public static VirtualDataItem createMember(ComparisonRuleExp exp, DType dtype, String fieldName) {
+        DStructType structType = (DStructType) dtype;
+        DType elType = structType.getFields().get(fieldName);
+        
         if (exp.val != null) {
             VirtualIntMember vs = new VirtualIntMember();
             return vs;
@@ -62,7 +66,7 @@ public class VirtualFactory {
             VirtualNumberMember vs = new VirtualNumberMember();
             return vs;
         } else if (exp.strVal != null) {
-            if (dtype.isShape(Shape.STRING)) {
+            if (elType.isShape(Shape.STRING)) {
                 VirtualStringMember vs = new VirtualStringMember();
                 return vs;
             } else {
@@ -70,7 +74,7 @@ public class VirtualFactory {
                 return vs;
             }
         } else if (exp.longVal != null) {
-            if (dtype.isShape(Shape.LONG)) {
+            if (elType.isShape(Shape.LONG)) {
                 return new VirtualLongMember();
             } else {
                 VirtualDateMember vs = new VirtualDateMember();

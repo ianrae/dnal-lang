@@ -3,6 +3,7 @@ package org.dnal.core.nrule.virtual;
 import java.util.Date;
 
 import org.dnal.core.DValue;
+import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRuleContext;
 
 public class VirtualDate implements VirtualDataItem, Comparable<Date> {
@@ -28,5 +29,10 @@ public class VirtualDate implements VirtualDataItem, Comparable<Date> {
     @Override
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asDate();
+    }
+
+    @Override
+    public Shape getTargetShape() {
+        return Shape.DATE;
     }
 }

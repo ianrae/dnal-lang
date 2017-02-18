@@ -14,7 +14,8 @@ public class AllRulesStructTests extends SysTestBase {
 //        chkDate("fld == '2015'", false);  //must test exact date
 //      chkDate("fld == '2001-07-04T12:08:56.235-0700'", false, "'2001-07-04T12:08:56.235-0700'");  //must test exact date
 //      chkBoolean("fld > 10", false);
-      chkDate("fld > '2013'", true);
+//      chkDate("fld > '2013'", true);
+      chkString("fld > 'abc'", false);
 
     }
     

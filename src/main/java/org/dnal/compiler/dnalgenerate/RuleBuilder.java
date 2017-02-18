@@ -73,13 +73,13 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return doBuildNumberCompare(exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            if (dtype.isShape(Shape.STRING)) {
+            if (vs.getTargetShape().equals(Shape.STRING)) {
                 return doBuildStringCompare(exp, (VirtualString)vs);
             } else {
                 return doBuildDateCompare(exp, (VirtualDate)vs);
             }
         } else if (exp.longVal != null) {
-            if (dtype.isShape(Shape.LONG)) {
+            if (vs.getTargetShape().equals(Shape.LONG)) {
                 return doBuildLongCompare(exp, (VirtualLong) vs);
             } else {
                 return doBuildDateCompare(exp, (VirtualDate)vs);
@@ -92,9 +92,10 @@ public class RuleBuilder {
     private VirtualDataItem createVirtual(ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs;
         if (isMember) {
-            vs = VirtualFactory.createMember(exp, dtype);
+            String fieldName = getFieldName(exp);
+            vs = VirtualFactory.createMember(exp, dtype, fieldName);
             StructMember sm = (StructMember) vs;
-            sm.setFieldName(getFieldName(exp));
+            sm.setFieldName(fieldName);
         } else {
             vs = VirtualFactory.create(exp, dtype);
         }
@@ -154,13 +155,13 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return doBuildNumberEq(exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            if (dtype.isShape(Shape.STRING)) {
+            if (vs.getTargetShape().equals(Shape.STRING)) {
                 return doBuildStringEq(exp, (VirtualString)vs);
             } else {
                 return doBuildDateEq(exp, (VirtualDate)vs);
             }
         } else if (exp.longVal != null) {
-            if (dtype.isShape(Shape.LONG)) {
+            if (vs.getTargetShape().equals(Shape.LONG)) {
                 return doBuildLongEq(exp, (VirtualLong)vs);
             } else {
                 return doBuildDateEq(exp, (VirtualDate)vs);
