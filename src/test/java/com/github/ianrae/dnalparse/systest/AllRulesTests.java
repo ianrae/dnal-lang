@@ -2,13 +2,23 @@ package com.github.ianrae.dnalparse.systest;
 
 import org.junit.Test;
 
+/*
+ * TODO
+ * -one test for each rule
+ * -then another source file for struct members
+ */
+
 public class AllRulesTests extends SysTestBase {
 
     @Test
     public void test0() {
 //        chkString("> 10", false);
 //        chkList("> 10", false);
-        chkEnum("> 'RED'", true);
+//        chkEnum("> 'RED'", false); //should RED not 'RED'
+//        chkString("== 'abc'", true);
+        chkEnum("== RED", true);
+        
+        
     }
     @Test
     public void testCompare() {
@@ -17,28 +27,22 @@ public class AllRulesTests extends SysTestBase {
         chkNumber("> 10.0", true);
         chkBoolean("> 10", false);
         chkString("> 'abc'", false);
-        chkString("> 'abc'", false);
         chkDate("> '2013'", true);
-        
 //        chkList("> 10", false); !!need to disallow rules for list
-        chkEnum("> 'RED'", true);
-        
-        
-        /*
-         *  INTEGER,
-    LONG,
-    NUMBER,
-    BOOLEAN,
-    STRING,
-    DATE,
-    LIST,
-    //      MAP,
-    STRUCT,
-    ENUM
-
-         */
+        chkEnum("> RED", false);
     }
     
+    @Test
+    public void testEq() {
+        chkInt("== 11", true);
+        chkLong("== 11", true);
+        chkNumber("== 11.1", true);
+        chkBoolean("== 10", false);
+        chkString("== 'abc'", true);
+        chkDate("== '2015'", true);
+////        chkList("== 10", false); !!need to disallow rules for list
+        chkEnum("== RED", true);
+    }
     
     private void chkBoolean(String rule, boolean pass) {
         if (pass) {

@@ -15,4 +15,9 @@ public class VirtualString implements VirtualDataItem, Comparable<String> {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asString();
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return val.equals(obj);
+    }
 }
