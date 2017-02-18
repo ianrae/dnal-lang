@@ -101,6 +101,43 @@ public class AllRulesTests extends SysTestBase {
         chkList("empty()", true, "[]");
         chkEnum("empty()", false);
     }
+    @Test
+    public void testRegex() {
+        chkInt("regex('a')", false);
+        chkLong("regex('a')", false);
+        chkNumber("regex('a')", false);
+        chkBoolean("regex('a')", false);
+        chkString("regex('a*b')", true, "'aab'");
+        chkDate("regex('a')", false);
+        chkList("regex('a')", false, "[]");
+        chkEnum("regex('a')", false);
+    }
+    
+    //isa not tested here
+    
+    @Test
+    public void testStartsWith() {
+        chkInt("startsWith('a')", false);
+        chkLong("startsWith('a')", false);
+        chkNumber("startsWith('a')", false);
+        chkBoolean("startsWith('a')", false);
+        chkString("startsWith('aaZ')", true, "'aaZb'");
+        chkDate("startsWith('a')", false);
+        chkList("startsWith('a')", false, "[]");
+        chkEnum("startsWith('a')", false);
+    }
+    @Test
+    public void testEndsWith() {
+        chkInt("endsWith('a')", false);
+        chkLong("endsWith('a')", false);
+        chkNumber("endsWith('a')", false);
+        chkBoolean("endsWith('a')", false);
+        chkString("endsWith('aaZ')", true, "'zzaaZ'");
+        chkDate("endsWith('a')", false);
+        chkList("endsWith('a')", false, "[]");
+        chkEnum("endsWith('a')", false);
+    }
+    
     
     private void chkBoolean(String rule, boolean pass) {
         if (pass) {
