@@ -151,6 +151,11 @@ public class RuleConverter extends ErrorTrackingBase {
 	
     private NRule doComparisonRule(DType type, ComparisonRuleExp exp) {
         if (type.isScalarShape()) {
+            boolean isComparable = type.isNumericShape() || type.isShape(Shape.STRING) || type.isShape(Shape.DATE);
+            if (! isComparable) {
+                this.addError2s("cannot use '%s' on type '%s'. not a comparable type", exp.strValue(), type.getName());
+                return null;
+            }
             return doScalarComparisonRule(type, exp);
         } else if (type.getShape().equals(Shape.STRUCT)) {
             return doStructComparisonRule(type, exp);

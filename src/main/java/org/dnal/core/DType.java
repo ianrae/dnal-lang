@@ -34,6 +34,16 @@ public class DType {
 			return true;
 		}
 	}
+    public boolean isNumericShape() {
+        switch(shape) {
+        case INTEGER:
+        case LONG:
+        case NUMBER:
+            return true;
+        default:
+            return false;
+        }
+    }
 	public boolean isStructShape() {
 	    return shape == Shape.STRUCT;
 	}
