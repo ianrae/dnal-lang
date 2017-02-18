@@ -17,8 +17,8 @@ public class AllRulesStructTests extends SysTestBase {
 //      chkDate("fld > '2013'", true);
 //      chkString("fld > 'abc'", false);
 //      chkBoolean("fld == 10", false);
-        expectedTypes = 2;
-      chkList("fld.contains('2015')", true);
+//      chkList("fld.contains('2015')", true);
+      chkEnum("fld.contains(RED)", true);
 
     }
     
@@ -90,9 +90,7 @@ public class AllRulesStructTests extends SysTestBase {
         chkBoolean("fld.contains(10)", false);
         chkString("fld.contains('abc')", true);
         chkDate("fld.contains('2015')", false);
-        expectedTypes = 2;
         chkList("fld.contains('2015')", true);
-        expectedTypes = 1; //reset
         chkEnum("fld.contains(RED)", true);
     }
 //    @Test
@@ -198,20 +196,19 @@ public class AllRulesStructTests extends SysTestBase {
         chkList(rule, pass, "['2015']");
     }
     private void chkList(String rule, boolean pass, String value) {
+        expectedTypes = 2;
         if (pass) {
             chkRule(rule, "list<string>", value);
         } else {
             chkRuleFail(rule, "list<string>", value);
         }
+        expectedTypes = 1; //reset
     }
     private void chkEnum(String rule, boolean pass) {
-//        String senum = "type X enum { RED BLUE GREEN } end";
-//        String source = String.format("%s type Foo struct { col X } %s end let x Foo = {%s}", senum, rule, "'RED'");
-        String fmt = "type X enum { RED BLUE GREEN } %s end let x X = %s";
-        String source = String.format(fmt, rule, "RED");
-        
+        String senum = "type X enum { RED BLUE GREEN } end";
+        String source = String.format("%s type Foo struct { fld X } %s end let x Foo = {%s}", senum, rule, "RED");
         if (pass) {
-            chkValue("x", source, 1, 1);
+            chkValue("x", source, 2, 1);
         } else {
             load(source, false);
         }
