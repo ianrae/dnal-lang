@@ -16,7 +16,10 @@ public class AllRulesTests extends SysTestBase {
 //        chkList("> 10", false);
 //        chkEnum("> 'RED'", false); //should RED not 'RED'
 //        chkString("== 'abc'", true);
-        chkEnum("== RED", true);
+//        chkEnum("== RED", true);
+//        chkLong("in(11, 12)", true);
+        chkNumber("in(11.1, 12.5)", true);
+        
         
         
     }
@@ -42,6 +45,30 @@ public class AllRulesTests extends SysTestBase {
         chkDate("== '2015'", true);
 ////        chkList("== 10", false); !!need to disallow rules for list
         chkEnum("== RED", true);
+    }
+    
+    @Test
+    public void testiEq() {
+        chkInt("ieq(11)", false);
+        chkLong("ieq(11)", false);
+        chkNumber("ieq(11.1)", false);
+        chkBoolean("ieq(10)", false);
+        chkString("ieq('abc')", true);
+        chkDate("ieq('2015')", false);
+////        chkList("ieq(10)", false); !!need to disallow rules for list
+        chkEnum("ieq(RED)", false);
+    }
+    
+    @Test
+    public void testIn() {
+        chkInt("in(11, 12)", true);
+        chkLong("in(11, 12)", true);
+        chkNumber("in(11.1, 12.5)", true);
+        chkBoolean("in(10)", false);
+        chkString("in('abc')", true);
+        chkDate("in('2015')", false);
+////        chkList("in(10)", false); !!need to disallow rules for list
+        chkEnum("in(RED)", false);
     }
     
     private void chkBoolean(String rule, boolean pass) {

@@ -10,6 +10,7 @@ import org.dnal.core.nrule.virtual.VirtualDate;
 import org.dnal.core.nrule.virtual.VirtualInt;
 import org.dnal.core.nrule.virtual.VirtualList;
 import org.dnal.core.nrule.virtual.VirtualLong;
+import org.dnal.core.nrule.virtual.VirtualNumber;
 import org.dnal.core.nrule.virtual.VirtualPseudoLen;
 import org.dnal.core.nrule.virtual.VirtualString;
 
@@ -98,6 +99,10 @@ public class StandardRuleFactory  {
                     rule = new InStringRule(ruleName, (VirtualString) createForShape(shape));
                 } else if (shape.equals(Shape.INTEGER)) {
                     rule = new InRule(ruleName, (VirtualInt) createForShape(shape));
+                } else if (shape.equals(Shape.LONG)) {
+                    rule = new InRuleLong(ruleName, (VirtualLong) createForShape(shape));
+                } else if (shape.equals(Shape.NUMBER)) {
+                    rule = new InRuleNumber(ruleName, (VirtualNumber) createForShape(shape));
                 }
                 break;
             case "startsWith":
@@ -130,6 +135,8 @@ public class StandardRuleFactory  {
                 return new VirtualInt();
             case LONG:
                 return new VirtualLong();
+            case NUMBER:
+                return new VirtualNumber();
             case LIST:
                 return new VirtualList();
             case STRUCT:
@@ -161,7 +168,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("ige", Shape.STRING));
         crf.addFactory(new Factory("ieq", Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
-        crf.addFactory(new Factory("in", Shape.INTEGER, Shape.STRING));
+        crf.addFactory(new Factory("in", Shape.INTEGER, Shape.LONG, Shape.NUMBER, Shape.STRING));
         return crf;
     }
 
