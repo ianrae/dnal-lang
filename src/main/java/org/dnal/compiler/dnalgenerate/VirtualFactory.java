@@ -80,6 +80,10 @@ public class VirtualFactory {
                 VirtualDateMember vs = new VirtualDateMember();
                 return vs;
             }
+        } else if (exp.identVal != null) {
+            //handle enum. !!later handle reference
+            VirtualStringMember vs = new VirtualStringMember();
+            return vs;
         } else {
             return null; //!!
         }

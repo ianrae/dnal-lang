@@ -18,7 +18,8 @@ public class AllRulesStructTests extends SysTestBase {
 //      chkString("fld > 'abc'", false);
 //      chkBoolean("fld == 10", false);
 //      chkList("fld.contains('2015')", true);
-      chkEnum("fld.contains(RED)", true);
+//      chkEnum("fld.contains(RED)", true);
+      chkEnum("fld == RED", true);
 
     }
     
@@ -93,53 +94,53 @@ public class AllRulesStructTests extends SysTestBase {
         chkList("fld.contains('2015')", true);
         chkEnum("fld.contains(RED)", true);
     }
-//    @Test
-//    public void testEmpty() {
-//        chkInt("empty()", false);
-//        chkLong("empty()", false);
-//        chkNumber("empty()", false);
-//        chkBoolean("empty()", false);
-//        chkString("empty()", true, "''");
-//        chkDate("empty()", false);
-//        chkList("empty()", true, "[]");
-//        chkEnum("empty()", false);
-//    }
-//    @Test
-//    public void testRegex() {
-//        chkInt("regex('a')", false);
-//        chkLong("regex('a')", false);
-//        chkNumber("regex('a')", false);
-//        chkBoolean("regex('a')", false);
-//        chkString("regex('a*b')", true, "'aab'");
-//        chkDate("regex('a')", false);
-//        chkList("regex('a')", false, "[]");
-//        chkEnum("regex('a')", false);
-//    }
-//    
-//    //isa not tested here
-//    
-//    @Test
-//    public void testStartsWith() {
-//        chkInt("startsWith('a')", false);
-//        chkLong("startsWith('a')", false);
-//        chkNumber("startsWith('a')", false);
-//        chkBoolean("startsWith('a')", false);
-//        chkString("startsWith('aaZ')", true, "'aaZb'");
-//        chkDate("startsWith('a')", false);
-//        chkList("startsWith('a')", false, "[]");
-//        chkEnum("startsWith('a')", false);
-//    }
-//    @Test
-//    public void testEndsWith() {
-//        chkInt("endsWith('a')", false);
-//        chkLong("endsWith('a')", false);
-//        chkNumber("endsWith('a')", false);
-//        chkBoolean("endsWith('a')", false);
-//        chkString("endsWith('aaZ')", true, "'zzaaZ'");
-//        chkDate("endsWith('a')", false);
-//        chkList("endsWith('a')", false, "[]");
-//        chkEnum("endsWith('a')", false);
-//    }
+    @Test
+    public void testEmpty() {
+        chkInt("fld.empty()", false);
+        chkLong("fld.empty()", false);
+        chkNumber("fld.empty()", false);
+        chkBoolean("fld.empty()", false);
+        chkString("fld.empty()", true, "''");
+        chkDate("fld.empty()", false);
+        chkList("fld.empty()", true, "[]");
+        chkEnum("fld.empty()", false);
+    }
+    @Test
+    public void testRegex() {
+        chkInt("fld.regex('a')", false);
+        chkLong("fld.regex('a')", false);
+        chkNumber("fld.regex('a')", false);
+        chkBoolean("fld.regex('a')", false);
+        chkString("fld.regex('a*b')", true, "'aab'");
+        chkDate("fld.regex('a')", false);
+        chkList("fld.regex('a')", false, "[]");
+        chkEnum("fld.regex('a')", false);
+    }
+    
+    //isa not tested here
+    
+    @Test
+    public void testStartsWith() {
+        chkInt("fld.startsWith('a')", false);
+        chkLong("fld.startsWith('a')", false);
+        chkNumber("fld.startsWith('a')", false);
+        chkBoolean("fld.startsWith('a')", false);
+        chkString("fld.startsWith('aaZ')", true, "'aaZb'");
+        chkDate("fld.startsWith('a')", false);
+        chkList("fld.startsWith('a')", false, "[]");
+        chkEnum("fld.startsWith('a')", false);
+    }
+    @Test
+    public void testEndsWith() {
+        chkInt("fld.endsWith('a')", false);
+        chkLong("fld.endsWith('a')", false);
+        chkNumber("fld.endsWith('a')", false);
+        chkBoolean("fld.endsWith('a')", false);
+        chkString("fld.endsWith('aaZ')", true, "'zzaaZ'");
+        chkDate("fld.endsWith('a')", false);
+        chkList("fld.endsWith('a')", false, "[]");
+        chkEnum("fld.endsWith('a')", false);
+    }
     
     //-------------
     private int expectedTypes = 1;
