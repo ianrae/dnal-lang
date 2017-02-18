@@ -7,6 +7,7 @@ public class ComparisonRuleExp extends RuleExp {
 	public Long longVal;
 	public Double zval;
 	public String strVal;
+	public String identVal; //for enum and reference
 	
 	public ComparisonRuleExp(IdentExp optArg, String op, Integer val) {
 	    this.optionalArg = optArg;
@@ -29,6 +30,8 @@ public class ComparisonRuleExp extends RuleExp {
             this.zval = ((NumberExp)someval).val;
         } else if (someval instanceof StringExp) {
             this.strVal = ((StringExp)someval).val;
+        } else if (someval instanceof IdentExp) {
+            this.identVal = ((IdentExp)someval).val;
         } else {
             throw new IllegalArgumentException("unsupported Exp type");
         }
@@ -43,6 +46,8 @@ public class ComparisonRuleExp extends RuleExp {
 	        s = strVal;
         } else if (longVal != null) {
             s = String.format("%d", longVal);
+        } else if (identVal != null) {
+            s = identVal;
         }
 	    
 		return String.format("%s %s", op, s);

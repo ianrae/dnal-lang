@@ -32,9 +32,11 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return dtype.isShape(Shape.NUMBER);
         } else if (exp.strVal != null) {
-            return dtype.isShape(Shape.STRING) || dtype.isShape(Shape.ENUM);
+            return dtype.isShape(Shape.STRING); // || dtype.isShape(Shape.ENUM);
         } else if (exp.longVal != null) {
             return dtype.isShape(Shape.LONG) || dtype.isShape(Shape.DATE);
+        } else if (exp.identVal != null) {
+            return dtype.isShape(Shape.ENUM);
         } else {
             return false;
         }
@@ -126,6 +128,8 @@ public class RuleBuilder {
             } else {
                 return doBuildDateEq(exp, (VirtualDate)vs);
             }
+        } else if (exp.identVal != null) {
+            return doBuildEnumStringEq(exp, (VirtualString)vs);
         } else {
             return null; //!!
         }
@@ -146,6 +150,11 @@ public class RuleBuilder {
     }
     private NRule doBuildStringEq(ComparisonRuleExp exp, VirtualString vs) {
         NRule rule = new EqRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.strVal);
+        rule.setRuleText(exp.strValue());
+        return rule;
+    }
+    private NRule doBuildEnumStringEq(ComparisonRuleExp exp, VirtualString vs) {
+        NRule rule = new EqRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.identVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }

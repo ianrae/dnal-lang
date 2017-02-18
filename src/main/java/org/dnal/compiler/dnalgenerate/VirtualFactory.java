@@ -35,6 +35,10 @@ public class VirtualFactory {
                 VirtualDate vs = new VirtualDate();
                 return vs;
             }
+        } else if (exp.identVal != null) {
+            //handle enum. !!later handle reference
+            VirtualString vs = new VirtualString();
+            return vs;
         } else {
             return null; //!!
         }

@@ -151,7 +151,7 @@ public class RuleConverter extends ErrorTrackingBase {
 	
     private NRule doComparisonRule(DType type, ComparisonRuleExp exp) {
         if (type.isScalarShape()) {
-            boolean isComparable = type.isNumericShape() || type.isShape(Shape.STRING) || type.isShape(Shape.DATE);
+            boolean isComparable = type.isNumericShape() || type.isShape(Shape.STRING) || type.isShape(Shape.DATE) || type.isShape(Shape.ENUM);
             if (! isComparable) {
                 this.addError2s("cannot use '%s' on type '%s'. not a comparable type", exp.strValue(), type.getName());
                 return null;
@@ -189,6 +189,10 @@ public class RuleConverter extends ErrorTrackingBase {
             if (isPseudoLen(exp)) {
                 return builder.buildPseudoLenEq(exp, false, null);
             } else {
+                if (! builder.isCompatibleType(exp)) {
+                    this.addError2s("eq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                    return null;
+                }
                 return builder.buildEq(exp, false);
             }
 		}

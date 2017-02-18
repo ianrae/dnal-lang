@@ -97,7 +97,7 @@ public class AllRulesTests extends SysTestBase {
 //        String senum = "type X enum { RED BLUE GREEN } end";
 //        String source = String.format("%s type Foo struct { col X } %s end let x Foo = {%s}", senum, rule, "'RED'");
         String fmt = "type X enum { RED BLUE GREEN } %s end let x X = %s";
-        String source = String.format(fmt, rule, "'RED'");
+        String source = String.format(fmt, rule, "RED");
         
         if (pass) {
             chkValue("x", source, 1, 1);
