@@ -7,11 +7,13 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.IsaRule;
 import org.dnal.compiler.nrule.LenRule;
 import org.dnal.compiler.nrule.NeedsCustomRule;
+import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonAndRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
 import org.dnal.compiler.parser.ast.LongExp;
@@ -121,31 +123,46 @@ public class RuleConverter extends ErrorTrackingBase {
     private boolean checkListForRuleDecl(DType type, CustomRule rule) {
         if (type instanceof DListType) {
             DListType listType = (DListType) type;
-            DType elType = listType.getElementType();
-            
             if (rule.argL.isEmpty()) {
                 return true;
             } else {
-                for(Exp arg: rule.argL) {
-                    if (arg instanceof IntegerExp) {
-                        return elType.isNumericShape(); //check all later!!
-                    } else if (arg instanceof LongExp) {
-                        return elType.isNumericShape(); //check all later!!
-                    } else if (arg instanceof NumberExp) {
-                        return elType.isNumericShape(); //check all later!!
-                    } else if (arg instanceof StringExp) {
-                        return elType.isShape(Shape.STRING);
-                    } else {
-                        this.addError3s("type '%s' custom rule '%s' wrong type '%s'", type.getName(), rule.ruleName, type.getShape().name());
-                        return false;
-                    }
-                }
+                return checkListArgs(listType, rule);
             }
-            return false;
         } else {
             return false;
         }
     }
+    private boolean checkListArgs(DListType listType, CustomRule rule) {
+        DType elType = listType.getElementType();
+        int passCount = 0;
+        for(Exp arg: rule.argL) {
+            if (arg instanceof IntegerExp) {
+                passCount = checkCondition(elType.isNumericShape(), passCount);
+            } else if (arg instanceof LongExp) {
+                passCount = checkCondition(elType.isNumericShape() || elType.isShape(Shape.DATE), passCount);
+            } else if (arg instanceof NumberExp) {
+                passCount = checkCondition(elType.isNumericShape(), passCount);
+            } else if (arg instanceof StringExp) {
+                passCount = checkCondition(elType.isShape(Shape.STRING) || elType.isShape(Shape.DATE), passCount);
+            } else if (arg instanceof IdentExp) {
+                passCount++; //could be enum or ref. fix later!!
+            } else if (arg instanceof BooleanExp) {
+                passCount = checkCondition(elType.isShape(Shape.BOOLEAN), passCount);
+            } else {
+                this.addError3s("type '%s' custom rule '%s' wrong type '%s'", listType.getName(), rule.ruleName, listType.getShape().name());
+                return false;
+            }
+        }
+        return passCount == rule.argL.size();
+    }
+
+    private int checkCondition(boolean cond, int passCount) {
+        if (cond) {
+            return passCount + 1;
+        }
+        return passCount;
+    }
+
     private DType getFieldType(DType type, CustomRule rule) {
         String fieldName = getFieldName(rule);
 
