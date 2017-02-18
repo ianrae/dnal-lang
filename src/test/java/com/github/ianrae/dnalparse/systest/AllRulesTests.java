@@ -3,7 +3,6 @@ package com.github.ianrae.dnalparse.systest;
 import org.junit.Test;
 
 /*
- * TODO
  * -one test for each rule
  * -then another source file for struct members
  */
@@ -27,7 +26,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("> 10", false);
         chkString("> 'abc'", false);
         chkDate("> '2013'", true);
-//        chkList("> 10", false); !!need to disallow rules for list
+        chkList("> 10", false); 
         chkEnum("> RED", false);
     }
     
@@ -39,7 +38,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("== 10", false);
         chkString("== 'abc'", true);
         chkDate("== '2015'", true);
-//        chkList("== 10", false); !!need to disallow rules for list
+        chkList("== 10", false); 
         chkEnum("== RED", true);
     }
     
@@ -51,7 +50,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("ieq(10)", false);
         chkString("ieq('abc')", true);
         chkDate("ieq('2015')", false);
-//        chkList("ieq(10)", false); !!need to disallow rules for list
+        chkList("ieq(10)", false); 
         chkEnum("ieq(RED)", false);
     }
     
@@ -63,7 +62,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("in(10)", false);
         chkString("in('abc')", true);
         chkDate("in('2015')", false);
-//        chkList("in(10)", false); !!need to disallow rules for list
+        chkList("in(10)", false); 
         chkEnum("in(RED)", false);
     }
     
@@ -75,7 +74,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("range(10)", false);
         chkString("range('abc', 'def')", true);
         chkDate("range('2015', '2016')", true);
-//        chkList("range(10)", false); !!need to disallow rules for list
+        chkList("range(10)", false); 
         chkEnum("range(RED)", false);
     }
     
