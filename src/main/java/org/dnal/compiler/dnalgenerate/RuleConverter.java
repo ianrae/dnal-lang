@@ -279,6 +279,11 @@ public class RuleConverter extends ErrorTrackingBase {
         case "==":
         case "!=":
         {
+            if (! builder.isCompatibleMemberType(exp)) {
+                this.addError2s("MEMBeq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                return null;
+            }
+            
             return builder.buildEq(exp, true);
         }
         default:

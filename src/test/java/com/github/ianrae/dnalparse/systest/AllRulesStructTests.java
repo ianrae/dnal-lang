@@ -15,7 +15,10 @@ public class AllRulesStructTests extends SysTestBase {
 //      chkDate("fld == '2001-07-04T12:08:56.235-0700'", false, "'2001-07-04T12:08:56.235-0700'");  //must test exact date
 //      chkBoolean("fld > 10", false);
 //      chkDate("fld > '2013'", true);
-      chkString("fld > 'abc'", false);
+//      chkString("fld > 'abc'", false);
+//      chkBoolean("fld == 10", false);
+        expectedTypes = 2;
+      chkList("fld.contains('2015')", true);
 
     }
     
@@ -43,53 +46,55 @@ public class AllRulesStructTests extends SysTestBase {
         chkEnum("fld == RED", true);
     }
     
-//    @Test
-//    public void testiEq() {
-//        chkInt("ieq(11)", false);
-//        chkLong("ieq(11)", false);
-//        chkNumber("ieq(11.1)", false);
-//        chkBoolean("ieq(10)", false);
-//        chkString("ieq('abc')", true);
-//        chkDate("ieq('2015')", false);
-////        chkList("ieq(10)", false); !!need to disallow rules for list
-//        chkEnum("ieq(RED)", false);
-//    }
-//    
-//    @Test
-//    public void testIn() {
-//        chkInt("in(11, 12)", true);
-//        chkLong("in(11, 12)", true);
-//        chkNumber("in(11.1, 12.5)", true);
-//        chkBoolean("in(10)", false);
-//        chkString("in('abc')", true);
-//        chkDate("in('2015')", false);
-////        chkList("in(10)", false); !!need to disallow rules for list
-//        chkEnum("in(RED)", false);
-//    }
-//    
-//    @Test
-//    public void testRange() {
-//        chkInt("range(11, 12)", true);
-//        chkLong("range(11, 12)", true);
-//        chkNumber("range(11.1, 12.5)", true);
-//        chkBoolean("range(10)", false);
-//        chkString("range('abc', 'def')", true);
-//        chkDate("range('2015', '2016')", true);
-////        chkList("range(10)", false); !!need to disallow rules for list
-//        chkEnum("range(RED)", false);
-//    }
-//    
-//    @Test
-//    public void testContains() {
-//        chkInt("contains(11)", false);
-//        chkLong("contains(11)", false);
-//        chkNumber("contains(11.1)", false);
-//        chkBoolean("contains(10)", false);
-//        chkString("contains('abc')", true);
-//        chkDate("contains('2015')", false);
-//        chkList("contains('2015')", true);
-//        chkEnum("contains(RED)", true);
-//    }
+    @Test
+    public void testiEq() {
+        chkInt("fld.ieq(11)", false);
+        chkLong("fld.ieq(11)", false);
+        chkNumber("fld.ieq(11.1)", false);
+        chkBoolean("fld.ieq(10)", false);
+        chkString("fld.ieq('abc')", true);
+        chkDate("fld.ieq('2015')", false);
+        chkList("fld.ieq(10)", false); 
+        chkEnum("fld.ieq(RED)", false);
+    }
+    
+    @Test
+    public void testIn() {
+        chkInt("fld.in(11, 12)", true);
+        chkLong("fld.in(11, 12)", true);
+        chkNumber("fld.in(11.1, 12.5)", true);
+        chkBoolean("fld.in(10)", false);
+        chkString("fld.in('abc')", true);
+        chkDate("fld.in('2015')", false);
+        chkList("fld.in(10)", false); 
+        chkEnum("fld.in(RED)", false);
+    }
+    
+    @Test
+    public void testRange() {
+        chkInt("fld.range(11, 12)", true);
+        chkLong("fld.range(11, 12)", true);
+        chkNumber("fld.range(11.1, 12.5)", true);
+        chkBoolean("fld.range(10)", false);
+        chkString("fld.range('abc', 'def')", true);
+        chkDate("fld.range('2015', '2016')", true);
+        chkList("fld.range(10)", false); 
+        chkEnum("fld.range(RED)", false);
+    }
+    
+    @Test
+    public void testContains() {
+        chkInt("fld.contains(11)", false);
+        chkLong("fld.contains(11)", false);
+        chkNumber("fld.contains(11.1)", false);
+        chkBoolean("fld.contains(10)", false);
+        chkString("fld.contains('abc')", true);
+        chkDate("fld.contains('2015')", false);
+        expectedTypes = 2;
+        chkList("fld.contains('2015')", true);
+        expectedTypes = 1; //reset
+        chkEnum("fld.contains(RED)", true);
+    }
 //    @Test
 //    public void testEmpty() {
 //        chkInt("empty()", false);
@@ -138,6 +143,8 @@ public class AllRulesStructTests extends SysTestBase {
 //        chkEnum("endsWith('a')", false);
 //    }
     
+    //-------------
+    private int expectedTypes = 1;
     
     private void chkBoolean(String rule, boolean pass) {
         if (pass) {
@@ -212,7 +219,7 @@ public class AllRulesStructTests extends SysTestBase {
 
     private void chkRule(String rule, String type, String value) {
         String source = String.format("type Foo struct { fld %s } %s end let x Foo = { %s }", type, rule, value);
-        chkValue("x", source, 1, 1);
+        chkValue("x", source, expectedTypes, 1);
     }
     private void chkRuleFail(String rule, String type, String value) {
         String source = String.format("type Foo struct { fld %s } %s end let x Foo = { %s }", type, rule, value);
