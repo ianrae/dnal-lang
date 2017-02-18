@@ -12,8 +12,13 @@ import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
+import org.dnal.compiler.parser.ast.LongExp;
+import org.dnal.compiler.parser.ast.NumberExp;
+import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.Shape;
@@ -82,8 +87,10 @@ public class RuleConverter extends ErrorTrackingBase {
     private boolean checkForRuleDecl(DType type, CustomRule rule) {
         if (type.isScalarShape()) {
             return checkScalarForRuleDecl(type, rule);
-        } else if (type.getShape().equals(Shape.STRUCT)) {
+        } else if (type.isStructShape()) {
             return checkStructForRuleDecl(type, rule);
+        } else if (type.isListShape()) {
+            return checkListForRuleDecl(type, rule);
         } else {
             return false; //handle list later!!
         }
@@ -110,6 +117,34 @@ public class RuleConverter extends ErrorTrackingBase {
         }
         
         return checkForRuleDecl(fieldType, rule); //**recursion**
+    }
+    private boolean checkListForRuleDecl(DType type, CustomRule rule) {
+        if (type instanceof DListType) {
+            DListType listType = (DListType) type;
+            DType elType = listType.getElementType();
+            
+            if (rule.argL.isEmpty()) {
+                return true;
+            } else {
+                for(Exp arg: rule.argL) {
+                    if (arg instanceof IntegerExp) {
+                        return elType.isNumericShape(); //check all later!!
+                    } else if (arg instanceof LongExp) {
+                        return elType.isNumericShape(); //check all later!!
+                    } else if (arg instanceof NumberExp) {
+                        return elType.isNumericShape(); //check all later!!
+                    } else if (arg instanceof StringExp) {
+                        return elType.isShape(Shape.STRING);
+                    } else {
+                        this.addError3s("type '%s' custom rule '%s' wrong type '%s'", type.getName(), rule.ruleName, type.getShape().name());
+                        return false;
+                    }
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
     }
     private DType getFieldType(DType type, CustomRule rule) {
         String fieldName = getFieldName(rule);

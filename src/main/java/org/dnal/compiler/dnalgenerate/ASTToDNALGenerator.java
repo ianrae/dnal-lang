@@ -397,6 +397,8 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
         DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
         registerType(typeName, dtype);
+        
+        this.addValidationRules(exp, dtype);
     }
 
     private void processImports() {

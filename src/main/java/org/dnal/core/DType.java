@@ -47,6 +47,9 @@ public class DType {
 	public boolean isStructShape() {
 	    return shape == Shape.STRUCT;
 	}
+    public boolean isListShape() {
+        return shape == Shape.LIST;
+    }
 
 	public Shape getShape() {
 		return shape;

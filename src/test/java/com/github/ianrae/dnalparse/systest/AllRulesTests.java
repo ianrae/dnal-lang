@@ -12,18 +12,11 @@ public class AllRulesTests extends SysTestBase {
 
     @Test
     public void test0() {
-//        chkString("> 10", false);
-//        chkList("> 10", false);
-//        chkEnum("> 'RED'", false); //should RED not 'RED'
-//        chkString("== 'abc'", true);
-//        chkEnum("== RED", true);
-//        chkLong("in(11, 12)", true);
-//        chkNumber("in(11.1, 12.5)", true);
-        chkNumber("range(11.1, 12.5)", true);
-
-        
+//        chkNumber("contains(11.1, 12.5)", true);
+        chkList("contains('2015')", true);
         
     }
+    
     @Test
     public void testCompare() {
         chkInt("> 10", true);
@@ -44,7 +37,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("== 10", false);
         chkString("== 'abc'", true);
         chkDate("== '2015'", true);
-////        chkList("== 10", false); !!need to disallow rules for list
+//        chkList("== 10", false); !!need to disallow rules for list
         chkEnum("== RED", true);
     }
     
@@ -56,7 +49,7 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("ieq(10)", false);
         chkString("ieq('abc')", true);
         chkDate("ieq('2015')", false);
-////        chkList("ieq(10)", false); !!need to disallow rules for list
+//        chkList("ieq(10)", false); !!need to disallow rules for list
         chkEnum("ieq(RED)", false);
     }
     
@@ -68,10 +61,9 @@ public class AllRulesTests extends SysTestBase {
         chkBoolean("in(10)", false);
         chkString("in('abc')", true);
         chkDate("in('2015')", false);
-////        chkList("in(10)", false); !!need to disallow rules for list
+//        chkList("in(10)", false); !!need to disallow rules for list
         chkEnum("in(RED)", false);
     }
-    
     
     @Test
     public void testRange() {
@@ -80,9 +72,21 @@ public class AllRulesTests extends SysTestBase {
         chkNumber("range(11.1, 12.5)", true);
         chkBoolean("range(10)", false);
         chkString("range('abc', 'def')", true);
-        chkDate("range('2015')", false);
-////        chkList("range(10)", false); !!need to disallow rules for list
+        chkDate("range('2015', '2016')", true);
+//        chkList("range(10)", false); !!need to disallow rules for list
         chkEnum("range(RED)", false);
+    }
+    
+    @Test
+    public void testContains() {
+        chkInt("contains(11)", false);
+        chkLong("contains(11)", false);
+        chkNumber("contains(11.1)", false);
+        chkBoolean("contains(10)", false);
+        chkString("contains('abc')", true);
+        chkDate("contains('2015')", false);
+        chkList("contains('abc')", true);
+        chkEnum("contains(RED)", true);
     }
     
     private void chkBoolean(String rule, boolean pass) {

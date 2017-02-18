@@ -128,6 +128,8 @@ public class StandardRuleFactory  {
                     rule = new ContainsRule(ruleName, (VirtualString) createForShape(shape));
                 } else if (shape.equals(Shape.ENUM)) {
                     rule = new ContainsRule(ruleName, (VirtualString) createForShape(shape));
+                } else if (shape.equals(Shape.LIST)) {
+                    rule = new ContainsRuleList(ruleName, (VirtualList) createForShape(shape));
                 }
                 break;
             default:
@@ -170,7 +172,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("regex", Shape.STRING));
         crf.addFactory(new Factory("startsWith", Shape.STRING));
         crf.addFactory(new Factory("endsWith", Shape.STRING));
-        crf.addFactory(new Factory("contains", Shape.STRING, Shape.ENUM));
+        crf.addFactory(new Factory("contains", Shape.STRING, Shape.ENUM, Shape.LIST));
         crf.addFactory(new Factory("range", Shape.DATE, Shape.INTEGER, Shape.LONG, Shape.NUMBER, Shape.STRING));
         crf.addFactory(new Factory("irange", Shape.STRING));
         crf.addFactory(new Factory("ieq", Shape.STRING));
