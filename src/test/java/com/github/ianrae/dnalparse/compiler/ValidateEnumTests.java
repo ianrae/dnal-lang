@@ -84,7 +84,8 @@ public class ValidateEnumTests extends BaseValidationTests {
     @Test
     public void testContains() {
         chkCustomRule("col.contains('RED')", "RED", true);
-//        chkCustomRule("contains('ab')", "CAB", false);
+        chkCustomRule("col.contains('BLUE')", "RED", false);
+        chkCustomRule("col.contains('ab')", "RED", false);
     }
 	
 	//type X enum { RED BLUE GREEN } end type Foo struct { col X } contains(RED) end let x Foo = {RED}
