@@ -44,13 +44,12 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
             }
             
             if (dtype.isStructShape()) {
-                visitor.startType(dtype.getName(), dtype);
                 DStructType fste = (DStructType) dtype;
+                visitor.startStructType(dtype.getName(), fste);
                 //!!fix to be ordered
                 for(String fieldName: fste.orderedList()) {
                     DType field = fste.getFields().get(fieldName);
                     visitor.startMember(fieldName, field);
-                    visitor.endMember(fieldName, field);
                 }
             } else if (dtype.isShape(Shape.ENUM)) {  
                 DStructType structType = (DStructType) dtype;
@@ -66,9 +65,10 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
                 visitor.startType(dtype.getName(), dtype);
             }
 
+            int index = 0;
             for(NRule rule: dtype.getRawRules()) {
                 String ruleText = rule.getName();
-                visitor.rule(ruleText, rule); //fix later!! need ruleText
+                visitor.rule(index++, ruleText, rule); //fix later!! need ruleText
             }
 
             visitor.endType(dtype.getName(), dtype);

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
@@ -19,6 +20,13 @@ public class JavaCodeGen extends CodeGenBase {
         list.add(new BeanCodeGen(options));
     }
     
+    @Override
+    public void startStructType(String name, DStructType dtype) throws Exception {
+        for(GenerateVisitor visitor: list) {
+            visitor.startStructType(name, dtype);
+        }
+    }
+
     @Override
     public void startType(String name, DType dtype) throws Exception {
         for(GenerateVisitor visitor: list) {
@@ -49,16 +57,9 @@ public class JavaCodeGen extends CodeGenBase {
     }
 
     @Override
-    public void endMember(String name, DType s) throws Exception {
+    public void rule(int index, String ruleText, NRule rule) throws Exception {
         for(GenerateVisitor visitor: list) {
-            visitor.endMember(name, s);
-        }
-    }
-
-    @Override
-    public void rule(String ruleText, NRule rule) throws Exception {
-        for(GenerateVisitor visitor: list) {
-            visitor.rule(ruleText, rule);
+            visitor.rule(index, ruleText, rule);
         }
     }
 

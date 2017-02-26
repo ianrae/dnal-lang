@@ -6,6 +6,7 @@ import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.Shape;
 import org.dnal.core.logger.Log;
@@ -19,21 +20,23 @@ public class ImmutableBeanCodeGen extends CodeGenBase {
     }
 
     @Override
+    public void startStructType(String name, DStructType dtype) {
+        onStartType(name, dtype);
+
+        String baseTypeName = TypeInfo.getBaseTypeName(dtype);
+        String s = st.genScalarImmutableBean(options.javaPackage, name, baseTypeName);
+        outputL.add(s);
+    }
+    @Override
     public void startType(String name, DType dtype) {
         onStartType(name, dtype);
-        
+
         String baseTypeName = TypeInfo.getBaseTypeName(dtype);
-//        String s = String.format("type:%s:%s", name, baseTypeName);
-        if (dtype.isScalarShape()) {
-            String s = st.genScalarImmutableBean(options.javaPackage, name, baseTypeName, dtype.getShape());
-            outputL.add(s);
-        } else if (dtype.isShape(Shape.STRUCT)) {
-            String s = st.genScalarImmutableBean(options.javaPackage, name, baseTypeName);
-            outputL.add(s);
-        } else {
-            Log.log("errrrrrrrrrrrrrrrr!");
-        }
+        //        String s = String.format("type:%s:%s", name, baseTypeName);
+        String s = st.genScalarImmutableBean(options.javaPackage, name, baseTypeName, dtype.getShape());
+        outputL.add(s);
     }
+
 
     @Override
     public void startListType(String name, DListType type) {
@@ -57,11 +60,7 @@ public class ImmutableBeanCodeGen extends CodeGenBase {
     }
 
     @Override
-    public void endMember(String name, DType s) {
-    }
-
-    @Override
-    public void rule(String ruleText, NRule rule) {
+    public void rule(int index, String ruleText, NRule rule) {
         String s = String.format(" r: %s", ruleText);
         outputL.add(s);
     }

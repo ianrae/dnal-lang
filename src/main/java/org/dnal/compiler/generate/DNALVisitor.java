@@ -14,26 +14,31 @@ import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 
-public class SimpleMinimumFormatVisitor implements GenerateVisitor {
+public class DNALVisitor implements GenerateVisitor {
     private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     
     public List<String> outputL = new ArrayList<>();
     private int inList; //0 means no
     private int inStruct; //0 means no
     private Stack<String> shapeStack = new Stack<>();
+    private Stack<DStructType> structStack = new Stack<>();
+    private boolean haveSeenFirstRule;
     
     @Override
     public void startStructType(String name, DStructType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        String s = String.format("type %s %s", completeName, baseTypeName);
+            s += " {";
+            structStack.push((DStructType) dtype);
         outputL.add(s);
+        haveSeenFirstRule = false;
     }
     @Override
     public void startType(String name, DType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        String s = String.format("type %s %s", completeName, baseTypeName);
         outputL.add(s);
     }
     
@@ -52,25 +57,37 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
     public void startListType(String name, DListType type) {
         String elType = getTypeName(type.getElementType());
         String baseTypeName = (type.getBaseType() == null) ? String.format("list<%s>", elType) : type.getBaseType().getName();
-        String s = String.format("type:%s:%s", name, baseTypeName);
+        String s = String.format("type %s %s", name, baseTypeName);
         outputL.add(s);
+        haveSeenFirstRule = false;
     }
 
 
     @Override
     public void endType(String name, DType type) {
-        outputL.add("endtype");
+        outputL.add("end");
+        if (type instanceof DStructType) {
+            structStack.pop();
+        }
     }
 
     @Override
     public void startMember(String name, DType type) {
-        String s = String.format(" %s:%s", name, getTypeName(type));
+        String s = String.format(" %s %s", name, getTypeName(type));
+        boolean isOptional = structStack.peek().fieldIsOptional(name);
+        if (isOptional) {
+            s += " optional";
+        }
+        boolean isUnique = structStack.peek().fieldIsUnique(name);
+        if (isUnique) {
+            s += " unique";
+        }
         outputL.add(s);
     }
 
     @Override
     public void rule(int index, String ruleText, NRule rule) {
-        String s = String.format(" r: %s", ruleText);
+        String s = String.format(" %s", ruleText);
         outputL.add(s);
     }
 
