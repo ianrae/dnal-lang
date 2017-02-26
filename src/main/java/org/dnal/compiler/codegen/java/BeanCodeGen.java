@@ -27,6 +27,13 @@ public class BeanCodeGen extends CodeGenBase {
         outputL.add(s);
     }
     @Override
+    public void startEnumType(String name, DStructType dtype) {
+        onStartType(name, dtype);
+        String baseTypeName = TypeInfo.getBaseTypeName(dtype);
+        String s = st.genStructBean(options.javaPackage, name, baseTypeName);
+        outputL.add(s);
+    }
+    @Override
     public void startType(String name, DType dtype) {
         onStartType(name, dtype);
         String baseTypeName = TypeInfo.getBaseTypeName(dtype);
@@ -51,7 +58,7 @@ public class BeanCodeGen extends CodeGenBase {
     }
 
     @Override
-    public void startMember(String name, DType type) {
+    public void structMember(String name, DType type) {
         DType membType = type;
         String s = st.generateBeanMemberDecl(name, membType.getShape());
         outputL.add(s);

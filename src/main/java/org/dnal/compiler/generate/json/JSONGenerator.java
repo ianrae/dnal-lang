@@ -29,6 +29,9 @@ public class JSONGenerator implements GenerateVisitor {
     public void startStructType(String name, DStructType dtype) throws Exception {
     }
     @Override
+    public void startEnumType(String name, DStructType dtype) throws Exception {
+    }
+    @Override
     public void startType(String name, DType dtype) throws Exception {
     }
     @Override
@@ -38,7 +41,7 @@ public class JSONGenerator implements GenerateVisitor {
     public void endType(String name, DType type) throws Exception {
     }
     @Override
-    public void startMember(String name, DType type) throws Exception {
+    public void structMember(String name, DType type) throws Exception {
     }
     @Override
     public void rule(int index, String ruleText, NRule rule) throws Exception {

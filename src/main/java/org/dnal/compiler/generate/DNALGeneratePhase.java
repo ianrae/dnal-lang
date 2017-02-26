@@ -49,11 +49,11 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
                 //!!fix to be ordered
                 for(String fieldName: fste.orderedList()) {
                     DType field = fste.getFields().get(fieldName);
-                    visitor.startMember(fieldName, field);
+                    visitor.structMember(fieldName, field);
                 }
             } else if (dtype.isShape(Shape.ENUM)) {  
                 DStructType structType = (DStructType) dtype;
-                visitor.startType(dtype.getName(), dtype);
+                visitor.startEnumType(dtype.getName(), structType);
                 for(String key: structType.orderedList()) {
                     DType elType = structType.getFields().get(key);
                     visitor.enumMember(key, elType);

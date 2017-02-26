@@ -30,6 +30,13 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
         outputL.add(s);
     }
     @Override
+    public void startEnumType(String name, DStructType dtype) {
+        String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
+        String completeName = dtype.getCompleteName();
+        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        outputL.add(s);
+    }
+    @Override
     public void startType(String name, DType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
@@ -63,7 +70,7 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
     }
 
     @Override
-    public void startMember(String name, DType type) {
+    public void structMember(String name, DType type) {
         String s = String.format(" %s:%s", name, getTypeName(type));
         outputL.add(s);
     }

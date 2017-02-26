@@ -8,10 +8,11 @@ import org.dnal.core.nrule.NRule;
 
 public interface GenerateVisitor {
     void startStructType(String name, DStructType dtype) throws Exception;
+    void startEnumType(String name, DStructType dtype) throws Exception;
     void startType(String name, DType dtype) throws Exception;
     void startListType(String name, DListType type) throws Exception;
     void endType(String name, DType type) throws Exception;
-    void startMember(String name, DType type) throws Exception;
+    void structMember(String name, DType type) throws Exception;
     void rule(int index, String ruleText, NRule rule) throws Exception;
     void enumMember(String name, DType memberType) throws Exception;
 

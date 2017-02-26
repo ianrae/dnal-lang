@@ -26,6 +26,12 @@ public class JavaCodeGen extends CodeGenBase {
             visitor.startStructType(name, dtype);
         }
     }
+    @Override
+    public void startEnumType(String name, DStructType dtype) throws Exception {
+        for(GenerateVisitor visitor: list) {
+            visitor.startEnumType(name, dtype);
+        }
+    }
 
     @Override
     public void startType(String name, DType dtype) throws Exception {
@@ -50,9 +56,9 @@ public class JavaCodeGen extends CodeGenBase {
     }
 
     @Override
-    public void startMember(String name, DType type) throws Exception {
+    public void structMember(String name, DType type) throws Exception {
         for(GenerateVisitor visitor: list) {
-            visitor.startMember(name, type);
+            visitor.structMember(name, type);
         }
     }
 

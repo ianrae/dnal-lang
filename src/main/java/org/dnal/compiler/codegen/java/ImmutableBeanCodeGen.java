@@ -28,6 +28,14 @@ public class ImmutableBeanCodeGen extends CodeGenBase {
         outputL.add(s);
     }
     @Override
+    public void startEnumType(String name, DStructType dtype) {
+        onStartType(name, dtype);
+
+        String baseTypeName = TypeInfo.getBaseTypeName(dtype);
+        String s = st.genScalarImmutableBean(options.javaPackage, name, baseTypeName);
+        outputL.add(s);
+    }
+    @Override
     public void startType(String name, DType dtype) {
         onStartType(name, dtype);
 
@@ -53,7 +61,7 @@ public class ImmutableBeanCodeGen extends CodeGenBase {
     }
 
     @Override
-    public void startMember(String name, DType type) {
+    public void structMember(String name, DType type) {
         DType membType = type;
         String s = st.generateImmutableBeanMember(name, membType.getShape());
         outputL.add(s);
