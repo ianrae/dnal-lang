@@ -77,7 +77,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         List<String> orderedValueList = world.getOrderedList();
         for(String valueName: orderedValueList) {
             DValue dval = world.findTopLevelValue(valueName);
-            doval(visitor, 0, valueName, dval);
+            doval(visitor, 0, valueName, dval, null);
         }
 
 
@@ -87,21 +87,20 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         visitor.startListType(listType.getName(), listType);
     }
 
-    private void doval(GenerateVisitor visitor, int indent, String valueName, DValue dval) throws Exception {
+    private void doval(GenerateVisitor visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
 
         if (dval == null) {
             //optional field
-            visitor.value(valueName, null);
+            visitor.value(valueName, null, parentVal);
         } else if (dval.getType().isStructShape()) {
             visitor.startStruct(valueName, dval);
             
-            DValue parentDVal = dval; //dnalGenerator.findDValue(valueExp.var.name());
-            DStructHelper helper = new DStructHelper(parentDVal);
+            DStructHelper helper = new DStructHelper(dval);
 
             int index = 0;
             for(String fieldName : helper.getFieldNames()) {
-                dval = helper.getField(fieldName);
-                doval(visitor, indent+1, fieldName, dval); //!recursion!
+                DValue inner = helper.getField(fieldName);
+                doval(visitor, indent+1, fieldName, inner, dval); //!recursion!
                 index++;
             }
             visitor.endStruct(valueName, dval);
@@ -111,14 +110,14 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
             int index = 0;
             for(DValue el: elementL) {
-                doval(visitor, indent+1, "", el); //!recursion!
+                doval(visitor, indent+1, "", el, dval); //!recursion!
                 index++;
             }
             visitor.endList(valueName, dval);
         } else {
 //          String shape = this.doc.getShape(valueExp.type);
 //          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));
-            visitor.value(valueName, dval);
+            visitor.value(valueName, dval, parentVal);
         }
 
     }

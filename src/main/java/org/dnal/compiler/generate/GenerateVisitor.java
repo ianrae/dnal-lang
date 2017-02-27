@@ -16,7 +16,7 @@ public interface GenerateVisitor {
     void enumMember(String name, DType memberType) throws Exception;
     void endType(String name, DType type) throws Exception;
 
-    void value(String name, DValue dval) throws Exception;
+    void value(String name, DValue dval, DValue parentVal) throws Exception;
     void startStruct(String name, DValue dval) throws Exception;
     void startList(String name, DValue value) throws Exception;
     void endStruct(String name, DValue value) throws Exception;

@@ -16,7 +16,7 @@ public abstract class TypeOnlyGenerator implements GenerateVisitor {
     public void rule(String ruleText, NRule rule) throws Exception{}
     public void enumMember(String name, DType memberType) throws Exception{}
 
-    public void value(String name, DValue dval) throws Exception{}
+    public void value(String name, DValue dval, DValue parentVal) throws Exception{}
     public void startStruct(String name, DValue dval) throws Exception{}
     public void startList(String name, DValue value) throws Exception{}
     public void endStruct(String name, DValue value) throws Exception{}

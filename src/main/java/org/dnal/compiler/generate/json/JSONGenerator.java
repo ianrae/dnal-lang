@@ -55,7 +55,7 @@ public class JSONGenerator implements GenerateVisitor {
         return shape;
     }
     @Override
-    public void value(String name, DValue dval) throws Exception {
+    public void value(String name, DValue dval, DValue parentVal) throws Exception {
         String shape = getCurrentShape();
         Map<String,Object> mmm = new HashMap<>();
 

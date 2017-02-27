@@ -109,7 +109,7 @@ public class DNALVisitor implements GenerateVisitor {
         return space;
     }
     @Override
-    public void value(String name, DValue dval) {
+    public void value(String name, DValue dval, DValue parentVal) {
         String s;
         String space = genIndent(inList + inStruct);
         
