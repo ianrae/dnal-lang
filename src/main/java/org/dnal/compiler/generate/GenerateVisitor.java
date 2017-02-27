@@ -11,10 +11,10 @@ public interface GenerateVisitor {
     void startEnumType(String name, DStructType dtype) throws Exception;
     void startType(String name, DType dtype) throws Exception;
     void startListType(String name, DListType type) throws Exception;
-    void endType(String name, DType type) throws Exception;
     void structMember(String name, DType type) throws Exception;
     void rule(int index, String ruleText, NRule rule) throws Exception;
     void enumMember(String name, DType memberType) throws Exception;
+    void endType(String name, DType type) throws Exception;
 
     void value(String name, DValue dval) throws Exception;
     void startStruct(String name, DValue dval) throws Exception;

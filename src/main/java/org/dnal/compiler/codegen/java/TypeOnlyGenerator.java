@@ -21,6 +21,8 @@ public abstract class TypeOnlyGenerator implements GenerateVisitor {
     public void startList(String name, DValue value) throws Exception{}
     public void endStruct(String name, DValue value) throws Exception{}
     public void endList(String name, DValue value) throws Exception{}
+    public void startEnum(String name, DValue dval) throws Exception{}
+    public void endEnum(String name, DValue dval) throws Exception{}
     
     public void finish() throws Exception{}
 
