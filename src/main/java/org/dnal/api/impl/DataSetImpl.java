@@ -30,7 +30,7 @@ public class DataSetImpl implements DataSet {
     
     @Override
     public Transaction createTransaction() {
-        return new TransactionImpl(registry, world, context, beanLoaderRegistry);
+        return new TransactionImpl(registry, world, context, beanLoaderRegistry, this);
     }
     
     @Override

@@ -19,13 +19,13 @@ public class DateBuilder extends Builder {
 
     public DValue buildFromString(String input) {
         builder.buildFromString(input);
-        builder.finish();
+        wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }
     public DValue buildFrom(Date dt) {
         builder.buildFrom(dt);
-        builder.finish();
+        wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }

@@ -17,13 +17,13 @@ public class LongBuilder extends Builder {
 
     public DValue buildFromString(String input) {
         builder.buildFromString(input);
-        builder.finish();
+        wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }
     public DValue buildFrom(Long lval) {
         builder.buildFrom(lval);
-        builder.finish();
+        wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }

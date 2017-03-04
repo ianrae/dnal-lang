@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.codehaus.jparsec.functors.Pair;
 import org.dnal.api.BeanLoader;
+import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerContext;
@@ -39,8 +40,9 @@ public class TransactionImpl implements Transaction {
     private BuilderFactory factory;
     private CompilerContext context;
     private Map<Class<?>, BeanLoader<?>> loaderRegistry;
+    private DataSet ds;
 
-    public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry) {
+    public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
         this.registry = registry;
         StandardRuleFactory standard = new StandardRuleFactory();
@@ -48,6 +50,7 @@ public class TransactionImpl implements Transaction {
         this.factory = new BuilderFactory(registry, errorList);
         this.context = context;
         this.loaderRegistry = loaderRegistry;
+        this.ds = ds;
     }
 
     @Override
@@ -236,5 +239,10 @@ public class TransactionImpl implements Transaction {
     public ListBuilder createListBuilder(DListType type) {
         return factory.createListBuilder(type);
     }
+
+	@Override
+	public DataSet getDataSet() {
+		return ds;
+	}
 
 }

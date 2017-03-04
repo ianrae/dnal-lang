@@ -22,6 +22,7 @@ public interface Transaction {
     void add(String name, DValue dval);
     boolean commit();
     List<ErrorMessage> getValErrorList();
+    DataSet getDataSet();
     
     DValue createFromBean(Object bean) throws WorldException;
     

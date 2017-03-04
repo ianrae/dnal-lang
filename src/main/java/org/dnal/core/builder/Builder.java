@@ -7,6 +7,7 @@ import org.dnal.core.ErrorMessage;
 public class Builder {
     protected List<ErrorMessage> valErrorList;
     protected String dateFormat = "dd-MMM-yy";
+    protected boolean wasSuccessful;
 
     public Builder(List<ErrorMessage> valErrorList) {
         this.valErrorList = valErrorList;
@@ -19,5 +20,8 @@ public class Builder {
     }
     public void setDateFormat(String dateFormat) {
         this.dateFormat = dateFormat;
+    }
+    public boolean wasSuccessful() {
+    	return wasSuccessful;
     }
 }

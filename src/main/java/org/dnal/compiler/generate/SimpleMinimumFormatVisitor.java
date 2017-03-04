@@ -12,6 +12,7 @@ import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
 
 public class SimpleMinimumFormatVisitor implements GenerateVisitor {
@@ -20,7 +21,7 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
     public List<String> outputL = new ArrayList<>();
     private int inList; //0 means no
     private int inStruct; //0 means no
-    private Stack<String> shapeStack = new Stack<>();
+//    private Stack<String> shapeStack = new Stack<>();
     
     @Override
     public void startStructType(String name, DStructType dtype) {
@@ -88,12 +89,25 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
         }
         return space;
     }
+    
+    private String getShapeCode(DValue parentVal) {
+        if (parentVal == null) {
+            return "";
+        } else if (parentVal.getType().isStructShape()) {
+            return "S";
+        } else if (parentVal.getType().isShape(Shape.LIST)) {
+            return "L";
+        } else {
+            return "";
+        }
+    }
     @Override
     public void value(String name, DValue dval, DValue parentVal) {
         String s;
         String space = genIndent(inList + inStruct);
         
-        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
+//        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
+        String shape = getShapeCode(parentVal);
 
         if (shape.equals("L")) {
             String strValue = DValToString(dval);
@@ -132,14 +146,14 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
         String s = String.format("value:%s:%s [", name, getTypeName(value.getType()));
         outputL.add(s);
         inList++;
-        shapeStack.push("L");
+//        shapeStack.push("L");
     }
 
     @Override
     public void endList(String name, DValue value) {
         outputL.add("]");
         inList--;
-        shapeStack.pop();
+//        shapeStack.pop();
     }
 
     @Override
@@ -153,7 +167,7 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
             outputL.add(s);
         }
         inStruct++;
-        shapeStack.push("S");
+//        shapeStack.push("S");
     }
 
     @Override
@@ -166,7 +180,7 @@ public class SimpleMinimumFormatVisitor implements GenerateVisitor {
             outputL.add(s);
         }
         inStruct--;
-        shapeStack.pop();
+//        shapeStack.pop();
     }
 
     @Override

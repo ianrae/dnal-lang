@@ -50,7 +50,7 @@ public class StructBuilder extends Builder {
     }
     
     public DValue finish() {
-        builder.finish();
+        wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }
