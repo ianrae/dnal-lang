@@ -21,6 +21,10 @@ public class XErrorTracker {
         scopeStack.pop();
     }
     
+    public void clear() {
+    	errL.clear();
+    }
+    
     protected boolean areNoErrors() {
         return errL.size() == 0;
     }

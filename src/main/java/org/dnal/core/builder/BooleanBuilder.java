@@ -21,7 +21,7 @@ public class BooleanBuilder extends Builder {
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }
-    public DValue buildFrom(boolean b) {
+    public DValue buildFrom(Boolean b) {
         builder.buildFrom(b);
         wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());

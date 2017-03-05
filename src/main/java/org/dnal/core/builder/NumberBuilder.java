@@ -21,7 +21,7 @@ public class NumberBuilder extends Builder {
         valErrorList.addAll(builder.getValidationErrors());
         return builder.getDValue();
     }
-    public DValue buildFrom(double lval) {
+    public DValue buildFrom(Double lval) {
         builder.buildFrom(lval);
         wasSuccessful = builder.finish();
         valErrorList.addAll(builder.getValidationErrors());
