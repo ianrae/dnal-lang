@@ -16,6 +16,7 @@ import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.World;
 
@@ -94,7 +95,7 @@ public class CompilerImpl implements DNALCompiler {
     }
 
     @Override
-    public List<ErrorMessage> getErrors() {
+    public List<NewErrorMessage> getErrors() {
         return et.getErrL();
     }
 

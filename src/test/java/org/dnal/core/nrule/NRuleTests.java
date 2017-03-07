@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.nrule.AndRule;
 import org.dnal.core.nrule.CompareRule;
 import org.dnal.core.nrule.EqRule;
@@ -107,7 +108,7 @@ public class NRuleTests {
 		boolean b = runner.run(null, rule, ctx);
 		
 		if (! ctx.wereNoErrors()) {
-			for(ErrorMessage msg: ctx.errL) {
+			for(NewErrorMessage msg: ctx.errL) {
 				log(msg.getMessage());
 			}
 		}

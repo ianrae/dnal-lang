@@ -6,11 +6,11 @@ import java.util.Stack;
 
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.error.ErrorScope;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 
 public class XErrorTracker {
-    protected List<ErrorMessage> errL = new ArrayList<>();
+    protected List<NewErrorMessage> errL = new ArrayList<>();
     protected Stack<ErrorScope> scopeStack = new Stack<>();
     public static boolean logErrors = false;
 
@@ -30,35 +30,40 @@ public class XErrorTracker {
     }
     
     public void dumpErrors() {
-        for(ErrorMessage err : errL) {
+        for(NewErrorMessage err : errL) {
             Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
         }
     }
     
-    private void logIfEnabled(ErrorMessage err) {
+    private void logIfEnabled(NewErrorMessage err) {
         if (logErrors) {
             Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
         }
     }
 
     protected void addError(String fmt, Exp exp) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, exp.strValue()));
+    	NewErrorMessage err = new NewErrorMessage();
+    	err.setMessage(String.format(fmt, exp.strValue()));
         addError(err);
     }
     protected void addError2(String fmt, String s, Exp exp) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, exp.strValue()));
+    	NewErrorMessage err = new NewErrorMessage();
+        err.setMessage(String.format(fmt, s, exp.strValue()));
         addError(err);
     }
     protected void addError3(String fmt, String s, String s2, Exp exp) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2, exp.strValue()));
+    	NewErrorMessage err = new NewErrorMessage();
+        err.setMessage(String.format(fmt, s, s2, exp.strValue()));
         addError(err);
     }
     protected void addError2s(String fmt, String s, String s2) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2));
+    	NewErrorMessage err = new NewErrorMessage();
+    	err.setMessage(String.format(fmt, s, s2));
         addError(err);
     }
     protected void addError3s(String fmt, String s, String s2, String s3) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2, s3));
+    	NewErrorMessage err = new NewErrorMessage();
+        err.setMessage(String.format(fmt, s, s2, s3));
         addError(err);
     }
     
@@ -69,7 +74,7 @@ public class XErrorTracker {
         return errL.size() != 0;
     }
     
-    public void addError(ErrorMessage err) {
+    public void addError(NewErrorMessage err) {
         if (! scopeStack.isEmpty()) {
             ErrorScope scope = scopeStack.peek();
             err.setSrcFile(scope.getSrcFile());
@@ -77,7 +82,7 @@ public class XErrorTracker {
         this.errL.add(err);
         logIfEnabled(err);
     }
-    public List<ErrorMessage> getErrL() {
+    public List<NewErrorMessage> getErrL() {
         return errL;
     }
 

@@ -10,6 +10,7 @@ import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.cmdline.CmdLineArgParser;
 import org.dnal.dnalc.cmdline.Command;
@@ -89,7 +90,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
             logDebug(String.format("compile: %b", b));
             if (! b) {
                 log(String.format("%d error(s).", compiler.getErrors().size()));
-                for(ErrorMessage err: compiler.getErrors()) {
+                for(NewErrorMessage err: compiler.getErrors()) {
                     if (err.getLineNum() == 0) {
                         String msg = String.format(" error: %s", err.getMessage());
                         log(msg);

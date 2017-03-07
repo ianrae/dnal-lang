@@ -15,6 +15,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;
 import org.dnal.core.repository.World;
 import org.junit.Before;
@@ -37,7 +38,7 @@ public class BaseValidationTests extends BaseTest {
     }
     
     protected void parseAndValidate(String input, boolean expected, String shape) {
-        List<ErrorMessage> errL = new ArrayList<>();
+        List<NewErrorMessage> errL = new ArrayList<>();
         ASTToDNALGenerator dnalGenerator = parse(errL, input, "Foo", shape, crf);
         errL.addAll(dnalGenerator.getErrL());
         World world = getContext().world;
@@ -54,7 +55,7 @@ public class BaseValidationTests extends BaseTest {
     
     protected int expected = 2;
     protected boolean generateOk = true;
-    protected ASTToDNALGenerator parse(List<ErrorMessage> errL, String input, String typeName, String baseType, CustomRuleFactory crf) {
+    protected ASTToDNALGenerator parse(List<NewErrorMessage> errL, String input, String typeName, String baseType, CustomRuleFactory crf) {
         log("doing: " + input);
         List<Exp> list = FullParser.fullParse(input);
         assertEquals(expected, list.size());

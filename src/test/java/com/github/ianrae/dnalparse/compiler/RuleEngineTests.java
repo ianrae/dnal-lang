@@ -10,6 +10,7 @@ import org.dnal.compiler.nrule.Custom1Rule;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.nrule.AndRule;
 import org.dnal.core.nrule.CompareRule;
 import org.dnal.core.nrule.EqRule;
@@ -148,7 +149,7 @@ public class RuleEngineTests {
 		boolean b = runner.run(dval, rule);
 		
 		if (! runner.ctx.wereNoErrors()) {
-			for(ErrorMessage msg: runner.ctx.errL) {
+			for(NewErrorMessage msg: runner.ctx.errL) {
 				log(msg.getMessage());
 			}
 		}

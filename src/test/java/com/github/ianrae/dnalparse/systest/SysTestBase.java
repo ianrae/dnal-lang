@@ -19,6 +19,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.World;
 
@@ -49,7 +50,7 @@ public class SysTestBase {
         load(source, false);
         assertEquals(expectedErrors, errors.size());
         boolean found = false;
-        for(ErrorMessage err: errors) {
+        for(NewErrorMessage err: errors) {
             if (err.getMessage().contains(errMsg)) {
                 found = true;
             }
@@ -75,7 +76,7 @@ public class SysTestBase {
 
     //-------------
     protected DataSet dataSetLoaded;
-    protected List<ErrorMessage> errors;
+    protected List<NewErrorMessage> errors;
     protected DTypeRegistry registry;
     protected World world;
     protected  static final int NUM_INTERNAL_TYPES = 7;
@@ -93,7 +94,7 @@ public class SysTestBase {
         registry = (dataSetLoaded != null) ? dsi.getInternals().getRegistry(): null;
         world = (dataSetLoaded != null) ? dsi.getInternals().getWorld(): null;
         errors = compiler.getErrors();
-        for(ErrorMessage err: compiler.getErrors()) {
+        for(NewErrorMessage err: compiler.getErrors()) {
             log(String.format("[%s] %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
         }
         assertEquals(pass, (dataSetLoaded != null));

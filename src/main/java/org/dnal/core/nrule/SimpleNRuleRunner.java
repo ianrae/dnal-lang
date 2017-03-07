@@ -11,6 +11,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;
 import org.dnal.core.logger.Log;
 
@@ -151,7 +152,7 @@ public class SimpleNRuleRunner  {
 		scorer.score(dval);
 	}
 
-	public List<ErrorMessage> getValidationErrors() {
+	public List<NewErrorMessage> getValidationErrors() {
 		return lastCtx.errL;
 	}
 }

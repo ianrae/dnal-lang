@@ -15,6 +15,7 @@ import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.IntBuilder;
 import org.dnal.core.builder.StructBuilder;
 import org.dnal.core.csv.CSVLoader;
@@ -127,7 +128,7 @@ public class CSVTests extends BaseWorldTest {
         DNALCompiler compiler = createCompiler();
         String path = GENERATE_DIR + dnalFilename;
         DataSet dataSet = compiler.compile(path, null);
-        for(ErrorMessage err: compiler.getErrors()) {
+        for(NewErrorMessage err: compiler.getErrors()) {
             log(String.format("%d: %s", err.getLineNum(), err.getMessage()));
         }
         assertEquals(true, (dataSet != null));

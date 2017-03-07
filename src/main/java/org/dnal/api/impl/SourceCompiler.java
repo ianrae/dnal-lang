@@ -20,6 +20,7 @@ import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.World;
 import org.dnal.core.util.TextFileReader;
@@ -101,7 +102,8 @@ public class SourceCompiler extends ErrorTrackingBase {
     private boolean fileExists(String path) {
         File f = new File(path);
         if (! f.exists()) {
-            ErrorMessage error = new ErrorMessage(0, "can't find file: " + path);
+    		NewErrorMessage error = new NewErrorMessage();
+            error.setMessage("can't find file: " + path);
             this.addErrorObj(error);
         }
         return f.exists();
@@ -127,7 +129,9 @@ public class SourceCompiler extends ErrorTrackingBase {
         } catch (ParserException e) {
             //e.printStackTrace();
             int lineNum = e.getLocation().line;
-            ErrorMessage err = new ErrorMessage(lineNum, e.getMessage());
+    		NewErrorMessage err = new NewErrorMessage();
+    		err.setLineNum(lineNum);
+    		err.setMessage(e.getMessage());
             addErrorObj(err);
         }
         context.perf.endTimer("jparsec");
@@ -185,7 +189,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return b;
     }
 
-    public List<ErrorMessage> getErrors() {
+    public List<NewErrorMessage> getErrors() {
         return getET().getErrL();
     }
 

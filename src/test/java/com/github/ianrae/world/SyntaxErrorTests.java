@@ -9,6 +9,7 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.ErrorMessageLogger;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
@@ -53,7 +54,7 @@ public class SyntaxErrorTests extends BaseWorldTest {
         assertNull(dataSet);
         
         ErrorMessageLogger.dump(compiler.getErrors());
-        for(ErrorMessage err: compiler.getErrors()) {
+        for(NewErrorMessage err: compiler.getErrors()) {
             if (err.getMessage().contains(expectedError)) {
                 foundError = true;
             }

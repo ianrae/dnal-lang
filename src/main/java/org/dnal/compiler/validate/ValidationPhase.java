@@ -7,6 +7,7 @@ import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.SimpleNRuleRunner;
@@ -53,7 +54,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 
 	protected void chkValErrors(SimpleNRuleRunner runner) {
 		//propogate
-		for(ErrorMessage err: runner.getValidationErrors()) {
+		for(NewErrorMessage err: runner.getValidationErrors()) {
 			String errType = err.getErrorType().name();
 			addError2s("validation error: %s: %s", errType, err.getMessage());
 		}

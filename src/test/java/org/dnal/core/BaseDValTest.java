@@ -111,8 +111,8 @@ public class BaseDValTest {
 //	protected void dumpValErrors(BaseVRuleRunner runner) {
 //		dumpValErrors(runner.getValidationErrors());
 //	}
-	protected void dumpValErrors(List<ErrorMessage> errorL) {
-		for(ErrorMessage err: errorL) {
+	protected void dumpValErrors(List<NewErrorMessage> errorL) {
+		for(NewErrorMessage err: errorL) {
 			log("rule failed: " + err.getMessage());
 		}
 	}

@@ -9,6 +9,7 @@ import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileLoader;
 import org.dnal.dnalc.ConfigFileOptions;
@@ -54,7 +55,7 @@ public class ConfigLoaderTests {
             Log.debugLog(String.format("compile: %b", b));
             if (! b) {
                 Log.log(String.format("%d error(s).", compiler.getErrors().size()));
-                for(ErrorMessage err: compiler.getErrors()) {
+                for(NewErrorMessage err: compiler.getErrors()) {
                     if (err.getLineNum() == 0) {
                         String msg = String.format(" error: %s", err.getMessage());
                         Log.log(msg);

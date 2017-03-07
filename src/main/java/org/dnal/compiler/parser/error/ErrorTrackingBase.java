@@ -6,6 +6,7 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 
 public class ErrorTrackingBase {
@@ -46,30 +47,35 @@ public class ErrorTrackingBase {
 	}
 	
 	protected void addError(String fmt, Exp exp) {
-		ErrorMessage err = new ErrorMessage(0, String.format(fmt, exp.strValue()));
+		NewErrorMessage err = new NewErrorMessage();
+		err.setMessage(String.format(fmt, exp.strValue()));
         addErrorObj(err);
 	}
 	protected void addError2(String fmt, String s, Exp exp) {
-		ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, exp.strValue()));
+		NewErrorMessage err = new NewErrorMessage();
+		err.setMessage(String.format(fmt, s, exp.strValue()));
         addErrorObj(err);
 	}
 	protected void addError3(String fmt, String s, String s2, Exp exp) {
-		ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2, exp.strValue()));
+		NewErrorMessage err = new NewErrorMessage();
+		err.setMessage(String.format(fmt, s, s2, exp.strValue()));
         addErrorObj(err);
 	}
 	protected void addError2s(String fmt, String s, String s2) {
-		ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2));
+		NewErrorMessage err = new NewErrorMessage();
+		err.setMessage(String.format(fmt, s, s2));
 		addErrorObj(err);
 	}
     protected void addError3s(String fmt, String s, String s2, String s3) {
-        ErrorMessage err = new ErrorMessage(0, String.format(fmt, s, s2, s3));
+		NewErrorMessage err = new NewErrorMessage();
+		err.setMessage(String.format(fmt, s, s2, s3));
         addErrorObj(err);
     }
 	
-	protected void addErrorObj(ErrorMessage err) {
+	protected void addErrorObj(NewErrorMessage err) {
 	    this.et.addError(err);
 	}
-    public List<ErrorMessage> getErrL() {
+    public List<NewErrorMessage> getErrL() {
         return et.getErrL();
     }
 
