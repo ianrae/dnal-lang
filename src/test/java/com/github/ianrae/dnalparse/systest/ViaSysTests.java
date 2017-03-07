@@ -133,19 +133,19 @@ public class ViaSysTests extends SysTestBase {
     public void test515fail1() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "xxpersonCode isa Person.code"); //wrong field
-        chkFail(src, 3, "validation error: RULEFAIL: null- failed");
+        chkFail(src, 3, "validation error: VALIDATION_ERROR: null- failed");
     }
     @Test
     public void test515fail2() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa xxPerson.code"); //wrong field
-        chkFail(src, 6, "validation error: RULEFAIL: null- failed");
+        chkFail(src, 6, "validation error: VALIDATION_ERROR: null- failed");
     }
     @Test
     public void test515fail3() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa Person.xxcode"); //wrong field
-        chkFail(src, 9, "validation error: RULEFAIL: isa: null");
+        chkFail(src, 9, "validation error: VALIDATION_ERROR: isa: null");
     }
     
     //TYPE 6 - BOTH-MULTI

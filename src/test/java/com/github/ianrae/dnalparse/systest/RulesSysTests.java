@@ -23,7 +23,7 @@ public class RulesSysTests extends SysTestBase {
     }
     @Test
     public void testT101() {
-        chkRulesFail("> 20 < 100", "RULEFAIL: > 20: > 20");
+        chkRulesFail("> 20 < 100", "VALIDATION_ERROR: > 20: > 20");
     }
     @Test
     public void testT102a() {
