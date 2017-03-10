@@ -1,7 +1,6 @@
 package org.dnal.core.nrule;
 
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 
 public class NRuleRunnerImpl implements NRuleRunner {
@@ -14,8 +13,7 @@ public class NRuleRunnerImpl implements NRuleRunner {
 		boolean b = rule.eval(dval, ctx);
 		if (!b && (ctx.getErrorCount() == initial)) {
 		    String s = String.format("%s: %s", rule.getName(), rule.getRuleText());
-			ErrorMessage err = new ErrorMessage(ErrorType.RULEFAIL, s);
-			ctx.addError(err);
+		    ctx.addErrorZ(ErrorType.RULEFAIL, s);
 		}
 		return b;
 	}

@@ -8,7 +8,6 @@ import org.dnal.compiler.parser.ast.Exp;
 
 public class ParseErrorChecker {
 	private DNALDocument doc;
-//	private List<ErrorMessage> errL = new ArrayList<>();
 	private TypeErrorChecker typeChecker;
 	private ValueErrorChecker valueChecker;
 	private ImportErrorChecker importChecker;
@@ -35,17 +34,6 @@ public class ParseErrorChecker {
 		return (startCount == endCount);
 	}
 
-
-//	public void dump() {
-//	    et.dumpErrors();
-//?}
-
-//	public int getNumErrors() {
-//		return context.errL.size();
-//	}
-//	public List<ErrorMessage> getErrors() {
-//		return context.errL;
-//	}
 
 	public DNALDocument getDoc() {
 		return doc;

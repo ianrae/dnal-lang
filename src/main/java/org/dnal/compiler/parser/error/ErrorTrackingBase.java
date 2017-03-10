@@ -8,7 +8,6 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.NewErrorMessage;
 
 public class ErrorTrackingBase {
-//	protected List<ErrorMessage> errL;
 	protected DNALDocument doc;
     private XErrorTracker et;
 //	protected ErrorScopeStack scopeStack;

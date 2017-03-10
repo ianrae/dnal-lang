@@ -3,17 +3,17 @@ package org.dnal.api;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 
 
 public class WorldException extends Exception {
-    public List<ErrorMessage> errL = new ArrayList<>();
+    public List<NewErrorMessage> errL = new ArrayList<>();
     
 
     public WorldException(String message) {
         super(message);
     }
-    public WorldException(String message, List<ErrorMessage> errL) {
+    public WorldException(String message, List<NewErrorMessage> errL) {
         super(message);
         this.errL = errL;
     }

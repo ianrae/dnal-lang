@@ -7,7 +7,6 @@ import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 
 /**
