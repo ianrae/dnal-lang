@@ -6,16 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.dnal.core.BuiltInTypes;
-import org.dnal.core.DListType;
-import org.dnal.core.DStructHelper;
-import org.dnal.core.DStructType;
-import org.dnal.core.DType;
-import org.dnal.core.DTypeRegistry;
-import org.dnal.core.DValue;
-import org.dnal.core.DValueImpl;
-import org.dnal.core.ErrorMessage;
-import org.dnal.core.Shape;
 import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.oldbuilder.XBooleanValueBuilder;
 import org.dnal.core.oldbuilder.XListValueBuilder;

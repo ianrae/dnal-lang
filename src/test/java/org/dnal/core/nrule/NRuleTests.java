@@ -3,17 +3,7 @@ package org.dnal.core.nrule;
 import static org.junit.Assert.assertEquals;
 
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.nrule.AndRule;
-import org.dnal.core.nrule.CompareRule;
-import org.dnal.core.nrule.EqRule;
-import org.dnal.core.nrule.NRule;
-import org.dnal.core.nrule.NRuleContext;
-import org.dnal.core.nrule.NRuleRunner;
-import org.dnal.core.nrule.NotRule;
-import org.dnal.core.nrule.OrRule;
-import org.dnal.core.nrule.StaticRule;
 import org.junit.Test;
 
 public class NRuleTests {

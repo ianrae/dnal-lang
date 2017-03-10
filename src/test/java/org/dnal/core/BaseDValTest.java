@@ -4,13 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.dnal.core.BuiltInTypes;
-import org.dnal.core.DType;
-import org.dnal.core.DTypeRegistry;
-import org.dnal.core.DTypeRegistryBuilder;
-import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
-import org.dnal.core.ValidationState;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.nrule.ValidationScorer;

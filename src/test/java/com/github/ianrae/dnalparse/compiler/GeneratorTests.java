@@ -2,7 +2,6 @@ package com.github.ianrae.dnalparse.compiler;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
@@ -11,7 +10,6 @@ import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.ErrorMessage;
 import org.junit.Test;
 
 public class GeneratorTests extends BaseTest {
