@@ -1,21 +1,15 @@
 package com.github.ianrae.dnalparse.compiler;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import static org.junit.Assert.assertEquals;
 
 import org.dnal.compiler.nrule.Custom1Rule;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.nrule.AndRule;
 import org.dnal.core.nrule.CompareRule;
 import org.dnal.core.nrule.EqRule;
 import org.dnal.core.nrule.NRule;
-import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.NotRule;
 import org.dnal.core.nrule.OrRule;

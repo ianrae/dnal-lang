@@ -11,7 +11,7 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.core.DTypeRegistryBuilder;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.World;
@@ -27,7 +27,6 @@ public class BaseTest {
         world.setRepositoryFactory(new MockRepositoryFactory());
         DTypeRegistryBuilder regBuilder = new DTypeRegistryBuilder();
         regBuilder.init(world);
-        List<ErrorMessage> errorL = new ArrayList<>();
         
         if (crf == null) {
             crf = getCrf();

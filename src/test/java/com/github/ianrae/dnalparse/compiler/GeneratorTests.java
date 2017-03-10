@@ -5,19 +5,13 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.api.DNALCompiler;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
-import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.ErrorMessage;
-import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class GeneratorTests extends BaseTest {
@@ -99,7 +93,6 @@ public class GeneratorTests extends BaseTest {
 	
 	private void chkGen(String input, String expectedOutput, int expectedSize) {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
-		List<ErrorMessage> errorL = new ArrayList<>();
 
         DTypeRegistry registry = getContext().registry;
 		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world);

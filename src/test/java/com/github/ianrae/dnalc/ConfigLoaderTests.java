@@ -1,14 +1,13 @@
 package com.github.ianrae.dnalc;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
-import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileLoader;

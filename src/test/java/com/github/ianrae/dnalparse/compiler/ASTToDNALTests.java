@@ -3,25 +3,18 @@ package com.github.ianrae.dnalparse.compiler;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.api.impl.SourceCompiler;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
-import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.Shape;
-import org.dnal.core.repository.MockRepositoryFactory;
-import org.dnal.core.repository.World;
 import org.dnal.core.repository.Repository;
+import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class ASTToDNALTests extends BaseTest {

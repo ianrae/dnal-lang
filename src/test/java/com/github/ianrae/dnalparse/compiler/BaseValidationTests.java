@@ -14,7 +14,6 @@ import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;
 import org.dnal.core.repository.World;

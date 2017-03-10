@@ -9,7 +9,6 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;

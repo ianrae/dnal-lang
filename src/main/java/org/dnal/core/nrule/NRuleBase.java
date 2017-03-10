@@ -1,7 +1,6 @@
 package org.dnal.core.nrule;
 
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
 

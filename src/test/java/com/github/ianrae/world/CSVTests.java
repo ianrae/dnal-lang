@@ -2,19 +2,13 @@ package com.github.ianrae.world;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.impoter.MockImportLoader;
-import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.IntBuilder;
 import org.dnal.core.builder.StructBuilder;
