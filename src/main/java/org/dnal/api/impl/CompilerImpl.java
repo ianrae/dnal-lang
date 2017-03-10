@@ -15,7 +15,6 @@ import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.World;
@@ -27,7 +26,6 @@ import org.dnal.core.repository.World;
  *
  */
 public class CompilerImpl implements DNALCompiler {
-//    private List<ErrorMessage> errL = new ArrayList<>();
     private XErrorTracker et = new XErrorTracker();
     private CustomRuleFactory crf;
     private World world = new World();

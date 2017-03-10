@@ -7,11 +7,11 @@ import org.dnal.api.Generator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
 
 public class GeneratorImpl implements Generator {
-    private List<ErrorMessage> errL = new ArrayList<>();
+    private List<NewErrorMessage> errL = new ArrayList<>();
     protected World world;
     protected DTypeRegistry registry;
     protected CompilerContext context;
@@ -28,6 +28,7 @@ public class GeneratorImpl implements Generator {
         this.context = context;
     }
     
+    @Override
     public boolean generate(GenerateVisitor visitor) {
         DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world);
         boolean b = phase.generate(visitor);
@@ -37,7 +38,8 @@ public class GeneratorImpl implements Generator {
         return true;
     }
 
-    public List<ErrorMessage> getErrors() {
+    @Override
+    public List<NewErrorMessage> getErrors() {
         return errL;
     }
 

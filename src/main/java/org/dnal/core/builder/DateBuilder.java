@@ -5,14 +5,14 @@ import java.util.List;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.oldbuilder.XDateValueBuilder;
 
 
 public class DateBuilder extends Builder {
     private XDateValueBuilder builder;
     
-    public DateBuilder(DType type, List<ErrorMessage> valErrorList) {
+    public DateBuilder(DType type, List<NewErrorMessage> valErrorList) {
         super(valErrorList);
         builder = new XDateValueBuilder(type);
     }

@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.oldbuilder.XBooleanValueBuilder;
 
 public class BooleanBuilder extends Builder {
     private XBooleanValueBuilder builder;
     
-    public BooleanBuilder(DType type, List<ErrorMessage> valErrorList) {
+    public BooleanBuilder(DType type, List<NewErrorMessage> valErrorList) {
         super(valErrorList);
         builder = new XBooleanValueBuilder(type);
     }

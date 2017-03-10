@@ -6,7 +6,7 @@ import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.DateBuilder;
 import org.dnal.core.builder.EnumBuilder;
@@ -21,7 +21,7 @@ public interface Transaction {
     
     void add(String name, DValue dval);
     boolean commit();
-    List<ErrorMessage> getValErrorList();
+    List<NewErrorMessage> getValErrorList();
     DataSet getDataSet();
     
     DValue createFromBean(Object bean) throws WorldException;

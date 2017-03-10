@@ -2,7 +2,6 @@ package org.dnal.compiler.impoter;
 
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.api.impl.SourceCompiler;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 
 public class DefaultImportLoader implements ImportLoader {
@@ -11,8 +10,7 @@ public class DefaultImportLoader implements ImportLoader {
     public void importPackage(String pkg, CompilerContext context) {
         context.runawayCounter++;
         if (context.runawayCounter > 100) {
-            ErrorMessage err = new ErrorMessage(ErrorType.PARSINGERROR, "Recursive imports detected!. Halting");
-            context.errL.add(err);
+        	context.addOldErrorMsg(ErrorType.PARSINGERROR, "Recursive imports detected!. Halting");
             return;
         }
         

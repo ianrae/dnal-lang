@@ -47,7 +47,7 @@ public class EnumTests extends BaseDValTest {
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
 
-		for(ErrorMessage err: builder.getValidationErrors()) {
+		for(NewErrorMessage err: builder.getValidationErrors()) {
 			log(err.getMessage());
 		}
 

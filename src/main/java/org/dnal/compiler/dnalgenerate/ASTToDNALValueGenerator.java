@@ -33,7 +33,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.DValueProxy;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.TypePair;
 import org.dnal.core.builder.BooleanBuilder;
@@ -53,7 +53,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     protected World world;
     protected DTypeRegistry registry;
     private BuilderFactory factory;
-    private List<ErrorMessage> valErrorList;
+    private List<NewErrorMessage> valErrorList;
     private PackageHelper packageHelper;
     private ViaFinder viaFinder;
     private ViaHelper viaHelper;
@@ -253,7 +253,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         DValue dval = builder.finish();
         if (dval == null) {
             //propogate
-            for(ErrorMessage err: builder.getValidationErrors()) {
+            for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
                 addError2s("validation error: %s: %s", errType, err.getMessage());
             }
@@ -322,7 +322,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         DValue dval = builder.finish();
         if (dval == null) {
             //propogate
-            for(ErrorMessage err: builder.getValidationErrors()) {
+            for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
                 addError2s("validation error: %s: %s", errType, err.getMessage());
             }
@@ -518,7 +518,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         DValue dval = builder.finish();
         if (dval == null) {
             //propogate
-            for(ErrorMessage err: builder.getValidationErrors()) {
+            for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
                 addError2s("validation error: %s: %s", errType, err.getMessage());
             }

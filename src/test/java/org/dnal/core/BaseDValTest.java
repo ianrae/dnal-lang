@@ -88,7 +88,7 @@ public class BaseDValTest {
 		return builder.getDValue();
 	}
 	protected void dumpErrors(XDValueBuilder builder) {
-		for(ErrorMessage err: builder.getValidationErrors()) {
+		for(NewErrorMessage err: builder.getValidationErrors()) {
 			log(err.getMessage());
 		}
 	}

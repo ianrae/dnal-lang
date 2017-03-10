@@ -8,6 +8,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 
 /**
  * Builds top-level values
@@ -18,9 +19,9 @@ import org.dnal.core.ErrorMessage;
 public class BuilderFactory {
 
     private DTypeRegistry registry;
-    private List<ErrorMessage> valErrorList;
+    private List<NewErrorMessage> valErrorList;
 
-    public BuilderFactory(DTypeRegistry registry, List<ErrorMessage> valErrorList) {
+    public BuilderFactory(DTypeRegistry registry, List<NewErrorMessage> valErrorList) {
         this.registry = registry;
         this.valErrorList = valErrorList;
     }

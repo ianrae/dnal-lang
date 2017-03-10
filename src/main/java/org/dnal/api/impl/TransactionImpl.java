@@ -18,7 +18,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.BuilderFactory;
 import org.dnal.core.builder.DateBuilder;
@@ -32,7 +32,7 @@ import org.dnal.core.builder.StructBuilder;
 import org.dnal.core.repository.World;
 
 public class TransactionImpl implements Transaction {
-    protected List<ErrorMessage> errorList = new ArrayList<>();
+    protected List<NewErrorMessage> errorList = new ArrayList<>();
     private DTypeRegistry registry;
     private World world;
     private CustomRuleFactory crf;
@@ -94,7 +94,7 @@ public class TransactionImpl implements Transaction {
     }
 
     @Override
-    public List<ErrorMessage> getValErrorList() {
+    public List<NewErrorMessage> getValErrorList() {
         return errorList;
     }
 

@@ -136,7 +136,7 @@ public class CSVTests extends BaseWorldTest {
     }
 
     private void dumpErrors(Transaction trans) {
-        for(ErrorMessage err: trans.getValErrorList()) {
+        for(NewErrorMessage err: trans.getValErrorList()) {
             log(err.getMessage());
         }
     }

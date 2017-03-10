@@ -10,14 +10,15 @@ import org.dnal.compiler.impoter.ImportLoader;
 import org.dnal.compiler.impoter.PackageRepository;
 import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.ErrorType;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
 
 
 public class CompilerContext {
     
     //set manually
-    public List<ErrorMessage> errL = new ArrayList<>();
+    public List<NewErrorMessage> errL = new ArrayList<>();
     public World world;
     public DTypeRegistry registry;
     public CustomRuleFactory crf;
@@ -41,6 +42,18 @@ public class CompilerContext {
         this.prepo = new PackageRepository();
         this.sourceDir = sourceDir;
         this.compilerOptions = options;
+    }
+    
+    public void addOldErrorMsg(ErrorType errType, String message) {
+        NewErrorMessage err = new NewErrorMessage();
+        err.setErrorType(NewErrorMessage.Type.IO_ERROR); //!!
+        err.setErrorName(errType.name());
+        err.setFieldName("?");
+        err.setMessage(message);
+        err.setSrcFile("?");
+        err.setTypeName("?");
+        this.errL.add(err);
+    	
     }
 
 }

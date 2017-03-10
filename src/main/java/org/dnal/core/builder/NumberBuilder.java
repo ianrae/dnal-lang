@@ -4,13 +4,13 @@ import java.util.List;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.oldbuilder.XNumberValueBuilder;
 
 public class NumberBuilder extends Builder {
     private XNumberValueBuilder builder;
     
-    public NumberBuilder(DType type, List<ErrorMessage> valErrorList) {
+    public NumberBuilder(DType type, List<NewErrorMessage> valErrorList) {
         super(valErrorList);
         builder = new XNumberValueBuilder(type);
     }

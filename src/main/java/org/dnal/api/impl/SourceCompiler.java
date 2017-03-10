@@ -19,7 +19,6 @@ import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.World;
@@ -160,7 +159,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         boolean b = errorChecker.checkForErrors();
         context.perf.endTimer("check");
         if (! b) {
-//            for(ErrorMessage perr : errorChecker.getErrors()) {
+//            for(NewErrorMessage perr : errorChecker.getErrors()) {
 //                int lineNum = (perr.getLineNum() > 0) ? perr.getLineNum() : -1;
 //                String s = String.format("line %d: %s", lineNum, perr.getMessage());
 //                //              log(s);
