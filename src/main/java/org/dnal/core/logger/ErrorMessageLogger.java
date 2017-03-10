@@ -2,7 +2,6 @@ package org.dnal.core.logger;
 
 import java.util.List;
 
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 
 public class ErrorMessageLogger {

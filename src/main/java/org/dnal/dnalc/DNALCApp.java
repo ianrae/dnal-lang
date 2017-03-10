@@ -9,7 +9,6 @@ import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.generate.GenerateVisitor;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.cmdline.CmdLineArgParser;

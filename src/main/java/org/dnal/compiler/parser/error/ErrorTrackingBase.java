@@ -5,9 +5,7 @@ import java.util.List;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.ast.Exp;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.logger.Log;
 
 public class ErrorTrackingBase {
 //	protected List<ErrorMessage> errL;

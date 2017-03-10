@@ -6,7 +6,6 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleContext;
