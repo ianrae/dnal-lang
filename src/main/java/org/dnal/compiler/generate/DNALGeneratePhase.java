@@ -67,7 +67,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
             int index = 0;
             for(NRule rule: dtype.getRawRules()) {
-                String ruleText = rule.getName();
+                String ruleText = rule.getRuleText();
                 visitor.rule(index++, ruleText, rule); //fix later!! need ruleText
             }
 

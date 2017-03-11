@@ -48,10 +48,10 @@ public class CompilerContext {
         NewErrorMessage err = new NewErrorMessage();
         err.setErrorType(NewErrorMessage.Type.IO_ERROR); //!!
         err.setErrorName(errType.name());
-        err.setFieldName("?");
+//        err.setFieldName("?");
         err.setMessage(message);
         err.setSrcFile("?");
-        err.setTypeName("?");
+//        err.setTypeName("?");
         this.errL.add(err);
     	
     }

@@ -19,6 +19,8 @@ public class CompareRule<T extends Comparable, U extends Comparable> extends NRu
 	    resolveArg(val1, dval, ctx);
 	    resolveArg(val2, dval, ctx);
 	    
+	    setActualValue(val1, ctx);
+	    
 		boolean b = false;
 		switch(op) {
 		case ">":

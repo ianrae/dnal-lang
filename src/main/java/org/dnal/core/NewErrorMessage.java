@@ -14,8 +14,9 @@ public class NewErrorMessage {
 	private String errorName;
 	private String typeName;
 	private String fieldName;
+	private String varName;
 	private String message;
-	public ErrorMessage oldMsg; //remove later
+	private String actualValue; //validation errors only
 	
 	public NewErrorMessage() {
 		errorType = Type.IO_ERROR;
@@ -62,6 +63,22 @@ public class NewErrorMessage {
 	}
 	public void setErrorName(String errorName) {
 		this.errorName = errorName;
+	}
+
+	public String getVarName() {
+		return varName;
+	}
+
+	public void setVarName(String varName) {
+		this.varName = varName;
+	}
+
+	public String getActualValue() {
+		return actualValue;
+	}
+
+	public void setActualValue(String actualValue) {
+		this.actualValue = actualValue;
 	}
 
 }

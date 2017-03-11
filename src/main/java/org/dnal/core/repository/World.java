@@ -16,6 +16,7 @@ public class World implements WorldListener {
 	private RepositoryFactory factory;
 	public static boolean debug = false;
     private Map<String,DValue> valueMap = new HashMap<>();
+    private Map<DValue,String> inverseMap = new HashMap<>();
     private List<String> orderedList = new ArrayList<>();
 	
 	private boolean goesInRepo(DType type) {
@@ -46,11 +47,20 @@ public class World implements WorldListener {
 	
     public void addTopLevelValue(String name, DValue dval) {
         valueMap.put(name, dval);
+        
+        //hmm. i think each top-level dval is distinct
+        inverseMap.put(dval, name);
+        
         orderedList.add(name);
         valueAdded(dval);
     }
     public DValue findTopLevelValue(String varName) {
         return valueMap.get(varName);
+    }
+    
+    public String findTopValueValueName(DValue target) {
+    	String name = inverseMap.get(target);
+    	return name;
     }
 
 	@Override

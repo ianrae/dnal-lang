@@ -1,5 +1,6 @@
 package org.dnal.core.nrule;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.BaseDValTest;
 import org.dnal.core.DStructType;
 import org.dnal.core.DTypeRegistry;
@@ -32,7 +33,7 @@ public class ValidationStructTests extends BaseDValTest {
 		type.getRawRules().add(rule);
 			
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
@@ -44,7 +45,7 @@ public class ValidationStructTests extends BaseDValTest {
 		DValue dval = buildCity(registry, type, "abc");
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 0);
 		chkValid(dval);
@@ -56,7 +57,7 @@ public class ValidationStructTests extends BaseDValTest {
 		DValue dval = buildCity(registry, type, "a");
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
@@ -69,6 +70,11 @@ public class ValidationStructTests extends BaseDValTest {
 	public void init() {
 		super.init();
 		personHelper = new PersonHelper(registry, world);
+	}
+	
+	private NRuleContext createContext() {
+		NRuleContext ctx = new NRuleContext(new XErrorTracker());
+		return ctx;
 	}
 	
 	//-----

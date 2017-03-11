@@ -13,7 +13,7 @@ public class NRuleRunnerImpl implements NRuleRunner {
 		boolean b = rule.eval(dval, ctx);
 		if (!b && (ctx.getErrorCount() == initial)) {
 		    String s = String.format("%s: %s", rule.getName(), rule.getRuleText());
-		    ctx.addErrorZ(ErrorType.RULEFAIL, s);
+		    ctx.addError(ErrorType.RULEFAIL, s);
 		}
 		return b;
 	}
