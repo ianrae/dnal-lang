@@ -145,6 +145,7 @@ public class ViaSysTests extends SysTestBase {
     public void test515fail3() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa Person.xxcode"); //wrong field
+        chkFail(src, 6, "via 'xxcode' - unknown match");
     }
     
     //TYPE 6 - BOTH-MULTI
