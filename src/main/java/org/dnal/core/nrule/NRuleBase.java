@@ -39,6 +39,12 @@ public abstract class NRuleBase implements NRule {
             vs.resolve(dval, ctx);
         }
     }
+    
+    protected void setActualValue(Object val1, NRuleContext ctx) {
+		if (val1 != null) {
+			ctx.setActualValue(val1.toString());
+		}
+	}
 
 	protected void addUnknownRuleError(NRuleContext ctx, String ruleText) {
 		ctx.addError(ErrorType.UNKNOWNRULE, 

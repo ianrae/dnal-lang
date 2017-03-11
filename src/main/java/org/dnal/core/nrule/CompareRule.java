@@ -41,9 +41,4 @@ public class CompareRule<T extends Comparable, U extends Comparable> extends NRu
 		}
 		return b;
 	}
-	private void setActualValue(Object val1, NRuleContext ctx) {
-		if (val1 != null) {
-			ctx.setActualValue(val1.toString());
-		}
-	}
 }
