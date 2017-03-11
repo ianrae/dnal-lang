@@ -189,7 +189,7 @@ public class RuleConverter extends ErrorTrackingBase {
 	    NRule  s1 = doScalarComparisonRule(type, exp.exp1);
 	    NRule  s2 = doScalarComparisonRule(type, exp.exp2);
 		OrRule rule = new OrRule("or", s1, s2);
-        rule.setRuleText(String.format("%s %s", "len", s1.getRuleText(), s2.getRuleText()));
+        rule.setRuleText(String.format("%s or %s", s1.getRuleText(), s2.getRuleText()));
 		return rule;
 	}
 
@@ -197,7 +197,7 @@ public class RuleConverter extends ErrorTrackingBase {
 	    NRule s1 = doScalarComparisonRule(type, exp.exp1);
 	    NRule  s2 = doScalarComparisonRule(type, exp.exp2);
 		AndRule rule = new AndRule("and", s1, s2);
-        rule.setRuleText(String.format("%s %s", "len", s1.getRuleText(), s2.getRuleText()));
+        rule.setRuleText(String.format("%s and %s", s1.getRuleText(), s2.getRuleText()));
 		return rule;
 	}
 	
@@ -224,14 +224,14 @@ public class RuleConverter extends ErrorTrackingBase {
 		case ">=":
 		{
 		    if (isPseudoLen(exp)) {
-		        return builder.buildPseudoLenCompare(exp, false, null);
+		        return builder.buildPseudoLenCompare(buildRuleName(exp), exp, false, null);
 		    } else {
 		        if (! builder.isCompatibleType(exp)) {
 	                this.addError2s("cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
 		            return null;
 		        }
 		        
-		        return builder.buildCompare(exp, false);
+		        return builder.buildCompare(buildRuleName(exp), exp, false);
 		    }
 		        
 		}
@@ -239,13 +239,13 @@ public class RuleConverter extends ErrorTrackingBase {
 		case "!=":
 		{
             if (isPseudoLen(exp)) {
-                return builder.buildPseudoLenEq(exp, false, null);
+                return builder.buildPseudoLenEq(buildRuleName(exp), exp, false, null);
             } else {
                 if (! builder.isCompatibleType(exp)) {
                     this.addError2s("eq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                     return null;
                 }
-                return builder.buildEq(exp, false);
+                return builder.buildEq(buildRuleName(exp), exp, false);
             }
 		}
 		default:
@@ -274,7 +274,7 @@ public class RuleConverter extends ErrorTrackingBase {
                 return null;
             }
             
-            return builder.buildCompare(exp, true);
+            return builder.buildCompare(buildRuleName(exp), exp, true);
         }
         case "==":
         case "!=":
@@ -284,7 +284,7 @@ public class RuleConverter extends ErrorTrackingBase {
                 return null;
             }
             
-            return builder.buildEq(exp, true);
+            return builder.buildEq(buildRuleName(exp), exp, true);
         }
         default:
             return null;
@@ -304,11 +304,11 @@ public class RuleConverter extends ErrorTrackingBase {
         case ">":
         case "<=":
         case ">=":
-            newRule = builder.buildPseudoLenCompare(exp, true, fieldName);
+            newRule = builder.buildPseudoLenCompare(buildRuleName(exp), exp, true, fieldName);
             break;
         case "==":
         case "!=":
-            newRule = builder.buildPseudoLenEq(exp, true, fieldName);
+            newRule = builder.buildPseudoLenEq(buildRuleName(exp), exp, true, fieldName);
             break;
         default:
             newRule = null;
@@ -318,5 +318,23 @@ public class RuleConverter extends ErrorTrackingBase {
         
     }
 
+    private String buildRuleName(ComparisonRuleExp exp) {
+        switch(exp.op) {
+        case "<":
+        	return "lt";
+        case ">":
+        	return "gt";
+        case "<=":
+        	return "le";
+        case ">=":
+        	return "ge";
+        case "==":
+        	return "eq";
+        case "!=":
+        	return "neq";
+        default:
+        	return "??";
+        }
+    }
     
 }

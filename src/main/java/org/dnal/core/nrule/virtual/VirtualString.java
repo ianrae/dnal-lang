@@ -27,4 +27,8 @@ public class VirtualString implements VirtualDataItem, Comparable<String> {
         return Shape.STRING;
     }
     
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

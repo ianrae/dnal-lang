@@ -33,10 +33,14 @@ public class VirtualLong implements VirtualDataItem, Comparable<Long> {
             val = dval.asLong();
         }
     }
-    
 
     @Override
     public Shape getTargetShape() {
         return Shape.LONG;
     }
+
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

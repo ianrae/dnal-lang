@@ -34,4 +34,9 @@ public class VirtualInt implements VirtualDataItem, Comparable<Integer> {
     public Shape getTargetShape() {
         return Shape.INTEGER;
     }
+
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }
