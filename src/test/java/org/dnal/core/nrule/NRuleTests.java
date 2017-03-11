@@ -98,11 +98,11 @@ public class NRuleTests {
 		NRuleContext ctx = createContext();
 		boolean b = runner.run(null, rule, ctx);
 		
-		if (! ctx.wereNoErrors()) {
-			for(NewErrorMessage msg: ctx.errL) {
-				log(msg.getMessage());
-			}
-		}
+//		if (! ctx.wereNoErrors()) {
+//			for(NewErrorMessage msg: ctx.errL) {
+//				log(msg.getMessage());
+//			}
+//		}
 		
 		
 		assertEquals(noErrors, ctx.wereNoErrors());

@@ -143,11 +143,11 @@ public class RuleEngineTests {
 		NRuleRunner runner = createRunner();
 		boolean b = runner.run(dval, rule);
 		
-		if (! runner.ctx.wereNoErrors()) {
-			for(NewErrorMessage msg: runner.ctx.errL) {
-				log(msg.getMessage());
-			}
-		}
+//		if (! runner.ctx.wereNoErrors()) {
+//			for(NewErrorMessage msg: runner.ctx.errL) {
+//				log(msg.getMessage());
+//			}
+//		}
 		
 		
 		assertEquals(true, runner.ctx.wereNoErrors());

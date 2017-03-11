@@ -47,17 +47,17 @@ public class ValidationPhase extends ErrorTrackingBase {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		NRuleContext ctx = new NRuleContext(getET());
 		runner.evaluate(dval, ctx);
-		chkValErrors(runner);
+//		chkValErrors(runner);
 		return runner.getValidationErrors().isEmpty();
 	}
 
-	protected void chkValErrors(SimpleNRuleRunner runner) {
-		//propogate
-		for(NewErrorMessage err: runner.getValidationErrors()) {
-			String errType = err.getErrorType().name();
-			addError2s("validation error: %s: %s", errType, err.getMessage());
-		}
-	}
+//	protected void chkValErrors(SimpleNRuleRunner runner) {
+//		//propogate
+//		for(NewErrorMessage err: runner.getValidationErrors()) {
+//			String errType = err.getErrorType().name();
+//			addError2s("validation error: %s: %s", errType, err.getMessage());
+//		}
+//	}
 
 	private void log(String s) {
 		Log.log(s);

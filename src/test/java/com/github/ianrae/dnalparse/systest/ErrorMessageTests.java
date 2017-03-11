@@ -15,14 +15,14 @@ public class ErrorMessageTests extends SysTestBase {
 //	}
 	@Test
 	public void testValFail() {
-		chkRulesFail("> 20 < 100", "IO_ERROR: > 20: > 20");
+		chkRulesFail("> 20 < 100", "> 20: > 20");
 	}	
 
 	//---
 	@Before
 	public void init() {
 //		Log.debugLogging = true;
-		Log.debugLog("debugLog: ON");
+//		Log.debugLog("debugLog: ON");
 //		Log.debugLogging = false; //reset
 		
 	}

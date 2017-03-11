@@ -151,6 +151,6 @@ public class SimpleNRuleRunner  {
 	}
 
 	public List<NewErrorMessage> getValidationErrors() {
-		return lastCtx.errL;
+		return lastCtx.getErrors();
 	}
 }

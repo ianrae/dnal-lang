@@ -31,14 +31,21 @@ public class XErrorTracker {
     
     public void dumpErrors() {
         for(NewErrorMessage err : errL) {
-            Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
+            Log.log(errToString(err));
         }
     }
     
     private void logIfEnabled(NewErrorMessage err) {
         if (logErrors) {
-            Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
+            Log.log(errToString(err));
         }
+    }
+    
+    public String errToString(NewErrorMessage err) {
+    	String s = String.format("[%s].%d %s (%s) [%s.%s] - %s", err.getSrcFile(), err.getLineNum(), 
+    			err.getErrorType(), err.getErrorName(), err.getTypeName(), err.getFieldName(),
+    			err.getMessage());
+    	return s;
     }
 
     protected void addError(String fmt, Exp exp) {
