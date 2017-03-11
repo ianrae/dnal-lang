@@ -174,9 +174,9 @@ public class SourceCompiler extends ErrorTrackingBase {
         ValidationPhase validator = new ValidationPhase(this.world, context.et);
         boolean b = validator.validate();
         context.perf.endTimer("validate");
-        if (! b) {
-            validator.dumpErrors();
-        }
+//        if (! b) {
+//            validator.dumpErrors();
+//        }
         return b;
     }
     

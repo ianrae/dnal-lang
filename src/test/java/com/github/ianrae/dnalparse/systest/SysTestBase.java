@@ -90,9 +90,9 @@ public class SysTestBase {
         registry = (dataSetLoaded != null) ? dsi.getInternals().getRegistry(): null;
         world = (dataSetLoaded != null) ? dsi.getInternals().getWorld(): null;
         errors = compiler.getErrors();
-        for(NewErrorMessage err: compiler.getErrors()) {
-            log(String.format("[%s] %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
-        }
+//        for(NewErrorMessage err: compiler.getErrors()) {
+//            log(String.format("[%s] %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
+//        }
         assertEquals(pass, (dataSetLoaded != null));
         return dataSetLoaded;
     }

@@ -72,6 +72,7 @@ public class SimpleNRuleRunner  {
 		DStructHelper helper = dval.asStruct();
 		
 		for(String fieldName : map.keySet()) {
+			ctx.setCurrentFieldName(fieldName);
 			DValue inner = helper.getField(fieldName);
 			
 	        //optional is not a rule, but evalauate it like a rule
@@ -84,6 +85,7 @@ public class SimpleNRuleRunner  {
 			} else {
 			    innerEvaluate(inner, ctx);
 			}
+			ctx.setCurrentFieldName(null);
 		}
 		evalScalar(dval, ctx);
 		setCompositeScore(dval);
@@ -130,6 +132,7 @@ public class SimpleNRuleRunner  {
 		//do rules backwards from current type up to ultimate base type. don't think it matters
 		DType dtype = dval.getType();
 		while(dtype != null) {
+			ctx.setCurrentTypeName(dtype.getName());
 		    for(NRule rule : dtype.getRules()) {
 		        totalNumRules++;
 		        if (inner.run(dval, rule, ctx)) {

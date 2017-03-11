@@ -46,4 +46,10 @@ public class NRuleContext {
 	public List<NewErrorMessage> getErrors() {
 		return et.getErrL();
 	}
+	public void setCurrentTypeName(String currentTypeName) {
+		et.setCurrentTypeName(currentTypeName);
+	}
+	public void setCurrentFieldName(String currentFieldName) {
+		et.setCurrentFieldName(currentFieldName);
+	}
 }

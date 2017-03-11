@@ -13,6 +13,8 @@ public class XErrorTracker {
     protected List<NewErrorMessage> errL = new ArrayList<>();
     protected Stack<ErrorScope> scopeStack = new Stack<>();
     public static boolean logErrors = false;
+    private String currentTypeName;
+    private String currentFieldName;
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
@@ -86,12 +88,26 @@ public class XErrorTracker {
             ErrorScope scope = scopeStack.peek();
             err.setSrcFile(scope.getSrcFile());
         }
+        
+        if (this.currentTypeName != null) {
+        	err.setTypeName(currentTypeName);
+        }
+        if (this.currentFieldName != null) {
+        	err.setFieldName(currentFieldName);
+        }
+        
         this.errL.add(err);
         logIfEnabled(err);
     }
     public List<NewErrorMessage> getErrL() {
         return errL;
     }
+	public void setCurrentTypeName(String currentTypeName) {
+		this.currentTypeName = currentTypeName;
+	}
+	public void setCurrentFieldName(String currentFieldName) {
+		this.currentFieldName = currentFieldName;
+	}
 
 
 }
