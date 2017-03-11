@@ -7,6 +7,8 @@ import org.dnal.core.nrule.virtual.VirtualInt;
 
 //struct member pseudo-len len(firstName)
 public class LenRule extends Custom1Rule<VirtualInt>  { 
+	public static final String NAME = "len";
+	
     public NRule opRule;
     
     public LenRule(String name, VirtualInt arg1) {

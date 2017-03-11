@@ -83,7 +83,7 @@ public class RuleConverter extends ErrorTrackingBase {
 	
 
 	private NRule doIsaRule(DType type, IsaRuleExp exp, CompilerContext context) {
-	    return new IsaRule("isa", exp, type, context);
+	    return new IsaRule(IsaRule.NAME, exp, type, context);
     }
 
     private boolean checkForRuleDecl(DType type, CustomRule rule) {
@@ -188,7 +188,7 @@ public class RuleConverter extends ErrorTrackingBase {
     private NRule doComparisonOrRule(DType type, ComparisonOrRuleExp exp) {
 	    NRule  s1 = doScalarComparisonRule(type, exp.exp1);
 	    NRule  s2 = doScalarComparisonRule(type, exp.exp2);
-		OrRule rule = new OrRule("or", s1, s2);
+		OrRule rule = new OrRule(OrRule.NAME, s1, s2);
         rule.setRuleText(String.format("%s or %s", s1.getRuleText(), s2.getRuleText()));
 		return rule;
 	}
@@ -196,7 +196,7 @@ public class RuleConverter extends ErrorTrackingBase {
 	private NRule doComparisonAndRule(DType type, ComparisonAndRuleExp exp) {
 	    NRule s1 = doScalarComparisonRule(type, exp.exp1);
 	    NRule  s2 = doScalarComparisonRule(type, exp.exp2);
-		AndRule rule = new AndRule("and", s1, s2);
+		AndRule rule = new AndRule(AndRule.NAME, s1, s2);
         rule.setRuleText(String.format("%s and %s", s1.getRuleText(), s2.getRuleText()));
 		return rule;
 	}
