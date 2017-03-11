@@ -46,12 +46,13 @@ public class XErrorTracker {
     }
     
     public String errToString(NewErrorMessage err) {
+    	String srcFile = (err.getSrcFile() == null) ? "" : String.format("[%s]", err.getSrcFile());
     	String varName = (err.getVarName() == null) ? "?" : err.getVarName();
     	String fieldName = (err.getFieldName() == null) ? "" : "." + err.getFieldName();
     	String lineNum = (err.getLineNum() == 0) ? "" : "." + Integer.valueOf(err.getLineNum()).toString();
     	String actualValue = (err.getActualValue() == null) ? "" : String.format("(%s)", err.getActualValue());
-    	String s = String.format("[%s]%s %s (%s) %s [%s%s] - %s %s",
-    			err.getSrcFile(), lineNum, 
+    	String s = String.format("%s%s %s (%s) %s [%s%s] - %s %s",
+    			srcFile, lineNum, 
     			err.getErrorType(), err.getErrorName(), varName,
     			err.getTypeName(), fieldName,
     			err.getMessage(),
