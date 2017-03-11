@@ -45,7 +45,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 	public boolean validateDValue(DValue dval, DType type) {
 //		SimpleNRuleRunner runner = new SimpleNRuleRunner(ruleL);
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = new NRuleContext(getET());
 		runner.evaluate(dval, ctx);
 		chkValErrors(runner);
 		return runner.getValidationErrors().isEmpty();

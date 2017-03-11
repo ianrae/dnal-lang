@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.BaseDValTest;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
@@ -42,7 +43,7 @@ public class ValidationTests extends BaseDValTest {
 		type.getRawRules().add(rule);
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
@@ -69,7 +70,7 @@ public class ValidationTests extends BaseDValTest {
 		
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
@@ -102,7 +103,7 @@ public class ValidationTests extends BaseDValTest {
 		type.getRawRules().add(rule);
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
@@ -131,10 +132,16 @@ public class ValidationTests extends BaseDValTest {
 		eltype.getRawRules().add(rule);
 		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		runner.evaluate(dval, ctx);
 		xchkValErrors(runner, 1);
 		chkInvalid(dval);
+	}
+	
+	//--
+	private NRuleContext createContext() {
+		NRuleContext ctx = new NRuleContext(new XErrorTracker());
+		return ctx;
 	}
 
 }
