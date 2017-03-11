@@ -53,7 +53,7 @@ public class ValidationLongTests extends BaseValidationTests {
 	@Test
 	public void testOr() {
 //		XErrorTracker.logErrors = true;
-		chkOrRule("< 500 or > 1000", 599, true);
+		chkOrRule("< 500 or > 1000", 99, true);
 	}
 	@Test
 	public void testOrFail() {
