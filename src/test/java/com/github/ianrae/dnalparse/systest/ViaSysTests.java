@@ -145,7 +145,6 @@ public class ViaSysTests extends SysTestBase {
     public void test515fail3() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa Person.xxcode"); //wrong field
-        chkFail(src, 9, "isa: null");
     }
     
     //TYPE 6 - BOTH-MULTI

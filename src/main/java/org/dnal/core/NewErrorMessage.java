@@ -16,7 +16,6 @@ public class NewErrorMessage {
 	private String fieldName;
 	private String varName;
 	private String message;
-	public ErrorMessage oldMsg; //remove later
 	
 	public NewErrorMessage() {
 		errorType = Type.IO_ERROR;
