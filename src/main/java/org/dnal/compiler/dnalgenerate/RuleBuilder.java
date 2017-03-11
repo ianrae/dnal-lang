@@ -25,20 +25,21 @@ public class RuleBuilder {
         this.dtype = type;
     }
 
-    public NRule buildCompare(ComparisonRuleExp exp, boolean isMember) {
+    public NRule buildCompare(String ruleName, ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);
+        ruleName = "compare-" + ruleName;
         
         if (exp.val != null) {
-            return doBuildIntCompare(exp, (VirtualInt)vs);
+            return doBuildIntCompare(ruleName, exp, (VirtualInt)vs);
         } else if (exp.zval != null) {
-            return doBuildNumberCompare(exp, (VirtualNumber)vs);
+            return doBuildNumberCompare(ruleName, exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            return doBuildStringCompare(exp, (VirtualString)vs);
+            return doBuildStringCompare(ruleName, exp, (VirtualString)vs);
         } else if (exp.longVal != null) {
             if (dtype.isShape(Shape.LONG)) {
-                return doBuildLongCompare(exp, (VirtualLong) vs);
+                return doBuildLongCompare(ruleName, exp, (VirtualLong) vs);
             } else {
-                return doBuildDateCompare(exp, (VirtualDate)vs);
+                return doBuildDateCompare(ruleName, exp, (VirtualDate)vs);
             }
         } else {
             return null; //!!
@@ -69,47 +70,48 @@ public class RuleBuilder {
 //        VirtualInt vs = new VirtualInt();
 //        return doBuildIntCompare(exp, vs);
 //    }
-    private NRule doBuildIntCompare(ComparisonRuleExp exp, VirtualInt vs) {
-        NRule rule = new CompareRule<VirtualInt, Integer>(exp.strValue(), exp.op, vs, exp.val);
+    private NRule doBuildIntCompare(String ruleName, ComparisonRuleExp exp, VirtualInt vs) {
+        NRule rule = new CompareRule<VirtualInt, Integer>(ruleName, exp.op, vs, exp.val);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildNumberCompare(ComparisonRuleExp exp, VirtualNumber vs) {
-        NRule rule = new CompareRule<VirtualNumber, Double>(exp.strValue(), exp.op, vs, exp.zval);
+    private NRule doBuildNumberCompare(String ruleName, ComparisonRuleExp exp, VirtualNumber vs) {
+        NRule rule = new CompareRule<VirtualNumber, Double>(ruleName, exp.op, vs, exp.zval);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildStringCompare(ComparisonRuleExp exp, VirtualString vs) {
-        NRule rule = new CompareRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.strVal);
+    private NRule doBuildStringCompare(String ruleName, ComparisonRuleExp exp, VirtualString vs) {
+        NRule rule = new CompareRule<VirtualString, String>(ruleName, exp.op, vs, exp.strVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildLongCompare(ComparisonRuleExp exp, VirtualLong vs) {
-        NRule rule = new CompareRule<VirtualLong, Long>(exp.strValue(), exp.op, vs, exp.longVal);
+    private NRule doBuildLongCompare(String ruleName, ComparisonRuleExp exp, VirtualLong vs) {
+        NRule rule = new CompareRule<VirtualLong, Long>(ruleName, exp.op, vs, exp.longVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildDateCompare(ComparisonRuleExp exp, VirtualDate vs) {
+    private NRule doBuildDateCompare(String ruleName, ComparisonRuleExp exp, VirtualDate vs) {
         Date dt = new Date(exp.longVal);
-        NRule rule = new CompareRule<VirtualDate, Date>(exp.strValue(), exp.op, vs, dt);
+        NRule rule = new CompareRule<VirtualDate, Date>(ruleName, exp.op, vs, dt);
         rule.setRuleText(exp.strValue());
         return rule;
     }
 
     
-    public NRule buildEq(ComparisonRuleExp exp, boolean isMember) {
+    public NRule buildEq(String ruleName, ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);
+        ruleName = "equals-" + ruleName;
         if (exp.val != null) {
-            return doBuildIntEq(exp, (VirtualInt)vs);
+            return doBuildIntEq(ruleName, exp, (VirtualInt)vs);
         } else if (exp.zval != null) {
-            return doBuildNumberEq(exp, (VirtualNumber)vs);
+            return doBuildNumberEq(ruleName, exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            return doBuildStringEq(exp, (VirtualString)vs);
+            return doBuildStringEq(ruleName, exp, (VirtualString)vs);
         } else if (exp.longVal != null) {
             if (dtype.isShape(Shape.LONG)) {
-                return doBuildLongEq(exp, (VirtualLong)vs);
+                return doBuildLongEq(ruleName, exp, (VirtualLong)vs);
             } else {
-                return doBuildDateEq(exp, (VirtualDate)vs);
+                return doBuildDateEq(ruleName, exp, (VirtualDate)vs);
             }
         } else {
             return null; //!!
@@ -119,45 +121,45 @@ public class RuleBuilder {
 //        VirtualInt vs = new VirtualInt();
 //        return doBuildIntEq(exp, vs);
 //    }
-    private NRule doBuildIntEq(ComparisonRuleExp exp, VirtualInt vs) {
-        NRule rule = new EqRule<VirtualInt, Integer>(exp.strValue(), exp.op, vs, exp.val);
+    private NRule doBuildIntEq(String ruleName, ComparisonRuleExp exp, VirtualInt vs) {
+        NRule rule = new EqRule<VirtualInt, Integer>(ruleName, exp.op, vs, exp.val);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildNumberEq(ComparisonRuleExp exp, VirtualNumber vs) {
-        NRule rule = new EqRule<VirtualNumber, Double>(exp.strValue(), exp.op, vs, exp.zval);
+    private NRule doBuildNumberEq(String ruleName, ComparisonRuleExp exp, VirtualNumber vs) {
+        NRule rule = new EqRule<VirtualNumber, Double>(ruleName, exp.op, vs, exp.zval);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildStringEq(ComparisonRuleExp exp, VirtualString vs) {
-        NRule rule = new EqRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.strVal);
+    private NRule doBuildStringEq(String ruleName, ComparisonRuleExp exp, VirtualString vs) {
+        NRule rule = new EqRule<VirtualString, String>(ruleName, exp.op, vs, exp.strVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildLongEq(ComparisonRuleExp exp, VirtualLong vs) {
-        NRule rule = new EqRule<VirtualLong, Long>(exp.strValue(), exp.op, vs, exp.longVal);
+    private NRule doBuildLongEq(String ruleName, ComparisonRuleExp exp, VirtualLong vs) {
+        NRule rule = new EqRule<VirtualLong, Long>(ruleName, exp.op, vs, exp.longVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }
-    private NRule doBuildDateEq(ComparisonRuleExp exp, VirtualDate vs) {
+    private NRule doBuildDateEq(String ruleName, ComparisonRuleExp exp, VirtualDate vs) {
         Date dt = new Date(exp.longVal);
-        NRule rule = new EqRule<VirtualDate, Date>(exp.strValue(), exp.op, vs, dt);
+        NRule rule = new EqRule<VirtualDate, Date>(ruleName, exp.op, vs, dt);
         rule.setRuleText(exp.strValue());
         return rule;
     }
 
-    public LenRule buildPseudoLenCompare(ComparisonRuleExp exp, boolean isMember, String fieldName) {
+    public LenRule buildPseudoLenCompare(String ruleName, ComparisonRuleExp exp, boolean isMember, String fieldName) {
         VirtualPseudoLen vs = this.createVirtualPseudoLen(exp, isMember, fieldName);
-        NRule inner = doBuildIntCompare(exp, vs);
-        LenRule newRule = new LenRule("len", vs);
+        NRule inner = doBuildIntCompare(ruleName, exp, vs);
+        LenRule newRule = new LenRule("len-" + ruleName, vs);
         newRule.opRule = inner;
         newRule.setRuleText(String.format("%s %s", "len", inner.getRuleText()));
         return newRule;
     }
-    public LenRule buildPseudoLenEq(ComparisonRuleExp exp, boolean isMember, String fieldName) {
+    public LenRule buildPseudoLenEq(String ruleName, ComparisonRuleExp exp, boolean isMember, String fieldName) {
         VirtualDataItem vs = this.createVirtualPseudoLen(exp, isMember, fieldName);
-        NRule inner = doBuildIntEq(exp, (VirtualInt)vs);
-        LenRule newRule = new LenRule("len", (VirtualInt) vs);
+        NRule inner = doBuildIntEq(ruleName, exp, (VirtualInt)vs);
+        LenRule newRule = new LenRule("len-" + ruleName, (VirtualInt) vs);
         newRule.setRuleText(String.format("%s %s", "len", inner.getRuleText()));
         newRule.opRule = inner;
         return newRule;

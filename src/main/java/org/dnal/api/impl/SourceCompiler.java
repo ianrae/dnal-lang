@@ -75,7 +75,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return compileString(input, null);
     }
     public DataSet compileString(String input, GenerateVisitor visitor) {
-        this.pushScope(new ErrorScope("string-source", "", ""));
+        this.pushScope(new ErrorScope("string", "", ""));
         boolean b = parseIntoDVals(input);
         if (! b) {
             return null;
