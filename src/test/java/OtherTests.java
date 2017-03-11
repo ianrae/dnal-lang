@@ -7,6 +7,7 @@ public class OtherTests {
 
     @Test
     public void test() {
+    	assertEquals(3,3);
     }
 
 }
