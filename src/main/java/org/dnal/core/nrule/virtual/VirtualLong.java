@@ -1,6 +1,7 @@
 package org.dnal.core.nrule.virtual;
 
 import org.dnal.core.DValue;
+import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRuleContext;
 
 public class VirtualLong implements VirtualDataItem, Comparable<Long> {
@@ -31,5 +32,11 @@ public class VirtualLong implements VirtualDataItem, Comparable<Long> {
         } else {
             val = dval.asLong();
         }
+    }
+    
+
+    @Override
+    public Shape getTargetShape() {
+        return Shape.LONG;
     }
 }

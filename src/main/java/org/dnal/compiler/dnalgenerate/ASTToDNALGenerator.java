@@ -68,6 +68,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             try {
                 visitType(exp);
             } catch (Exception e) {
+                e.printStackTrace();
                 this.addError2s("ASTtype '%s': %s", exp.strValue(), e.getMessage());
             }
         }
@@ -397,6 +398,8 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
         DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
         registerType(typeName, dtype);
+        
+        this.addValidationRules(exp, dtype);
     }
 
     private void processImports() {

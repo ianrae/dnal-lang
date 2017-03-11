@@ -1,5 +1,7 @@
 package com.github.ianrae.dnalparse.compiler;
 
+import org.dnal.compiler.nrule.IntegerRangeRule;
+import org.dnal.core.nrule.virtual.VirtualInt;
 import org.junit.Test;
 
 public class ValidationCustomRuleTests extends BaseValidationTests {
@@ -23,26 +25,31 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
         chkCustomRule("", "!myrule(4)", "abc", false);
     }
     
-	
 	@Test
 	public void testInRule() {
 		chkCustomIntRule("in(4,6,8)", 4, true);
 		chkCustomIntRule("in(4,6,8)", 5, false);
 		chkCustomIntRule("!in(4,6,8)", 5, true);
 	}
+    @Test
+    public void testInStringRule() {
+        chkCustomRule("", "in('a','b','e')", "b", true);
+        chkCustomRule("", "in('a','b','e')", "e", true);
+        chkCustomRule("", "in('a','b','e')", "f", false);
+        chkCustomRule("", "!in('a','b','e')", "f", true);
+    }
+    
 	
-//fix!!	
-//	@Test
-//	public void testRangeRule() {
-//		VirtualInt vs = new VirtualInt();
-//		RangeRule rule = new RangeRule("range", vs);
-//		CustomRuleRegistry.addRule(rule);
-//		
-//		chkCustomIntRule("range(4..8)", 4, true);
-//		chkCustomIntRule("range(4..8)", 8, false);
-//		chkCustomIntRule("!range(4..8)", 8, true);
-//	}
-//	
+	@Test
+	public void testRangeRule() {
+		VirtualInt vs = new VirtualInt();
+		IntegerRangeRule rule = new IntegerRangeRule("range", vs);
+		
+		chkCustomIntRule("range(4..8)", 4, true);
+		chkCustomIntRule("range(4..8)", 8, false);
+		chkCustomIntRule("!range(4..8)", 8, true);
+	}
+	
     @Test
     public void testEmptyRule() {
         String decl = "";
@@ -74,6 +81,12 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
         chkCustomRule(decl, "endsWith('ab')", "", false);
         chkCustomRule(decl, "endsWith('')", "", true);
     }
+    @Test
+    public void testContains() {
+        String decl = "";
+        chkCustomRule(decl, "contains('ab')", "cab", true);
+        chkCustomRule(decl, "contains('ab')", "CAB", false);
+    }
 	
 	
 	private void chkCustomRule(String decl, String rule, String str, boolean ok) {
@@ -84,9 +97,6 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
 	private void chkCustomIntRule(String text, int n, boolean ok) {
 		String s = String.format("type Foo int %s end let x Foo = %d", text, n);
 		parseAndValidate(s, ok, "INTEGER_SHAPE");
-	}
-	private void parseAndValidate(String input, boolean expected) {
-		parseAndValidate(input, expected, "INTEGER_SHAPE");
 	}
 
 }

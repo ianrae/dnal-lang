@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.dnal.compiler.nrule.LenRule;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
+import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.CompareRule;
@@ -24,6 +25,45 @@ public class RuleBuilder {
     public RuleBuilder(DType type) {
         this.dtype = type;
     }
+    
+    public boolean isCompatibleType(ComparisonRuleExp exp) {
+        
+        if (exp.val != null) {
+            return dtype.isShape(Shape.INTEGER) || dtype.isShape(Shape.LONG);
+        } else if (exp.zval != null) {
+            return dtype.isShape(Shape.NUMBER);
+        } else if (exp.strVal != null) {
+            return dtype.isShape(Shape.STRING); // || dtype.isShape(Shape.ENUM);
+        } else if (exp.longVal != null) {
+            return dtype.isShape(Shape.LONG) || dtype.isShape(Shape.DATE);
+        } else if (exp.identVal != null) {
+            return dtype.isShape(Shape.ENUM);
+        } else {
+            return false;
+        }
+    }
+    public boolean isCompatibleMemberType(ComparisonRuleExp exp) {
+        VirtualDataItem vs = createVirtual(exp, true);
+        StructMember sm = (StructMember) vs;
+        
+        DStructType structType = (DStructType) dtype;
+        String fieldName = sm.getFieldName();
+        DType elType =  structType.getFields().get(fieldName);
+
+        if (exp.val != null) {
+            return elType.isShape(Shape.INTEGER) || elType.isShape(Shape.LONG);
+        } else if (exp.zval != null) {
+            return elType.isShape(Shape.NUMBER);
+        } else if (exp.strVal != null) {
+            return elType.isShape(Shape.STRING) || elType.isShape(Shape.DATE);
+        } else if (exp.longVal != null) {
+            return elType.isShape(Shape.LONG) || elType.isShape(Shape.DATE);
+        } else if (exp.identVal != null) {
+            return elType.isShape(Shape.ENUM);
+        } else {
+            return false;
+        }
+    }
 
     public NRule buildCompare(ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);
@@ -33,9 +73,13 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return doBuildNumberCompare(exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            return doBuildStringCompare(exp, (VirtualString)vs);
+            if (vs.getTargetShape().equals(Shape.STRING)) {
+                return doBuildStringCompare(exp, (VirtualString)vs);
+            } else {
+                return doBuildDateCompare(exp, (VirtualDate)vs);
+            }
         } else if (exp.longVal != null) {
-            if (dtype.isShape(Shape.LONG)) {
+            if (vs.getTargetShape().equals(Shape.LONG)) {
                 return doBuildLongCompare(exp, (VirtualLong) vs);
             } else {
                 return doBuildDateCompare(exp, (VirtualDate)vs);
@@ -48,9 +92,10 @@ public class RuleBuilder {
     private VirtualDataItem createVirtual(ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs;
         if (isMember) {
-            vs = VirtualFactory.createMember(exp, dtype);
+            String fieldName = getFieldName(exp);
+            vs = VirtualFactory.createMember(exp, dtype, fieldName);
             StructMember sm = (StructMember) vs;
-            sm.setFieldName(getFieldName(exp));
+            sm.setFieldName(fieldName);
         } else {
             vs = VirtualFactory.create(exp, dtype);
         }
@@ -90,7 +135,13 @@ public class RuleBuilder {
         return rule;
     }
     private NRule doBuildDateCompare(ComparisonRuleExp exp, VirtualDate vs) {
-        Date dt = new Date(exp.longVal);
+        Date dt = null;
+        if (exp.longVal != null) {
+            dt = new Date(exp.longVal);
+        } else if (exp.strVal != null) {
+            dt = DateFormatParser.parse(exp.strVal);
+        }
+        
         NRule rule = new CompareRule<VirtualDate, Date>(exp.strValue(), exp.op, vs, dt);
         rule.setRuleText(exp.strValue());
         return rule;
@@ -104,13 +155,19 @@ public class RuleBuilder {
         } else if (exp.zval != null) {
             return doBuildNumberEq(exp, (VirtualNumber)vs);
         } else if (exp.strVal != null) {
-            return doBuildStringEq(exp, (VirtualString)vs);
+            if (vs.getTargetShape().equals(Shape.STRING)) {
+                return doBuildStringEq(exp, (VirtualString)vs);
+            } else {
+                return doBuildDateEq(exp, (VirtualDate)vs);
+            }
         } else if (exp.longVal != null) {
-            if (dtype.isShape(Shape.LONG)) {
+            if (vs.getTargetShape().equals(Shape.LONG)) {
                 return doBuildLongEq(exp, (VirtualLong)vs);
             } else {
                 return doBuildDateEq(exp, (VirtualDate)vs);
             }
+        } else if (exp.identVal != null) {
+            return doBuildEnumStringEq(exp, (VirtualString)vs);
         } else {
             return null; //!!
         }
@@ -131,6 +188,11 @@ public class RuleBuilder {
     }
     private NRule doBuildStringEq(ComparisonRuleExp exp, VirtualString vs) {
         NRule rule = new EqRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.strVal);
+        rule.setRuleText(exp.strValue());
+        return rule;
+    }
+    private NRule doBuildEnumStringEq(ComparisonRuleExp exp, VirtualString vs) {
+        NRule rule = new EqRule<VirtualString, String>(exp.strValue(), exp.op, vs, exp.identVal);
         rule.setRuleText(exp.strValue());
         return rule;
     }

@@ -45,4 +45,9 @@ public class MyCustomRule extends Custom1Rule<VirtualString> implements NeedsCus
 
     }
 
+    @Override
+    protected String generateRuleText() {
+        return getName();
+    }
+
 }

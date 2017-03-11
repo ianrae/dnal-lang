@@ -26,6 +26,7 @@ import org.dnal.compiler.parser.ast.ListAssignExp;
 import org.dnal.compiler.parser.ast.LongExp;
 import org.dnal.compiler.parser.ast.NumberExp;
 import org.dnal.compiler.parser.ast.PackageExp;
+import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.ast.StructAssignExp;
 import org.dnal.compiler.parser.ast.StructMemberAssignExp;
@@ -280,19 +281,17 @@ public class B2Tests {
 		assertEquals("b", rule.argL.get(1).strValue());
 	}
 	
-//fix later!!
-//	//for now the spaces are required 15 .. 20
-//	@Test
-//	public void test10e() {
-//		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int myrule(15 ..20) end");
-//		assertEquals("X", ax.var.val);
-//		assertEquals("int", ax.type.val);
-//		assertEquals(1, ax.ruleList.size());
-//		CustomRule rule = (CustomRule) ax.ruleList.get(0);
-//		assertEquals("myrule", rule.ruleName);
-//		RangeExp exp = (RangeExp) rule.argL.get(0);
-//		assertEquals("15..20", exp.strValue());
-//	}
+	@Test
+	public void test10e() {
+		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int myrule(15..20) end");
+		assertEquals("X", ax.var.val);
+		assertEquals("int", ax.type.val);
+		assertEquals(1, ax.ruleList.size());
+		CustomRule rule = (CustomRule) ax.ruleList.get(0);
+		assertEquals("myrule", rule.ruleName);
+		RangeExp exp = (RangeExp) rule.argL.get(0);
+		assertEquals("15..20", exp.strValue());
+	}
 	
 	@Test
 	public void test11() {

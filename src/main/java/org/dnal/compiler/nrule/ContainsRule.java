@@ -7,9 +7,9 @@ import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualString;
 
 
-public class StartsWithRule extends Custom1RuleBase<VirtualString> { 
+public class ContainsRule extends Custom1RuleBase<VirtualString> { 
 
-    public StartsWithRule(String name, VirtualString arg1) {
+    public ContainsRule(String name, VirtualString arg1) {
         super(name, arg1);
     }
 
@@ -20,7 +20,7 @@ public class StartsWithRule extends Custom1RuleBase<VirtualString> {
         }
 
         String str = exp.strValue();
-        boolean pass = dval.asString().startsWith(str);
+        boolean pass = dval.asString().contains(str);
         return pass;
     }
 

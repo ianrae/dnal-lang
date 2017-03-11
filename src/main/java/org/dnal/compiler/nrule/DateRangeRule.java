@@ -3,40 +3,40 @@ package org.dnal.compiler.nrule;
 import java.util.Date;
 
 import org.dnal.compiler.dnalgenerate.DateFormatParser;
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.LongExp;
-import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualDate;
 
 
-public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCustomRule { 
-    public CustomRule crule;
+/**
+ * Exclusive range.  Which means range(0..100) means 0,1,..99.
+ * @author ian
+ *
+ */
+public class DateRangeRule extends Custom1RuleBase<VirtualDate> { 
 
     public DateRangeRule(String name, VirtualDate arg1) {
         super(name, arg1);
     }
-
+    
     @Override
-    protected boolean onEval(DValue dval, NRuleContext ctx) {
-        if (crule.argL.size() != 2) {
-//          this.addInvalidRuleError(ruleText);
-            return false;
-        }
-
-        Date from = getDate(crule.argL.get(0));
-        Date to = getDate(crule.argL.get(1));
+    protected boolean evalDoubleArg(DValue dval, NRuleContext ctx, Exp exp1, Exp exp2) {
+        Date from = getDate(exp1);
+        Date to = getDate(exp2);
         if (to == null || from == null) {
             //!!err
             return false;
         }
-
+        return evaluate(from, to);
+    }
+    
+    private boolean evaluate(Date from, Date to) {
         Date target = arg1.val;
         
-        if (target.equals(from) || target.equals(to)) {
+        if (target.equals(from)) {
             return true;
         } else {
             boolean b1 = target.after(from);
@@ -57,11 +57,5 @@ public class DateRangeRule extends Custom1Rule<VirtualDate> implements NeedsCust
         } else {
             return null;
         }
-    }
-
-    @Override
-    public void rememberCustomRule(CustomRule exp) {
-        this.polarity = exp.polarity;
-        crule = exp;
     }
 }
