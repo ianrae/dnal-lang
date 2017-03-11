@@ -1,6 +1,6 @@
 package org.dnal.compiler.nrule;
 
-import org.dnal.compiler.parser.ast.CustomRule;
+import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
@@ -8,15 +8,21 @@ import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualString;
 
 
-public class EmptyRule extends Custom1Rule<VirtualString> implements NeedsCustomRule { 
-    public CustomRule crule;
+public class EmptyRule extends Custom1RuleBase<VirtualString>  { 
     
     public EmptyRule(String name, VirtualString arg1) {
         super(name, arg1);
     }
 
     @Override
-    protected boolean onEval(DValue dval, NRuleContext ctx) {
+    protected boolean evalNoArg(DValue dval, NRuleContext ctx) {
+        DValue tmp = dval;
+        boolean pass = tmp.asString().isEmpty();
+        return pass;
+    }
+
+    @Override
+    protected boolean evalSingleArg(DValue dval, NRuleContext ctx, Exp exp) {
         DValue tmp = dval;
         
         if (dval.getType().isShape(Shape.STRUCT)) {
@@ -26,11 +32,5 @@ public class EmptyRule extends Custom1Rule<VirtualString> implements NeedsCustom
         }
         boolean pass = tmp.asString().isEmpty();
         return pass;
-    }
-
-    @Override
-    public void rememberCustomRule(CustomRule exp) {
-        this.polarity = exp.polarity;
-        crule = exp;
     }
 }

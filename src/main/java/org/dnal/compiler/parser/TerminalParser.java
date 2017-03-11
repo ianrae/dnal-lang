@@ -9,8 +9,8 @@ import org.dnal.compiler.parser.ast.Exp;
 
 public class TerminalParser {
 	public static Terminals operators = Terminals.operators(
-//	        "-", "(", ")","..","!",
-			"-", "(", ")","!",
+	        "-", "(", ")","..","!",
+//			"-", "(", ")","!",
 			";",
 			"[", "]", ",", "{", "}", ":",
 			"==", "<", ">", ">=", "<=", "!=",
@@ -26,8 +26,8 @@ public class TerminalParser {
 	public static Parser<?> identTokenizer = Terminals.Identifier.TOKENIZER;
 	public static Parser<String> identSyntacticParser = Terminals.Identifier.PARSER;
 	public static Parser<?> integerTokenizer = Terminals.IntegerLiteral.TOKENIZER;
+	public static Parser<String> integerSyntacticParser = Terminals.IntegerLiteral.PARSER;
 	public static Parser<?> numberTokenizer = Terminals.DecimalLiteral.TOKENIZER;
-//	public static Parser<String> integerSyntacticParser = Terminals.IntegerLiteral.PARSER;
 	public static Parser<String> numberSyntacticParser = Terminals.DecimalLiteral.PARSER;
 	public static final Parser<String> LITERAL = Parsers.or(
 			Terminals.StringLiteral.DOUBLE_QUOTE_TOKENIZER,
@@ -35,8 +35,8 @@ public class TerminalParser {
 	public static final Parser<String> stringSyntacticParser = Terminals.StringLiteral.PARSER;
 
 	public static Parser<?> ignored = Parsers.or(Scanners.JAVA_LINE_COMMENT, Scanners.WHITESPACES);
-//	public static Parser<?> tokenizer = Parsers.or(operators.tokenizer(), identTokenizer, numberTokenizer, LITERAL); // tokenizes the operators and integer
-	public static Parser<?> tokenizer = Parsers.or(operators.tokenizer(), identTokenizer, numberTokenizer, integerTokenizer, LITERAL); // tokenizes the operators and integer
+	//don't use both numberTokenizer and integerTokenizer
+	public static Parser<?> tokenizer = Parsers.or(operators.tokenizer(), identTokenizer, numberTokenizer, LITERAL); // tokenizes the operators and integer
 
 	public static Parser<Token> token(String tok) {
 		return operators.token(tok);

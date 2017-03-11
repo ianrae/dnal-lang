@@ -19,4 +19,9 @@ public class LenRule extends Custom1Rule<VirtualInt>  {
         return b;
     }
 
+    @Override
+    protected String generateRuleText() {
+        return opRule.getRuleText();
+    }
+
 }

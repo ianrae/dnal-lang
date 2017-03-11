@@ -30,6 +30,12 @@ public class RuleEngineTests {
 	    protected boolean onEval(DValue dval, NRuleContext ctx) {
 			return arg1.val.contains("a");
 		}
+
+	    @Override
+	    protected String generateRuleText() {
+	        return getName();
+	    }
+		
 	}
 	
 	

@@ -7,13 +7,20 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.IsaRule;
 import org.dnal.compiler.nrule.LenRule;
 import org.dnal.compiler.nrule.NeedsCustomRule;
+import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonAndRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.IdentExp;
+import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
+import org.dnal.compiler.parser.ast.LongExp;
+import org.dnal.compiler.parser.ast.NumberExp;
+import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.Shape;
@@ -82,8 +89,10 @@ public class RuleConverter extends ErrorTrackingBase {
     private boolean checkForRuleDecl(DType type, CustomRule rule) {
         if (type.isScalarShape()) {
             return checkScalarForRuleDecl(type, rule);
-        } else if (type.getShape().equals(Shape.STRUCT)) {
+        } else if (type.isStructShape()) {
             return checkStructForRuleDecl(type, rule);
+        } else if (type.isListShape()) {
+            return checkListForRuleDecl(type, rule);
         } else {
             return false; //handle list later!!
         }
@@ -111,8 +120,51 @@ public class RuleConverter extends ErrorTrackingBase {
         
         return checkForRuleDecl(fieldType, rule); //**recursion**
     }
+    private boolean checkListForRuleDecl(DType type, CustomRule rule) {
+        if (type instanceof DListType) {
+            DListType listType = (DListType) type;
+            if (rule.argL.isEmpty()) {
+                return true;
+            } else {
+                return checkListArgs(listType, rule);
+            }
+        } else {
+            return false;
+        }
+    }
+    private boolean checkListArgs(DListType listType, CustomRule rule) {
+        DType elType = listType.getElementType();
+        int passCount = 0;
+        for(Exp arg: rule.argL) {
+            if (arg instanceof IntegerExp) {
+                passCount = checkCondition(elType.isNumericShape(), passCount);
+            } else if (arg instanceof LongExp) {
+                passCount = checkCondition(elType.isNumericShape() || elType.isShape(Shape.DATE), passCount);
+            } else if (arg instanceof NumberExp) {
+                passCount = checkCondition(elType.isNumericShape(), passCount);
+            } else if (arg instanceof StringExp) {
+                passCount = checkCondition(elType.isShape(Shape.STRING) || elType.isShape(Shape.DATE), passCount);
+            } else if (arg instanceof IdentExp) {
+                passCount++; //could be enum or ref. fix later!!
+            } else if (arg instanceof BooleanExp) {
+                passCount = checkCondition(elType.isShape(Shape.BOOLEAN), passCount);
+            } else {
+                this.addError3s("type '%s' custom rule '%s' wrong type '%s'", listType.getName(), rule.ruleName, listType.getShape().name());
+                return false;
+            }
+        }
+        return passCount == rule.argL.size();
+    }
+
+    private int checkCondition(boolean cond, int passCount) {
+        if (cond) {
+            return passCount + 1;
+        }
+        return passCount;
+    }
+
     private DType getFieldType(DType type, CustomRule rule) {
-        String fieldName = rule.argL.get(0).strValue();
+        String fieldName = getFieldName(rule);
 
         DStructType structType = (DStructType) type;
         DType fieldType = structType.getFields().get(fieldName);
@@ -122,6 +174,15 @@ public class RuleConverter extends ErrorTrackingBase {
         }
         
         return fieldType;
+    }
+    private String getFieldName(CustomRule rule) {
+        String fieldName = rule.fieldName;
+        
+        //legacy syntax len(x)
+        if (fieldName == null) {
+            fieldName = rule.argL.get(0).strValue();
+        }
+        return fieldName;
     }
 
     private NRule doComparisonOrRule(DType type, ComparisonOrRuleExp exp) {
@@ -142,6 +203,11 @@ public class RuleConverter extends ErrorTrackingBase {
 	
     private NRule doComparisonRule(DType type, ComparisonRuleExp exp) {
         if (type.isScalarShape()) {
+            boolean isComparable = type.isNumericShape() || type.isShape(Shape.STRING) || type.isShape(Shape.DATE) || type.isShape(Shape.ENUM);
+            if (! isComparable) {
+                this.addError2s("cannot use '%s' on type '%s'. not a comparable type", exp.strValue(), type.getName());
+                return null;
+            }
             return doScalarComparisonRule(type, exp);
         } else if (type.getShape().equals(Shape.STRUCT)) {
             return doStructComparisonRule(type, exp);
@@ -160,6 +226,11 @@ public class RuleConverter extends ErrorTrackingBase {
 		    if (isPseudoLen(exp)) {
 		        return builder.buildPseudoLenCompare(exp, false, null);
 		    } else {
+		        if (! builder.isCompatibleType(exp)) {
+	                this.addError2s("cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+		            return null;
+		        }
+		        
 		        return builder.buildCompare(exp, false);
 		    }
 		        
@@ -170,6 +241,10 @@ public class RuleConverter extends ErrorTrackingBase {
             if (isPseudoLen(exp)) {
                 return builder.buildPseudoLenEq(exp, false, null);
             } else {
+                if (! builder.isCompatibleType(exp)) {
+                    this.addError2s("eq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                    return null;
+                }
                 return builder.buildEq(exp, false);
             }
 		}
@@ -194,11 +269,21 @@ public class RuleConverter extends ErrorTrackingBase {
         case "<=":
         case ">=":
         {
+            if (! builder.isCompatibleMemberType(exp)) {
+                this.addError2s("MEMBcannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                return null;
+            }
+            
             return builder.buildCompare(exp, true);
         }
         case "==":
         case "!=":
         {
+            if (! builder.isCompatibleMemberType(exp)) {
+                this.addError2s("MEMBeq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                return null;
+            }
+            
             return builder.buildEq(exp, true);
         }
         default:
@@ -210,7 +295,7 @@ public class RuleConverter extends ErrorTrackingBase {
     private NRule specialHandling(CustomRule rule, DType type) {
         RuleBuilder builder = new RuleBuilder(type);
         ComparisonRuleExp exp = (ComparisonRuleExp) rule.hackExtra;
-        String fieldName = rule.argL.get(0).strValue();
+        String fieldName = getFieldName(rule);
         
         
         LenRule newRule = null;

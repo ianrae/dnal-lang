@@ -108,21 +108,6 @@ public class ValidationDateTests extends BaseValidationTests {
 	    return dt;
 	}
 
-
-//fix parsing of rangerule then support range('2015'..'2016')
-//	@Test
-//	public void testRangeRule() {
-//		String s1 = DateFormatParser.format(new Date(before));
-//		String s2 = DateFormatParser.format(new Date(after));
-//		String str = String.format("range('%s','%s')", s1, s2);
-//		chkCustomIntRule(str, same, true);
-//		
-//        str = String.format("range(%d,%d)", before, after);
-//        chkCustomIntRule(str, same, true);
-//		chkCustomIntRule("range(4..8)", 8, false);
-//		chkCustomIntRule("!range(4..8)", 8, true);
-//	}
-	
 	private void chkCustomIntRule(String text, long n, boolean ok) {
 		String s = String.format("type Foo date %s end let x Foo = %d", text, n);
 		parseAndValidate(s, ok, "DATE_SHAPE");

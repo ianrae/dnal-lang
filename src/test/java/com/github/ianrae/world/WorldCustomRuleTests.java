@@ -35,6 +35,12 @@ public class WorldCustomRuleTests extends BaseWorldTest {
         public void rememberCustomRule(CustomRule exp) {
             this.polarity = exp.polarity;
         }
+
+        @Override
+        protected String generateRuleText() {
+            return "zzz";
+        }
+        
         
         public static class Factory implements RuleFactory {
             @Override

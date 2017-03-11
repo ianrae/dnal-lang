@@ -54,6 +54,7 @@ public class BaseValidationTests extends BaseTest {
     
     protected int expected = 2;
     protected boolean generateOk = true;
+    protected boolean dumpWorld = true;
     protected ASTToDNALGenerator parse(List<NewErrorMessage> errL, String input, String typeName, String baseType, CustomRuleFactory crf) {
         log("doing: " + input);
         List<Exp> list = FullParser.fullParse(input);
@@ -64,7 +65,9 @@ public class BaseValidationTests extends BaseTest {
         assertEquals(generateOk, b);
 
         World world = getContext().world;
-        world.dump();
+        if (dumpWorld) {
+            world.dump();
+        }
 
         DTypeRegistry registry = getContext().registry;
         DType type = registry.getType(typeName);
