@@ -27,4 +27,9 @@ public class VirtualNumber implements VirtualDataItem, Comparable<Double> {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asNumber();
     }
+
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

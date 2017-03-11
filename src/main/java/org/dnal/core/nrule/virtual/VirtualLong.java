@@ -32,4 +32,9 @@ public class VirtualLong implements VirtualDataItem, Comparable<Long> {
             val = dval.asLong();
         }
     }
+
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

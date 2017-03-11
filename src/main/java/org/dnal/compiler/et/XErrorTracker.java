@@ -16,6 +16,7 @@ public class XErrorTracker {
     private String currentTypeName;
     private String currentFieldName;
     private String currentVarName;
+    private String currentActualValue;
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
@@ -48,11 +49,13 @@ public class XErrorTracker {
     	String varName = (err.getVarName() == null) ? "?" : err.getVarName();
     	String fieldName = (err.getFieldName() == null) ? "" : "." + err.getFieldName();
     	String lineNum = (err.getLineNum() == 0) ? "" : "." + Integer.valueOf(err.getLineNum()).toString();
-    	String s = String.format("[%s]%s %s (%s) %s [%s%s] - %s",
+    	String actualValue = (err.getActualValue() == null) ? "" : String.format("(%s)", err.getActualValue());
+    	String s = String.format("[%s]%s %s (%s) %s [%s%s] - %s %s",
     			err.getSrcFile(), lineNum, 
     			err.getErrorType(), err.getErrorName(), varName,
     			err.getTypeName(), fieldName,
-    			err.getMessage());
+    			err.getMessage(),
+    			actualValue);
     	return s;
     }
 
@@ -104,6 +107,9 @@ public class XErrorTracker {
         if (this.currentVarName != null) {
         	err.setVarName(currentVarName);
         }
+        if (this.currentActualValue != null) {
+        	err.setActualValue(currentActualValue);
+        }
         
         this.errL.add(err);
         logIfEnabled(err);
@@ -119,6 +125,9 @@ public class XErrorTracker {
 	}
 	public void setCurrentVarName(String currentVarName) {
 		this.currentVarName = currentVarName;
+	}
+	public void setCurrentActualValue(String currentActualValue) {
+		this.currentActualValue = currentActualValue;
 	}
 
 

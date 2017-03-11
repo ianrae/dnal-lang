@@ -42,4 +42,7 @@ public class NRuleContext {
 	public void setCurrentVarName(String currentVarName) {
 		et.setCurrentVarName(currentVarName);
 	}
+	public void setActualValue(String currentActualValue) {
+		et.setCurrentActualValue(currentActualValue);
+	}
 }
