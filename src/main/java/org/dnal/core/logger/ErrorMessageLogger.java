@@ -2,6 +2,7 @@ package org.dnal.core.logger;
 
 import java.util.List;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.NewErrorMessage;
 
 public class ErrorMessageLogger {
@@ -11,8 +12,11 @@ public class ErrorMessageLogger {
             return;
         }
         Log.log(String.format("-----%d errors-----", errors.size()));
+        XErrorTracker errorTracker = new XErrorTracker();
+        
         for(NewErrorMessage err : errors) {
-            Log.log(String.format("%d: %s: %s", err.getLineNum(), err.getErrorType().name(), err.getMessage()));
+        	String errmsg = errorTracker.errToString(err);
+            Log.log(errmsg);
         }
     }
     

@@ -79,7 +79,7 @@ public class SimpleNRuleRunner  {
 			if (inner == null) {
 			    if (dval.getType() instanceof DStructType) {
 			        if (!structType.fieldIsOptional(fieldName)) {
-			        	ctx.addErrorZ(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
+			        	ctx.addError(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
 			        }
 			    }
 			} else {
