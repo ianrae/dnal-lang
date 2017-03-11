@@ -2,6 +2,7 @@ package com.github.ianrae.dnalparse.compiler;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.Custom1Rule;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
@@ -40,7 +41,7 @@ public class RuleEngineTests {
 	
 	
 	public static class NRuleRunner {
-		public NRuleContext ctx = new NRuleContext();
+		public NRuleContext ctx = new NRuleContext(new XErrorTracker());
 		public boolean run(DValue dval, NRule rule) {
 			return rule.eval(dval, ctx);
 		}
@@ -148,11 +149,11 @@ public class RuleEngineTests {
 		NRuleRunner runner = createRunner();
 		boolean b = runner.run(dval, rule);
 		
-		if (! runner.ctx.wereNoErrors()) {
-			for(NewErrorMessage msg: runner.ctx.errL) {
-				log(msg.getMessage());
-			}
-		}
+//		if (! runner.ctx.wereNoErrors()) {
+//			for(NewErrorMessage msg: runner.ctx.errL) {
+//				log(msg.getMessage());
+//			}
+//		}
 		
 		
 		assertEquals(true, runner.ctx.wereNoErrors());

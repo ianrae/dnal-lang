@@ -39,21 +39,27 @@ public abstract class NRuleBase implements NRule {
             vs.resolve(dval, ctx);
         }
     }
+    
+    protected void setActualValue(Object val1, NRuleContext ctx) {
+		if (val1 != null) {
+			ctx.setActualValue(val1.toString());
+		}
+	}
 
 	protected void addUnknownRuleError(NRuleContext ctx, String ruleText) {
-		ctx.addErrorZ(ErrorType.UNKNOWNRULE, 
+		ctx.addError(ErrorType.UNKNOWNRULE, 
 				String.format("uknown rule '%s'", ruleText));
 	}
 	protected void addUnknownFieldError(NRuleContext ctx, String ruleText, String fieldName) {
-		ctx.addErrorZ(ErrorType.UNKNOWNRULE, 
+		ctx.addError(ErrorType.UNKNOWNRULE, 
 				String.format("uknown field '%s' in rule '%s'", fieldName, ruleText));
 	}
 	protected void addInvalidRuleError(NRuleContext ctx, String ruleText) {
-		ctx.addErrorZ(ErrorType.INVALIDRULE, 
+		ctx.addError(ErrorType.INVALIDRULE, 
 				String.format("invalid rule can't be used here '%s'", ruleText));
 	}
 	protected void addRuleFailedError(NRuleContext ctx, String ruleText) {
-		ctx.addErrorZ(ErrorType.RULEFAIL, ruleText + "- failed");
+		ctx.addError(ErrorType.RULEFAIL, ruleText + "- failed");
 	}
 
     public String getRuleText() {

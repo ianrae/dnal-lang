@@ -17,6 +17,7 @@ public class EqRule<T,U> extends NRuleBase {
 	protected boolean onEval(DValue dval, NRuleContext ctx) {
 	    resolveArg(val1, dval, ctx);
 	    resolveArg(val2, dval, ctx);
+	    setActualValue(val1, ctx);
 	    
 		boolean b = false;
 		switch(op) {

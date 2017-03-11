@@ -35,4 +35,9 @@ public class VirtualDate implements VirtualDataItem, Comparable<Date> {
     public Shape getTargetShape() {
         return Shape.DATE;
     }
+    
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

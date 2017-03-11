@@ -33,4 +33,9 @@ public class VirtualNumber implements VirtualDataItem, Comparable<Double> {
     public Shape getTargetShape() {
         return Shape.NUMBER;
     }
+
+	@Override
+	public String toString() {
+		return val.toString();
+	}
 }

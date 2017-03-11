@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration>
+<configuration debug="false" scan="false">
+
 <!-- %d{HH:mm:ss} %-5level %logger{16} - %msg%n  -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-		<layout class="ch.qos.logback.classic.PatternLayout">
-			<Pattern>
-				 %-5level - %msg%n
-			</Pattern>
-		</layout>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+    	<pattern>%-5level - %msg%n</pattern>
+  		</encoder>
 	</appender>
 
 	<logger name="org.springframework" level="warn" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 	
-	<logger name="com.github.ianrae" level="debug" additivity="false">
+	<logger name="com.github.ianrae" level="info" additivity="false">
 		<appender-ref ref="STDOUT" />
 	</logger>
 	 

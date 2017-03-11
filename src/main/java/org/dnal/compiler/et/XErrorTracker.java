@@ -13,6 +13,10 @@ public class XErrorTracker {
     protected List<NewErrorMessage> errL = new ArrayList<>();
     protected Stack<ErrorScope> scopeStack = new Stack<>();
     public static boolean logErrors = false;
+    private String currentTypeName;
+    private String currentFieldName;
+    private String currentVarName;
+    private String currentActualValue;
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
@@ -31,14 +35,28 @@ public class XErrorTracker {
     
     public void dumpErrors() {
         for(NewErrorMessage err : errL) {
-            Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
+            Log.log(errToString(err));
         }
     }
     
     private void logIfEnabled(NewErrorMessage err) {
         if (logErrors) {
-            Log.log(String.format("[%s] line %d: %s", err.getSrcFile(), err.getLineNum(), err.getMessage()));
+            Log.log(errToString(err));
         }
+    }
+    
+    public String errToString(NewErrorMessage err) {
+    	String varName = (err.getVarName() == null) ? "?" : err.getVarName();
+    	String fieldName = (err.getFieldName() == null) ? "" : "." + err.getFieldName();
+    	String lineNum = (err.getLineNum() == 0) ? "" : "." + Integer.valueOf(err.getLineNum()).toString();
+    	String actualValue = (err.getActualValue() == null) ? "" : String.format("(%s)", err.getActualValue());
+    	String s = String.format("[%s]%s %s (%s) %s [%s%s] - %s %s",
+    			err.getSrcFile(), lineNum, 
+    			err.getErrorType(), err.getErrorName(), varName,
+    			err.getTypeName(), fieldName,
+    			err.getMessage(),
+    			actualValue);
+    	return s;
     }
 
     protected void addError(String fmt, Exp exp) {
@@ -79,12 +97,38 @@ public class XErrorTracker {
             ErrorScope scope = scopeStack.peek();
             err.setSrcFile(scope.getSrcFile());
         }
+        
+        if (this.currentTypeName != null) {
+        	err.setTypeName(currentTypeName);
+        }
+        if (this.currentFieldName != null) {
+        	err.setFieldName(currentFieldName);
+        }
+        if (this.currentVarName != null) {
+        	err.setVarName(currentVarName);
+        }
+        if (this.currentActualValue != null) {
+        	err.setActualValue(currentActualValue);
+        }
+        
         this.errL.add(err);
         logIfEnabled(err);
     }
     public List<NewErrorMessage> getErrL() {
         return errL;
     }
+	public void setCurrentTypeName(String currentTypeName) {
+		this.currentTypeName = currentTypeName;
+	}
+	public void setCurrentFieldName(String currentFieldName) {
+		this.currentFieldName = currentFieldName;
+	}
+	public void setCurrentVarName(String currentVarName) {
+		this.currentVarName = currentVarName;
+	}
+	public void setCurrentActualValue(String currentActualValue) {
+		this.currentActualValue = currentActualValue;
+	}
 
 
 }

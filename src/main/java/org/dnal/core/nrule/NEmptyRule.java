@@ -14,6 +14,8 @@ public class NEmptyRule<T> extends NRuleBase {
 	@Override
     protected boolean onEval(DValue dval, NRuleContext ctx) {
 	    resolveArg(val1, dval, ctx);
+	    setActualValue(val1, ctx);
+	    
 		boolean b = false;
 		if (val1 instanceof String) {
 			String s = (String) val1;

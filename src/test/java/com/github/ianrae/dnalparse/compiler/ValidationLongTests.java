@@ -1,9 +1,16 @@
 package com.github.ianrae.dnalparse.compiler;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.junit.Test;
 
 public class ValidationLongTests extends BaseValidationTests {
 
+	@Test
+	public void testOne() {
+		XErrorTracker.logErrors = true;
+		chkRule(">", 100, false);
+	}
+	
 	@Test
 	public void test1() {
 		chkRule(">", 99, false);
@@ -45,6 +52,7 @@ public class ValidationLongTests extends BaseValidationTests {
 	
 	@Test
 	public void testOr() {
+//		XErrorTracker.logErrors = true;
 		chkOrRule("< 500 or > 1000", 99, true);
 	}
 	@Test

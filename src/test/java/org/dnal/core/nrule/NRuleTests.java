@@ -2,6 +2,7 @@ package org.dnal.core.nrule;
 
 import static org.junit.Assert.assertEquals;
 
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
 import org.junit.Test;
@@ -12,7 +13,7 @@ public class NRuleTests {
 	public void test() {
 		StaticRule rule = new StaticRule("A", true);
 		NRuleRunner runner = createRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		boolean b = runner.run(null, rule, ctx);
 		assertEquals(true, b);
 
@@ -94,18 +95,23 @@ public class NRuleTests {
 	}
 	private void chkRule(NRule rule, boolean expected, boolean noErrors) {
 		NRuleRunner runner = createRunner();
-		NRuleContext ctx = new NRuleContext();
+		NRuleContext ctx = createContext();
 		boolean b = runner.run(null, rule, ctx);
 		
-		if (! ctx.wereNoErrors()) {
-			for(NewErrorMessage msg: ctx.errL) {
-				log(msg.getMessage());
-			}
-		}
+//		if (! ctx.wereNoErrors()) {
+//			for(NewErrorMessage msg: ctx.errL) {
+//				log(msg.getMessage());
+//			}
+//		}
 		
 		
 		assertEquals(noErrors, ctx.wereNoErrors());
 		assertEquals(expected, b);
+	}
+	
+	private NRuleContext createContext() {
+		NRuleContext ctx = new NRuleContext(new XErrorTracker());
+		return ctx;
 	}
 	
 	private static class MyRunner implements NRuleRunner {

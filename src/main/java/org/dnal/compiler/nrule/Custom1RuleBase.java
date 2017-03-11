@@ -4,7 +4,6 @@ import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DValue;
-import org.dnal.core.ErrorMessage;
 import org.dnal.core.ErrorType;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
@@ -23,7 +22,7 @@ public abstract class Custom1RuleBase<T extends VirtualDataItem> extends Custom1
     }
 
     protected void addWrongArgumentsError(NRuleContext ctx) {
-        ctx.addErrorZ(ErrorType.INVALIDRULE, 
+        ctx.addError(ErrorType.INVALIDRULE, 
                 String.format("wrong number of arguments: %s", crule.strValue()));
     }
 
