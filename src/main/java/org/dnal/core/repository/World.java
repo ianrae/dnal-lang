@@ -52,6 +52,17 @@ public class World implements WorldListener {
     public DValue findTopLevelValue(String varName) {
         return valueMap.get(varName);
     }
+    
+    //!!very expensive - fix later
+    public String findTopValueValueName(DValue target) {
+    	for(String name: valueMap.keySet()) {
+    		DValue dval = valueMap.get(name);
+    		if (dval == target) {
+    			return name;
+    		}
+    	}
+    	return null;
+    }
 
 	@Override
 	public void valueAdded(DValue dval) {

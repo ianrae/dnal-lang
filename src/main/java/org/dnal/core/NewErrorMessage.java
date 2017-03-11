@@ -14,6 +14,7 @@ public class NewErrorMessage {
 	private String errorName;
 	private String typeName;
 	private String fieldName;
+	private String varName;
 	private String message;
 	public ErrorMessage oldMsg; //remove later
 	
@@ -62,6 +63,14 @@ public class NewErrorMessage {
 	}
 	public void setErrorName(String errorName) {
 		this.errorName = errorName;
+	}
+
+	public String getVarName() {
+		return varName;
+	}
+
+	public void setVarName(String varName) {
+		this.varName = varName;
 	}
 
 }

@@ -15,6 +15,7 @@ public class XErrorTracker {
     public static boolean logErrors = false;
     private String currentTypeName;
     private String currentFieldName;
+    private String currentVarName;
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
@@ -44,8 +45,11 @@ public class XErrorTracker {
     }
     
     public String errToString(NewErrorMessage err) {
-    	String s = String.format("[%s].%d %s (%s) [%s.%s] - %s", err.getSrcFile(), err.getLineNum(), 
-    			err.getErrorType(), err.getErrorName(), err.getTypeName(), err.getFieldName(),
+    	String varName = (err.getVarName() == null) ? "?" : err.getVarName();
+    	String s = String.format("[%s].%d %s (%s) %s [%s.%s] - %s",
+    			err.getSrcFile(), err.getLineNum(), 
+    			err.getErrorType(), err.getErrorName(), varName,
+    			err.getTypeName(), err.getFieldName(),
     			err.getMessage());
     	return s;
     }
@@ -95,6 +99,9 @@ public class XErrorTracker {
         if (this.currentFieldName != null) {
         	err.setFieldName(currentFieldName);
         }
+        if (this.currentVarName != null) {
+        	err.setVarName(currentVarName);
+        }
         
         this.errL.add(err);
         logIfEnabled(err);
@@ -107,6 +114,9 @@ public class XErrorTracker {
 	}
 	public void setCurrentFieldName(String currentFieldName) {
 		this.currentFieldName = currentFieldName;
+	}
+	public void setCurrentVarName(String currentVarName) {
+		this.currentVarName = currentVarName;
 	}
 
 

@@ -66,9 +66,7 @@ public class TransactionImpl implements Transaction {
     public boolean commit() {
         //validate
         for(Pair<String,DValue> pair: pendingL) {
-            //            String name = pair.a;
-            DValue dval = pair.b;
-            if (! validateSingleValue(dval)) {
+            if (! validateSingleValue(pair)) {
                 return false;
             }
         }
@@ -86,10 +84,12 @@ public class TransactionImpl implements Transaction {
         return true;
     }
 
-    private boolean validateSingleValue(DValue dval) {
+    private boolean validateSingleValue(Pair<String,DValue> pair) {
         ValidationPhase validator = new ValidationPhase(world, context.et);
 
-        boolean b = validator.validateDValue(dval, dval.getType());
+        DValue dval = pair.b;
+        String varName = pair.a;
+        boolean b = validator.validateDValue(varName, dval, dval.getType());
         return b;
     }
 

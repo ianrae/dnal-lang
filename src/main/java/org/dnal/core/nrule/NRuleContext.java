@@ -52,4 +52,7 @@ public class NRuleContext {
 	public void setCurrentFieldName(String currentFieldName) {
 		et.setCurrentFieldName(currentFieldName);
 	}
+	public void setCurrentVarName(String currentVarName) {
+		et.setCurrentVarName(currentVarName);
+	}
 }
