@@ -1,9 +1,11 @@
 package org.dnal.compiler.nrule;
 
 import org.dnal.api.impl.CompilerContext;
+import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
 
@@ -48,9 +50,11 @@ public class UniqueRule extends NRuleBase {
     
 
     private boolean checkRule(DStructType structType) {
-        //search all values of structType (and child-types) 
-        //build map of values. error if any duplicates
-        return false;
+        ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
+        boolean b = finder.calculateUnique(structType, fieldName);
+        Log.log(String.format("AAAAAAAAAAAx %b", b));
+    	
+        return b;
     }
 
     @Override

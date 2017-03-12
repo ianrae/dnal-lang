@@ -284,6 +284,10 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             if (membExp.optional) {
                 inner.optional();
             }
+            if (membExp.isUnique) {
+            	inner.unique();
+            }
+            
             switch(TypeInfo.typeOf(membExp.type)) {
             case INT:
                 inner = inner.integer(membExp.var.strValue());

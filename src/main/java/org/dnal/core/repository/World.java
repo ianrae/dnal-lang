@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -187,6 +188,18 @@ public class World implements WorldListener {
 	@Override
 	public Repository getRepoFor(DType dtype) {
 		return repoMap.get(dtype);
+	}
+	
+	public Repository getRepoForListType(DType elementType) {
+		for(DType key: repoMap.keySet()) {
+			if (key instanceof DListType) {
+				DListType listType = (DListType) key;
+				if (listType.getElementType() == elementType) {
+					return repoMap.get(key);
+				}
+			}
+		}
+		return null;
 	}
 
     public Map<String, DValue> getValueMap() {
