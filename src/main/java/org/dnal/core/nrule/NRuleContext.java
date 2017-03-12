@@ -1,6 +1,8 @@
 package org.dnal.core.nrule;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.ErrorType;
@@ -8,9 +10,14 @@ import org.dnal.core.NewErrorMessage;
 
 public class NRuleContext {
 	private XErrorTracker et;
+	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 
 	public NRuleContext(XErrorTracker et) {
 		this.et = et;
+	}
+	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap) {
+		this.et = et;
+		this.alreadyRunMap = alreadyRunMap;
 	}
 	public void addError(ErrorType errType, String message) {
         NewErrorMessage nem = new NewErrorMessage();
@@ -49,5 +56,12 @@ public class NRuleContext {
 	}
 	public void setActualValue(String currentActualValue) {
 		et.setCurrentActualValue(currentActualValue);
+	}
+	
+	public boolean haveAlreadyRun(NRule rule) {
+		return alreadyRunMap.containsKey(rule);
+	}
+	public void addToAlreadyRunMap(NRule rule) {
+		alreadyRunMap.put(rule, Integer.valueOf(0));
 	}
 }

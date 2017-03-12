@@ -1,5 +1,6 @@
 package org.dnal.compiler.validate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
@@ -7,6 +8,7 @@ import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
+import org.dnal.core.nrule.NRule;
 import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.repository.Repository;
@@ -16,6 +18,7 @@ import org.dnal.core.repository.WorldListener;
 public class ValidationPhase extends ErrorTrackingBase {
 
 	private WorldListener world;
+	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 
 	public ValidationPhase(WorldListener world, XErrorTracker et) {
 		super(et);
@@ -57,7 +60,9 @@ public class ValidationPhase extends ErrorTrackingBase {
 
 	public boolean validateDValue(String varName, DValue dval, DType type) {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
-		NRuleContext ctx = new NRuleContext(getET());
+		
+		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once
+		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap);
 		ctx.setCurrentVarName(varName);
 		runner.evaluate(dval, ctx);
 		return runner.getValidationErrors().isEmpty();

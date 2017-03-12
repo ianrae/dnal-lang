@@ -6,7 +6,6 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorType;
-import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
@@ -52,6 +51,11 @@ public class UniqueRule extends NRuleBase {
     
 
     private boolean checkRule(DStructType structType, NRuleContext ctx) {
+    	if (ctx.haveAlreadyRun(this)) {
+    		return true;
+    	}
+    	ctx.addToAlreadyRunMap(this);
+    	
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
         boolean b = finder.calculateUnique(structType, fieldName);
         Log.log(String.format("AAAAAAAAAAAx %b", b));
