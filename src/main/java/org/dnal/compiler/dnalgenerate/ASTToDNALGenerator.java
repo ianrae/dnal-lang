@@ -234,6 +234,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             for(String fieldName: structType.getFields().keySet()) {
                 if (structType.fieldIsUnique(fieldName)) {
                     UniqueRule rule = new UniqueRule("unique", fieldName, structType, this.context);
+                    rule.setRuleText(fieldName);
                     type.getRawRules().add(rule);
                 }
             }

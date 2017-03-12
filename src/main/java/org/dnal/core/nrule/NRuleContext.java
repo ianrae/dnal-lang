@@ -16,8 +16,13 @@ public class NRuleContext {
         NewErrorMessage nem = new NewErrorMessage();
         nem.setErrorName(errType.name());
         nem.setMessage(message);
-//        nem.setSrcFile("?");
-		nem.setErrorType(NewErrorMessage.Type.VALIDATION_ERROR);
+		addError(nem);
+	}	
+	public void addErrorWithField(ErrorType errType, String message, String fieldName) {
+        NewErrorMessage nem = new NewErrorMessage();
+        nem.setErrorName(errType.name());
+        nem.setMessage(message);
+        nem.setFieldName(fieldName);
 		addError(nem);
 	}	
 	public void addError(NewErrorMessage valerr ) {

@@ -5,6 +5,8 @@ import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.ErrorType;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
@@ -38,7 +40,7 @@ public class UniqueRule extends NRuleBase {
         case INTEGER:
         case LONG:
         case STRING:
-            pass = checkRule(structType);
+            pass = checkRule(structType, ctx);
             break;
         default:
             this.addRuleFailedError(ctx, this.getRuleText() + " - can only be used on fields of type int,long, or string");
@@ -49,11 +51,16 @@ public class UniqueRule extends NRuleBase {
     }
     
 
-    private boolean checkRule(DStructType structType) {
+    private boolean checkRule(DStructType structType, NRuleContext ctx) {
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
         boolean b = finder.calculateUnique(structType, fieldName);
         Log.log(String.format("AAAAAAAAAAAx %b", b));
     	
+		if (!b) {
+			String s = String.format("%s: %s", this.getName(), this.getRuleText());
+			ctx.addErrorWithField(ErrorType.RULEFAIL, s, fieldName);
+		}
+        
         return b;
     }
 
