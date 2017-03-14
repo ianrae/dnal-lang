@@ -16,6 +16,7 @@ import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
 
 public class IsaRule extends NRuleBase {
+	public static final String NAME = "isa";
     
     private IsaRuleExp rule;
     private CompilerContext context;

@@ -3,6 +3,8 @@ package org.dnal.core.nrule;
 import org.dnal.core.DValue;
 
 public class OrRule extends NRuleBase {
+	public static final String NAME = "or";
+	
 	private NRule rule1;
 	private NRule rule2;
 	

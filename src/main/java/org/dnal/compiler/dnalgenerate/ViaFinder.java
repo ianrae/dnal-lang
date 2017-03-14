@@ -49,9 +49,9 @@ public class ViaFinder extends ErrorTrackingBase {
     }
 
     public boolean calculateUnique(DStructType structType, String fieldName) {
-        List<Repository> repoList = buildRepoList(structType);
+    	Map<String,Integer> map = new HashMap<>();
 
-        Map<String,Integer> map = new HashMap<>();
+    	List<Repository> repoList = buildRepoList(structType);
         for(Repository repo: repoList) {
             for(DValue tmp: repo.getAll()) {
                 DValue inner = tmp.asStruct().getField(fieldName);
@@ -65,6 +65,26 @@ public class ViaFinder extends ErrorTrackingBase {
                 }
             }
         }
+        
+        //and check lists
+    	repoList = buildRepoListForListTypes(structType);
+        for(Repository repo: repoList) {
+            for(DValue tmp: repo.getAll()) {
+            	List<DValue> list = tmp.asList();
+            	for(DValue element: list) {
+            		DValue inner = element.asStruct().getField(fieldName);
+            		if (inner != null) {
+            			String str = inner.asString();
+            			if (map.containsKey(str)) {
+            				return false;
+            			} else {
+            				map.put(str, 0);
+            			}
+            		}
+            	}
+            }
+        }
+        
         return true;
     }
 
@@ -97,6 +117,21 @@ public class ViaFinder extends ErrorTrackingBase {
         List<DType> childL = registry.getChildTypes(dtype);
         for(DType tmp: childL) {
             repo = world.getRepoFor(tmp);
+            if (repo != null) {
+                repoList.add(repo);
+            }
+        }
+        return repoList;
+    }
+    private List<Repository> buildRepoListForListTypes(DType elementType) {
+        List<Repository> repoList = new ArrayList<>();
+        Repository repo = world.getRepoForListType(elementType);
+        if (repo != null) {
+            repoList.add(repo);
+        }
+        List<DType> childL = registry.getChildTypes(elementType);
+        for(DType tmp: childL) {
+            repo = world.getRepoForListType(tmp);
             if (repo != null) {
                 repoList.add(repo);
             }

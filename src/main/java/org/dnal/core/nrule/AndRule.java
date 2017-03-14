@@ -3,6 +3,7 @@ package org.dnal.core.nrule;
 import org.dnal.core.DValue;
 
 public class AndRule extends NRuleBase {
+	public static final String NAME = "and";
 	private NRule rule1;
 	private NRule rule2;
 	

@@ -67,7 +67,7 @@ public class RuleBuilder {
 
     public NRule buildCompare(String ruleName, ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);
-        ruleName = "compare-" + ruleName;
+        ruleName = CompareRule.NAME + "-" + ruleName;
         
         if (exp.val != null) {
             return doBuildIntCompare(ruleName, exp, (VirtualInt)vs);
@@ -151,7 +151,7 @@ public class RuleBuilder {
     
     public NRule buildEq(String ruleName, ComparisonRuleExp exp, boolean isMember) {
         VirtualDataItem vs = createVirtual(exp, isMember);
-        ruleName = "equals-" + ruleName;
+        ruleName = EqRule.NAME + "-" + ruleName;
         if (exp.val != null) {
             return doBuildIntEq(ruleName, exp, (VirtualInt)vs);
         } else if (exp.zval != null) {
@@ -213,16 +213,16 @@ public class RuleBuilder {
     public LenRule buildPseudoLenCompare(String ruleName, ComparisonRuleExp exp, boolean isMember, String fieldName) {
         VirtualPseudoLen vs = this.createVirtualPseudoLen(exp, isMember, fieldName);
         NRule inner = doBuildIntCompare(ruleName, exp, vs);
-        LenRule newRule = new LenRule("len-" + ruleName, vs);
+        LenRule newRule = new LenRule(LenRule.NAME + "-" + ruleName, vs);
         newRule.opRule = inner;
-        newRule.setRuleText(String.format("%s %s", "len", inner.getRuleText()));
+        newRule.setRuleText(String.format("%s %s", LenRule.NAME, inner.getRuleText()));
         return newRule;
     }
     public LenRule buildPseudoLenEq(String ruleName, ComparisonRuleExp exp, boolean isMember, String fieldName) {
         VirtualDataItem vs = this.createVirtualPseudoLen(exp, isMember, fieldName);
         NRule inner = doBuildIntEq(ruleName, exp, (VirtualInt)vs);
-        LenRule newRule = new LenRule("len-" + ruleName, (VirtualInt) vs);
-        newRule.setRuleText(String.format("%s %s", "len", inner.getRuleText()));
+        LenRule newRule = new LenRule(LenRule.NAME + "-" + ruleName, (VirtualInt) vs);
+        newRule.setRuleText(String.format("%s %s", LenRule.NAME, inner.getRuleText()));
         newRule.opRule = inner;
         return newRule;
     }

@@ -1,9 +1,12 @@
 package org.dnal.compiler.nrule;
 
 import org.dnal.api.impl.CompilerContext;
+import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.ErrorType;
+import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
 
@@ -36,7 +39,7 @@ public class UniqueRule extends NRuleBase {
         case INTEGER:
         case LONG:
         case STRING:
-            pass = checkRule(structType);
+            pass = checkRule(structType, ctx);
             break;
         default:
             this.addRuleFailedError(ctx, this.getRuleText() + " - can only be used on fields of type int,long, or string");
@@ -47,10 +50,22 @@ public class UniqueRule extends NRuleBase {
     }
     
 
-    private boolean checkRule(DStructType structType) {
-        //search all values of structType (and child-types) 
-        //build map of values. error if any duplicates
-        return false;
+    private boolean checkRule(DStructType structType, NRuleContext ctx) {
+    	if (ctx.haveAlreadyRun(this)) {
+    		return true;
+    	}
+    	ctx.addToAlreadyRunMap(this);
+    	
+        ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
+        boolean b = finder.calculateUnique(structType, fieldName);
+        Log.debugLog(String.format("UniqueRule executed %b", b));
+    	
+		if (!b) {
+			String s = String.format("%s: %s", this.getName(), this.getRuleText());
+			ctx.addErrorWithField(ErrorType.RULEFAIL, s, fieldName);
+		}
+        
+        return b;
     }
 
     @Override

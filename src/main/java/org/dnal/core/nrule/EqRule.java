@@ -3,6 +3,8 @@ package org.dnal.core.nrule;
 import org.dnal.core.DValue;
 
 public class EqRule<T,U> extends NRuleBase {
+	public static final String NAME = "equals";
+	
 	public String op;
 	public T val1;
 	public U val2;

@@ -230,18 +230,20 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
         //unique is not a rule but evaluate it like a rule
         if (type instanceof DStructType) {
-            DStructType structType = (DStructType) type;
-            for(String fieldName: structType.getFields().keySet()) {
-                if (structType.fieldIsUnique(fieldName)) {
-                    UniqueRule rule = new UniqueRule("unique", fieldName, structType, this.context);
-                    type.getRawRules().add(rule);
-                }
-            }
+        	DStructType structType = (DStructType) type;
+        	for(String fieldName: structType.getFields().keySet()) {
+        		if (structType.fieldIsUnique(fieldName)) {
+        			UniqueRule rule = new UniqueRule("unique", fieldName, structType, this.context);
+        			rule.setRuleText(fieldName);
+        			type.getRawRules().add(rule);
+        		}
+        	}
         }        
 
     }
 
-    private List<RuleExp> adjustRules(DType type, List<RuleExp> ruleList) {
+
+	private List<RuleExp> adjustRules(DType type, List<RuleExp> ruleList) {
         RuleAdjuster adjuster = new RuleAdjuster();
 
         for (RuleExp exp: ruleList) {
@@ -284,6 +286,10 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             if (membExp.optional) {
                 inner.optional();
             }
+            if (membExp.isUnique) {
+            	inner.unique();
+            }
+            
             switch(TypeInfo.typeOf(membExp.type)) {
             case INT:
                 inner = inner.integer(membExp.var.strValue());

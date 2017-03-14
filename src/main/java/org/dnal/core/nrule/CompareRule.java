@@ -4,6 +4,8 @@ import org.dnal.core.DValue;
 
 
 public class CompareRule<T extends Comparable, U extends Comparable> extends NRuleBase {
+	public static final String NAME = "compare";
+
 	public String op;
 	public T val1;
 	public U val2;
