@@ -58,7 +58,7 @@ public class UniqueRule extends NRuleBase {
     	
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
         boolean b = finder.calculateUnique(structType, fieldName);
-        Log.log(String.format("AAAAAAAAAAAx %b", b));
+        Log.debugLog(String.format("UniqueRule executed %b", b));
     	
 		if (!b) {
 			String s = String.format("%s: %s", this.getName(), this.getRuleText());
