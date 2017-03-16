@@ -30,13 +30,16 @@ public class AddObserver {
             DStructHelper helper = new DStructHelper(dval);
             for(String fieldName: helper.getFieldNames()) {
                 DValue field = helper.getField(fieldName);
-                doObserve(field, true); //**recursion**
+                //ignore optional fields
+                if (field != null) {
+                	doObserve(field, true); //**recursion**
+                }
             }
         } else if (dval.getType().isShape(Shape.ENUM)) {
             DStructHelper helper = new DStructHelper(dval);
             for(String fieldName: helper.getFieldNames()) {
                 DValue field = helper.getField(fieldName);
-                doObserve(field, true); //**recursion**
+               	doObserve(field, true); //**recursion**
             }
         } else if (dval.getType().isShape(Shape.LIST)) {
             List<DValue> list = dval.asList();
