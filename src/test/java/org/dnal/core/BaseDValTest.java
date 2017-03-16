@@ -80,6 +80,13 @@ public class BaseDValTest {
 		assertEquals(true, builder.finish());
 		return builder.getDValue();
 	}
+	protected DValue buildBadDateVal(DTypeRegistry registry, String input) {
+		DType type = registry.getType(BuiltInTypes.DATE_SHAPE);
+		XDateValueBuilder builder = new XDateValueBuilder(type);
+		builder.buildFromString(input);
+		assertEquals(false, builder.finish());
+		return builder.getDValue();
+	}
 	protected void dumpErrors(XDValueBuilder builder) {
 		for(NewErrorMessage err: builder.getValidationErrors()) {
 			log(err.getMessage());

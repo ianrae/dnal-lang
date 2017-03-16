@@ -44,7 +44,7 @@ public class DateTests extends BaseDValTest {
 		DType type = registry.getType(BuiltInTypes.DATE_SHAPE);
 		XDateValueBuilder builder = new XDateValueBuilder(type);
 
-		builder.buildFromString("11-June-07");
+		builder.buildFromString("2007-06-11");
 		assertEquals(false, builder.wasSuccessful());
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
@@ -100,8 +100,8 @@ public class DateTests extends BaseDValTest {
 		registerType("xyz", type);
 
 		XStructValueBuilder builder = new XStructValueBuilder(type);
-		builder.addField("field1", buildDateVal(registry, "11-June-2007"));
-		builder.addField("field2", buildDateVal(registry, "11-June-2007"));
+		builder.addField("field1", buildDateVal(registry, "2007-06-11"));
+		builder.addField("field2", buildDateVal(registry, "2007-06-11"));
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
 		DValue dval = builder.getDValue();
@@ -116,14 +116,14 @@ public class DateTests extends BaseDValTest {
 		
 		log("3..");
 		builder = new XStructValueBuilder(type);
-		builder.addField("fieldx",  buildDateVal(registry, "11-June-2007"));
+		builder.addField("fieldx",  buildDateVal(registry, "2007-06-11"));
 		builder.finish();
 		assertEquals(false, builder.wasSuccessful());
 		chkErrors(builder, 1);
 
 		log("4..");
 		builder = new XStructValueBuilder(type);
-		builder.addField("", buildDateVal(registry, "11-June-2007"));
+		builder.addField("", buildDateVal(registry, "2007-06-11"));
 		builder.finish();
 		assertEquals(false, builder.wasSuccessful());
 		chkErrors(builder, 1);
@@ -131,7 +131,7 @@ public class DateTests extends BaseDValTest {
 		log("5..");
 		builder = new XStructValueBuilder(type);
 		builder.addField("field1", buildIntVal(registry, 444));
-		builder.addField("field2",  buildDateVal(registry, "11-June-2007"));
+		builder.addField("field2",  buildDateVal(registry, "2007-06-11"));
 		builder.finish();
 		assertEquals(false, builder.wasSuccessful());
 		chkErrors(builder, 1);
