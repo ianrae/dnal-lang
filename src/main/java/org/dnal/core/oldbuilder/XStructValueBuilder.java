@@ -98,7 +98,7 @@ public class XStructValueBuilder extends XDValueBuilder {
 			for(TypePair pair : allFields) {
 			    String fieldName = pair.name;
 				if (! map.containsKey(fieldName)) {
-					addMissingFieldError(String.format("field '%s' not added", fieldName));
+					addMissingFieldError(String.format("value for field '%s' not added to struct", fieldName));
 				}
 			}
 			

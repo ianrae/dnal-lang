@@ -64,6 +64,8 @@ public class TransactionImpl implements Transaction {
     //eventually add update and remove which will be handled using event log approach
     @Override
     public boolean commit() {
+    	context.et.propogateErrors(errorList);
+    	
         //validate
         for(Pair<String,DValue> pair: pendingL) {
             if (! validateSingleValue(pair)) {
