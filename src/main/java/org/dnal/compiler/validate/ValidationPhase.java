@@ -19,10 +19,13 @@ public class ValidationPhase extends ErrorTrackingBase {
 
 	private WorldListener world;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
+	private ValidationOptions validateOptions;
 
-	public ValidationPhase(WorldListener world, XErrorTracker et) {
+
+	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions) {
 		super(et);
 		this.world = world;
+		this.validateOptions = validateOptions;
 	}
 
 	public boolean validate() {
@@ -62,7 +65,6 @@ public class ValidationPhase extends ErrorTrackingBase {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		
 		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once
-		ValidationOptions validateOptions = new ValidationOptions();
 		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions);
 		ctx.setCurrentVarName(varName);
 		runner.evaluate(dval, ctx);

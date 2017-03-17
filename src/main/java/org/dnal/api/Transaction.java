@@ -2,6 +2,7 @@ package org.dnal.api;
 
 import java.util.List;
 
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -23,6 +24,7 @@ public interface Transaction {
     boolean commit();
     List<NewErrorMessage> getValErrorList();
     DataSet getDataSet();
+    ValidationOptions getValidationOptions();
     
     DValue createFromBean(Object bean) throws WorldException;
     

@@ -171,7 +171,7 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean validatePhase() {
         context.perf.startTimer("validate");
-        ValidationPhase validator = new ValidationPhase(this.world, context.et);
+        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions);
         boolean b = validator.validate();
         context.perf.endTimer("validate");
 //        if (! b) {

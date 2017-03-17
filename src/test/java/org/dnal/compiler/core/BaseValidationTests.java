@@ -41,7 +41,7 @@ public class BaseValidationTests extends BaseTest {
         ASTToDNALGenerator dnalGenerator = parse(errL, input, "Foo", shape, crf);
         errL.addAll(dnalGenerator.getErrL());
         World world = getContext().world;
-        ValidationPhase validator = new ValidationPhase(world, getContext().et);
+        ValidationPhase validator = new ValidationPhase(world, getContext().et, getContext().validateOptions);
     
 //      DType type = dnalGenerator.getRegistry().getType("Foo");
 //      for(NRule rule: CustomRuleRegistry.getRuleRunners()) {

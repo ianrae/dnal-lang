@@ -13,4 +13,11 @@ public class ValidationOptions {
     	int mask = validationMode & mode;
     	return (mask != 0);
 	}
+
+	public ValidationOptions createCopy() {
+		ValidationOptions copy = new ValidationOptions();
+		copy.validationMode = this.validationMode;
+		copy.revalidationEnabled = this.revalidationEnabled;
+		return copy;
+	}
 }

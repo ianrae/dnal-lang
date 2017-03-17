@@ -12,6 +12,7 @@ import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
@@ -41,6 +42,7 @@ public class TransactionImpl implements Transaction {
     private CompilerContext context;
     private Map<Class<?>, BeanLoader<?>> loaderRegistry;
     private DataSet ds;
+    private ValidationOptions validateOptions; //local to the trans
 
     public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
@@ -51,6 +53,7 @@ public class TransactionImpl implements Transaction {
         this.context = context;
         this.loaderRegistry = loaderRegistry;
         this.ds = ds;
+        this.validateOptions = context.validateOptions.createCopy(); //create local copy
     }
 
     @Override
@@ -87,7 +90,7 @@ public class TransactionImpl implements Transaction {
     }
 
     private boolean validateSingleValue(Pair<String,DValue> pair) {
-        ValidationPhase validator = new ValidationPhase(world, context.et);
+        ValidationPhase validator = new ValidationPhase(world, context.et, validateOptions);
 
         DValue dval = pair.b;
         String varName = pair.a;
@@ -245,6 +248,12 @@ public class TransactionImpl implements Transaction {
 	@Override
 	public DataSet getDataSet() {
 		return ds;
+	}
+
+	@Override
+	public ValidationOptions getValidationOptions() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
