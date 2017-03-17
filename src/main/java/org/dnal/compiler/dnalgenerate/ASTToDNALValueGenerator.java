@@ -493,7 +493,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                         DValue member = null;
                         builder.addField(fieldName, member);
                     } else {
-                        addError2s("can't assign null unless field is optional: %s%s", fieldName, "");
+//                        addError2s("can't assign null unless field is optional: %s%s", fieldName, "");
                     }
                 } else {
                     FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
