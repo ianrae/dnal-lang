@@ -2,8 +2,12 @@ package org.dnal.compiler.core;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.Custom1Rule;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.NewErrorMessage;

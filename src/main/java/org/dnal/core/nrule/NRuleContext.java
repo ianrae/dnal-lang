@@ -4,19 +4,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.compiler.core.ValidateRangeRuleTests;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 
 public class NRuleContext {
 	private XErrorTracker et;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
+	private ValidationOptions validateOptions;
 
 	public NRuleContext(XErrorTracker et) {
 		this.et = et;
+		this.validateOptions = new ValidationOptions();
 	}
-	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap) {
+	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap, ValidationOptions validateOptions) {
 		this.et = et;
+		this.validateOptions = validateOptions;
 		this.alreadyRunMap = alreadyRunMap;
 	}
 	public void addError(ErrorType errType, String message) {
@@ -63,5 +68,8 @@ public class NRuleContext {
 	}
 	public void addToAlreadyRunMap(NRule rule) {
 		alreadyRunMap.put(rule, Integer.valueOf(0));
+	}
+	public ValidationOptions getValidateOptions() {
+		return validateOptions;
 	}
 }
