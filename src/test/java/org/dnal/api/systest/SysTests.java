@@ -98,7 +98,7 @@ public class SysTests extends SysTestBase {
     }
     @Test
     public void testT4a() {
-        String err = "can't assign null unless field is optional: x";
+        String err = "fieldName 'x' can't be null. is not optional";
         chkFail("type Foo struct { x int y string } end let x Foo = { null, 'abc' }", 1, err);
     }
     @Test
