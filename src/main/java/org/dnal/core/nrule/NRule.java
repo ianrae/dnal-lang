@@ -7,4 +7,5 @@ public interface NRule {
 	String getName();
 	String getRuleText();
 	void setRuleText(String ruleText);
+	int getMode();
 }

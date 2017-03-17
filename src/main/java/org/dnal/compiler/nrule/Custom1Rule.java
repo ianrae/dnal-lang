@@ -23,6 +23,10 @@ public abstract class Custom1Rule<T extends VirtualDataItem> extends NRuleBase {
 
     @Override
     public boolean eval(DValue dval, NRuleContext ctx) {
+    	if (! ctx.getValidateOptions().isModeSet(validationMode)) {
+    		return true; //don't execute
+    	}
+    	
         arg1.resolve(dval, ctx);
         boolean pass = onEval(dval, ctx);
         return applyPolarity(pass);

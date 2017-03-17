@@ -34,6 +34,10 @@ public abstract class Custom1RuleBase<T extends VirtualDataItem> extends Custom1
     
     @Override
     public boolean eval(DValue dval, NRuleContext ctx) {
+    	if (! ctx.getValidateOptions().isModeSet(validationMode)) {
+    		return true; //don't execute
+    	}
+    	
         if (crule.fieldName != null) {
             DStructHelper helper = dval.asStruct();
             DValue inner = helper.getField(crule.fieldName);

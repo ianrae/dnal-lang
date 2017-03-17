@@ -1,5 +1,6 @@
 package org.dnal.core.nrule;
 
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorType;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
@@ -8,6 +9,7 @@ public abstract class NRuleBase implements NRule {
 	private String name;
 	private String ruleText; //for logging errors
 	public boolean polarity = true;
+	protected int validationMode = ValidationOptions.VALIDATEMODE_VALUES; //which one(s) this rule belongs to
 	
 	public NRuleBase(String name) {
 		this.name = name;
@@ -27,6 +29,10 @@ public abstract class NRuleBase implements NRule {
     
     @Override
     public boolean eval(DValue dval, NRuleContext ctx) {
+    	if (! ctx.getValidateOptions().isModeSet(validationMode)) {
+    		return true; //don't execute
+    	}
+    	
         boolean pass = onEval(dval, ctx);
         return applyPolarity(pass);
     }
@@ -69,5 +75,10 @@ public abstract class NRuleBase implements NRule {
     public void setRuleText(String ruleText) {
         this.ruleText = ruleText;
     }
+
+	@Override
+	public int getMode() {
+		return validationMode;
+	}
 	
 }
