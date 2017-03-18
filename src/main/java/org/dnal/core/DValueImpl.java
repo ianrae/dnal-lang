@@ -41,6 +41,9 @@ public class DValueImpl implements DValue {
     public void forceObject(Object obj) {
         this.object = obj;
     }
+    public void forceType(DType type) {
+        this.type = type;
+    }
 
     @Override
     public int asInt() {

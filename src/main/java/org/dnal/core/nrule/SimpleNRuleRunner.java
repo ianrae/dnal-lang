@@ -66,6 +66,16 @@ public class SimpleNRuleRunner  {
 	}
 
 	private void evalStruct(DValue dval, NRuleContext ctx) {
+		//don't validate future value because it doesn't exist yet
+		if (dval instanceof DValueProxy) {
+			DValueProxy proxy = (DValueProxy) dval;
+			if (proxy.isFutureValue()) {
+				ctx.addFutureValue(proxy);
+				return;
+			}
+		}
+		
+		
 		ValidationScorer scorer = new ValidationScorer();
 		stack.push(scorer);
 //		Map<String,DValue> map = dval.asMap();
