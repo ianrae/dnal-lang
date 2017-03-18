@@ -43,6 +43,8 @@ public class TransactionImpl implements Transaction {
     private Map<Class<?>, BeanLoader<?>> loaderRegistry;
     private DataSet ds;
     private ValidationOptions validateOptions; //local to the trans
+	private List<DValue> futureValues = new ArrayList<>();
+    
 
     public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
@@ -90,7 +92,7 @@ public class TransactionImpl implements Transaction {
     }
 
     private boolean validateSingleValue(Pair<String,DValue> pair) {
-        ValidationPhase validator = new ValidationPhase(world, context.et, validateOptions);
+        ValidationPhase validator = new ValidationPhase(world, context.et, validateOptions, futureValues);
 
         DValue dval = pair.b;
         String varName = pair.a;
@@ -253,6 +255,10 @@ public class TransactionImpl implements Transaction {
 	@Override
 	public ValidationOptions getValidationOptions() {
 		return this.validateOptions;
+	}
+
+	public List<DValue> getFutureValues() {
+		return futureValues;
 	}
 
 }

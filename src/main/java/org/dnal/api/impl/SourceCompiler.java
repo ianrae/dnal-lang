@@ -29,6 +29,8 @@ public class SourceCompiler extends ErrorTrackingBase {
     protected DTypeRegistry registry;
     private CustomRuleFactory crf;
     private CompilerContext context;
+    private ValidationPhase mostRecentValidator;
+
     
     public SourceCompiler(World world, DTypeRegistry registry, CustomRuleFactory crf, 
             XErrorTracker et, CompilerContext context) {
@@ -172,6 +174,9 @@ public class SourceCompiler extends ErrorTrackingBase {
     private boolean validatePhase() {
         context.perf.startTimer("validate");
         ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions);
+        
+        //save validator in case 'future' values need to be resolved
+        mostRecentValidator = validator;
         boolean b = validator.validate();
         context.perf.endTimer("validate");
 //        if (! b) {
@@ -191,5 +196,9 @@ public class SourceCompiler extends ErrorTrackingBase {
     public List<NewErrorMessage> getErrors() {
         return getET().getErrL();
     }
+
+	public ValidationPhase getMostRecentValidator() {
+		return mostRecentValidator;
+	}
 
 }

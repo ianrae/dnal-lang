@@ -22,13 +22,19 @@ public class ValidationPhase extends ErrorTrackingBase {
 	private WorldListener world;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 	private ValidationOptions validateOptions;
-	private List<DValue> futureValues = new ArrayList<>();
-
+	private List<DValue> futureValues;
 
 	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions) {
 		super(et);
 		this.world = world;
 		this.validateOptions = validateOptions;
+		futureValues = new ArrayList<>();
+	}
+	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
+		super(et);
+		this.world = world;
+		this.validateOptions = validateOptions;
+		this.futureValues = futureValues;
 	}
 
 	public boolean validate() {
