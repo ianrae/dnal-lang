@@ -9,6 +9,7 @@ import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
+import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -108,5 +109,10 @@ public class DataSetImpl implements DataSet {
     	DType dtype = this.registry.getType(typeName);
     	return dtype;
     }
+	
+	public ViaFinder createViaFinder() {
+		ViaFinder finder = new ViaFinder(world, registry, context.et);
+		return finder;
+	}
 
 }
