@@ -10,6 +10,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
+import org.dnal.core.DValueProxy;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;
@@ -132,6 +133,15 @@ public class SimpleNRuleRunner  {
 		//if not revalidationEnabled then don't validated if we already have
 		if (! dval.getValState().equals(ValidationState.UNKNOWN) && !ctx.getValidateOptions().revalidationEnabled) {
 			return;
+		}
+		
+		//don't validate future value because it doesn't exist yet
+		if (dval instanceof DValueProxy) {
+			DValueProxy proxy = (DValueProxy) dval;
+			if (proxy.isFutureValue()) {
+				ctx.addFutureValue(proxy);
+				return;
+			}
 		}
 
 		int passCount = 0;

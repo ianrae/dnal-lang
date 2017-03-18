@@ -1,6 +1,8 @@
 package org.dnal.compiler.validate;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
@@ -20,6 +22,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 	private WorldListener world;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 	private ValidationOptions validateOptions;
+	private List<DValue> futureValues = new ArrayList<>();
 
 
 	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions) {
@@ -65,10 +68,14 @@ public class ValidationPhase extends ErrorTrackingBase {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		
 		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once
-		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions);
+		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions, futureValues);
 		ctx.setCurrentVarName(varName);
 		runner.evaluate(dval, ctx);
 		return runner.getValidationErrors().isEmpty();
+	}
+
+	public List<DValue> getFutureValues() {
+		return futureValues;
 	}
 
 
