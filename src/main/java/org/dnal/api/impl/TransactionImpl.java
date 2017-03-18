@@ -252,8 +252,7 @@ public class TransactionImpl implements Transaction {
 
 	@Override
 	public ValidationOptions getValidationOptions() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.validateOptions;
 	}
 
 }

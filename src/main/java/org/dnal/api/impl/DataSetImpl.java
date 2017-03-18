@@ -1,6 +1,8 @@
 package org.dnal.api.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dnal.api.BeanLoader;
@@ -91,5 +93,12 @@ public class DataSetImpl implements DataSet {
     public int size() {
         return world.getValueMap().size();
     }
+
+	@Override
+	public List<String> getAllNames() {
+		//return copy so app can't tamper with world
+		List<String> copy = new ArrayList(world.getOrderedList());
+		return copy;
+	}
 
 }

@@ -25,7 +25,7 @@ public class DNALLoader {
         if (mainDataSet == null) {
             return false;
         }
-        doBginNewDataSet(false);
+        doBeginNewDataSet(false);
         return true;
     }
     public boolean loadTypeDefinitionFromString(String source) {
@@ -34,13 +34,13 @@ public class DNALLoader {
         if (mainDataSet == null) {
             return false;
         }
-        doBginNewDataSet(false);
+        doBeginNewDataSet(false);
         return true;
     }
     public void beginNewDataSet() {
-    	doBginNewDataSet(true);
+    	doBeginNewDataSet(true);
     }
-    public void doBginNewDataSet(boolean clearErrors) {
+    public void doBeginNewDataSet(boolean clearErrors) {
     	if (clearErrors) {
     		et.clear(); //remove any previous errors
     	}

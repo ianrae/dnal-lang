@@ -54,7 +54,8 @@ public class IsaRule extends NRuleBase {
             DStructType structType = (DStructType) dval.getType();
             DType innerType = structType.getFields().get(rule.fieldName);
             if (innerType == null) {
-                this.addRuleFailedError(ctx, this.getRuleText());
+            	String ruleText = String.format("%s: %s", this.getName(), rule.val);
+                this.addRuleFailedError(ctx, ruleText);
                 return false;
             }
                     
