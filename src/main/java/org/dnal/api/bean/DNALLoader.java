@@ -18,6 +18,7 @@ public class DNALLoader {
     private ReflectionBeanLoader reflectionBeanLoader;
     private XErrorTracker et;
     private FieldConverter fieldConverter = null;
+    private boolean cloneMainDataSet = true;
     
     public boolean loadTypeDefinition(String dnalPath) {
         createCompiler();
@@ -44,7 +45,11 @@ public class DNALLoader {
     	if (clearErrors) {
     		et.clear(); //remove any previous errors
     	}
-        clone = mainDataSet.cloneEmptyDataSet();
+    	if (cloneMainDataSet) {
+    		clone = mainDataSet.cloneEmptyDataSet();
+    	} else {
+    		clone = mainDataSet;
+    	}
         trans = clone.createTransaction();
     }
     
@@ -118,5 +123,11 @@ public class DNALLoader {
 	}
 	public void setFieldConverter(FieldConverter fieldConverter) {
 		this.fieldConverter = fieldConverter;
+	}
+	public boolean isCloneMainDataSet() {
+		return cloneMainDataSet;
+	}
+	public void setCloneMainDataSet(boolean cloneMainDataSet) {
+		this.cloneMainDataSet = cloneMainDataSet;
 	}
 }
