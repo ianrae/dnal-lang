@@ -47,6 +47,7 @@ public class SysTestBase {
         assertEquals(expectedErrors, errors.size());
         boolean found = false;
         for(NewErrorMessage err: errors) {
+        	//log(err.getMessage());
             if (err.getMessage().contains(errMsg)) {
                 found = true;
             }

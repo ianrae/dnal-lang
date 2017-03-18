@@ -133,7 +133,7 @@ public class ViaSysTests extends SysTestBase {
     public void test515fail1() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "xxpersonCode isa Person.code"); //wrong field
-        chkFail(src, 3, "null- failed");
+        chkFail(src, 3, "isa: Person.code- failed");
     }
     @Test
     public void test515fail2() {

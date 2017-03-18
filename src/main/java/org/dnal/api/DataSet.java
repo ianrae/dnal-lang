@@ -2,6 +2,7 @@ package org.dnal.api;
 
 import java.util.List;
 
+import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
 
@@ -16,5 +17,5 @@ public interface DataSet {
     DataSet cloneEmptyDataSet();
     int size();
     List<String> getAllNames();
-
+    DType getType(String typeName);
 }

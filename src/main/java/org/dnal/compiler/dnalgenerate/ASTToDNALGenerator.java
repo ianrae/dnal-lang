@@ -250,17 +250,23 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
             adjuster.adjust(type, exp);
         }
 
-        if (ruleList.size() == 2) {
-            Exp exp = ruleList.get(0);
-            if (exp instanceof CustomRule) {
-                List<RuleExp> L = new ArrayList<>();
-                CustomRule rule = (CustomRule) exp;
-                if (rule.ruleName.equals("len")) {
-                    rule.hackExtra = ruleList.get(1);
-                    L.add(rule);
-                    return L;
-                }
-            }
+        if (ruleList.size() >= 2) {
+        	List<RuleExp> L = new ArrayList<>();
+        	int n = ruleList.size();
+        	for(int i = 0; i < n; i++) {
+        		RuleExp exp = ruleList.get(i);
+        		if (exp instanceof CustomRule && i < (n-1)) {
+        			CustomRule rule = (CustomRule) exp;
+        			if (rule.ruleName.equals("len")) {
+        				rule.hackExtra = ruleList.get(i+1);
+        				L.add(rule);
+        				i++;
+        			}
+        		} else {
+        			L.add(exp);
+        		}
+        	}
+        	return L;
         }
         return ruleList;
     }

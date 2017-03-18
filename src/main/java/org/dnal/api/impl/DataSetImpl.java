@@ -9,6 +9,8 @@ import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -100,5 +102,11 @@ public class DataSetImpl implements DataSet {
 		List<String> copy = new ArrayList(world.getOrderedList());
 		return copy;
 	}
+	
+	@Override
+    public DType getType(String typeName) {
+    	DType dtype = this.registry.getType(typeName);
+    	return dtype;
+    }
 
 }
