@@ -15,6 +15,7 @@ public class DTypeRegistry {
 	private List<DType> orderedList = new ArrayList<>();
 	private int nextBitIndex; //!! atomic thing later for thread safety
 	private DTypeHierarchy th;
+	private Map<String,DViewType> viewMap = new TreeMap<>();
 
 	public synchronized void add(String name, DType type) {
 	    type.setBitIndex(nextBitIndex++);
@@ -96,5 +97,9 @@ public class DTypeRegistry {
     public List<DType> getOrderedList() {
         return orderedList;
     }
+
+	public void addView(String completeName, DViewType dtype) {
+		viewMap.put(completeName, dtype);
+	}
 	
 }

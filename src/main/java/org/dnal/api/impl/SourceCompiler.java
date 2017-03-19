@@ -141,6 +141,7 @@ public class SourceCompiler extends ErrorTrackingBase {
             return null;
         }
 
+        //pass 2
         if (! pass2(doc.getStatementList())) {
             return null;
         }
