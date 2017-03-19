@@ -5,7 +5,9 @@ import java.util.List;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.ast.IdentExp;
+import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.compiler.parser.ast.ViewExp;
+import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.core.logger.Log;
 
 public class ViewErrorChecker extends ErrorCheckerBase {
@@ -30,6 +32,19 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 		IdentExp ident = viewExp.viewName;
 		checkIdent(ident, NAME);
 		seenTypes.add(ident.strValue());
-		checkViewType(ident, "view", viewExp.typeName.val);
+		checkViewType(ident, "view", viewExp.typeName);
+		
+		boolean ok = true;
+		ViewDirection dir = viewExp.direction;
+		for(ViewMemberExp memb: viewExp.memberL) {
+			if (memb.direction != dir) {
+				ok = false;
+			}
+		}
+		if (! ok)
+		{
+			addError2("%s '%s' - cannot mix -> and <-", NAME, ident);
+		}
+		
 	}
 }
