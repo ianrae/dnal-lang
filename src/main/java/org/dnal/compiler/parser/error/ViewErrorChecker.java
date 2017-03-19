@@ -40,6 +40,7 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 			if (memb.direction != dir) {
 				ok = false;
 			}
+			checkType(memb.leftType, ident.val, memb.left.val);
 		}
 		if (! ok)
 		{

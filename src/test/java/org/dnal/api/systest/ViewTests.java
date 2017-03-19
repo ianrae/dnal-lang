@@ -8,7 +8,7 @@ public class ViewTests extends SysTestBase {
     public void test() {
         String src1 = "type Address struct { street string city string} end ";
         String src2 = "view AddressDTO <- Address { ";
-        String src3 = " city <- city street <- street } end";
+        String src3 = " city string <- city street string <- street } end";
         chkValue("x", src1 + src2 + src3, 1, 0);
     }
     
@@ -16,22 +16,29 @@ public class ViewTests extends SysTestBase {
     public void testFail1() {
         String src1 = "type Address struct { street string city string} end ";
         String src2 = "view Address <- Address { ";
-        String src3 = " city <- city street <- street } end";
+        String src3 = " city string <- city street string <- street } end";
         chkFail(src1 + src2 + src3, 1, "has already been defined");
     }
     @Test
     public void testFail2() {
         String src1 = "type Address struct { street string city string} end ";
         String src2 = "view AddressDTO <- ZZZs { ";
-        String src3 = " city <- city street <- street } end";
+        String src3 = " city string <- city  street string <- street } end";
         chkFail(src1 + src2 + src3, 1, "has unknown type");
     }
     @Test
     public void testFail3() {
         String src1 = "type Address struct { street string city string} end ";
         String src2 = "view AddressDTO <- Address { ";
-        String src3 = " city <- city street -> street } end";
+        String src3 = " city string <- city street string -> street } end";
         chkFail(src1 + src2 + src3, 1, "cannot mix");
+    }
+    @Test
+    public void testFail4() {
+        String src1 = "type Address struct { street string city string} end ";
+        String src2 = "view AddressDTO <- Address { ";
+        String src3 = " city zzz <- city street string <- street } end";
+        chkFail(src1 + src2 + src3, 1, "has unknown type 'zzz'");
     }
     
 
