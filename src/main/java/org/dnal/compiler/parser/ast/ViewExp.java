@@ -13,13 +13,19 @@ public class ViewExp implements Exp {
 	public IdentExp viewName;
 	public IdentExp typeName;
 	public Direction direction;
-	public List<RuleExp> ruleList;
+	private ViewMemberExp member;
 
 	public ViewExp(IdentExp varname, Token tok, IdentExp typename) {
 		this.viewName = varname;
 		String tokStr = getTokString(tok);
 		this.direction = (tokStr.equals("->")) ? Direction.OUTBOUND : Direction.INBOUND;
 		this.typeName = typename;
+	}
+	public ViewExp(ViewExp src, ViewMemberExp member) {
+		this.viewName = src.viewName;
+		this.direction = src.direction;
+		this.typeName = src.typeName;
+		this.member = member;
 	}
 	private String getTokString(Token tok) {
 		if (tok == null) {
