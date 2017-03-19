@@ -28,6 +28,11 @@ public class ErrorCheckerBase extends ErrorTrackingBase {
 			addError3("%s '%s' has unknown type '%s'", elName, typeName, identExp);
 		}
 	}
+	protected void checkViewType(IdentExp identExp, String elName, IdentExp typeName) {
+		if (! isAlreadyDefinedType(typeName)) {
+			addError3("%s '%s' has unknown type '%s'", elName, identExp.val, typeName);
+		}
+	}
 
 	private boolean isAlreadyDefinedType(IdentExp typeNameExp) {
 		if (seenTypes.contains(typeNameExp.strValue())) {

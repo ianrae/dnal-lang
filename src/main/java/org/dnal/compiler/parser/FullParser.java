@@ -12,7 +12,8 @@ public class FullParser {
 	public static Parser<Exp> allStatements() {
 		return Parsers.or(PackageParser.packageDecl(), PackageParser.importDecl(), 
 		        VarParser.assignment00(), TypeParser.typestruct01(),
-				TypeParser.typeenum01(), TypeParser.type01(), TypeParser.typelist01(), RuleDeclParser.customRuleDecl()).
+				TypeParser.typeenum01(), TypeParser.type01(), TypeParser.typelist01(), 
+				RuleDeclParser.customRuleDecl(), ViewParser.view03()).
 				followedBy(TerminalParser.token(";").optional());
 	}
 	public static Exp parse02(String input){

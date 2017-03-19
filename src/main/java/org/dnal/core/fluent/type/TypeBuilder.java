@@ -9,6 +9,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
+import org.dnal.core.DViewType;
 import org.dnal.core.OrderedMap;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.CompareRule;
@@ -107,6 +108,10 @@ public class TypeBuilder {
 			generatedType = new DStructType(shape, typeName, baseType, fieldMap);
 			addRules(generatedType);
 			registerType(typeName, generatedType);
+		}
+		public void endView() {
+			generatedViewType = new DViewType(typeName, baseType, fieldMap);
+			registerView(typeName, generatedViewType);
 		}
 		
 		private void doAddField(String fieldName, DType eltype) {
@@ -264,6 +269,7 @@ public class TypeBuilder {
 	private OrderedMap fieldMap = new OrderedMap();
 	private String typeName;
 	private DStructType generatedType;
+	private DViewType generatedViewType;
 	private WorldListener world;
 	private boolean amBuildingEnum;
 	private DStructType baseType = null;
@@ -284,6 +290,10 @@ public class TypeBuilder {
         registry.add(completeName, dtype);
         world.typeRegistered(dtype);
     }
+    private void registerView(String typeName, DViewType dtype) {
+        String completeName = NameUtils.completeName(packageName, typeName);
+        registry.addView(completeName, dtype);
+    }
  
 	private void initRegistry() {
 		world = new World();
@@ -302,6 +312,10 @@ public class TypeBuilder {
 	public DStructType getType() {
 		return generatedType;
 	}
+	public DViewType getViewType() {
+		return generatedViewType;
+	}
+	
 	public void setAmBuildingEnum(boolean amBuildingEnum) {
 		this.amBuildingEnum = amBuildingEnum;
 	}

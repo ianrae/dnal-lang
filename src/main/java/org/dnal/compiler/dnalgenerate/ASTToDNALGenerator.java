@@ -20,6 +20,8 @@ import org.dnal.compiler.parser.ast.ImportExp;
 import org.dnal.compiler.parser.ast.RuleDeclExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
+import org.dnal.compiler.parser.ast.ViewExp;
+import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.BuiltInTypes;
@@ -28,412 +30,480 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.dnal.core.Shape;
 import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.fluent.type.TypeBuilder.Inner;
+import org.dnal.core.fluent.type.ViewBuilder;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
 
 public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor, ValueVisitor {
-    protected World world;
-    protected DTypeRegistry registry;
-    private ASTToDNALValueGenerator valueGenerator;
-    private CustomRuleFactory crf;
-    private List<RuleDeclaration> ruleDeclL;
-    private PackageHelper packageHelper;
-    private CompilerContext context;
+	protected World world;
+	protected DTypeRegistry registry;
+	private ASTToDNALValueGenerator valueGenerator;
+	private CustomRuleFactory crf;
+	private List<RuleDeclaration> ruleDeclL;
+	private PackageHelper packageHelper;
+	private CompilerContext context;
 
-    public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
-            CustomRuleFactory crf, CompilerContext context) {
-        super(et);
-        this.world = world;
-        this.registry = registry;
-        this.crf = crf;
-        this.context = context;
-        this.packageHelper = new PackageHelper(registry, context.packageName);
-    }
+	public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
+			CustomRuleFactory crf, CompilerContext context) {
+		super(et);
+		this.world = world;
+		this.registry = registry;
+		this.crf = crf;
+		this.context = context;
+		this.packageHelper = new PackageHelper(registry, context.packageName);
+	}
 
-    public boolean generate(List<Exp> nodeL) {
-        this.doc = new DNALDocument(nodeL);
+	public boolean generate(List<Exp> nodeL) {
+		this.doc = new DNALDocument(nodeL);
 
-        context.perf.startTimer("ast-to-dval:imports");
-        processImports();
-        context.perf.endTimer("ast-to-dval:imports");
+		context.perf.startTimer("ast-to-dval:imports");
+		processImports();
+		context.perf.endTimer("ast-to-dval:imports");
 
-        context.perf.startTimer("ast-to-dval:types");
-        buildRuleDeclL();
+		context.perf.startTimer("ast-to-dval:types");
+		buildRuleDeclL();
 
-        for(Exp exp: doc.getTypes()) {
-            try {
-                visitType(exp);
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.addError2s("ASTtype '%s': %s", exp.strValue(), e.getMessage());
-            }
-        }
-        context.perf.endTimer("ast-to-dval:types");
+		for(Exp exp: doc.getTypes()) {
+			try {
+				visitType(exp);
+			} catch (Exception e) {
+				e.printStackTrace();
+				this.addError2s("ASTtype '%s': %s", exp.strValue(), e.getMessage());
+			}
+		}
+		context.perf.endTimer("ast-to-dval:types");
 
-        context.perf.startTimer("ast-to-dval:values");
-        String packageName = packageHelper.getPackageName();
-        valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper);
-        for(Exp exp: doc.getValues()) {
-            try {
-                visitValue(exp);
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.addError2s("ASTvalue '%s': %s", exp.strValue(), e.getMessage());
-            }
-        }
-        context.perf.endTimer("ast-to-dval:values");
+		context.perf.startTimer("ast-to-dval:values");
+		String packageName = packageHelper.getPackageName();
+		valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper);
+		for(Exp exp: doc.getValues()) {
+			try {
+				visitValue(exp);
+			} catch (Exception e) {
+				e.printStackTrace();
+				this.addError2s("ASTvalue '%s': %s", exp.strValue(), e.getMessage());
+			}
+		}
+		context.perf.endTimer("ast-to-dval:values");
 
-        return areNoErrors();
-    }
+		context.perf.startTimer("ast-to-dval:views");
+		for(Exp exp: doc.getViews()) {
+			try {
+				visitView(exp);
+			} catch (Exception e) {
+				e.printStackTrace();
+				this.addError2s("ASTView '%s': %s", exp.strValue(), e.getMessage());
+			}
+		}
+		context.perf.endTimer("ast-to-dval:views");
 
-    private void buildRuleDeclL() {
-        ruleDeclL = new ArrayList<>();
-        for(RuleDeclExp exp: doc.getRuleDeclarations()) {
-            Shape shape = TypeInfo.stringToShape(exp.ruleType);
-            RuleDeclaration decl = new RuleDeclaration(exp.ruleName, shape);
-            this.ruleDeclL.add(decl);
-        }
+		return areNoErrors();
+	}
 
-        crf.addRuleDelcarations(ruleDeclL);
-    }
+	private void buildRuleDeclL() {
+		ruleDeclL = new ArrayList<>();
+		for(RuleDeclExp exp: doc.getRuleDeclarations()) {
+			Shape shape = TypeInfo.stringToShape(exp.ruleType);
+			RuleDeclaration decl = new RuleDeclaration(exp.ruleName, shape);
+			this.ruleDeclL.add(decl);
+		}
 
-    @Override
-    public void visitValue(Exp exp) {
-        FullAssignmentExp typeExp = (FullAssignmentExp) exp;
-        if (typeExp.isListVar()) {
-            buildExplicitListType(typeExp);
-        }
+		crf.addRuleDelcarations(ruleDeclL);
+	}
 
-        DValue dval = valueGenerator.buildTopLevelValue(typeExp);
-        if (dval != null) {
-            String completeName = packageHelper.buildCompleteName(typeExp.var.name());
-            world.addTopLevelValue(completeName, dval);
-        }
-    }
+	@Override
+	public void visitValue(Exp exp) {
+		FullAssignmentExp typeExp = (FullAssignmentExp) exp;
+		if (typeExp.isListVar()) {
+			buildExplicitListType(typeExp);
+		}
 
-    private void buildExplicitListType(FullAssignmentExp typeExp) {
-        //		    IdentExp elementType = typeExp.getListSubType();
-        //            String typeName = elementType.name();
-        //            String elType =  typeExp.getListSubType();
-        IdentExp elexp =  typeExp.getListSubType();
-        String elType = elexp.name();
-        if (TypeInfo.isPrimitiveType(elexp)) {
-            elType = TypeInfo.toShapeType(elType);
-        }
+		DValue dval = valueGenerator.buildTopLevelValue(typeExp);
+		if (dval != null) {
+			String completeName = packageHelper.buildCompleteName(typeExp.var.name());
+			world.addTopLevelValue(completeName, dval);
+		}
+	}
 
-        DType eltype = registry.getType(elType);
-        if (eltype == null) {
-            this.addError2s("let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
-        }
+	private void buildExplicitListType(FullAssignmentExp typeExp) {
+		//		    IdentExp elementType = typeExp.getListSubType();
+		//            String typeName = elementType.name();
+		//            String elType =  typeExp.getListSubType();
+		IdentExp elexp =  typeExp.getListSubType();
+		String elType = elexp.name();
+		if (TypeInfo.isPrimitiveType(elexp)) {
+			elType = TypeInfo.toShapeType(elType);
+		}
 
-        String typeName = typeExp.type.name();
-        if (registry.getType(typeName) == null) {
-            DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
-            registerType(typeName, dtype);
-        }
-    }
+		DType eltype = registry.getType(elType);
+		if (eltype == null) {
+			this.addError2s("let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
+		}
 
-    private void registerType(String typeName, DType dtype) {
-        packageHelper.registerType(typeName, dtype);
-        world.typeRegistered(dtype);
-    }
+		String typeName = typeExp.type.name();
+		if (registry.getType(typeName) == null) {
+			DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
+			registerType(typeName, dtype);
+		}
+	}
 
-    @Override
-    public void visitType(Exp exp) {
-        FullTypeExp typeExp = (FullTypeExp) exp;
-        String typeName = typeExp.var.name();
+	private void registerType(String typeName, DType dtype) {
+		packageHelper.registerType(typeName, dtype);
+		world.typeRegistered(dtype);
+	}
 
-        Log.debugLog("type " + typeName);
-        if (typeExp instanceof FullStructTypeExp) {
-            buildStructType((FullStructTypeExp)exp);
-        } else if (typeExp instanceof FullEnumTypeExp) {
-            buildEnumType((FullEnumTypeExp)exp);
-        } else if (typeExp instanceof FullListTypeExp) {
-            buildListType((FullListTypeExp)exp);
-        } else {
-            DType baseDType;
-            DType dtype = null;
+	@Override
+	public void visitType(Exp exp) {
+		FullTypeExp typeExp = (FullTypeExp) exp;
+		String typeName = typeExp.var.name();
 
-            switch(TypeInfo.typeOf(typeExp.type)) {
-            case INT:
-                baseDType = registry.getType(BuiltInTypes.INTEGER_SHAPE);
-                dtype = new DType(Shape.INTEGER, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-            case LONG:
-                baseDType = registry.getType(BuiltInTypes.LONG_SHAPE);
-                dtype = new DType(Shape.LONG, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-            case NUMBER:
-                baseDType = registry.getType(BuiltInTypes.NUMBER_SHAPE);
-                dtype = new DType(Shape.NUMBER, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-            case DATE:
-                baseDType = registry.getType(BuiltInTypes.DATE_SHAPE);
-                dtype = new DType(Shape.DATE, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-            case BOOLEAN:
-                baseDType = registry.getType(BuiltInTypes.BOOLEAN_SHAPE);
-                dtype = new DType(Shape.BOOLEAN, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-            case STRING:
-                baseDType = registry.getType(BuiltInTypes.STRING_SHAPE);
-                dtype = new DType(Shape.STRING, typeName, baseDType);
-                registerType(typeName, dtype);
-                break;
-                //				case LIST:
-                //					baseType = registry.getType(BuiltInTypes.LIST_SHAPE);
-                //					type = new DType(Shape.STRING, name, baseType);
-                //					registry.add(name, type);
-                //					break;
+		Log.debugLog("type " + typeName);
+		if (typeExp instanceof FullStructTypeExp) {
+			buildStructType((FullStructTypeExp)exp);
+		} else if (typeExp instanceof FullEnumTypeExp) {
+			buildEnumType((FullEnumTypeExp)exp);
+		} else if (typeExp instanceof FullListTypeExp) {
+			buildListType((FullListTypeExp)exp);
+		} else {
+			DType baseDType;
+			DType dtype = null;
 
-            default:
-                baseDType = packageHelper.findRegisteredType(typeExp.type.name());
-                if (baseDType != null) {
-                    dtype = new DType(baseDType.getShape(), typeName, baseDType);
-                    registerType(typeName, dtype);
-                } else {
-                    addError2s("type '%s' - unknown %s", typeName, typeExp.type.name());
-                }
-                break;
-            }
+			switch(TypeInfo.typeOf(typeExp.type)) {
+			case INT:
+				baseDType = registry.getType(BuiltInTypes.INTEGER_SHAPE);
+				dtype = new DType(Shape.INTEGER, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+			case LONG:
+				baseDType = registry.getType(BuiltInTypes.LONG_SHAPE);
+				dtype = new DType(Shape.LONG, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+			case NUMBER:
+				baseDType = registry.getType(BuiltInTypes.NUMBER_SHAPE);
+				dtype = new DType(Shape.NUMBER, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+			case DATE:
+				baseDType = registry.getType(BuiltInTypes.DATE_SHAPE);
+				dtype = new DType(Shape.DATE, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+			case BOOLEAN:
+				baseDType = registry.getType(BuiltInTypes.BOOLEAN_SHAPE);
+				dtype = new DType(Shape.BOOLEAN, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+			case STRING:
+				baseDType = registry.getType(BuiltInTypes.STRING_SHAPE);
+				dtype = new DType(Shape.STRING, typeName, baseDType);
+				registerType(typeName, dtype);
+				break;
+				//				case LIST:
+					//					baseType = registry.getType(BuiltInTypes.LIST_SHAPE);
+					//					type = new DType(Shape.STRING, name, baseType);
+					//					registry.add(name, type);
+					//					break;
 
-            if (dtype != null) {
-                addValidationRules(typeExp, dtype);
-            }
-        }
-    }
+				default:
+					baseDType = packageHelper.findRegisteredType(typeExp.type.name());
+					if (baseDType != null) {
+						dtype = new DType(baseDType.getShape(), typeName, baseDType);
+						registerType(typeName, dtype);
+					} else {
+						addError2s("type '%s' - unknown %s", typeName, typeExp.type.name());
+					}
+					break;
+			}
 
-    private void addValidationRules(FullTypeExp typeExp, DType type) {
-        RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET());
+			if (dtype != null) {
+				addValidationRules(typeExp, dtype);
+			}
+		}
+	}
 
-        List<RuleExp> adjustedRuleList = adjustRules(type, typeExp.ruleList);
+	private void addValidationRules(FullTypeExp typeExp, DType type) {
+		RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET());
 
-        for(Exp exp: adjustedRuleList) {
-            NRule vrule = converter.convert(type, exp, context);
-            if (vrule == null) {
-                this.addError2s("type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
-            } else {
-                this.log(vrule.getName());
-                type.getRawRules().add(vrule);
-            }
-        }
+		List<RuleExp> adjustedRuleList = adjustRules(type, typeExp.ruleList);
+
+		for(Exp exp: adjustedRuleList) {
+			NRule vrule = converter.convert(type, exp, context);
+			if (vrule == null) {
+				this.addError2s("type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
+			} else {
+				this.log(vrule.getName());
+				type.getRawRules().add(vrule);
+			}
+		}
 
 
-        //unique is not a rule but evaluate it like a rule
-        if (type instanceof DStructType) {
-        	DStructType structType = (DStructType) type;
-        	for(String fieldName: structType.getFields().keySet()) {
-        		if (structType.fieldIsUnique(fieldName)) {
-        			UniqueRule rule = new UniqueRule("unique", fieldName, structType, this.context);
-        			rule.setRuleText(fieldName);
-        			type.getRawRules().add(rule);
-        		}
-        	}
-        }        
+		//unique is not a rule but evaluate it like a rule
+		if (type instanceof DStructType) {
+			DStructType structType = (DStructType) type;
+			for(String fieldName: structType.getFields().keySet()) {
+				if (structType.fieldIsUnique(fieldName)) {
+					UniqueRule rule = new UniqueRule("unique", fieldName, structType, this.context);
+					rule.setRuleText(fieldName);
+					type.getRawRules().add(rule);
+				}
+			}
+		}        
 
-    }
+	}
 
 
 	private List<RuleExp> adjustRules(DType type, List<RuleExp> ruleList) {
-        RuleAdjuster adjuster = new RuleAdjuster();
+		RuleAdjuster adjuster = new RuleAdjuster();
 
-        for (RuleExp exp: ruleList) {
-            adjuster.adjust(type, exp);
-        }
+		for (RuleExp exp: ruleList) {
+			adjuster.adjust(type, exp);
+		}
 
-        if (ruleList.size() >= 2) {
-        	List<RuleExp> L = new ArrayList<>();
-        	int n = ruleList.size();
-        	for(int i = 0; i < n; i++) {
-        		RuleExp exp = ruleList.get(i);
-        		if (exp instanceof CustomRule && i < (n-1)) {
-        			CustomRule rule = (CustomRule) exp;
-        			if (rule.ruleName.equals("len")) {
-        				rule.hackExtra = ruleList.get(i+1);
-        				L.add(rule);
-        				i++;
-        			}
-        		} else {
-        			L.add(exp);
-        		}
-        	}
-        	return L;
-        }
-        return ruleList;
-    }
+		if (ruleList.size() >= 2) {
+			List<RuleExp> L = new ArrayList<>();
+			int n = ruleList.size();
+			for(int i = 0; i < n; i++) {
+				RuleExp exp = ruleList.get(i);
+				if (exp instanceof CustomRule && i < (n-1)) {
+					CustomRule rule = (CustomRule) exp;
+					if (rule.ruleName.equals("len")) {
+						rule.hackExtra = ruleList.get(i+1);
+						L.add(rule);
+						i++;
+					}
+				} else {
+					L.add(exp);
+				}
+			}
+			return L;
+		}
+		return ruleList;
+	}
 
-    private void buildStructType(FullStructTypeExp typeExp) {
-        TypeBuilder tb = new TypeBuilder(registry, world);
-        tb.setPackageName(packageHelper.getPackageName());
-        if (! typeExp.type.name().equals("struct")) {
-            DType baseType = packageHelper.findRegisteredType(typeExp.type.name());
-            if (baseType == null) {
-                this.addError("unknown struct base type", typeExp);
-            } else if (baseType instanceof DStructType) {
-                tb.setBaseType((DStructType) baseType);
-            } else {
-                this.addError("struct base type '%s' is not a struct type", typeExp);
-            }
-        }
+	private void buildStructType(FullStructTypeExp typeExp) {
+		TypeBuilder tb = new TypeBuilder(registry, world);
+		tb.setPackageName(packageHelper.getPackageName());
+		if (! typeExp.type.name().equals("struct")) {
+			DType baseType = packageHelper.findRegisteredType(typeExp.type.name());
+			if (baseType == null) {
+				this.addError("unknown struct base type", typeExp);
+			} else if (baseType instanceof DStructType) {
+				tb.setBaseType((DStructType) baseType);
+			} else {
+				this.addError("struct base type '%s' is not a struct type", typeExp);
+			}
+		}
 
-        Inner inner = tb.start(typeExp.var.name());
+		Inner inner = tb.start(typeExp.var.name());
 
-        for(StructMemberExp membExp : typeExp.members.list) {
-            log(" m " + membExp.strValue());
-            if (membExp.optional) {
-                inner.optional();
-            }
-            if (membExp.isUnique) {
-            	inner.unique();
-            }
-            
-            switch(TypeInfo.typeOf(membExp.type)) {
-            case INT:
-                inner = inner.integer(membExp.var.strValue());
-                break;
-            case LONG:
-                inner = inner.longInteger(membExp.var.strValue());
-                break;
-            case NUMBER:
-                inner = inner.number(membExp.var.strValue());
-                break;
-            case DATE:
-                inner = inner.date(membExp.var.strValue());
-                break;
-            case BOOLEAN:
-                inner = inner.bool(membExp.var.strValue());
-                break;
-            case STRING:
-                inner = inner.string(membExp.var.strValue());
-                break;
+		for(StructMemberExp membExp : typeExp.members.list) {
+			log(" m " + membExp.strValue());
+			if (membExp.optional) {
+				inner.optional();
+			}
+			if (membExp.isUnique) {
+				inner.unique();
+			}
 
-            default:
-                if (! buildKnownType(inner, membExp)) {
-                    addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
-                }
-                break;
-            }
-        }
+			switch(TypeInfo.typeOf(membExp.type)) {
+			case INT:
+				inner = inner.integer(membExp.var.strValue());
+				break;
+			case LONG:
+				inner = inner.longInteger(membExp.var.strValue());
+				break;
+			case NUMBER:
+				inner = inner.number(membExp.var.strValue());
+				break;
+			case DATE:
+				inner = inner.date(membExp.var.strValue());
+				break;
+			case BOOLEAN:
+				inner = inner.bool(membExp.var.strValue());
+				break;
+			case STRING:
+				inner = inner.string(membExp.var.strValue());
+				break;
 
-        inner.end();
-        DStructType structType = tb.getType();
-        packageHelper.addPackage(structType);
-        addValidationRules(typeExp, structType);
-    }
+			default:
+				if (! buildKnownType(inner, membExp)) {
+					addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+				}
+				break;
+			}
+		}
 
-    private boolean buildKnownType(Inner inner, StructMemberExp membExp) {
-        if (membExp.isListVar()) {
-            return structMemberExplicitList(inner, membExp);
-        }
+		inner.end();
+		DStructType structType = tb.getType();
+		packageHelper.addPackage(structType);
+		addValidationRules(typeExp, structType);
+	}
 
-        if (packageHelper.findRegisteredType(membExp.type.name()) == null) {
-            return false;
-        }
-        DType eltype = packageHelper.findRegisteredType(membExp.type.name());
-        String fieldName = membExp.var.name();
+	private boolean buildKnownType(Inner inner, StructMemberExp membExp) {
+		if (membExp.isListVar()) {
+			return structMemberExplicitList(inner, membExp);
+		}
 
-        inner.other(fieldName, eltype);
-        return true;
-    }
+		if (packageHelper.findRegisteredType(membExp.type.name()) == null) {
+			return false;
+		}
+		DType eltype = packageHelper.findRegisteredType(membExp.type.name());
+		String fieldName = membExp.var.name();
 
-    private boolean structMemberExplicitList(Inner inner, StructMemberExp membExp) {
-        if (packageHelper.existsRegisteredType(membExp.type.name())) {
-            return true;
-        }
+		inner.other(fieldName, eltype);
+		return true;
+	}
 
-        IdentExp varname = new IdentExp(membExp.type.name());
-        IdentExp typename = new IdentExp(membExp.type.name());
-        //        IdentExp elementType = membExp.getListSubType();
-        IdentExp elementType = new IdentExp(membExp.type.name());
-        List<RuleExp> ruleList = new ArrayList<>();
-        FullListTypeExp listExp = new FullListTypeExp(varname, typename, elementType, ruleList);
-        visitType(listExp);
+	private boolean structMemberExplicitList(Inner inner, StructMemberExp membExp) {
+		if (packageHelper.existsRegisteredType(membExp.type.name())) {
+			return true;
+		}
 
-        DType eltype = packageHelper.findRegisteredType(typename.name());
-        inner.other(membExp.var.name(), eltype);
+		IdentExp varname = new IdentExp(membExp.type.name());
+		IdentExp typename = new IdentExp(membExp.type.name());
+		//        IdentExp elementType = membExp.getListSubType();
+		IdentExp elementType = new IdentExp(membExp.type.name());
+		List<RuleExp> ruleList = new ArrayList<>();
+		FullListTypeExp listExp = new FullListTypeExp(varname, typename, elementType, ruleList);
+		visitType(listExp);
 
-        return true;
-    }
+		DType eltype = packageHelper.findRegisteredType(typename.name());
+		inner.other(membExp.var.name(), eltype);
 
-    private void buildEnumType(FullEnumTypeExp typeExp) {
-        TypeBuilder tb = new TypeBuilder(registry, world);
-        tb.setPackageName(packageHelper.getPackageName());
-        tb.setAmBuildingEnum(true);
-        Inner inner = tb.start(typeExp.var.name());
+		return true;
+	}
 
-        for(EnumMemberExp membExp : typeExp.members.list) {
-            log(" m " + membExp.strValue());
-            switch(TypeInfo.typeOf(membExp.type)) {
-            //				case INT:
-            //					inner = inner.integer(membExp.var.strValue());
-            //					break;
-            //				case BOOLEAN:
-            //					inner = inner.bool(membExp.var.strValue());
-            //					break;
-            case STRING:
-                inner = inner.string(membExp.var.strValue());
-                break;
+	private void buildEnumType(FullEnumTypeExp typeExp) {
+		TypeBuilder tb = new TypeBuilder(registry, world);
+		tb.setPackageName(packageHelper.getPackageName());
+		tb.setAmBuildingEnum(true);
+		Inner inner = tb.start(typeExp.var.name());
 
-            default:
-                addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
-                break;
-            }
-        }
+		for(EnumMemberExp membExp : typeExp.members.list) {
+			log(" m " + membExp.strValue());
+			switch(TypeInfo.typeOf(membExp.type)) {
+			//				case INT:
+			//					inner = inner.integer(membExp.var.strValue());
+			//					break;
+			//				case BOOLEAN:
+			//					inner = inner.bool(membExp.var.strValue());
+			//					break;
+			case STRING:
+				inner = inner.string(membExp.var.strValue());
+				break;
 
-        inner.end();
-        DStructType structType = tb.getType();
-        packageHelper.addPackage(structType);
-        addValidationRules(typeExp, tb.getType());
-    }
+			default:
+				addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+				break;
+			}
+		}
 
-    private void buildListType(FullListTypeExp exp) {
-        String typeName = exp.var.name();
-        String elType = exp.getListElementType();
-        IdentExp elexp = new IdentExp(elType);
-        if (TypeInfo.isPrimitiveType(elexp)) {
-            elType = TypeInfo.toShapeType(elType);
-        }
+		inner.end();
+		DStructType structType = tb.getType();
+		packageHelper.addPackage(structType);
+		addValidationRules(typeExp, tb.getType());
+	}
 
-        DType eltype = packageHelper.findRegisteredType(elType);
-        if (eltype == null) {
-            this.addError2s("type '%s': unknown list element type '%s'", typeName, elType);
-        }
+	private void buildListType(FullListTypeExp exp) {
+		String typeName = exp.var.name();
+		String elType = exp.getListElementType();
+		IdentExp elexp = new IdentExp(elType);
+		if (TypeInfo.isPrimitiveType(elexp)) {
+			elType = TypeInfo.toShapeType(elType);
+		}
 
-        DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
-        registerType(typeName, dtype);
-        
-        this.addValidationRules(exp, dtype);
-    }
+		DType eltype = packageHelper.findRegisteredType(elType);
+		if (eltype == null) {
+			this.addError2s("type '%s': unknown list element type '%s'", typeName, elType);
+		}
 
-    private void processImports() {
-        //        context.errL = errL;
-        context.world = world;
-        context.registry = registry;
-        context.crf = crf;
+		DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
+		registerType(typeName, dtype);
 
-        for(ImportExp exp: doc.getImports()) {
-            try {
-                log("!!!!!!!!!!!!!!!! "+ exp.val);
+		this.addValidationRules(exp, dtype);
+	}
 
-                context.loader.importPackage(exp.val, context);
-            } catch (Exception e) {
-                this.addError2s("import '%s': %s", exp.strValue(), e.getMessage());
-            }
-        }
+	private void processImports() {
+		//        context.errL = errL;
+		context.world = world;
+		context.registry = registry;
+		context.crf = crf;
 
-    }
+		for(ImportExp exp: doc.getImports()) {
+			try {
+				log("!!!!!!!!!!!!!!!! "+ exp.val);
 
-    private void log(String s) {
-        Log.log(s);
-    }
+				context.loader.importPackage(exp.val, context);
+			} catch (Exception e) {
+				this.addError2s("import '%s': %s", exp.strValue(), e.getMessage());
+			}
+		}
+
+	}
+
+
+	//    @Override
+	public void visitView(Exp exp) {
+		ViewExp viewExp = (ViewExp) exp;
+		String typeName = viewExp.viewName.val;
+		ViewBuilder tb = new ViewBuilder(registry, world);
+		tb.setPackageName(packageHelper.getPackageName());
+//		DType baseType = null; //no base type for views
+
+		Inner inner = tb.start(viewExp.viewName.name());
+
+		for(ViewMemberExp membExp : viewExp.memberL) {
+			log(" vm " + membExp.strValue());
+
+			switch(TypeInfo.typeOf(membExp.leftType)) {
+			case INT:
+				inner = inner.integer(membExp.left.strValue());
+				break;
+			case LONG:
+				inner = inner.longInteger(membExp.left.strValue());
+				break;
+			case NUMBER:
+				inner = inner.number(membExp.left.strValue());
+				break;
+			case DATE:
+				inner = inner.date(membExp.left.strValue());
+				break;
+			case BOOLEAN:
+				inner = inner.bool(membExp.left.strValue());
+				break;
+			case STRING:
+				inner = inner.string(membExp.left.strValue());
+				break;
+
+			default:
+			{
+				DType eltype = packageHelper.findRegisteredType(membExp.leftType.name());
+				String fieldName = membExp.left.name();
+				if (eltype != null) {
+					inner.other(fieldName, eltype);
+				} else {
+					addError2s("view type '%s' - unknown %s", viewExp.viewName.name(), membExp.leftType.name());
+				}
+			}
+			break;
+			}
+		}
+
+		inner.endView();
+		DViewType structType = tb.getViewType();
+		packageHelper.addPackage(structType);
+
+		Log.debugLog("view " + typeName);
+	}
+
+	private void log(String s) {
+		Log.log(s);
+	}
 
 }
