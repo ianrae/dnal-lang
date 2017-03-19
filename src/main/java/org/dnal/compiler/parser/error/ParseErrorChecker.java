@@ -12,6 +12,7 @@ public class ParseErrorChecker {
 	private ValueErrorChecker valueChecker;
 	private ImportErrorChecker importChecker;
     private XErrorTracker et;
+	private ViewErrorChecker viewChecker;
 
 	public ParseErrorChecker(List<Exp> list, XErrorTracker et) {
 		this.doc = new DNALDocument(list);
@@ -29,6 +30,10 @@ public class ParseErrorChecker {
 		valueChecker = new ValueErrorChecker(doc, et);
 		valueChecker.setSeenTypes(typeChecker.seenTypes);
 		valueChecker.checkForErrors();
+		
+		viewChecker = new ViewErrorChecker(doc, et);
+		viewChecker.setSeenTypes(typeChecker.seenTypes);
+		viewChecker.checkForErrors();
 
 		int endCount = et.getErrorCount();
 		return (startCount == endCount);
