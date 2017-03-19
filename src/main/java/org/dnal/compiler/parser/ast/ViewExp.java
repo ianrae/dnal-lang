@@ -5,20 +5,15 @@ import java.util.List;
 import org.codehaus.jparsec.Token;
 
 public class ViewExp implements Exp {
-	public enum Direction {
-		INBOUND,
-		OUTBOUND
-	}
-	
 	public IdentExp viewName;
 	public IdentExp typeName;
-	public Direction direction;
+	public ViewDirection direction;
 	public List<ViewMemberExp> memberL;
 
 	public ViewExp(IdentExp varname, Token tok, IdentExp typename) {
 		this.viewName = varname;
 		String tokStr = getTokString(tok);
-		this.direction = (tokStr.equals("->")) ? Direction.OUTBOUND : Direction.INBOUND;
+		this.direction = (tokStr.equals("->")) ? ViewDirection.OUTBOUND : ViewDirection.INBOUND;
 		this.typeName = typename;
 	}
 	public ViewExp(List<ViewMemberExp> arg0) {
