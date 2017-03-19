@@ -13,7 +13,7 @@ public class ViewExp implements Exp {
 	public IdentExp viewName;
 	public IdentExp typeName;
 	public Direction direction;
-	private ViewMemberExp member;
+	public List<ViewMemberExp> memberL;
 
 	public ViewExp(IdentExp varname, Token tok, IdentExp typename) {
 		this.viewName = varname;
@@ -21,11 +21,14 @@ public class ViewExp implements Exp {
 		this.direction = (tokStr.equals("->")) ? Direction.OUTBOUND : Direction.INBOUND;
 		this.typeName = typename;
 	}
-	public ViewExp(ViewExp src, ViewMemberExp member) {
+	public ViewExp(List<ViewMemberExp> arg0) {
+		this.memberL = arg0;
+	}
+	public ViewExp(ViewExp src, ViewExp src2) {
 		this.viewName = src.viewName;
 		this.direction = src.direction;
 		this.typeName = src.typeName;
-		this.member = member;
+		this.memberL = src2.memberL;
 	}
 	private String getTokString(Token tok) {
 		if (tok == null) {
