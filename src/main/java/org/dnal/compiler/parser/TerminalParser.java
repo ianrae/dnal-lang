@@ -13,12 +13,12 @@ public class TerminalParser {
 //			"-", "(", ")","!",
 			";",
 			"[", "]", ",", "{", "}", ":",
-			"==", "<", ">", ">=", "<=", "!=",
+			"->", "==", "<", ">", ">=", "<=", "!=",
 //			"..", ".",
 			".",
 			"=")
 		.words(DNALLexer.IDENTIFIER)
-		.keywords("let", "type", "end", "struct", "enum", "list", "or", "and", "false", "true", 
+		.keywords("let", "type", "view", "end", "struct", "enum", "list", "or", "and", "false", "true", 
 		        "rule", "package", "import", "isa", "via", "optional", "null", "unique")
 		.build();
 	
