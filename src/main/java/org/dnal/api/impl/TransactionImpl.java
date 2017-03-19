@@ -19,6 +19,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.BuilderFactory;
@@ -36,7 +37,6 @@ public class TransactionImpl implements Transaction {
     protected List<NewErrorMessage> errorList = new ArrayList<>();
     private DTypeRegistry registry;
     private World world;
-    private CustomRuleFactory crf;
     private List<Pair<String, DValue>> pendingL = new ArrayList<>();
     private BuilderFactory factory;
     private CompilerContext context;
@@ -49,8 +49,6 @@ public class TransactionImpl implements Transaction {
     public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
         this.registry = registry;
-        StandardRuleFactory standard = new StandardRuleFactory();
-        this.crf = standard.createFactory();
         this.factory = new BuilderFactory(registry, errorList);
         this.context = context;
         this.loaderRegistry = loaderRegistry;
@@ -62,6 +60,9 @@ public class TransactionImpl implements Transaction {
     public void add(String name, DValue dval) {
         if (dval == null || name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name or dval were null");
+        }
+        if (dval.getType() instanceof DViewType) {
+        	throw new IllegalArgumentException("view types cannot be added to a DataSet");
         }
         pendingL.add(new Pair<String, DValue>(name, dval));
     }
@@ -111,7 +112,6 @@ public class TransactionImpl implements Transaction {
             throw new WorldException("null passed to createFromBean()");
         }
         
-        @SuppressWarnings("unchecked")
         BeanLoader<?> loader = (BeanLoader<?>) loaderRegistry.get(bean.getClass());
         if (loader == null) {
             throw new WorldException(String.format("bean class '%s' not registered. Use loadRegister()", bean.getClass().getSimpleName()));
