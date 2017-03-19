@@ -1,8 +1,19 @@
 package org.dnal.api.systest;
 
+import static org.junit.Assert.assertEquals;
+
+import org.dnal.core.DType;
+import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.junit.Test;
 
 public class ViewTests extends SysTestBase {
+	
+	public static class ViewRenderer {
+		public DValue render(DViewType viewType, DValue source) {
+			return null;
+		}
+	}
 
     @Test
     public void test() {
@@ -10,6 +21,11 @@ public class ViewTests extends SysTestBase {
         String src2 = "view AddressDTO <- Address { ";
         String src3 = " city string <- city street string <- street } end";
         chkValue("x", src1 + src2 + src3, 1, 0);
+        
+        DType type = dataSetLoaded.getType("AddressDTO");
+        assertEquals(null, type);
+        DViewType viewType = registry.getViewType("AddressDTO");
+        assertEquals("AddressDTO", viewType.getName());
     }
     
     @Test

@@ -109,5 +109,11 @@ public class DTypeRegistry {
 	public void addView(String completeName, DViewType dtype) {
 		viewMap.put(completeName, dtype);
 	}
+	public DViewType getViewType(String name) {
+		return viewMap.get(name);
+	}
+	public Set<String> getAllViewTypes() {
+		return viewMap.keySet();
+	}
 	
 }
