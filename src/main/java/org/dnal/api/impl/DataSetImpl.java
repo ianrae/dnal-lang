@@ -32,6 +32,9 @@ public class DataSetImpl implements DataSet {
     public Internals getInternals() {
         return new Internals(registry, world);
     }
+    public CompilerContext getCompilerContext() {
+    	return context;
+    }
     
     @Override
     public Transaction createTransaction() {
