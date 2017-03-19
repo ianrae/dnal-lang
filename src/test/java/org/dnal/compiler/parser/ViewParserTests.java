@@ -28,15 +28,19 @@ public class ViewParserTests {
     //input view
 	@Test
 	public void test10() {
-        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("view X <- Y { a <- b } end");
+        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("view X <- Y { a <- b c <- d} end");
 		ViewExp ax = (ViewExp) exp;
 		assertEquals("X", ax.viewName.val);
 		assertEquals("Y", ax.typeName.val);
 		assertEquals(ViewDirection.INBOUND, ax.direction);
-		assertEquals(1, ax.memberL.size());
+		assertEquals(2, ax.memberL.size());
 		ViewMemberExp memb = ax.memberL.get(0);
 		assertEquals("a", memb.left.val);
 		assertEquals("b", memb.right.val);
+		assertEquals(ViewDirection.INBOUND, memb.direction);
+		memb = ax.memberL.get(1);
+		assertEquals("c", memb.left.val);
+		assertEquals("d", memb.right.val);
 		assertEquals(ViewDirection.INBOUND, memb.direction);
 	}
     
