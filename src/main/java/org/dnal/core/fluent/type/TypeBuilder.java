@@ -2,6 +2,7 @@ package org.dnal.core.fluent.type;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
@@ -109,8 +110,8 @@ public class TypeBuilder {
 			addRules(generatedType);
 			registerType(typeName, generatedType);
 		}
-		public void endView() {
-			generatedViewType = new DViewType(typeName, baseType, fieldMap);
+		public void endView(String relatedTypeName, Map<String, String> namingMap) {
+			generatedViewType = new DViewType(typeName, baseType, fieldMap, namingMap, relatedTypeName);
 			registerView(typeName, generatedViewType);
 		}
 		

@@ -1,7 +1,9 @@
 package org.dnal.compiler.dnalgenerate;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
@@ -494,8 +496,13 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			break;
 			}
 		}
+		
+		Map<String,String> namingMap = new HashMap<>();
+		for(ViewMemberExp membExp : viewExp.memberL) {
+			namingMap.put(membExp.left.val, membExp.right.val);
+		}		
 
-		inner.endView();
+		inner.endView(viewExp.typeName.val, namingMap);
 		DViewType structType = tb.getViewType();
 		packageHelper.addPackage(structType);
 
