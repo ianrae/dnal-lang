@@ -1,16 +1,30 @@
 package org.dnal.compiler.parser.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.codehaus.jparsec.Token;
 
 public class ViewMemberExp implements Exp {
 	
 	public IdentExp left;
+	public List<IdentExp> leftList = new ArrayList<>();
 	public IdentExp right;
 	public IdentExp rightType;
 	public ViewDirection direction;
 
-	public ViewMemberExp(IdentExp left, Token tok, IdentExp right, IdentExp type) {
-		this.left = left;
+	public ViewMemberExp(List<List<IdentExp>> leftL, Token tok, IdentExp right, IdentExp type) {
+
+        for(List<IdentExp> sublist : leftL) {
+        	for(IdentExp exp: sublist) {
+        		if (left == null) {
+        			this.left = exp;
+        		} else {
+        			leftList.add(exp);
+        		}
+        	}
+        }
+		
 		this.right = right;
 		this.rightType = type;
 		String tokStr = getTokString(tok);

@@ -17,8 +17,8 @@ public class ViewParser extends ParserBase {
 	}
     
 	public static Parser<ViewMemberExp> member() {
-		return Parsers.sequence(VarParser.ident(), direction(), VarParser.ident(), VarParser.ident(),
-				(IdentExp left, Token tok, IdentExp right, IdentExp type) -> new ViewMemberExp(left, tok, right, type));
+		return Parsers.sequence(VarParser.ident().many().sepBy(term(".")), direction(), VarParser.ident(), VarParser.ident(),
+				(List<List<IdentExp>> left, Token tok, IdentExp right, IdentExp type) -> new ViewMemberExp(left, tok, right, type));
 	}
 	
 	public static Parser<ViewExp> viewMembers() {

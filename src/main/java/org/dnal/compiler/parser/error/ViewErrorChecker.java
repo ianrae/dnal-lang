@@ -47,6 +47,13 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 				ok = false;
 			}
 			checkType(memb.rightType, ident.val, memb.left.val);
+			
+			if (dir.equals(ViewDirection.INBOUND)) {
+				if (memb.leftList.size() > 0) {
+					addError2("%s '%s' - inview cannot use '.'", NAME, ident);
+				}
+			}
+			
 		}
 		if (! ok)
 		{
