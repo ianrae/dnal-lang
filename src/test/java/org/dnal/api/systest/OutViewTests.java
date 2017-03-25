@@ -155,6 +155,22 @@ public class OutViewTests extends SysTestBase {
 		assertEquals(null, viewval);
 	}
 
+	@Test
+	public void testFormat() throws Exception {
+		String path = SOURCE_DIR + "address2.dnal";
+		loadFile = true;
+		
+		chkValue("x", path, 1, 1);
+
+		DViewType viewType = registry.getViewType("AddressDTO");
+		ViewRenderer renderer = new ViewRenderer(dataSetLoaded);
+		DValue source = dataSetLoaded.getValue("x");
+		DValue viewval = renderer.render(viewType, source);
+
+		assertEquals("elm", viewval.asStruct().getField("lane").asString());
+		assertEquals("ottawa", viewval.asStruct().getField("town").asString());
+		assertEquals("2016", viewval.asStruct().getField("year").asString());
+	}
 
 	//-----------------------
 	private static final String SOURCE_DIR = "./src/main/resources/test/view/";

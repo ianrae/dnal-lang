@@ -1,6 +1,7 @@
 package org.dnal.api.systest;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.dnal.api.Transaction;
 import org.dnal.api.view.ViewLoader;
@@ -52,20 +53,16 @@ public class InViewTests extends SysTestBase {
 		loadFile = true;
 		chkValue("x", path, 2, 1);
 
-		DViewType viewType = registry.getViewType("PersonInput");
-		assertEquals("PersonInput", viewType.getName());
+		DViewType viewType = registry.getViewType("PersonInputBad");
+		assertEquals("PersonInputBad", viewType.getName());
 		
 		Transaction trans = dataSetLoaded.createTransaction();
 		StructBuilder builder = trans.createStructBuilder(viewType);
 		DValue inner = trans.createStringBuilder().buildFromString("sue");
 		builder.addField("fname", inner);
-//		inner = trans.createStringBuilder().buildFromString("main");
-//		builder.addField("lane", inner);
 		DValue dval = builder.finish();
-		assertEquals(0, builder.getValidationErrors().size());
-
-		assertEquals("sue", dval.asStruct().getField("fname").asString());
-//		assertEquals("ottawa", dval.asStruct().getField("town").asString());
+		assertEquals(false, builder.wasSuccessful());
+		assertNotNull(dval);
 	}
 	
 

@@ -20,7 +20,7 @@ outview Person -> PersonBadDTO {
  addr.zzz -> town string
 } end
 
-inview Person <- PersonInput { 
+inview Person <- PersonInputBad { 
  firstName <- fname string   
  addr <- town string
 } end

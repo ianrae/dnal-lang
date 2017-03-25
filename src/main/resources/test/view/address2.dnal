@@ -1,0 +1,16 @@
+type Address struct { 
+  street string 
+  city string
+  dt date
+} end
+
+
+outview Address -> AddressDTO { 
+ city -> town string   
+ street -> lane string
+ dt -> year string 
+} end
+
+
+let x Address = { 'elm', 'ottawa', '2016' }
+
