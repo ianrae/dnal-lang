@@ -80,6 +80,27 @@ public class OutViewTests extends SysTestBase {
 		String src = addSrc(" city -> town zzz   street -> lane string } end");
 		chkFail(src, 1, "has unknown type 'zzz'");
 	}
+	@Test
+	public void testFail5() {
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("inview Address <- AddressDTO { ");
+		String src = addSrc(" city <- town string   street <- lane string } end");
+		chkValue("x", src, 1, 0);
+		DViewType viewType = registry.getViewType("AddressDTO");
+		assertEquals("AddressDTO", viewType.getName());
+
+		ViewRenderer renderer = new ViewRenderer(dataSetLoaded);
+		DValue source = dataSetLoaded.getValue("x");
+		boolean ok = false;
+		try {
+			DValue viewval = renderer.render(viewType, source);
+			ok = true;
+		} catch (Exception e) {
+			assertEquals(true, e instanceof IllegalArgumentException);
+			log(e.getMessage());
+		}
+		assertEquals(false, ok);
+	}
 
 
 	//-----------------------

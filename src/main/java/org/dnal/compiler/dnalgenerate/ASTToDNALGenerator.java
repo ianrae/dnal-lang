@@ -502,7 +502,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			namingMap.put(membExp.right.val, membExp.left.val);
 		}		
 
-		inner.endView(viewExp.typeName.val, namingMap);
+		inner.endView(viewExp.typeName.val, namingMap, viewExp.direction);
 		DViewType structType = tb.getViewType();
 		packageHelper.addPackage(structType);
 

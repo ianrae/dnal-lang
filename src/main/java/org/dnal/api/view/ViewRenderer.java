@@ -8,6 +8,7 @@ import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.impl.DataSetImpl;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -33,8 +34,12 @@ public class ViewRenderer {
 				throw new IllegalArgumentException(String.format("can't find type: %s", viewType.getRelatedTypeName()));
 			}
 
-			if (! sourceType.isAssignmentCompatible(source.getType())) {
-				throw new IllegalArgumentException(String.format("type mismatch. view expects %s but got %s", viewType.getRelatedTypeName(), source.getType().getName()));
+			if (! viewType.getDirection().equals(ViewDirection.OUTBOUND)) {
+				throw new IllegalArgumentException(String.format("cannot render an inview: %s", viewType.getName()));
+			}
+
+			if (!(sourceType instanceof DStructType)) {
+				throw new IllegalArgumentException(String.format("can't find type: %s", viewType.getRelatedTypeName()));
 			}
 
 			Transaction trans = ds.createTransaction();

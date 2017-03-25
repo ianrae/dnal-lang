@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
@@ -110,8 +111,8 @@ public class TypeBuilder {
 			addRules(generatedType);
 			registerType(typeName, generatedType);
 		}
-		public void endView(String relatedTypeName, Map<String, String> namingMap) {
-			generatedViewType = new DViewType(typeName, baseType, fieldMap, namingMap, relatedTypeName);
+		public void endView(String relatedTypeName, Map<String, String> namingMap, ViewDirection direction) {
+			generatedViewType = new DViewType(typeName, baseType, fieldMap, namingMap, relatedTypeName, direction);
 			registerView(typeName, generatedViewType);
 		}
 		
