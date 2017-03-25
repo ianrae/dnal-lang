@@ -20,5 +20,11 @@ outview Person -> PersonBadDTO {
  addr.zzz -> town string
 } end
 
+inview Person <- PersonInput { 
+ firstName <- fname string   
+ addr <- town string
+} end
+
+
 let x Person = { 'bob', 'smith', { 'elm', 'ottawa' } }
 

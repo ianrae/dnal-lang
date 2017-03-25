@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.dnal.api.Transaction;
 import org.dnal.api.view.ViewLoader;
+import org.dnal.api.view.ViewRenderer;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -45,7 +46,32 @@ public class InViewTests extends SysTestBase {
 	}
 
 
+	@Test
+	public void testPerson() throws Exception {
+		String path = SOURCE_DIR + "person1.dnal";
+		loadFile = true;
+		chkValue("x", path, 2, 1);
+
+		DViewType viewType = registry.getViewType("PersonInput");
+		assertEquals("PersonInput", viewType.getName());
+		
+		Transaction trans = dataSetLoaded.createTransaction();
+		StructBuilder builder = trans.createStructBuilder(viewType);
+		DValue inner = trans.createStringBuilder().buildFromString("sue");
+		builder.addField("fname", inner);
+//		inner = trans.createStringBuilder().buildFromString("main");
+//		builder.addField("lane", inner);
+		DValue dval = builder.finish();
+		assertEquals(0, builder.getValidationErrors().size());
+
+		assertEquals("sue", dval.asStruct().getField("fname").asString());
+//		assertEquals("ottawa", dval.asStruct().getField("town").asString());
+	}
+	
+
 	//-----------------------
+	private static final String SOURCE_DIR = "./src/main/resources/test/view/";
+	
 	private StringBuilder sb = new StringBuilder();
 
 	private String addSrc(String s) {

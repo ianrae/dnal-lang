@@ -13,7 +13,7 @@ public class ViewParserTests {
     //output view
 	@Test
 	public void test01() {
-        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("outputview X -> Y { a -> b int } end");
+        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("outview X -> Y { a -> b int } end");
 		ViewExp ax = (ViewExp) exp;
 		assertEquals("X", ax.typeName.val);
 		assertEquals("Y", ax.viewName.val);
@@ -28,7 +28,7 @@ public class ViewParserTests {
     //input view
 	@Test
 	public void test10() {
-        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("inputview X <- Y { a <- b string c <- d int} end");
+        Exp exp = ViewParser.view03().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse("inview X <- Y { a <- b string c <- d int} end");
 		ViewExp ax = (ViewExp) exp;
 		assertEquals("X", ax.typeName.val);
 		assertEquals("Y", ax.viewName.val);
