@@ -158,11 +158,11 @@ public class ViewTests extends SysTestBase {
 
 	@Test
 	public void test() throws Exception {
-		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "outputview Address -> AddressDTO { ";
-		String src3 = " city -> town string   street -> lane string } end";
-		String src4 = " let x Address = { 'elm', 'ottawa' }";
-		chkValue("x", src1 + src2 + src3 + src4, 1, 1);
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("outputview Address -> AddressDTO { ");
+		addSrc(" city -> town string   street -> lane string } end");
+		String src = addSrc(" let x Address = { 'elm', 'ottawa' }");
+		chkValue("x", src, 1, 1);
 
 		DType type = dataSetLoaded.getType("AddressDTO");
 		assertEquals(null, type);
@@ -179,11 +179,11 @@ public class ViewTests extends SysTestBase {
 
 	@Test
 	public void test2() throws Exception {
-		String src1 = "type Address struct { street string code string} end ";
-		String src2 = "outputview Address -> AddressDTO { ";
-		String src3 = " street -> lane string    code -> townId int } end";
-		String src4 = " let x Address = { 'elm', '405' }";
-		chkValue("x", src1 + src2 + src3 + src4, 1, 1);
+		addSrc("type Address struct { street string code string} end ");
+		addSrc("outputview Address -> AddressDTO { ");
+		addSrc(" street -> lane string    code -> townId int } end");
+		String src = addSrc(" let x Address = { 'elm', '405' }");
+		chkValue("x", src, 1, 1);
 
 		DType type = dataSetLoaded.getType("AddressDTO");
 		assertEquals(null, type);
@@ -200,39 +200,40 @@ public class ViewTests extends SysTestBase {
 
 	@Test
 	public void testFail1() {
-		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "outputview AddressDTO -> Address { ";
-		String src3 = " street -> street string    city -> city string } end";
-		chkFail(src1 + src2 + src3, 2, "has already been defined");
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("outputview AddressDTO -> Address { ");
+		String src = addSrc(" street -> street string    city -> city string } end");
+		chkFail(src, 2, "has already been defined");
 	}
 	@Test
 	public void testFail2() {
-		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "outputview ZZZ -> AddressDTO { ";
-		String src3 = " street -> street string    city -> city string } end";
-		chkFail(src1 + src2 + src3, 1, "has unknown type");
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("outputview ZZZ -> AddressDTO { ");
+		String src = addSrc(" street -> street string    city -> city string } end");
+		chkFail(src, 1, "has unknown type");
 	}
 	@Test
 	public void testFail3() {
-		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "outputview ZZZ -> AddressDTO { ";
-		String src3 = " street <- street string    city -> city string } end";
-		chkFail(src1 + src2 + src3, 2, "cannot mix");
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("outputview ZZZ -> AddressDTO { ");
+		String src = addSrc(" street <- street string    city -> city string } end");
+		chkFail(src, 2, "cannot mix");
 	}
 	@Test
 	public void testFail4() {
-		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "outputview Address -> AddressDTO { ";
-		String src3 = " city -> town zzz   street -> lane string } end";
-		chkFail(src1 + src2 + src3, 1, "has unknown type 'zzz'");
+		addSrc("type Address struct { street string city string} end ");
+		addSrc("outputview Address -> AddressDTO { ");
+		String src = addSrc(" city -> town zzz   street -> lane string } end");
+		chkFail(src, 1, "has unknown type 'zzz'");
 	}
 
 
 	//-----------------------
-	private StringBuilder sb;
+	private StringBuilder sb = new StringBuilder();
 
-	private void o(String s) {
+	private String addSrc(String s) {
 		sb.append(s);
+		return sb.toString();
 	}
 
 	protected void chkView(String varName, String source, int expectedTypes, int expectedVals) {
