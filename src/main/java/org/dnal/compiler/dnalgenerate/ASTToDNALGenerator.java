@@ -501,7 +501,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		Map<String,String> namingMap = new HashMap<>();
 		for(ViewMemberExp membExp : viewExp.memberL) {
 			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
-				namingMap.put(membExp.right.val, membExp.left.val);
+				namingMap.put(membExp.right.val, membExp.getFullLeft());
 			} else {
 				namingMap.put(membExp.left.val, membExp.right.val);
 			}

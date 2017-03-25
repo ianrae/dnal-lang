@@ -15,6 +15,10 @@ outview Person -> PersonDTO {
  addr.city -> town string
 } end
 
+outview Person -> PersonBadDTO { 
+ firstName -> fname string   
+ addr.zzz -> town string
+} end
 
 let x Person = { 'bob', 'smith', { 'elm', 'ottawa' } }
 

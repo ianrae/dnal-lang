@@ -35,17 +35,43 @@ public class ViewRenderer extends ViewLoaderRendererBase {
 	
 			Transaction trans = ds.createTransaction();
 			Map<String,DValue> resultMap = new HashMap<>();
+			int errCount = 0;
 			for(String viewFieldName: viewType.getFields().keySet()) {
 				DType destType = viewType.getFields().get(viewFieldName);
 				String srcField = viewType.getNamingMap().get(viewFieldName);
-				DValue sourceVal = source.asStruct().getField(srcField);
-
-				DValue inner = convert(sourceVal, destType, trans); 
-				resultMap.put(viewFieldName, inner);
+				DValue sourceVal;
+				if (srcField.contains(".")) {
+					sourceVal = getSubValue(source, srcField);
+				} else {
+					sourceVal = source.asStruct().getField(srcField);
+				}
+				
+				//fix later when support optional!
+				if (sourceVal == null) {
+					errCount++;
+					this.addError(String.format("%s: field %s does not resolve to a value: %s", viewType.getName(), srcField, viewFieldName));
+				} else {
+					DValue inner = convert(sourceVal, destType, trans); 
+					resultMap.put(viewFieldName, inner);
+				}
 			}
 
+			if (errCount > 0) {
+				return null;
+			}
+			
 			DValueImpl dval = new DValueImpl(viewType, resultMap); 
 			return dval;
+		}
+		private DValue getSubValue(DValue source, String srcField) {
+			String ar[] = srcField.split("\\.");
+			
+			DValue current = source;
+			for(String name: ar) {
+				current = current.asStruct().getField(name);
+			}
+			
+			return current;
 		}
 
 	}

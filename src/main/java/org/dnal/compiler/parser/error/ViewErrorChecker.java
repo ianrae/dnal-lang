@@ -12,7 +12,7 @@ import org.dnal.core.logger.Log;
 
 public class ViewErrorChecker extends ErrorCheckerBase {
 	private static final String NAME = "view";
-	
+
 	private List<ViewExp> viewL;
 
 	public ViewErrorChecker(DNALDocument doc, XErrorTracker et) {
@@ -33,13 +33,13 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 		checkIdent(ident, NAME);
 		seenTypes.add(ident.strValue());
 		checkViewType(ident, "view", viewExp.typeName);
-		
+
 		if (viewExp.isOutputView && viewExp.direction.equals(ViewDirection.INBOUND)) {
 			addError2("%s '%s' - outputview must use ->", NAME, ident);
 		} else if (! viewExp.isOutputView && viewExp.direction.equals(ViewDirection.OUTBOUND)) {
 			addError2("%s '%s' - inputview must use <-", NAME, ident);
 		}
-		
+
 		boolean ok = true;
 		ViewDirection dir = viewExp.direction;
 		for(ViewMemberExp memb: viewExp.memberL) {
@@ -47,18 +47,19 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 				ok = false;
 			}
 			checkType(memb.rightType, ident.val, memb.left.val);
-			
+
 			if (dir.equals(ViewDirection.INBOUND)) {
 				if (memb.leftList.size() > 0) {
 					addError2("%s '%s' - inview cannot use '.'", NAME, ident);
 				}
 			}
-			
+
 		}
 		if (! ok)
 		{
 			addError2("%s '%s' - cannot mix -> and <-", NAME, ident);
 		}
-		
+
 	}
+
 }
