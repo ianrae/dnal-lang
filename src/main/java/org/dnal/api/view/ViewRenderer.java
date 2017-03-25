@@ -38,10 +38,12 @@ public class ViewRenderer {
 				throw new IllegalArgumentException(String.format("cannot render an inview: %s", viewType.getName()));
 			}
 
-			if (!(sourceType instanceof DStructType)) {
-				throw new IllegalArgumentException(String.format("can't find type: %s", viewType.getRelatedTypeName()));
+			//source can be circle and sourceType can be shape
+			if (! sourceType.isAssignmentCompatible(source.getType())) {
+				throw new IllegalArgumentException(String.format("type mismatch. view expects %s but got %s", viewType.getRelatedTypeName(), source.getType().getName()));
 			}
 
+	
 			Transaction trans = ds.createTransaction();
 			Map<String,DValue> resultMap = new HashMap<>();
 			for(String viewFieldName: viewType.getFields().keySet()) {

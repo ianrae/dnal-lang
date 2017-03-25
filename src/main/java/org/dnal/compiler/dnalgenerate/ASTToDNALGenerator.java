@@ -22,6 +22,7 @@ import org.dnal.compiler.parser.ast.ImportExp;
 import org.dnal.compiler.parser.ast.RuleDeclExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
+import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.compiler.parser.ast.ViewExp;
 import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -499,7 +500,11 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		
 		Map<String,String> namingMap = new HashMap<>();
 		for(ViewMemberExp membExp : viewExp.memberL) {
-			namingMap.put(membExp.right.val, membExp.left.val);
+			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
+				namingMap.put(membExp.right.val, membExp.left.val);
+			} else {
+				namingMap.put(membExp.left.val, membExp.right.val);
+			}
 		}		
 
 		inner.endView(viewExp.typeName.val, namingMap, viewExp.direction);
