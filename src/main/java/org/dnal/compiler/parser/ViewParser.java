@@ -37,11 +37,11 @@ public class ViewParser extends ParserBase {
 	}
 	
 	public static Parser<ViewExp> outputView() {
-		return Parsers.sequence(term("outputview"), viewHdr(), viewMembers(), VarParser.doEnd(),
+		return Parsers.sequence(term("outview"), viewHdr(), viewMembers(), VarParser.doEnd(),
 				(Token tok, ViewExp view, ViewExp view2, Exp exp) -> new ViewExp(true, view, view2));
 	}
 	public static Parser<ViewExp> inputView() {
-		return Parsers.sequence(term("inputview"), viewHdr(), viewMembers(), VarParser.doEnd(),
+		return Parsers.sequence(term("inview"), viewHdr(), viewMembers(), VarParser.doEnd(),
 				(Token tok, ViewExp view, ViewExp view2, Exp exp) -> new ViewExp(false, view, view2));
 	}
 	public static Parser<ViewExp> view03() {
