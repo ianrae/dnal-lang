@@ -1,0 +1,14 @@
+type Address struct { 
+  street string 
+  city string
+} end
+
+
+outview Address -> AddressDTO { 
+ city -> town string   
+ street -> lane string 
+} end
+
+
+let x Address = { 'elm', 'ottawa' }
+

@@ -53,8 +53,4 @@ public class InViewTests extends SysTestBase {
 		return sb.toString();
 	}
 
-	protected void chkView(String varName, String source, int expectedTypes, int expectedVals) {
-		chk(source, expectedTypes, expectedVals);
-	}    
-
 }

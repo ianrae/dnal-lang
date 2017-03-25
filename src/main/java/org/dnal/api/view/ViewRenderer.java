@@ -1,21 +1,16 @@
 package org.dnal.api.view;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
-import org.dnal.api.impl.DataSetImpl;
-import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
-import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.DViewType;
-import org.dnal.core.NewErrorMessage;
 
 public class ViewRenderer extends ViewLoaderRendererBase {
 

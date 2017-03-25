@@ -101,18 +101,36 @@ public class OutViewTests extends SysTestBase {
 		}
 		assertEquals(false, ok);
 	}
+	
+	@Test
+	public void testFile() throws Exception {
+		String path = SOURCE_DIR + "address1.dnal";
+		loadFile = true;
+		
+		chkValue("x", path, 1, 1);
+
+		DType type = dataSetLoaded.getType("AddressDTO");
+		assertEquals(null, type);
+		DViewType viewType = registry.getViewType("AddressDTO");
+		assertEquals("AddressDTO", viewType.getName());
+
+		ViewRenderer renderer = new ViewRenderer(dataSetLoaded);
+		DValue source = dataSetLoaded.getValue("x");
+		DValue viewval = renderer.render(viewType, source);
+
+		assertEquals("elm", viewval.asStruct().getField("lane").asString());
+		assertEquals("ottawa", viewval.asStruct().getField("town").asString());
+	}
 
 
 	//-----------------------
+	private static final String SOURCE_DIR = "./src/main/resources/test/view/";
+	
 	private StringBuilder sb = new StringBuilder();
 
 	private String addSrc(String s) {
 		sb.append(s);
 		return sb.toString();
 	}
-
-	protected void chkView(String varName, String source, int expectedTypes, int expectedVals) {
-		chk(source, expectedTypes, expectedVals);
-	}    
 
 }
