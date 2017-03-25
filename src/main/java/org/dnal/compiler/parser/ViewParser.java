@@ -5,10 +5,8 @@ import java.util.List;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
-import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IdentExp;
-import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.ViewExp;
 import org.dnal.compiler.parser.ast.ViewMemberExp;
 
@@ -19,8 +17,8 @@ public class ViewParser extends ParserBase {
 	}
     
 	public static Parser<ViewMemberExp> member() {
-		return Parsers.sequence(VarParser.ident(), VarParser.ident(), direction(), VarParser.ident(),
-				(IdentExp left, IdentExp type, Token tok, IdentExp right) -> new ViewMemberExp(left, type, tok, right));
+		return Parsers.sequence(VarParser.ident(), direction(), VarParser.ident(), VarParser.ident(),
+				(IdentExp left, Token tok, IdentExp right, IdentExp type) -> new ViewMemberExp(left, tok, right, type));
 	}
 	
 	public static Parser<ViewExp> viewMembers() {
@@ -35,12 +33,19 @@ public class ViewParser extends ParserBase {
 	
 	public static Parser<ViewExp> viewHdr() {
 		return Parsers.sequence(VarParser.ident(), direction(), VarParser.ident(),
-				(IdentExp varName, Token tok, IdentExp varType) -> new ViewExp(varName, tok, varType));
+				(IdentExp varType, Token tok, IdentExp varName) -> new ViewExp(varType, tok, varName));
 	}
 	
+	public static Parser<ViewExp> outputView() {
+		return Parsers.sequence(term("outputview"), viewHdr(), viewMembers(), VarParser.doEnd(),
+				(Token tok, ViewExp view, ViewExp view2, Exp exp) -> new ViewExp(true, view, view2));
+	}
+	public static Parser<ViewExp> inputView() {
+		return Parsers.sequence(term("inputview"), viewHdr(), viewMembers(), VarParser.doEnd(),
+				(Token tok, ViewExp view, ViewExp view2, Exp exp) -> new ViewExp(false, view, view2));
+	}
 	public static Parser<ViewExp> view03() {
-		return Parsers.sequence(term("view"), viewHdr(), viewMembers(), VarParser.doEnd(),
-				(Token tok, ViewExp view, ViewExp view2, Exp exp) -> new ViewExp(view, view2));
+		return Parsers.or(inputView(), outputView());
 	}
 
 	

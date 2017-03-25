@@ -34,13 +34,19 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 		seenTypes.add(ident.strValue());
 		checkViewType(ident, "view", viewExp.typeName);
 		
+		if (viewExp.isOutputView && viewExp.direction.equals(ViewDirection.INBOUND)) {
+			addError2("%s '%s' - outputview must use ->", NAME, ident);
+		} else if (! viewExp.isOutputView && viewExp.direction.equals(ViewDirection.OUTBOUND)) {
+			addError2("%s '%s' - inputview must use <-", NAME, ident);
+		}
+		
 		boolean ok = true;
 		ViewDirection dir = viewExp.direction;
 		for(ViewMemberExp memb: viewExp.memberL) {
 			if (memb.direction != dir) {
 				ok = false;
 			}
-			checkType(memb.leftType, ident.val, memb.left.val);
+			checkType(memb.rightType, ident.val, memb.left.val);
 		}
 		if (! ok)
 		{

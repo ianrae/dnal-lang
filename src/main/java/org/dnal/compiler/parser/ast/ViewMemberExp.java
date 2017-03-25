@@ -5,14 +5,14 @@ import org.codehaus.jparsec.Token;
 public class ViewMemberExp implements Exp {
 	
 	public IdentExp left;
-	public IdentExp leftType;
 	public IdentExp right;
+	public IdentExp rightType;
 	public ViewDirection direction;
 
-	public ViewMemberExp(IdentExp left, IdentExp type, Token tok, IdentExp right) {
+	public ViewMemberExp(IdentExp left, Token tok, IdentExp right, IdentExp type) {
 		this.left = left;
-		this.leftType = type;
 		this.right = right;
+		this.rightType = type;
 		String tokStr = getTokString(tok);
 		this.direction = (tokStr.equals("->")) ? ViewDirection.OUTBOUND : ViewDirection.INBOUND;
 	}

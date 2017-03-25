@@ -463,34 +463,34 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		for(ViewMemberExp membExp : viewExp.memberL) {
 			log(" vm " + membExp.strValue());
 
-			switch(TypeInfo.typeOf(membExp.leftType)) {
+			switch(TypeInfo.typeOf(membExp.rightType)) {
 			case INT:
-				inner = inner.integer(membExp.left.strValue());
+				inner = inner.integer(membExp.right.strValue());
 				break;
 			case LONG:
-				inner = inner.longInteger(membExp.left.strValue());
+				inner = inner.longInteger(membExp.right.strValue());
 				break;
 			case NUMBER:
-				inner = inner.number(membExp.left.strValue());
+				inner = inner.number(membExp.right.strValue());
 				break;
 			case DATE:
-				inner = inner.date(membExp.left.strValue());
+				inner = inner.date(membExp.right.strValue());
 				break;
 			case BOOLEAN:
-				inner = inner.bool(membExp.left.strValue());
+				inner = inner.bool(membExp.right.strValue());
 				break;
 			case STRING:
-				inner = inner.string(membExp.left.strValue());
+				inner = inner.string(membExp.right.strValue());
 				break;
 
 			default:
 			{
-				DType eltype = packageHelper.findRegisteredType(membExp.leftType.name());
+				DType eltype = packageHelper.findRegisteredType(membExp.rightType.name());
 				String fieldName = membExp.left.name();
 				if (eltype != null) {
 					inner.other(fieldName, eltype);
 				} else {
-					addError2s("view type '%s' - unknown %s", viewExp.viewName.name(), membExp.leftType.name());
+					addError2s("view type '%s' - unknown %s", viewExp.viewName.name(), membExp.rightType.name());
 				}
 			}
 			break;
@@ -499,7 +499,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		
 		Map<String,String> namingMap = new HashMap<>();
 		for(ViewMemberExp membExp : viewExp.memberL) {
-			namingMap.put(membExp.left.val, membExp.right.val);
+			namingMap.put(membExp.right.val, membExp.left.val);
 		}		
 
 		inner.endView(viewExp.typeName.val, namingMap);

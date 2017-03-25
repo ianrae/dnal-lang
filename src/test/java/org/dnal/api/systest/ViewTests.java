@@ -159,8 +159,8 @@ public class ViewTests extends SysTestBase {
 	@Test
 	public void test() throws Exception {
 		String src1 = "type Address struct { street string city string} end ";
-		String src2 = "view AddressDTO <- Address { ";
-		String src3 = " town string <- city lane string <- street } end";
+		String src2 = "outputview Address -> AddressDTO { ";
+		String src3 = " city -> town string   street -> lane string } end";
 		String src4 = " let x Address = { 'elm', 'ottawa' }";
 		chkValue("x", src1 + src2 + src3 + src4, 1, 1);
 
