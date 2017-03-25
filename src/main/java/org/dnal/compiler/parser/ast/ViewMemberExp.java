@@ -13,9 +13,9 @@ public class ViewMemberExp implements Exp {
 	public IdentExp right;
 	public IdentExp rightType;
 	public ViewDirection direction;
+	public ViewFormatExp vfe;
 
-	public ViewMemberExp(List<List<IdentExp>> leftL, Token tok, IdentExp right, IdentExp type) {
-
+	public ViewMemberExp(List<List<IdentExp>> leftL, Token tok, IdentExp right, IdentExp type, ViewFormatExp vfe) {
         for(List<IdentExp> sublist : leftL) {
         	for(IdentExp exp: sublist) {
         		if (left == null) {
@@ -30,6 +30,7 @@ public class ViewMemberExp implements Exp {
 		this.rightType = type;
 		String tokStr = getTokString(tok);
 		this.direction = (tokStr.equals("->")) ? ViewDirection.OUTBOUND : ViewDirection.INBOUND;
+		this.vfe = vfe;
 	}
 	private String getTokString(Token tok) {
 		if (tok == null) {
