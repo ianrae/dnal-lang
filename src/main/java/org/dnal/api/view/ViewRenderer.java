@@ -6,6 +6,7 @@ import java.util.Map;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.compiler.parser.ast.ViewDirection;
+import org.dnal.compiler.parser.ast.ViewFormatExp;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -52,6 +53,10 @@ public class ViewRenderer extends ViewLoaderRendererBase {
 					this.addError(String.format("%s: field %s does not resolve to a value: %s", viewType.getName(), srcField, viewFieldName));
 				} else {
 					DValue inner = convert(sourceVal, destType, trans); 
+					ViewFormatExp vfe = viewType.getFnMap().get(viewFieldName);
+					if (vfe != null) {
+						inner = executeFn(sourceVal, destType, trans, inner, vfe);
+					}
 					resultMap.put(viewFieldName, inner);
 				}
 			}
@@ -62,6 +67,10 @@ public class ViewRenderer extends ViewLoaderRendererBase {
 			
 			DValueImpl dval = new DValueImpl(viewType, resultMap); 
 			return dval;
+		}
+		private DValue executeFn(DValue sourceVal, DType destType, Transaction trans, DValue inner, ViewFormatExp vfe) {
+			ViewFormatExecutor executor = new ViewFormatExecutor(this.et, this.ds);
+			return executor.execute(sourceVal, destType, trans, inner, vfe);
 		}
 		private DValue getSubValue(DValue source, String srcField) {
 			String ar[] = srcField.split("\\.");

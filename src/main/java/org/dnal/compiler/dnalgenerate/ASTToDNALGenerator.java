@@ -24,6 +24,7 @@ import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
 import org.dnal.compiler.parser.ast.ViewDirection;
 import org.dnal.compiler.parser.ast.ViewExp;
+import org.dnal.compiler.parser.ast.ViewFormatExp;
 import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
@@ -506,8 +507,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 				namingMap.put(membExp.left.val, membExp.right.val);
 			}
 		}		
+		
+		Map<String,ViewFormatExp> fnMap = new HashMap<>();
+		for(ViewMemberExp membExp : viewExp.memberL) {
+			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
+				fnMap.put(membExp.right.val, membExp.vfe);
+			} else {
+				fnMap.put(membExp.left.val, membExp.vfe);
+			}
+		}		
 
-		inner.endView(viewExp.typeName.val, namingMap, viewExp.direction);
+		inner.endView(viewExp.typeName.val, namingMap, fnMap, viewExp.direction);
 		DViewType structType = tb.getViewType();
 		packageHelper.addPackage(structType);
 
