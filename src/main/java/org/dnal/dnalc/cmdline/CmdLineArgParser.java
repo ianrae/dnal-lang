@@ -10,7 +10,7 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 public class CmdLineArgParser {
 	public final static String defaultConfigFile = "dnal-config.dnal";
-	
+
 	private Command command;
 	private int currentArgIndex;
 	private String[] args;
@@ -18,12 +18,12 @@ public class CmdLineArgParser {
 	private int errorCount;
 	private ConfigFileLoader configLoader;
 	private ConfigFileOptions configFileOptions;
-	
-	
+
+
 	public CmdLineArgParser(ConfigFileLoader loader) {
 		this.configLoader = loader;
 	}
-	
+
 	public Command parse(String[] args) {
 		this.args = args;
 		currentArgIndex = 0;
@@ -33,10 +33,11 @@ public class CmdLineArgParser {
 		} else {
 			loadConfigFile();
 			parseOptions();
+			propogateOptionsToCmd();
 			parseSourceFilePath();
 		}
-		
-		
+
+
 		return (errorCount == 0) ? command : null;
 	}
 
@@ -46,7 +47,7 @@ public class CmdLineArgParser {
 			command = new ValidateCommand();
 			return;
 		}
-		
+
 		switch(arg) {
 		case "--version":
 			command = new VersionCommand();
@@ -64,9 +65,9 @@ public class CmdLineArgParser {
 			putbackArg();
 			break;
 		}
-		
+
 	}
-	
+
 
 	private void parseSourceFilePath() {
 		String arg = getNextArg();
@@ -80,19 +81,18 @@ public class CmdLineArgParser {
 		System.out.println("error: " + msg);
 		errorCount++;
 	}
-	
+
 	private void loadConfigFile() {
 		String configPath = null;
-		
 		String config = findConfigArg();
 		if (config != null) {
 			configPath = rest;
 		} else {
-			configPath = getDefaultConfigPath();
+			configPath = "./dnalc.properties";
 		}
-		
-		if (configPath != null) {
-			Log.debugLog(String.format("loading %s", command.configPath));
+
+		if (configLoader.existsConfigFile(configPath)) {
+			Log.debugLog(String.format("loading %s", configPath));
 			ConfigFileOptions options = configLoader.load(configPath);
 			this.configFileOptions = options;
 		}
@@ -105,15 +105,16 @@ public class CmdLineArgParser {
 			if (arg == null) {
 				return;
 			}
-			
+
 			switch(arg) {
 			case "-c":
 			case "--config":
-				command.configPath = rest;
+				//				command.configPath = rest;
+				//do nothing: handled by findConfigArg
 				break;
-            case "--perf":
-                command.perfSummaryEnabled = true;
-                break;
+			case "--perf":
+				command.perfSummaryEnabled = true;
+				break;
 			case "-d":
 			case "--debug":
 				command.debug = true;
@@ -122,8 +123,7 @@ public class CmdLineArgParser {
 			case "-o":
 			case "--output-path":
 				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					gencmd.outputDir = rest;
+					configFileOptions.outputPath = rest;
 				} else {
 					failWith("this option only can be used with 'generate'");
 				}
@@ -131,45 +131,31 @@ public class CmdLineArgParser {
 			case "-t":
 			case "--output":
 				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					gencmd.outputType = rest;
+					configFileOptions.outputType = rest;
 				} else {
 					failWith("this option only can be used with 'generate'");
 				}
 				break;
-				
+
 			default:
 				putbackArg();
 				done = true;
 				break;
 			}
-			
-//			if (command.configPath == null) {
-//				String defaultConfigFile = "dnal-config.dnal";
-//				File f = new File("./" + defaultConfigFile);
-//				if (f.exists()) {
-//					command.configPath = defaultConfigFile;
-//				}
-//			}
 		}
-		
-		if (command.configPath != null) {
-			readConfigFile();
-		} else {
-			if (command instanceof GenerateCommand) {
-				GenerateCommand gencmd = (GenerateCommand) command;
-				if (gencmd.outputType == null) {
-					gencmd.outputType = "none";
-				}
-				
-				if (gencmd.outputDir == null) {
-					gencmd.outputDir = ".";
-				}
-			}
-		}
-		
+
+		//		if (command instanceof GenerateCommand) {
+		//			GenerateCommand gencmd = (GenerateCommand) command;
+		//			if (gencmd.outputType == null) {
+		//				gencmd.outputType = "none";
+		//			}
+		//			
+		//			if (gencmd.outputDir == null) {
+		//				gencmd.outputDir = ".";
+		//			}
+		//		}
 	}
-	
+
 	private String getDefaultConfigPath() {
 		String path = "./dnalc.properties";
 		File f = new File(path);
@@ -179,34 +165,28 @@ public class CmdLineArgParser {
 		return null;
 	}
 
-	private void readConfigFile() {
-		Log.debugLog(String.format("loading %s", command.configPath));
-		ConfigFileOptions options = configLoader.load(command.configPath);
-		this.configFileOptions = options;
-
+	private void propogateOptionsToCmd() {
+		if (configFileOptions == null) {
+			return;
+		}
+		
 		if (command instanceof GenerateCommand) {
 			GenerateCommand gencmd = (GenerateCommand) command;
-			if (options.outputPath != null) {
-				gencmd.outputDir = options.outputPath;
-			}
-			
-			if (options.outputType != null) {
-				gencmd.outputType = options.outputType;
-			}
-			
-			if (options.customRulePackages != null) {
-                gencmd.customRulePackages = parseCommaSeparatedList(options.customRulePackages);
-			}
+			gencmd.outputDir = configFileOptions.outputPath;
+			gencmd.outputType = configFileOptions.outputType;
+			gencmd.customRulePackages = parseCommaSeparatedList(configFileOptions.customRulePackages);
 		} else if (command instanceof ValidateCommand) {
-		    ValidateCommand valcmd = (ValidateCommand) command;
-            if (options.customRulePackages != null) {
-                valcmd.customRulePackages = parseCommaSeparatedList(options.customRulePackages);
-            }
-        }
+			ValidateCommand valcmd = (ValidateCommand) command;
+			valcmd.customRulePackages = parseCommaSeparatedList(configFileOptions.customRulePackages);
+		}
 	}
 	private List<String> parseCommaSeparatedList(String input) {
-	    String[] ar = input.split(",");
-	    return Arrays.asList(ar);
+		if (input == null) {
+			return null;
+		}
+		
+		String[] ar = input.split(",");
+		return Arrays.asList(ar);
 	}
 
 	private String getNextArg() {
@@ -224,10 +204,10 @@ public class CmdLineArgParser {
 		}
 		return arg;
 	}
-	
+
 	private String findConfigArg() {
 		int save = currentArgIndex;
-		
+
 		String result = null;
 		while(true) {
 			String arg = getNextArg();
@@ -238,11 +218,11 @@ public class CmdLineArgParser {
 				break;
 			}
 		}
-		
+
 		currentArgIndex = save;
 		return result;
 	}
-	
+
 	private void putbackArg() {
 		currentArgIndex--;
 	}

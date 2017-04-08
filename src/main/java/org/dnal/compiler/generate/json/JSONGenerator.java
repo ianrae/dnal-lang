@@ -159,7 +159,9 @@ public class JSONGenerator implements GenerateVisitor {
     @Override
     public void finish() throws Exception {
     	if (options != null && options.outputPath != null) {
-    		writeFile(options.outputPath);
+            if (options.writeOutputFilesEnabled) {
+            	writeFile(options.outputPath);
+            }
     	} else {
     		Log.log(" ");
     		Log.log("output: ");

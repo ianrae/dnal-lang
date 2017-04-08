@@ -21,6 +21,9 @@ public abstract class CodeGenBase extends TypeOnlyGenerator {
         JavaOutputRenderer r = new JavaOutputRenderer(options);
         String path = r.buildOutputPath(javaFilename);
         Log.log("writing " + path);
+        if (! options.writeOutputFilesEnabled) {
+        	return true;
+        }
         TextFileWriter w = new TextFileWriter();
         return w.writeFile(path, outputL);
     }

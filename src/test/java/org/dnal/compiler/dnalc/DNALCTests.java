@@ -65,6 +65,8 @@ public class DNALCTests {
 		loader.options = new ConfigFileOptions();
 		loader.options.outputPath = "mytypes";
 		loader.options.outputType = "java/dnal";
+		loader.options.javaPackage = "com.foo";
+		loader.options.writeOutputFilesEnabled = false;
 		return loader;
 //		if (!useOptions) {
 //			loader.options = null;
