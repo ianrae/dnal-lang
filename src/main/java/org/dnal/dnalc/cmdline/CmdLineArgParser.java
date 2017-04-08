@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileLoader;
 import org.dnal.dnalc.ConfigFileOptions;
 
@@ -99,6 +100,7 @@ public class CmdLineArgParser {
 			case "-d":
 			case "--debug":
 				command.debug = true;
+				Log.debugLogging = true;
 				break;
 			case "-o":
 			case "--output-path":
@@ -125,34 +127,47 @@ public class CmdLineArgParser {
 				break;
 			}
 			
-			if (command.configPath == null) {
-				String defaultConfigFile = "dnal-config.dnal";
-				File f = new File("./" + defaultConfigFile);
-				if (f.exists()) {
-					command.configPath = defaultConfigFile;
+//			if (command.configPath == null) {
+//				String defaultConfigFile = "dnal-config.dnal";
+//				File f = new File("./" + defaultConfigFile);
+//				if (f.exists()) {
+//					command.configPath = defaultConfigFile;
+//				}
+//			}
+		}
+		
+		if (command.configPath == null) {
+			command.configPath = setDefaultConfigPath();
+		}
+		
+		if (command.configPath != null) {
+			readConfigFile();
+		} else {
+			if (command instanceof GenerateCommand) {
+				GenerateCommand gencmd = (GenerateCommand) command;
+				if (gencmd.outputType == null) {
+					gencmd.outputType = "none";
+				}
+				
+				if (gencmd.outputDir == null) {
+					gencmd.outputDir = ".";
 				}
 			}
-			
-			if (command.configPath != null) {
-				readConfigFile();
-			} else {
-				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					if (gencmd.outputType == null) {
-						gencmd.outputType = "none";
-					}
-					
-					if (gencmd.outputDir == null) {
-						gencmd.outputDir = ".";
-					}
-				}
-			}
-			
 		}
 		
 	}
 	
+	private String setDefaultConfigPath() {
+		String path = "./dnalc.properties";
+		File f = new File(path);
+		if (f.exists()) {
+			return path;
+		}
+		return null;
+	}
+
 	private void readConfigFile() {
+		Log.debugLog(String.format("loading %s", command.configPath));
 		ConfigFileOptions options = configLoader.load(command.configPath);
 		this.configFileOptions = options;
 
