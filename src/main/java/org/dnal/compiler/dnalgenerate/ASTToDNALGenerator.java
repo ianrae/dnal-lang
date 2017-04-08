@@ -307,7 +307,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		Inner inner = tb.start(typeExp.var.name());
 
 		for(StructMemberExp membExp : typeExp.members.list) {
-			log(" m " + membExp.strValue());
+//			log(" m " + membExp.strValue());
 			if (membExp.optional) {
 				inner.optional();
 			}

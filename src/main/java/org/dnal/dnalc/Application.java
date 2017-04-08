@@ -31,17 +31,9 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		private Map<String,GenerateVisitor> generatorMap = new HashMap<>();
 		private ConfigFileOptions configFileOptions;
 		
-		public static void main(String[] args) {
-			Application app = new Application(new ConfigFileLoaderImpl());
-			
-			app.run(args);
-		}
-		
-		
 		public Application(ConfigFileLoader configLoader) {
 			this.configLoader = configLoader;
 			Log.useSLFLogging = false;
-			debug = true;
 		}
 		
 		public void registerGenerator(String outputType, GenerateVisitor visitor) {
@@ -156,9 +148,10 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 
 			if (cmd != null) {
 				debug = cmd.debug;
-				Log.debugLogging = true;
+				if (debug) {
+					Log.debugLogging = true;
+				}
 			}
-			
 			
 			this.configFileOptions = parser.getConfigFileOptions();
 			return cmd;
