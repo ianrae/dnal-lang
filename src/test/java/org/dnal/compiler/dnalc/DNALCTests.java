@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileOptions;
-import org.dnal.dnalc.DNALCApp;
+import org.dnal.dnalc.Application;
 import org.junit.Test;
 
 
@@ -55,7 +55,7 @@ public class DNALCTests {
     }
 	private void chkRun(String[] args) {
 		MockConfigLoader configLoader = createConfigLoader();
-		DNALCApp dnalc = new DNALCApp(configLoader);
+		Application dnalc = new Application(configLoader);
 		dnalc.run(args);
 		assertEquals(true, dnalc.wasSuccessful());
 	}

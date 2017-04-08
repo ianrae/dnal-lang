@@ -23,7 +23,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 	 * @author ian
 	 *
 	 */
-	public class DNALCApp {
+	public class Application {
 //		private boolean useOptions = true;
 		private ConfigFileLoader configLoader;
 		private boolean wasSuccessful = true;
@@ -32,13 +32,13 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		private ConfigFileOptions configFileOptions;
 		
 		public static void main(String[] args) {
-			DNALCApp app = new DNALCApp(new ConfigFileLoaderImpl());
+			Application app = new Application(new ConfigFileLoaderImpl());
 			
 			app.run(args);
 		}
 		
 		
-		public DNALCApp(ConfigFileLoader configLoader) {
+		public Application(ConfigFileLoader configLoader) {
 			this.configLoader = configLoader;
 			Log.useSLFLogging = false;
 			debug = true;
