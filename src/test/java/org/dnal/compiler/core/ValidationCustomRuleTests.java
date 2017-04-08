@@ -87,6 +87,15 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
         chkCustomRule(decl, "contains('ab')", "cab", true);
         chkCustomRule(decl, "contains('ab')", "CAB", false);
     }
+    @Test
+    public void testHasText() {
+        String decl = "";
+        chkCustomRule(decl, "hasText()", "cab", true);
+        chkCustomRule(decl, "hasText()", " c a b ", true);
+        chkCustomRule(decl, "hasText()", "", false);
+        chkCustomRule(decl, "hasText()", " ", false);
+        chkCustomRule(decl, "hasText()", " \r\n\t", false);
+    }
 	
 	
 	private void chkCustomRule(String decl, String rule, String str, boolean ok) {
