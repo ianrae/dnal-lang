@@ -3,8 +3,6 @@ package org.dnal.compiler.codegen.java;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.compiler.parser.ast.FullTypeExp;
-import org.dnal.compiler.parser.ast.StructMemberExp;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.logger.Log;

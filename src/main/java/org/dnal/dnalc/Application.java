@@ -153,6 +153,13 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 			if (parser.getErrorCount() > 0) {
 				wasSuccessful = false;
 			}
+
+			if (cmd != null) {
+				debug = cmd.debug;
+				Log.debugLogging = true;
+			}
+			
+			
 			this.configFileOptions = parser.getConfigFileOptions();
 			return cmd;
 		}
