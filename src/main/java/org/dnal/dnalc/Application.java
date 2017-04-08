@@ -10,6 +10,7 @@ import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.cmdline.CmdLineArgParser;
@@ -73,6 +74,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		private void doGenerate(GenerateCommand cmd) {
 			registerGenerator("text/simple", new MySimpleVisitor());
 			registerGenerator("java/dnal", new JavaCodeGen(configFileOptions));
+			registerGenerator("json", new JSONGenerator(configFileOptions));
 			
 		    String outputType = cmd.outputType;
 		    GenerateVisitor visitor = generatorMap.get(outputType);

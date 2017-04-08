@@ -6,14 +6,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.dnal.compiler.codegen.java.JavaOutputRenderer;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
+import org.dnal.core.util.TextFileWriter;
+import org.dnal.dnalc.ConfigFileOptions;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JSONGenerator implements GenerateVisitor {
@@ -24,8 +27,16 @@ public class JSONGenerator implements GenerateVisitor {
 //    private ListStack listStack = new ListStack();
 //    private MapStack mapStack = new MapStack();
     private Stack<Map<String,Object>> mapStack = new Stack<>();
+    protected ConfigFileOptions options;
 
-    @Override
+
+	public JSONGenerator() {
+		this(null);
+	}
+	public JSONGenerator(ConfigFileOptions configFileOptions) {
+		this.options = configFileOptions;
+	}
+	@Override
     public void startStructType(String name, DStructType dtype) throws Exception {
     }
     @Override
@@ -154,5 +165,21 @@ public class JSONGenerator implements GenerateVisitor {
 
     @Override
     public void finish() throws Exception {
+    	if (options != null && options.outputPath != null) {
+    		writeFile(options.outputPath);
+    	} else {
+    		Log.log(" ");
+    		Log.log("output: ");
+    		for(String line: this.outputL) {
+    			Log.log(" " + line);
+    		}
+    	}
+    	
+    }
+    
+    protected boolean writeFile(String path) {
+        Log.log("writing " + path);
+        TextFileWriter w = new TextFileWriter();
+        return w.writeFile(path, outputL);
     }
 }
