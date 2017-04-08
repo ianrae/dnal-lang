@@ -10,8 +10,6 @@ import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
-import org.dnal.core.DListType;
-import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
