@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dnal.compiler.codegen.java.JavaOutputRenderer;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
@@ -30,12 +29,6 @@ public class JSONGenerator implements GenerateVisitor {
     protected ConfigFileOptions options;
 
 
-	public JSONGenerator() {
-		this(null);
-	}
-	public JSONGenerator(ConfigFileOptions configFileOptions) {
-		this.options = configFileOptions;
-	}
 	@Override
     public void startStructType(String name, DStructType dtype) throws Exception {
     }
@@ -182,4 +175,8 @@ public class JSONGenerator implements GenerateVisitor {
         TextFileWriter w = new TextFileWriter();
         return w.writeFile(path, outputL);
     }
+	@Override
+	public void setOptions(ConfigFileOptions configFileOptions) {
+		this.options = configFileOptions;
+	}
 }

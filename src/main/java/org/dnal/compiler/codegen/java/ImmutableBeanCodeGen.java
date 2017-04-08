@@ -10,10 +10,6 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 public class ImmutableBeanCodeGen extends CodeGenBase {
 
-    public ImmutableBeanCodeGen(ConfigFileOptions options) {
-        super(options);
-    }
-
     @Override
     public void startStructType(String name, DStructType dtype) {
         onStartType(name, dtype);

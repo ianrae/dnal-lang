@@ -62,7 +62,7 @@ public class CodeGenTests {
 		MockConfigLoader configLoader = createConfigLoader();
 		Application dnalc = new Application(configLoader);
 		dnalc.registerGenerator("text/simple", new MySimpleVisitor());
-		dnalc.registerGenerator("java/dnal", new JavaCodeGen(configLoader.options));
+		dnalc.registerGenerator("java/dnal", new JavaCodeGen());
 		dnalc.run(args);
 		assertEquals(true, dnalc.wasSuccessful());
 	}

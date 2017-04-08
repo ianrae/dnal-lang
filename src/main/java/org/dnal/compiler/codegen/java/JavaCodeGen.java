@@ -13,11 +13,10 @@ import org.dnal.dnalc.ConfigFileOptions;
 public class JavaCodeGen extends CodeGenBase {
     public List<GenerateVisitor> list = new ArrayList<>();
     
-    public JavaCodeGen(ConfigFileOptions options) {
-        super(options);
-        list.add(new InterfaceCodeGen(options));
-        list.add(new ImmutableBeanCodeGen(options));
-        list.add(new BeanCodeGen(options));
+    public JavaCodeGen() {
+        list.add(new InterfaceCodeGen());
+        list.add(new ImmutableBeanCodeGen());
+        list.add(new BeanCodeGen());
     }
     
     @Override
@@ -75,4 +74,11 @@ public class JavaCodeGen extends CodeGenBase {
             visitor.finish();
         }
     }
+
+	@Override
+	public void setOptions(ConfigFileOptions configFileOptions) {
+        for(GenerateVisitor visitor: list) {
+            visitor.setOptions(configFileOptions);
+        }
+	}
 }

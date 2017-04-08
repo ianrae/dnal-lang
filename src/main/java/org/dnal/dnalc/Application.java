@@ -73,8 +73,8 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		}
 		private void doGenerate(GenerateCommand cmd) {
 			registerGenerator("text/simple", new MySimpleVisitor());
-			registerGenerator("java/dnal", new JavaCodeGen(configFileOptions));
-			registerGenerator("json", new JSONGenerator(configFileOptions));
+			registerGenerator("java/dnal", new JavaCodeGen());
+			registerGenerator("json", new JSONGenerator());
 			
 		    String outputType = cmd.outputType;
 		    GenerateVisitor visitor = generatorMap.get(outputType);
@@ -82,6 +82,8 @@ import org.dnal.dnalc.cmdline.VersionCommand;
                 log(String.format("no generator for outputType '%s'", outputType));
                 return;
 		    }
+		    
+		    visitor.setOptions(configFileOptions);
 			doIt(cmd.srcPath, visitor, cmd.customRulePackages, cmd.perfSummaryEnabled);
 		}
         private void doIt(String srcPath, GenerateVisitor visitor, List<String> customRulePackages, boolean perfSummaryEnabled) {

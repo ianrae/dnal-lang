@@ -31,6 +31,7 @@ public class CmdLineArgParser {
 		parseAction();
 		if (command instanceof VersionCommand) {
 		} else {
+			loadConfigFile();
 			parseOptions();
 			parseSourceFilePath();
 		}
@@ -79,9 +80,25 @@ public class CmdLineArgParser {
 		System.out.println("error: " + msg);
 		errorCount++;
 	}
+	
+	private void loadConfigFile() {
+		String configPath = null;
+		
+		String config = findConfigArg();
+		if (config != null) {
+			configPath = rest;
+		} else {
+			configPath = getDefaultConfigPath();
+		}
+		
+		if (configPath != null) {
+			Log.debugLog(String.format("loading %s", command.configPath));
+			ConfigFileOptions options = configLoader.load(configPath);
+			this.configFileOptions = options;
+		}
+	}
 
 	private void parseOptions() {
-		
 		boolean done = false; 
 		while (!done) {
 			String arg = getNextArg();
@@ -136,10 +153,6 @@ public class CmdLineArgParser {
 //			}
 		}
 		
-		if (command.configPath == null) {
-			command.configPath = setDefaultConfigPath();
-		}
-		
 		if (command.configPath != null) {
 			readConfigFile();
 		} else {
@@ -157,7 +170,7 @@ public class CmdLineArgParser {
 		
 	}
 	
-	private String setDefaultConfigPath() {
+	private String getDefaultConfigPath() {
 		String path = "./dnalc.properties";
 		File f = new File(path);
 		if (f.exists()) {
@@ -211,6 +224,25 @@ public class CmdLineArgParser {
 		}
 		return arg;
 	}
+	
+	private String findConfigArg() {
+		int save = currentArgIndex;
+		
+		String result = null;
+		while(true) {
+			String arg = getNextArg();
+			if (arg == null) {
+				break;
+			} else if (arg.equals("-c") || arg.equals("--config")) {
+				result = arg;
+				break;
+			}
+		}
+		
+		currentArgIndex = save;
+		return result;
+	}
+	
 	private void putbackArg() {
 		currentArgIndex--;
 	}

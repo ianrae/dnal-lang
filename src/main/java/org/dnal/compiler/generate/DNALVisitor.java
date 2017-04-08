@@ -13,6 +13,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
+import org.dnal.dnalc.ConfigFileOptions;
 
 public class DNALVisitor implements GenerateVisitor {
     private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
@@ -192,4 +193,7 @@ public class DNALVisitor implements GenerateVisitor {
     @Override
     public void finish() {
     }
+	@Override
+	public void setOptions(ConfigFileOptions configFileOptions) {
+	}
 }

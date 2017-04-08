@@ -17,10 +17,6 @@ public abstract class CodeGenBase extends TypeOnlyGenerator {
     protected DType currentType;
     protected ImportObserver importObserver;
 
-    public CodeGenBase(ConfigFileOptions options) {
-        this.options = options;
-    }
-    
     protected boolean writeFile(String javaFilename) {
         JavaOutputRenderer r = new JavaOutputRenderer(options);
         String path = r.buildOutputPath(javaFilename);
@@ -70,5 +66,9 @@ public abstract class CodeGenBase extends TypeOnlyGenerator {
         return membType;
     }
     
+	@Override
+	public void setOptions(ConfigFileOptions configFileOptions) {
+		this.options = configFileOptions;
+	}
     
 }

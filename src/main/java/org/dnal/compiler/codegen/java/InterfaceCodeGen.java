@@ -10,9 +10,6 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 public class InterfaceCodeGen extends CodeGenBase {
 
-    public InterfaceCodeGen(ConfigFileOptions options) {
-        super(options);
-    }
 
     @Override
     public void startStructType(String name, DStructType dtype) {

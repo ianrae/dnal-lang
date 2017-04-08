@@ -10,10 +10,6 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 public class BeanCodeGen extends CodeGenBase {
     
-    public BeanCodeGen(ConfigFileOptions options) {
-        super(options);
-    }
-
     @Override
     public void startStructType(String name, DStructType dtype) {
         onStartType(name, dtype);

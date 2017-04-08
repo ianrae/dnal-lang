@@ -60,7 +60,7 @@ public class JSONGeneratorTests extends BaseTest {
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
 		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world);
-		JSONGenerator visitor = new JSONGenerator(null);
+		JSONGenerator visitor = new JSONGenerator();
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
