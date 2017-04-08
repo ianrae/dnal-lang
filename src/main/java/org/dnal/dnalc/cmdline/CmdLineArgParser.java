@@ -1,6 +1,5 @@
 package org.dnal.dnalc.cmdline;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
@@ -143,26 +142,6 @@ public class CmdLineArgParser {
 				break;
 			}
 		}
-
-		//		if (command instanceof GenerateCommand) {
-		//			GenerateCommand gencmd = (GenerateCommand) command;
-		//			if (gencmd.outputType == null) {
-		//				gencmd.outputType = "none";
-		//			}
-		//			
-		//			if (gencmd.outputDir == null) {
-		//				gencmd.outputDir = ".";
-		//			}
-		//		}
-	}
-
-	private String getDefaultConfigPath() {
-		String path = "./dnalc.properties";
-		File f = new File(path);
-		if (f.exists()) {
-			return path;
-		}
-		return null;
 	}
 
 	private void propogateOptionsToCmd() {
