@@ -7,6 +7,7 @@ import java.util.Map;
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.generate.GenerateVisitor;
 import org.dnal.core.NewErrorMessage;
@@ -28,6 +29,14 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		private boolean wasSuccessful = true;
 		private boolean debug = false;
 		private Map<String,GenerateVisitor> generatorMap = new HashMap<>();
+		private ConfigFileOptions configFileOptions;
+		
+		public static void main(String[] args) {
+			DNALCApp app = new DNALCApp(new ConfigFileLoaderImpl());
+			
+			app.run(args);
+		}
+		
 		
 		public DNALCApp(ConfigFileLoader configLoader) {
 			this.configLoader = configLoader;
@@ -70,6 +79,9 @@ import org.dnal.dnalc.cmdline.VersionCommand;
             doIt(cmd.srcPath, visitor, cmd.customRulePackages, cmd.perfSummaryEnabled);
 		}
 		private void doGenerate(GenerateCommand cmd) {
+			registerGenerator("text/simple", new MySimpleVisitor());
+			registerGenerator("java/dnal", new JavaCodeGen(configFileOptions));
+			
 		    String outputType = cmd.outputType;
 		    GenerateVisitor visitor = generatorMap.get(outputType);
 		    if (visitor == null) {
@@ -116,6 +128,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
                 impl.getContext().perf.dump();
             }
         }
+        
 
 		private void addCustomRules(DNALCompiler compiler, List<String> customRulePackages) {
 		    if (customRulePackages != null && ! customRulePackages.isEmpty()) {
@@ -140,6 +153,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 			if (parser.getErrorCount() > 0) {
 				wasSuccessful = false;
 			}
+			this.configFileOptions = parser.getConfigFileOptions();
 			return cmd;
 		}
 		

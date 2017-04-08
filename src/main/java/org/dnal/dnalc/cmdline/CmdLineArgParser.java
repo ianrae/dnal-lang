@@ -16,6 +16,8 @@ public class CmdLineArgParser {
 	private String rest;
 	private int errorCount;
 	private ConfigFileLoader configLoader;
+	private ConfigFileOptions configFileOptions;
+	
 	
 	public CmdLineArgParser(ConfigFileLoader loader) {
 		this.configLoader = loader;
@@ -152,6 +154,7 @@ public class CmdLineArgParser {
 	
 	private void readConfigFile() {
 		ConfigFileOptions options = configLoader.load(command.configPath);
+		this.configFileOptions = options;
 
 		if (command instanceof GenerateCommand) {
 			GenerateCommand gencmd = (GenerateCommand) command;
@@ -199,5 +202,9 @@ public class CmdLineArgParser {
 
 	public int getErrorCount() {
 		return errorCount;
+	}
+
+	public ConfigFileOptions getConfigFileOptions() {
+		return configFileOptions;
 	}
 }
