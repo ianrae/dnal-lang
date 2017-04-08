@@ -1,5 +1,6 @@
 package org.dnal.dnalc;
 
+import java.io.File;
 import java.util.Properties;
 
 public class ConfigFileLoaderImpl implements ConfigFileLoader {
@@ -23,5 +24,18 @@ public class ConfigFileLoaderImpl implements ConfigFileLoader {
 		String value = props.getProperty(key);
 		return (value == null) ? defaultVal : value;
 	}
+
+	@Override
+	public boolean existsConfigFile(String path) {
+		if (path == null) {
+			return false;
+		}
+		File f = new File(path);
+		if (f.exists()) {
+			return true;
+		}
+		return false;
+	}
+
 
 }

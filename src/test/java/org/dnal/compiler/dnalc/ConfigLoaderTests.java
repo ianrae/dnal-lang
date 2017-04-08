@@ -69,6 +69,11 @@ public class ConfigLoaderTests {
                 return dataSet;
             }
         }
+
+		@Override
+		public boolean existsConfigFile(String path) {
+			return true;
+		}
     }
 	
 	@Test
