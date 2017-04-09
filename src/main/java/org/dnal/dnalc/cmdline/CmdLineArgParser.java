@@ -90,6 +90,8 @@ public class CmdLineArgParser {
 			configPath = "./dnalc.properties";
 		}
 
+		this.configFileOptions = new ConfigFileOptions();
+		
 		if (configLoader.existsConfigFile(configPath)) {
 			Log.debugLog(String.format("loading %s", configPath));
 			ConfigFileOptions options = configLoader.load(configPath);
