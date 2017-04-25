@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.dnal.api.Transaction;
 import org.dnal.api.view.ViewLoader;
-import org.dnal.api.view.ViewRenderer;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;

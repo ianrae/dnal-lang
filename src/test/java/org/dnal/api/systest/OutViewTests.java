@@ -120,6 +120,9 @@ public class OutViewTests extends SysTestBase {
 
 		assertEquals("elm", viewval.asStruct().getField("lane").asString());
 		assertEquals("ottawa", viewval.asStruct().getField("town").asString());
+		assertEquals(true, viewval.asStruct().getField("enabled").asBoolean());
+		assertEquals("true", viewval.asStruct().getField("flag2").asString());
+		assertEquals(142, viewval.asStruct().getField("inum").asInt());
 	}
 
 	@Test
