@@ -25,7 +25,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         this.world = world;
     }
     
-    public boolean generate(GenerateVisitor visitor) {
+    public boolean generate(OuputGenerator visitor) {
         boolean b = false;
         try {
             b = doGenerate(visitor);
@@ -35,7 +35,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         return b;
     }
 
-    public boolean doGenerate(GenerateVisitor visitor) throws Exception {
+    public boolean doGenerate(OuputGenerator visitor) throws Exception {
         List<DType> orderedTypeList = registry.getOrderedList();
 
         for(DType dtype: orderedTypeList) {
@@ -83,11 +83,11 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
         return areNoErrors();
     }
-    private void doList(GenerateVisitor visitor, DListType listType)  throws Exception {
+    private void doList(OuputGenerator visitor, DListType listType)  throws Exception {
         visitor.startListType(listType.getName(), listType);
     }
 
-    private void doval(GenerateVisitor visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
+    private void doval(OuputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
 
         if (dval == null) {
             //optional field

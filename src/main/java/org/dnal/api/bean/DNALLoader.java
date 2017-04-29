@@ -7,7 +7,7 @@ import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.generate.DNALVisitor;
-import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
 public class DNALLoader {
@@ -78,7 +78,7 @@ public class DNALLoader {
     		et.dumpErrors();
     	}
     	
-        SimpleMinimumFormatVisitor smf = new SimpleMinimumFormatVisitor();
+        SimpleFormatOutputGenerator smf = new SimpleFormatOutputGenerator();
         Generator gen = clone.createGenerator();
         boolean b = gen.generate(smf);
         if (! b) {

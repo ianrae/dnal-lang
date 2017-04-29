@@ -1,10 +1,10 @@
 package org.dnal.dnalc;
 
-import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.logger.Log;
 
 
-public class MySimpleVisitor extends SimpleMinimumFormatVisitor {
+public class MySimpleVisitor extends SimpleFormatOutputGenerator {
 
     @Override
 	public void finish() {

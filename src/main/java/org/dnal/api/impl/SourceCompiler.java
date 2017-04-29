@@ -9,7 +9,7 @@ import org.dnal.api.Generator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
@@ -48,7 +48,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compile(String path) {
         return compile(path, null);
     }
-    public DataSet compile(String path, GenerateVisitor visitor) {
+    public DataSet compile(String path, OuputGenerator visitor) {
         if (! fileExists(path)) {
             return null;
         }
@@ -62,7 +62,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return doCompile(visitor);
     }
     
-    private DataSet doCompile(GenerateVisitor visitor) {
+    private DataSet doCompile(OuputGenerator visitor) {
         //now validate the DVALs
         boolean b = validatePhase();
         
@@ -76,7 +76,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compileString(String input) {
         return compileString(input, null);
     }
-    public DataSet compileString(String input, GenerateVisitor visitor) {
+    public DataSet compileString(String input, OuputGenerator visitor) {
         this.pushScope(new ErrorScope("string", "", ""));
         boolean b = parseIntoDVals(input);
         if (! b) {
@@ -186,7 +186,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return b;
     }
     
-    private boolean generator(GenerateVisitor visitor) {
+    private boolean generator(OuputGenerator visitor) {
         Generator generator = new GeneratorImpl(registry, world, context);
         context.perf.startTimer("generate");
         boolean b = generator.generate(visitor);

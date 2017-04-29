@@ -7,7 +7,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public interface GenerateVisitor {
+public interface OuputGenerator {
 	void setOptions(ConfigFileOptions configFileOptions);
 	
     void startStructType(String name, DStructType dtype) throws Exception;
