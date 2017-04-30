@@ -1,6 +1,7 @@
 package org.dnal.api.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
@@ -22,6 +23,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.World;
+import org.dnal.core.util.InputStreamTextReader;
 import org.dnal.core.util.TextFileReader;
 
 public class SourceCompiler extends ErrorTrackingBase {
@@ -61,6 +63,15 @@ public class SourceCompiler extends ErrorTrackingBase {
         
         return doCompile(visitor);
     }
+    public DataSet compile(InputStream stream, OuputGenerator visitor) {
+        this.pushScope(new ErrorScope("stream", "", ""));
+        boolean b = loadAndParse(stream);
+        if (! b) {
+            return null;
+        }
+        
+        return doCompile(visitor);
+    }
     
     private DataSet doCompile(OuputGenerator visitor) {
         //now validate the DVALs
@@ -94,6 +105,20 @@ public class SourceCompiler extends ErrorTrackingBase {
         context.perf.startTimer("io");
         TextFileReader reader = new TextFileReader();
         String input = reader.readFileAsSingleString(path);
+        context.perf.endTimer("io");
+
+        boolean b = parseIntoDVals(input);
+        return b;
+    }
+    private boolean loadAndParse(InputStream stream) {
+        context.perf.startTimer("io");
+        
+        InputStreamTextReader reader = new InputStreamTextReader();
+        String input = reader.readEntireStream(stream);
+        if (input == null) {
+        	return false;
+        }
+        
         context.perf.endTimer("io");
 
         boolean b = parseIntoDVals(input);

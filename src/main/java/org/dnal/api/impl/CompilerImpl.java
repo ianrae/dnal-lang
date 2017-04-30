@@ -1,5 +1,6 @@
 package org.dnal.api.impl;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.dnal.api.CompilerOptions;
@@ -101,5 +102,22 @@ public class CompilerImpl implements DNALCompiler {
     public CompilerOptions getCompilerOptions() {
         return compilerOptions;
     }
+
+	@Override
+	public DataSet compile(InputStream stream) {
+		return this.compile(stream, null);
+	}
+
+	@Override
+	public DataSet compile(InputStream stream, OuputGenerator visitor) {
+        getContext();
+        context.perf.startTimer("compile");
+        SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
+
+        DataSet dataSet = inner.compile(stream, null);
+//        errL = inner.getErrors();
+        context.perf.endTimer("compile");
+        return dataSet;
+	}
 
 }
