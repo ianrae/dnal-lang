@@ -4,13 +4,19 @@ DNAL - Data Needs a Language
 A compiler for data. DNAL is a JSON-like language that includes types and data validation rules.  
 The DNAL compiler validates and transforms your DNAL source into other data formats.
 
-*Latest version*: 0.2.0 (requires Java 8+)
+*Latest version*: 0.2.1 (requires Java 8+)
 
-News
+## News
+2017-05-14
+   Release v0.2.1 - 
+   compile from stream, 
+   validation options,
+   improved date format support,
+   prototype of views feature    
 2017-03-14
-    Release v0.2.0 
-	'unique' keyword now supported
-	reflection-based loader added
+    Release v0.2.0 - 
+	'unique' keyword, 
+	reflection-based loader,
 	many fixes
 
 ## How to Use?
@@ -25,7 +31,7 @@ Add the following fragment to your `<dependencies>` section:
 		<groupId>org.dnal-lang</groupId>
 		<artifactId>dnal</artifactId>
 		<packaging>jar</packaging>
-		<version>0.2.0</version>
+		<version>0.2.1</version>
       </dependency>
 
 ## Tell me more
