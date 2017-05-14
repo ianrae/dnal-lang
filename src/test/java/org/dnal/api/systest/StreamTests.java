@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -13,7 +12,6 @@ import org.dnal.api.DNALCompiler;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
-import org.dnal.core.util.TextFileReader;
 import org.junit.Test;
 
 public class StreamTests extends SysTestBase {
