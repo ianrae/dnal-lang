@@ -8,15 +8,15 @@ The DNAL compiler validates and transforms your DNAL source into other data form
 
 ## News
 2017-05-14
-    Release v0.2.1 
-   compile from stream 
-   validation options
-   improved date format support
+   Release v0.2.1 - 
+   compile from stream, 
+   validation options,
+   improved date format support,
    prototype of views feature    
 2017-03-14
-    Release v0.2.0 
-	'unique' keyword now supported
-	reflection-based loader added
+    Release v0.2.0 - 
+	'unique' keyword, 
+	reflection-based loader,
 	many fixes
 
 ## How to Use?
