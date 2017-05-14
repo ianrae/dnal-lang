@@ -7,7 +7,7 @@ import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.generate.DNALVisitor;
-import org.dnal.compiler.generate.SimpleMinimumFormatVisitor;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
 public class DNALLoader {
@@ -18,6 +18,7 @@ public class DNALLoader {
     private ReflectionBeanLoader reflectionBeanLoader;
     private XErrorTracker et;
     private FieldConverter fieldConverter = null;
+    private boolean cloneMainDataSet = true;
     
     public boolean loadTypeDefinition(String dnalPath) {
         createCompiler();
@@ -25,7 +26,7 @@ public class DNALLoader {
         if (mainDataSet == null) {
             return false;
         }
-        doBginNewDataSet(false);
+        doBeginNewDataSet(false);
         return true;
     }
     public boolean loadTypeDefinitionFromString(String source) {
@@ -34,17 +35,21 @@ public class DNALLoader {
         if (mainDataSet == null) {
             return false;
         }
-        doBginNewDataSet(false);
+        doBeginNewDataSet(false);
         return true;
     }
     public void beginNewDataSet() {
-    	doBginNewDataSet(true);
+    	doBeginNewDataSet(true);
     }
-    public void doBginNewDataSet(boolean clearErrors) {
+    public void doBeginNewDataSet(boolean clearErrors) {
     	if (clearErrors) {
     		et.clear(); //remove any previous errors
     	}
-        clone = mainDataSet.cloneEmptyDataSet();
+    	if (cloneMainDataSet) {
+    		clone = mainDataSet.cloneEmptyDataSet();
+    	} else {
+    		clone = mainDataSet;
+    	}
         trans = clone.createTransaction();
     }
     
@@ -73,7 +78,7 @@ public class DNALLoader {
     		et.dumpErrors();
     	}
     	
-        SimpleMinimumFormatVisitor smf = new SimpleMinimumFormatVisitor();
+        SimpleFormatOutputGenerator smf = new SimpleFormatOutputGenerator();
         Generator gen = clone.createGenerator();
         boolean b = gen.generate(smf);
         if (! b) {
@@ -118,5 +123,11 @@ public class DNALLoader {
 	}
 	public void setFieldConverter(FieldConverter fieldConverter) {
 		this.fieldConverter = fieldConverter;
+	}
+	public boolean isCloneMainDataSet() {
+		return cloneMainDataSet;
+	}
+	public void setCloneMainDataSet(boolean cloneMainDataSet) {
+		this.cloneMainDataSet = cloneMainDataSet;
 	}
 }

@@ -2,6 +2,7 @@ package org.dnal.compiler.nrule;
 
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -19,6 +20,7 @@ public class UniqueRule extends NRuleBase {
         super(name);
         this.fieldName = fieldName;
         this.context = context;
+        this.validationMode = ValidationOptions.VALIDATEMODE_REFS;
     }
     
     public String getFieldName() {
@@ -27,6 +29,10 @@ public class UniqueRule extends NRuleBase {
     
     @Override
     public boolean eval(DValue dval, NRuleContext ctx) {
+    	if (! ctx.getValidateOptions().isModeSet(validationMode)) {
+    		return true; //don't execute
+    	}
+    	
         DStructType structType = (DStructType) dval.getType();
         DType innerType = structType.getFields().get(fieldName);
         if (innerType == null) {

@@ -1,26 +1,28 @@
 package org.dnal.dnalc.cmdline;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileLoader;
 import org.dnal.dnalc.ConfigFileOptions;
 
 public class CmdLineArgParser {
 	public final static String defaultConfigFile = "dnal-config.dnal";
-	
+
 	private Command command;
 	private int currentArgIndex;
 	private String[] args;
 	private String rest;
 	private int errorCount;
 	private ConfigFileLoader configLoader;
-	
+	private ConfigFileOptions configFileOptions;
+
+
 	public CmdLineArgParser(ConfigFileLoader loader) {
 		this.configLoader = loader;
 	}
-	
+
 	public Command parse(String[] args) {
 		this.args = args;
 		currentArgIndex = 0;
@@ -28,11 +30,13 @@ public class CmdLineArgParser {
 		parseAction();
 		if (command instanceof VersionCommand) {
 		} else {
+			loadConfigFile();
 			parseOptions();
+			propogateOptionsToCmd();
 			parseSourceFilePath();
 		}
-		
-		
+
+
 		return (errorCount == 0) ? command : null;
 	}
 
@@ -42,7 +46,7 @@ public class CmdLineArgParser {
 			command = new ValidateCommand();
 			return;
 		}
-		
+
 		switch(arg) {
 		case "--version":
 			command = new VersionCommand();
@@ -60,9 +64,9 @@ public class CmdLineArgParser {
 			putbackArg();
 			break;
 		}
-		
+
 	}
-	
+
 
 	private void parseSourceFilePath() {
 		String arg = getNextArg();
@@ -77,32 +81,50 @@ public class CmdLineArgParser {
 		errorCount++;
 	}
 
-	private void parseOptions() {
+	private void loadConfigFile() {
+		String configPath = null;
+		String config = findConfigArg();
+		if (config != null) {
+			configPath = rest;
+		} else {
+			configPath = "./dnalc.properties";
+		}
+
+		this.configFileOptions = new ConfigFileOptions();
 		
+		if (configLoader.existsConfigFile(configPath)) {
+			Log.debugLog(String.format("loading %s", configPath));
+			ConfigFileOptions options = configLoader.load(configPath);
+			this.configFileOptions = options;
+		}
+	}
+
+	private void parseOptions() {
 		boolean done = false; 
 		while (!done) {
 			String arg = getNextArg();
 			if (arg == null) {
 				return;
 			}
-			
+
 			switch(arg) {
 			case "-c":
 			case "--config":
-				command.configPath = rest;
+				//				command.configPath = rest;
+				//do nothing: handled by findConfigArg
 				break;
-            case "--perf":
-                command.perfSummaryEnabled = true;
-                break;
+			case "--perf":
+				command.perfSummaryEnabled = true;
+				break;
 			case "-d":
 			case "--debug":
 				command.debug = true;
+				Log.debugLogging = true;
 				break;
 			case "-o":
 			case "--output-path":
 				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					gencmd.outputDir = rest;
+					configFileOptions.outputPath = rest;
 				} else {
 					failWith("this option only can be used with 'generate'");
 				}
@@ -110,72 +132,42 @@ public class CmdLineArgParser {
 			case "-t":
 			case "--output":
 				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					gencmd.outputType = rest;
+					configFileOptions.outputType = rest;
 				} else {
 					failWith("this option only can be used with 'generate'");
 				}
 				break;
-				
+
 			default:
 				putbackArg();
 				done = true;
 				break;
 			}
-			
-			if (command.configPath == null) {
-				String defaultConfigFile = "dnal-config.dnal";
-				File f = new File("./" + defaultConfigFile);
-				if (f.exists()) {
-					command.configPath = defaultConfigFile;
-				}
-			}
-			
-			if (command.configPath != null) {
-				readConfigFile();
-			} else {
-				if (command instanceof GenerateCommand) {
-					GenerateCommand gencmd = (GenerateCommand) command;
-					if (gencmd.outputType == null) {
-						gencmd.outputType = "none";
-					}
-					
-					if (gencmd.outputDir == null) {
-						gencmd.outputDir = ".";
-					}
-				}
-			}
-			
+		}
+	}
+
+	private void propogateOptionsToCmd() {
+		if (configFileOptions == null) {
+			return;
 		}
 		
-	}
-	
-	private void readConfigFile() {
-		ConfigFileOptions options = configLoader.load(command.configPath);
-
 		if (command instanceof GenerateCommand) {
 			GenerateCommand gencmd = (GenerateCommand) command;
-			if (options.outputPath != null) {
-				gencmd.outputDir = options.outputPath;
-			}
-			
-			if (options.outputType != null) {
-				gencmd.outputType = options.outputType;
-			}
-			
-			if (options.customRulePackages != null) {
-                gencmd.customRulePackages = parseCommaSeparatedList(options.customRulePackages);
-			}
+			gencmd.outputDir = configFileOptions.outputPath;
+			gencmd.outputType = configFileOptions.outputType;
+			gencmd.customRulePackages = parseCommaSeparatedList(configFileOptions.customRulePackages);
 		} else if (command instanceof ValidateCommand) {
-		    ValidateCommand valcmd = (ValidateCommand) command;
-            if (options.customRulePackages != null) {
-                valcmd.customRulePackages = parseCommaSeparatedList(options.customRulePackages);
-            }
-        }
+			ValidateCommand valcmd = (ValidateCommand) command;
+			valcmd.customRulePackages = parseCommaSeparatedList(configFileOptions.customRulePackages);
+		}
 	}
 	private List<String> parseCommaSeparatedList(String input) {
-	    String[] ar = input.split(",");
-	    return Arrays.asList(ar);
+		if (input == null) {
+			return null;
+		}
+		
+		String[] ar = input.split(",");
+		return Arrays.asList(ar);
 	}
 
 	private String getNextArg() {
@@ -193,11 +185,34 @@ public class CmdLineArgParser {
 		}
 		return arg;
 	}
+
+	private String findConfigArg() {
+		int save = currentArgIndex;
+
+		String result = null;
+		while(true) {
+			String arg = getNextArg();
+			if (arg == null) {
+				break;
+			} else if (arg.equals("-c") || arg.equals("--config")) {
+				result = arg;
+				break;
+			}
+		}
+
+		currentArgIndex = save;
+		return result;
+	}
+
 	private void putbackArg() {
 		currentArgIndex--;
 	}
 
 	public int getErrorCount() {
 		return errorCount;
+	}
+
+	public ConfigFileOptions getConfigFileOptions() {
+		return configFileOptions;
 	}
 }

@@ -16,10 +16,11 @@ public class UniqueTests extends BaseValidationTests {
 	    assertEquals(3, dval.asList().size());
 	}
 	@Test
-	public void test2() {
+	public void testfail() {
 		String dnal = buildDNAL(99, 100, 99);
 	    chkRule(dnal, false);
 	}
+	
 	@Test
 	public void testMix() {
 		String dnal = buildDNAL(99, 100, 101);

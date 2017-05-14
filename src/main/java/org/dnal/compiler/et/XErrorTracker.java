@@ -130,6 +130,12 @@ public class XErrorTracker {
 	public void setCurrentActualValue(String currentActualValue) {
 		this.currentActualValue = currentActualValue;
 	}
+	public void propogateErrors(List<NewErrorMessage> errorList) {
+		for(NewErrorMessage err: errorList) {
+	        this.errL.add(err);
+	        logIfEnabled(err);
+		}
+	}
 
 
 }

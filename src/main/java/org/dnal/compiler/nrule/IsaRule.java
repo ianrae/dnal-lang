@@ -7,6 +7,7 @@ import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.ast.ViaExp;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -25,6 +26,7 @@ public class IsaRule extends NRuleBase {
         super(name);
         this.rule = rule;
         this.context = context;
+        this.validationMode = ValidationOptions.VALIDATEMODE_REFS;
     }
     
     public String getFieldName() {
@@ -44,11 +46,16 @@ public class IsaRule extends NRuleBase {
     
     @Override
     public boolean eval(DValue dval, NRuleContext ctx) {
+    	if (! ctx.getValidateOptions().isModeSet(validationMode)) {
+    		return true; //don't execute
+    	}
+    	
         if (dval.getType() instanceof DStructType) {
             DStructType structType = (DStructType) dval.getType();
             DType innerType = structType.getFields().get(rule.fieldName);
             if (innerType == null) {
-                this.addRuleFailedError(ctx, this.getRuleText());
+            	String ruleText = String.format("%s: %s", this.getName(), rule.val);
+                this.addRuleFailedError(ctx, ruleText);
                 return false;
             }
                     

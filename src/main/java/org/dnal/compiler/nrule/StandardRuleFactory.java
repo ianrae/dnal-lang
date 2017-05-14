@@ -136,6 +136,9 @@ public class StandardRuleFactory  {
                     rule = new ContainsRuleList(ruleName, (VirtualList) createForShape(shape));
                 }
                 break;
+            case "hasText":
+                rule = new HasTextRule(ruleName, (VirtualString) createForShape(shape));
+                break;
             default:
                 break;        
             }
@@ -187,6 +190,7 @@ public class StandardRuleFactory  {
         crf.addFactory(new Factory("ieq", Shape.STRING));
         crf.addFactory(new Factory("len", Shape.LIST, Shape.STRING));
         crf.addFactory(new Factory("in", Shape.INTEGER, Shape.LONG, Shape.NUMBER, Shape.STRING));
+        crf.addFactory(new Factory("hasText", Shape.STRING));
         return crf;
     }
 

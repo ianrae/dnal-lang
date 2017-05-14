@@ -15,8 +15,17 @@ public class DTypeRegistry {
 	private List<DType> orderedList = new ArrayList<>();
 	private int nextBitIndex; //!! atomic thing later for thread safety
 	private DTypeHierarchy th;
+	private Map<String,DViewType> viewMap = new TreeMap<>();
 
 	public synchronized void add(String name, DType type) {
+        if (type == null || name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name or type were null");
+        }
+        if (type instanceof DViewType) {
+        	throw new IllegalArgumentException("view types cannot be added as a type");
+        }
+		
+		
 	    type.setBitIndex(nextBitIndex++);
 	    orderedList.add(type);
 		map.put(name, type);
@@ -96,5 +105,15 @@ public class DTypeRegistry {
     public List<DType> getOrderedList() {
         return orderedList;
     }
+
+	public void addView(String completeName, DViewType dtype) {
+		viewMap.put(completeName, dtype);
+	}
+	public DViewType getViewType(String name) {
+		return viewMap.get(name);
+	}
+	public Set<String> getAllViewTypes() {
+		return viewMap.keySet();
+	}
 	
 }

@@ -161,7 +161,7 @@ public class StructBuilder extends Builder {
 	protected DValue buildDateVal(DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.DATE_SHAPE);
 		XDateValueBuilder builder = (XDateValueBuilder) builderFactory.createBuilderFor(type);
-		builder.setDateFormat(dateFormat);
+//		builder.setDateFormat(dateFormat);
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -182,11 +182,5 @@ public class StructBuilder extends Builder {
 
 	public List<NewErrorMessage> getValidationErrors() {
 		return valErrorList;
-	}
-	public String getDateFormat() {
-		return dateFormat;
-	}
-	public void setDateFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
 	}
 }

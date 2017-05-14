@@ -23,7 +23,7 @@ public class CmdLineArgParserTests {
 		useOptions = false;
 		String[] args = new String[] { "abc.dnal" };
 		GenerateCommand cmd = (GenerateCommand) chkParse(args, "generate");
-		assertEquals("none", cmd.outputType);
+		assertEquals(null, cmd.outputType);
 	}
 
 	@Test
@@ -36,7 +36,6 @@ public class CmdLineArgParserTests {
 	public void testConfig() {
 		String[] args = new String[] { "v", "--config=z.dnal", "abc.dnal" };
 		Command cmd = chkParse(args, "validate");
-		assertEquals("z.dnal", cmd.configPath);
 		assertEquals("abc.dnal", cmd.srcPath);
 	}
 	
@@ -44,7 +43,6 @@ public class CmdLineArgParserTests {
 	public void testGen() {
 		String[] args = new String[] { "generate", "--output-path=mytypes", "--output=java/dnal", "abc.dnal" };
 		GenerateCommand cmd = (GenerateCommand) chkParse(args, "generate");
-		assertEquals(null, cmd.configPath);
 		assertEquals("abc.dnal", cmd.srcPath);
 		assertEquals("mytypes", cmd.outputDir);
 		assertEquals("java/dnal", cmd.outputType);
@@ -54,7 +52,6 @@ public class CmdLineArgParserTests {
 	public void testGen2() {
 		String[] args = new String[] { "g", "-d", "-o=mytypes", "-t=java/dnal", "abc.dnal" };
 		GenerateCommand cmd = (GenerateCommand) chkParse(args, "generate");
-		assertEquals(null, cmd.configPath);
 		assertEquals("abc.dnal", cmd.srcPath);
 		assertEquals("mytypes", cmd.outputDir);
 		assertEquals("java/dnal", cmd.outputType);
@@ -65,7 +62,6 @@ public class CmdLineArgParserTests {
 	public void testUseConfig() {
 		String[] args = new String[] { "g", "-c=config.dnal", "abc.dnal" };
 		GenerateCommand cmd = (GenerateCommand) chkParse(args, "generate");
-		assertEquals("config.dnal", cmd.configPath);
 		assertEquals("abc.dnal", cmd.srcPath);
 		assertEquals("mytypes", cmd.outputDir);
 		assertEquals("java/dnal", cmd.outputType);

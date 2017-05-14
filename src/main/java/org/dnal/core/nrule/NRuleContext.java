@@ -1,23 +1,33 @@
 package org.dnal.core.nrule;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.validate.ValidationOptions;
+import org.dnal.core.DValue;
+import org.dnal.core.DValueProxy;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 
 public class NRuleContext {
 	private XErrorTracker et;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
+	private ValidationOptions validateOptions;
+	private List<DValue> futureValues;
 
 	public NRuleContext(XErrorTracker et) {
 		this.et = et;
+		this.validateOptions = new ValidationOptions();
+		this.futureValues = new ArrayList<>();
 	}
-	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap) {
+	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap, ValidationOptions validateOptions, List<DValue> futureValues) {
 		this.et = et;
+		this.validateOptions = validateOptions;
 		this.alreadyRunMap = alreadyRunMap;
+		this.futureValues = futureValues;
 	}
 	public void addError(ErrorType errType, String message) {
         NewErrorMessage nem = new NewErrorMessage();
@@ -63,5 +73,11 @@ public class NRuleContext {
 	}
 	public void addToAlreadyRunMap(NRule rule) {
 		alreadyRunMap.put(rule, Integer.valueOf(0));
+	}
+	public ValidationOptions getValidateOptions() {
+		return validateOptions;
+	}
+	public void addFutureValue(DValueProxy dval) {
+		futureValues.add(dval);
 	}
 }

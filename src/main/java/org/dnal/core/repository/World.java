@@ -9,6 +9,7 @@ import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.ValidationScorer;
 
@@ -24,6 +25,9 @@ public class World implements WorldListener {
 		boolean shouldAdd = false;
 		if (type.isScalarShape() || type.isShape(Shape.STRUCT) || type.isShape(Shape.LIST)) {
 			shouldAdd = true;
+			if (type instanceof DViewType) {
+				shouldAdd = false;
+			}
 		}
 		return shouldAdd;
 	}
@@ -47,6 +51,13 @@ public class World implements WorldListener {
 	}
 	
     public void addTopLevelValue(String name, DValue dval) {
+        if (dval == null || name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("name or dval were null");
+        }
+        if (dval.getType() instanceof DViewType) {
+        	throw new IllegalArgumentException("views cannot be added");
+        }
+    	
         valueMap.put(name, dval);
         
         //hmm. i think each top-level dval is distinct

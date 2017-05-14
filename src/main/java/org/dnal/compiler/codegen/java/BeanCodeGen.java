@@ -1,24 +1,15 @@
 package org.dnal.compiler.codegen.java;
 
-import org.dnal.compiler.parser.ast.Exp;
-import org.dnal.compiler.parser.ast.FullListTypeExp;
-import org.dnal.compiler.parser.ast.FullTypeExp;
-import org.dnal.compiler.parser.ast.StructMemberExp;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
-import org.dnal.core.Shape;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
 public class BeanCodeGen extends CodeGenBase {
     
-    public BeanCodeGen(ConfigFileOptions options) {
-        super(options);
-    }
-
     @Override
     public void startStructType(String name, DStructType dtype) {
         onStartType(name, dtype);

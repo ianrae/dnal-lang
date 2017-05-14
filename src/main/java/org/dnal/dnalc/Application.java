@@ -7,8 +7,10 @@ import java.util.Map;
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
+import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
+import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.cmdline.CmdLineArgParser;
@@ -22,20 +24,20 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 	 * @author ian
 	 *
 	 */
-	public class DNALCApp {
+	public class Application {
 //		private boolean useOptions = true;
 		private ConfigFileLoader configLoader;
 		private boolean wasSuccessful = true;
 		private boolean debug = false;
-		private Map<String,GenerateVisitor> generatorMap = new HashMap<>();
+		private Map<String,OuputGenerator> generatorMap = new HashMap<>();
+		private ConfigFileOptions configFileOptions;
 		
-		public DNALCApp(ConfigFileLoader configLoader) {
+		public Application(ConfigFileLoader configLoader) {
 			this.configLoader = configLoader;
 			Log.useSLFLogging = false;
-			debug = true;
 		}
 		
-		public void registerGenerator(String outputType, GenerateVisitor visitor) {
+		public void registerGenerator(String outputType, OuputGenerator visitor) {
 		    generatorMap.put(outputType, visitor);
 		}
 		
@@ -70,15 +72,21 @@ import org.dnal.dnalc.cmdline.VersionCommand;
             doIt(cmd.srcPath, visitor, cmd.customRulePackages, cmd.perfSummaryEnabled);
 		}
 		private void doGenerate(GenerateCommand cmd) {
+			registerGenerator("text/simple", new MySimpleVisitor());
+			registerGenerator("java/dnal", new JavaCodeGen());
+			registerGenerator("json", new JSONGenerator());
+			
 		    String outputType = cmd.outputType;
-		    GenerateVisitor visitor = generatorMap.get(outputType);
+		    OuputGenerator visitor = generatorMap.get(outputType);
 		    if (visitor == null) {
                 log(String.format("no generator for outputType '%s'", outputType));
                 return;
 		    }
+		    
+		    visitor.setOptions(configFileOptions);
 			doIt(cmd.srcPath, visitor, cmd.customRulePackages, cmd.perfSummaryEnabled);
 		}
-        private void doIt(String srcPath, GenerateVisitor visitor, List<String> customRulePackages, boolean perfSummaryEnabled) {
+        private void doIt(String srcPath, OuputGenerator visitor, List<String> customRulePackages, boolean perfSummaryEnabled) {
             DNALCompiler compiler = new CompilerImpl();
 //            compiler.getCompilerOptions().useMockImportLoader(true); //!!
             addCustomRules(compiler, customRulePackages);
@@ -116,6 +124,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
                 impl.getContext().perf.dump();
             }
         }
+        
 
 		private void addCustomRules(DNALCompiler compiler, List<String> customRulePackages) {
 		    if (customRulePackages != null && ! customRulePackages.isEmpty()) {
@@ -140,6 +149,15 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 			if (parser.getErrorCount() > 0) {
 				wasSuccessful = false;
 			}
+
+			if (cmd != null) {
+				debug = cmd.debug;
+				if (debug) {
+					Log.debugLogging = true;
+				}
+			}
+			
+			this.configFileOptions = parser.getConfigFileOptions();
 			return cmd;
 		}
 		

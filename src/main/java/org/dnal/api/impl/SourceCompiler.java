@@ -1,6 +1,7 @@
 package org.dnal.api.impl;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
@@ -9,7 +10,7 @@ import org.dnal.api.Generator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
@@ -22,6 +23,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.dnal.core.repository.World;
+import org.dnal.core.util.InputStreamTextReader;
 import org.dnal.core.util.TextFileReader;
 
 public class SourceCompiler extends ErrorTrackingBase {
@@ -29,6 +31,8 @@ public class SourceCompiler extends ErrorTrackingBase {
     protected DTypeRegistry registry;
     private CustomRuleFactory crf;
     private CompilerContext context;
+    private ValidationPhase mostRecentValidator;
+
     
     public SourceCompiler(World world, DTypeRegistry registry, CustomRuleFactory crf, 
             XErrorTracker et, CompilerContext context) {
@@ -46,7 +50,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compile(String path) {
         return compile(path, null);
     }
-    public DataSet compile(String path, GenerateVisitor visitor) {
+    public DataSet compile(String path, OuputGenerator visitor) {
         if (! fileExists(path)) {
             return null;
         }
@@ -59,8 +63,17 @@ public class SourceCompiler extends ErrorTrackingBase {
         
         return doCompile(visitor);
     }
+    public DataSet compile(InputStream stream, OuputGenerator visitor) {
+        this.pushScope(new ErrorScope("stream", "", ""));
+        boolean b = loadAndParse(stream);
+        if (! b) {
+            return null;
+        }
+        
+        return doCompile(visitor);
+    }
     
-    private DataSet doCompile(GenerateVisitor visitor) {
+    private DataSet doCompile(OuputGenerator visitor) {
         //now validate the DVALs
         boolean b = validatePhase();
         
@@ -74,7 +87,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compileString(String input) {
         return compileString(input, null);
     }
-    public DataSet compileString(String input, GenerateVisitor visitor) {
+    public DataSet compileString(String input, OuputGenerator visitor) {
         this.pushScope(new ErrorScope("string", "", ""));
         boolean b = parseIntoDVals(input);
         if (! b) {
@@ -92,6 +105,20 @@ public class SourceCompiler extends ErrorTrackingBase {
         context.perf.startTimer("io");
         TextFileReader reader = new TextFileReader();
         String input = reader.readFileAsSingleString(path);
+        context.perf.endTimer("io");
+
+        boolean b = parseIntoDVals(input);
+        return b;
+    }
+    private boolean loadAndParse(InputStream stream) {
+        context.perf.startTimer("io");
+        
+        InputStreamTextReader reader = new InputStreamTextReader();
+        String input = reader.readEntireStream(stream);
+        if (input == null) {
+        	return false;
+        }
+        
         context.perf.endTimer("io");
 
         boolean b = parseIntoDVals(input);
@@ -139,6 +166,7 @@ public class SourceCompiler extends ErrorTrackingBase {
             return null;
         }
 
+        //pass 2
         if (! pass2(doc.getStatementList())) {
             return null;
         }
@@ -171,7 +199,10 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean validatePhase() {
         context.perf.startTimer("validate");
-        ValidationPhase validator = new ValidationPhase(this.world, context.et);
+        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions);
+        
+        //save validator in case 'future' values need to be resolved
+        mostRecentValidator = validator;
         boolean b = validator.validate();
         context.perf.endTimer("validate");
 //        if (! b) {
@@ -180,7 +211,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return b;
     }
     
-    private boolean generator(GenerateVisitor visitor) {
+    private boolean generator(OuputGenerator visitor) {
         Generator generator = new GeneratorImpl(registry, world, context);
         context.perf.startTimer("generate");
         boolean b = generator.generate(visitor);
@@ -191,5 +222,9 @@ public class SourceCompiler extends ErrorTrackingBase {
     public List<NewErrorMessage> getErrors() {
         return getET().getErrL();
     }
+
+	public ValidationPhase getMostRecentValidator() {
+		return mostRecentValidator;
+	}
 
 }

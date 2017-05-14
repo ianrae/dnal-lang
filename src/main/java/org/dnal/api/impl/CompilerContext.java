@@ -9,6 +9,7 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.ImportLoader;
 import org.dnal.compiler.impoter.PackageRepository;
 import org.dnal.compiler.performance.PerfTimer;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
@@ -25,6 +26,7 @@ public class CompilerContext {
 //    public ErrorScopeStack scopeStack = new ErrorScopeStack();
     public PerfTimer perf = new PerfTimer();
     public CompilerOptions compilerOptions;
+    public ValidationOptions validateOptions = new ValidationOptions();
 
     //passed in
     public String packageName;

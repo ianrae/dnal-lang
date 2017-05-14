@@ -5,8 +5,11 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
+import org.dnal.dnalc.ConfigFileOptions;
 
-public interface GenerateVisitor {
+public interface OuputGenerator {
+	void setOptions(ConfigFileOptions configFileOptions);
+	
     void startStructType(String name, DStructType dtype) throws Exception;
     void startEnumType(String name, DStructType dtype) throws Exception;
     void startType(String name, DType dtype) throws Exception;

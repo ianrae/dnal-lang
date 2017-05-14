@@ -1,17 +1,15 @@
 package org.dnal.core.oldbuilder;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.dnal.compiler.dnalgenerate.DateFormatParser;
 import org.dnal.core.DType;
-import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 
 public class XDateValueBuilder extends XDValueBuilder {
-	private String dateFormat = "dd-MMM-yy";
-	
+	private DateFormatParser dateParser = new DateFormatParser();
+
 	public XDateValueBuilder(DType type) {
 		if (!type.isShape(Shape.DATE)) {
 			addWrongTypeError("expecting date");
@@ -27,13 +25,12 @@ public class XDateValueBuilder extends XDValueBuilder {
 		}
 
 		Date dt = null;
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat) ; 
-			dt = sdf.parse(input);
-			this.newDVal = new DValueImpl(type, dt);
-		} catch (ParseException e) {
-			addParsingError(String.format("'%s' is not a date", input));
+		dt = dateParser.parse(input);
+		if (dt == null) {
+			this.addParsingError(String.format("Can't convert '%s' to date", input));
+			return;
 		}
+		this.newDVal = new DValueImpl(type, dt);
 	}
 	public void buildFrom(Date dt) {
 		if (dt == null) {
@@ -47,11 +44,4 @@ public class XDateValueBuilder extends XDValueBuilder {
 	protected void onFinish() {
 	}
 
-	public String getDateFormat() {
-		return dateFormat;
-	}
-
-	public void setDateFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
-	}
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.dnal.api.Generator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
@@ -29,7 +29,7 @@ public class GeneratorImpl implements Generator {
     }
     
     @Override
-    public boolean generate(GenerateVisitor visitor) {
+    public boolean generate(OuputGenerator visitor) {
         DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world);
         boolean b = phase.generate(visitor);
         if (! b) {

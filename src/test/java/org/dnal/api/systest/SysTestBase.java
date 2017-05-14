@@ -47,6 +47,7 @@ public class SysTestBase {
         assertEquals(expectedErrors, errors.size());
         boolean found = false;
         for(NewErrorMessage err: errors) {
+        	//log(err.getMessage());
             if (err.getMessage().contains(errMsg)) {
                 found = true;
             }
@@ -76,16 +77,22 @@ public class SysTestBase {
     protected DTypeRegistry registry;
     protected World world;
     protected  static final int NUM_INTERNAL_TYPES = 7;
+    protected boolean loadFile = false;
     
     protected  DataSet load(String source, boolean pass) {
         return load(source, pass, null);
     }
-    protected  DataSet load(String source, boolean pass, DNALCompiler compilerParam) {
+    protected  DataSet load(String sourceOrPath, boolean pass, DNALCompiler compilerParam) {
         XErrorTracker.logErrors = true;
         Log.debugLogging = true;
 
         DNALCompiler compiler = (compilerParam == null) ? createCompiler(): compilerParam;
-        dataSetLoaded = compiler.compileString(source);
+        
+        if (loadFile) {
+        	dataSetLoaded = compiler.compile(sourceOrPath);
+        } else {
+        	dataSetLoaded = compiler.compileString(sourceOrPath);
+        }
         DataSetImpl dsi = (DataSetImpl) dataSetLoaded;
         registry = (dataSetLoaded != null) ? dsi.getInternals().getRegistry(): null;
         world = (dataSetLoaded != null) ? dsi.getInternals().getWorld(): null;

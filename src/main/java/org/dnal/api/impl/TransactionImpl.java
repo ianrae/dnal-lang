@@ -12,12 +12,14 @@ import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.BuilderFactory;
@@ -35,22 +37,23 @@ public class TransactionImpl implements Transaction {
     protected List<NewErrorMessage> errorList = new ArrayList<>();
     private DTypeRegistry registry;
     private World world;
-    private CustomRuleFactory crf;
     private List<Pair<String, DValue>> pendingL = new ArrayList<>();
     private BuilderFactory factory;
     private CompilerContext context;
     private Map<Class<?>, BeanLoader<?>> loaderRegistry;
     private DataSet ds;
+    private ValidationOptions validateOptions; //local to the trans
+	private List<DValue> futureValues = new ArrayList<>();
+    
 
     public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
         this.registry = registry;
-        StandardRuleFactory standard = new StandardRuleFactory();
-        this.crf = standard.createFactory();
         this.factory = new BuilderFactory(registry, errorList);
         this.context = context;
         this.loaderRegistry = loaderRegistry;
         this.ds = ds;
+        this.validateOptions = context.validateOptions.createCopy(); //create local copy
     }
 
     @Override
@@ -58,12 +61,17 @@ public class TransactionImpl implements Transaction {
         if (dval == null || name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name or dval were null");
         }
+        if (dval.getType() instanceof DViewType) {
+        	throw new IllegalArgumentException("view types cannot be added to a DataSet");
+        }
         pendingL.add(new Pair<String, DValue>(name, dval));
     }
 
     //eventually add update and remove which will be handled using event log approach
     @Override
     public boolean commit() {
+    	context.et.propogateErrors(errorList);
+    	
         //validate
         for(Pair<String,DValue> pair: pendingL) {
             if (! validateSingleValue(pair)) {
@@ -85,7 +93,7 @@ public class TransactionImpl implements Transaction {
     }
 
     private boolean validateSingleValue(Pair<String,DValue> pair) {
-        ValidationPhase validator = new ValidationPhase(world, context.et);
+        ValidationPhase validator = new ValidationPhase(world, context.et, validateOptions, futureValues);
 
         DValue dval = pair.b;
         String varName = pair.a;
@@ -104,7 +112,6 @@ public class TransactionImpl implements Transaction {
             throw new WorldException("null passed to createFromBean()");
         }
         
-        @SuppressWarnings("unchecked")
         BeanLoader<?> loader = (BeanLoader<?>) loaderRegistry.get(bean.getClass());
         if (loader == null) {
             throw new WorldException(String.format("bean class '%s' not registered. Use loadRegister()", bean.getClass().getSimpleName()));
@@ -243,6 +250,15 @@ public class TransactionImpl implements Transaction {
 	@Override
 	public DataSet getDataSet() {
 		return ds;
+	}
+
+	@Override
+	public ValidationOptions getValidationOptions() {
+		return this.validateOptions;
+	}
+
+	public List<DValue> getFutureValues() {
+		return futureValues;
 	}
 
 }

@@ -6,7 +6,7 @@ import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.codegen.java.JavaOutputRenderer;
 import org.dnal.core.logger.Log;
 import org.dnal.dnalc.ConfigFileOptions;
-import org.dnal.dnalc.DNALCApp;
+import org.dnal.dnalc.Application;
 import org.dnal.dnalc.MySimpleVisitor;
 import org.junit.Test;
 
@@ -60,9 +60,9 @@ public class CodeGenTests {
     }
 	private void chkRun(String[] args) {
 		MockConfigLoader configLoader = createConfigLoader();
-		DNALCApp dnalc = new DNALCApp(configLoader);
+		Application dnalc = new Application(configLoader);
 		dnalc.registerGenerator("text/simple", new MySimpleVisitor());
-		dnalc.registerGenerator("java/dnal", new JavaCodeGen(configLoader.options));
+		dnalc.registerGenerator("java/dnal", new JavaCodeGen());
 		dnalc.run(args);
 		assertEquals(true, dnalc.wasSuccessful());
 	}

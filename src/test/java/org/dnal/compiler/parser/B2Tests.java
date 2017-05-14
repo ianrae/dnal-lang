@@ -6,9 +6,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
-import org.dnal.compiler.parser.FullParser;
-import org.dnal.compiler.parser.TerminalParser;
-import org.dnal.compiler.parser.VarParser;
 import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
@@ -576,5 +573,6 @@ public class B2Tests {
         assertEquals("code", via.fieldExp.val);
         assertEquals("abc", via.valueExp.strValue());
     }
+    
 
 }

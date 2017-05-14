@@ -1,5 +1,6 @@
 package org.dnal.api.impl;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.dnal.api.CompilerOptions;
@@ -8,7 +9,7 @@ import org.dnal.api.DataSet;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
 import org.dnal.compiler.impoter.DefaultImportLoader;
 import org.dnal.compiler.impoter.ImportLoader;
 import org.dnal.compiler.impoter.MockImportLoader;
@@ -65,7 +66,7 @@ public class CompilerImpl implements DNALCompiler {
         return compile(path, null);
     }
     @Override
-    public DataSet compile(String path, GenerateVisitor visitor) {
+    public DataSet compile(String path, OuputGenerator visitor) {
         getContext();
         context.perf.startTimer("compile");
         SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
@@ -81,7 +82,7 @@ public class CompilerImpl implements DNALCompiler {
         return compileString(input, null);
     }
     @Override
-    public DataSet compileString(String input, GenerateVisitor visitor) {
+    public DataSet compileString(String input, OuputGenerator visitor) {
         getContext();
         context.perf.startTimer("compile-string");
         SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
@@ -101,5 +102,22 @@ public class CompilerImpl implements DNALCompiler {
     public CompilerOptions getCompilerOptions() {
         return compilerOptions;
     }
+
+	@Override
+	public DataSet compile(InputStream stream) {
+		return this.compile(stream, null);
+	}
+
+	@Override
+	public DataSet compile(InputStream stream, OuputGenerator visitor) {
+        getContext();
+        context.perf.startTimer("compile");
+        SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
+
+        DataSet dataSet = inner.compile(stream, null);
+//        errL = inner.getErrors();
+        context.perf.endTimer("compile");
+        return dataSet;
+	}
 
 }

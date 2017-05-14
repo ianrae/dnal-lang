@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
+import org.dnal.core.DValueProxy;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.ValidationState;
@@ -64,6 +66,16 @@ public class SimpleNRuleRunner  {
 	}
 
 	private void evalStruct(DValue dval, NRuleContext ctx) {
+		//don't validate future value because it doesn't exist yet
+		if (dval instanceof DValueProxy) {
+			DValueProxy proxy = (DValueProxy) dval;
+			if (proxy.isFutureValue()) {
+				ctx.addFutureValue(proxy);
+				return;
+			}
+		}
+		
+		
 		ValidationScorer scorer = new ValidationScorer();
 		stack.push(scorer);
 //		Map<String,DValue> map = dval.asMap();
@@ -78,7 +90,8 @@ public class SimpleNRuleRunner  {
 	        //optional is not a rule, but evalauate it like a rule
 			if (inner == null) {
 			    if (dval.getType() instanceof DStructType) {
-			        if (!structType.fieldIsOptional(fieldName)) {
+			    	boolean validateThis = ctx.getValidateOptions().isModeSet(ValidationOptions.VALIDATEMODE_EXISTENCE);
+			        if (validateThis && !structType.fieldIsOptional(fieldName)) {
 			        	ctx.addError(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
 			        }
 			    }
@@ -126,6 +139,20 @@ public class SimpleNRuleRunner  {
 
 	private void evalRulesForDValObject(DValue dval, NRuleContext ctx) {
 		ValidationScorer scorer = stack.peek();
+		
+		//if not revalidationEnabled then don't validated if we already have
+		if (! dval.getValState().equals(ValidationState.UNKNOWN) && !ctx.getValidateOptions().revalidationEnabled) {
+			return;
+		}
+		
+		//don't validate future value because it doesn't exist yet
+		if (dval instanceof DValueProxy) {
+			DValueProxy proxy = (DValueProxy) dval;
+			if (proxy.isFutureValue()) {
+				ctx.addFutureValue(proxy);
+				return;
+			}
+		}
 
 		int passCount = 0;
 		int totalNumRules = 0; //for type and base types

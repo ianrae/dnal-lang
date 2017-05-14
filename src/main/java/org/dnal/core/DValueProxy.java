@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DValueProxy extends DValueImpl {
+	//used when we need a placeholder for a value that
+	//doesn't yet exist.
+	private boolean isFutureValue;
 
     public DValueProxy(DValue dval) {
         super(dval.getType(), dval);
@@ -93,5 +96,13 @@ public class DValueProxy extends DValueImpl {
         DValue inner = (DValue) super.getObject();
         return inner.getPersistenceId();
     }
+
+	public boolean isFutureValue() {
+		return isFutureValue;
+	}
+
+	public void setFutureValue(boolean isFutureValue) {
+		this.isFutureValue = isFutureValue;
+	}
 
 }

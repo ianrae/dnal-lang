@@ -10,6 +10,7 @@ import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -37,11 +38,15 @@ public class BaseValidationTests extends BaseTest {
     }
     
     protected void parseAndValidate(String input, boolean expected, String shape) {
+    	parseAndValidate(input, expected, shape, ValidationOptions.VALIDATEMODE_ALL);
+    }    
+    protected void parseAndValidate(String input, boolean expected, String shape, int validationMode) {
         List<NewErrorMessage> errL = new ArrayList<>();
         ASTToDNALGenerator dnalGenerator = parse(errL, input, "Foo", shape, crf);
         errL.addAll(dnalGenerator.getErrL());
         World world = getContext().world;
-        ValidationPhase validator = new ValidationPhase(world, getContext().et);
+        getContext().validateOptions.validationMode = validationMode;
+        ValidationPhase validator = new ValidationPhase(world, getContext().et, getContext().validateOptions);
     
 //      DType type = dnalGenerator.getRegistry().getType("Foo");
 //      for(NRule rule: CustomRuleRegistry.getRuleRunners()) {

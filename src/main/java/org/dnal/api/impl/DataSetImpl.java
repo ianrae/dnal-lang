@@ -1,12 +1,15 @@
 package org.dnal.api.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
+import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -26,6 +29,9 @@ public class DataSetImpl implements DataSet {
     
     public Internals getInternals() {
         return new Internals(registry, world);
+    }
+    public CompilerContext getCompilerContext() {
+    	return context;
     }
     
     @Override
@@ -91,5 +97,23 @@ public class DataSetImpl implements DataSet {
     public int size() {
         return world.getValueMap().size();
     }
+
+	@Override
+	public List<String> getAllNames() {
+		//return copy so app can't tamper with world
+		List<String> copy = new ArrayList(world.getOrderedList());
+		return copy;
+	}
+	
+	@Override
+    public DType getType(String typeName) {
+    	DType dtype = this.registry.getType(typeName);
+    	return dtype;
+    }
+	
+	public ViaFinder createViaFinder() {
+		ViaFinder finder = new ViaFinder(world, registry, context.et);
+		return finder;
+	}
 
 }

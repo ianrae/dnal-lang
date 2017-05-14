@@ -9,5 +9,9 @@ class MockConfigLoader implements ConfigFileLoader {
 	public ConfigFileOptions load(String path) {
 		return options;
 	}
+	@Override
+	public boolean existsConfigFile(String path) {
+		return true;
+	}
 	
 }

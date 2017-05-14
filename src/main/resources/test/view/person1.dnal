@@ -1,0 +1,30 @@
+type Address struct { 
+  street string 
+  city string
+} end
+
+type Person struct {
+  firstName string
+  lastName string
+  addr Address
+} end
+
+
+outview Person -> PersonDTO { 
+ firstName -> fname string   
+ addr.city -> town string
+} end
+
+outview Person -> PersonBadDTO { 
+ firstName -> fname string   
+ addr.zzz -> town string
+} end
+
+inview Person <- PersonInputBad { 
+ firstName <- fname string   
+ addr <- town string
+} end
+
+
+let x Person = { 'bob', 'smith', { 'elm', 'ottawa' } }
+

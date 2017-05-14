@@ -1,12 +1,12 @@
 package org.dnal.compiler.codegen.java;
 
-import org.dnal.compiler.generate.GenerateVisitor;
+import org.dnal.compiler.generate.OuputGenerator;
 import org.dnal.core.DListType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 
-public abstract class TypeOnlyGenerator implements GenerateVisitor {
+public abstract class TypeOnlyGenerator implements OuputGenerator {
     
     public void startType(String name, DType dtype) throws Exception {}
     public void startListType(String name, DListType type) throws Exception {}
