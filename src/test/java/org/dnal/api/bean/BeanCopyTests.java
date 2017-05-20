@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,33 +15,49 @@ import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
 import org.dnal.api.view.ViewLoader;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DStructType;
-import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 
 public class BeanCopyTests {
+	
+	public static class FieldSpec {
+		public FieldSpec(String srcField, String destField) {
+			super();
+			this.srcField = srcField;
+			this.destField = destField;
+		}
+		public String srcField;
+		public String destField;
+		public String formatOptions;
+	}
 
 	public static class BeanCopier {
 
-		public boolean copy(Object dto, Object x) {
+		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
 			boolean ok = false;
 			try {
-				ok = doCopy(dto, x);
+				ok = doCopy(dto, x, fieldL);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			return ok;
 		}
-		private boolean doCopy(Object dto, Object x) throws Exception {
+		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
 			BeanMethodInvoker finder = new BeanMethodInvoker();
 			BeanMethodCache methodCacheX = finder.getAllSetters(x.getClass());
 
 			DNALLoader loader = new DNALLoader();
-			List<String> xlist = finder.getAllFields(x.getClass());
-			List<String> dtolist = finder.getAllFields(dto.getClass());
+//			List<String> xlist = finder.getAllFields(x.getClass());
+//			List<String> dtolist = finder.getAllFields(dto.getClass());
+			List<String> xlist = new ArrayList<>();
+			List<String> dtolist = new ArrayList<>();
+			for(FieldSpec field: fieldL) {
+				xlist.add(field.destField);
+				dtolist.add(field.srcField);
+			}
 
 			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
 			BeanMethodCache bmx = finder.getGetters(x.getClass(), xlist);
@@ -60,7 +77,6 @@ public class BeanCopyTests {
 				return false;
 			}
 
-			//		ReflectionViewLoader vvv = new ReflectionViewLoader("XDTOView", ds, et, fieldConverter)
 			DValue dvalDTO = loader.createFromBean(viewName, dto);
 
 			DataSet ds = loader.getDataSet();
@@ -68,14 +84,14 @@ public class BeanCopyTests {
 			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
 
 			//now convert dval into x
-			Method meth = methodCacheX.getMethod("s1");
-			//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
-			finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
-
 			ScalarConvertUtil util = new ScalarConvertUtil();
-			Class<?> paramClass = meth.getParameterTypes()[0];
-			//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
-			finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
+			for(String fieldName: xlist) {
+				Method meth = methodCacheX.getMethod(fieldName);
+				
+				Class<?> paramClass = meth.getParameterTypes()[0];
+				Object obj = util.toObject(dval.asStruct().getField(fieldName), paramClass);
+				finder.invokeSetter(methodCacheX, x, fieldName, obj);
+			}
 			return true;
 		}
 	}
@@ -257,7 +273,11 @@ public class BeanCopyTests {
 		dto.ss2 = "abc2";
 		ClassX x = new ClassX();
 		
-		boolean b = copier.copy(dto, x);
+		List<FieldSpec> fields = new ArrayList<>();
+		fields.add(new FieldSpec("ss1", "s1"));
+		fields.add(new FieldSpec("ss2", "s2"));
+		
+		boolean b = copier.copy(dto, x, fields);
 		assertEquals(true, b);
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
