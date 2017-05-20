@@ -223,6 +223,10 @@ public class BeanCopyTests {
 		}
 	}
 	
+//	public static class MyInt extends Integer {
+//		
+//	}
+	
 	@Test
 	public void testCopy() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
@@ -235,8 +239,8 @@ public class BeanCopyTests {
 		
 		ClassX x = new ClassX();
 		DNALLoader loader = new DNALLoader();
-		String dnal = "type X struct { s1 string s2 string } end";
-		String dnal2 = " type XDTO struct { ss1 string ss2 string } end";
+		String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
 		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
 		
 //        XErrorTracker.logErrors = true;
@@ -261,7 +265,11 @@ public class BeanCopyTests {
 		Method meth = methodCacheX.getMethod("s1");
 //		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
 		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
-		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
+		
+		ScalarConvertUtil util = new ScalarConvertUtil();
+		Class<?> paramClass = meth.getParameterTypes()[0];
+//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
+		finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
 	}
@@ -314,6 +322,7 @@ public class BeanCopyTests {
 		Short sn = (Short) obj;
 		assertEquals(100, sn.intValue());
 	}
+	
 	
 	private void log(String s) {
 		System.out.println(s);;

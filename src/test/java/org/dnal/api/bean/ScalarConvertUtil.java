@@ -29,6 +29,9 @@ public class ScalarConvertUtil {
 		case INTEGER:
 			if (clazz.equals(Short.class)) {
 				Integer n = (Integer) dval.getObject();
+//				  if ((i < Byte.MIN_VALUE) || (i > Byte.MAX_VALUE)) {
+//				      throw new ArithmeticException("Value is out of range");
+//				    }				
 				return n.shortValue(); //narrowing. may lose info
 			}
 			break;
