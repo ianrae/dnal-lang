@@ -8,12 +8,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.dnal.api.DataSet;
+import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
 import org.dnal.api.view.ViewLoader;
-import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
-import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 
@@ -194,6 +193,35 @@ public class BeanCopyTests {
 			this.ss2 = ss2;
 		}
 	}
+	public static class ClassY{
+		private int yy1;
+		private short yy2;
+		private List<Integer> yylist1;
+		
+		public int getYy1() {
+			return yy1;
+		}
+
+		public void setYy1(int yy1) {
+			this.yy1 = yy1;
+		}
+
+		public short getYy2() {
+			return yy2;
+		}
+
+		public void setYy2(short yy2) {
+			this.yy2 = yy2;
+		}
+
+		public List<Integer> getYylist1() {
+			return yylist1;
+		}
+
+		public void setYylist1(List<Integer> yylist1) {
+			this.yylist1 = yylist1;
+		}
+	}
 	
 	@Test
 	public void testCopy() throws Exception {
@@ -231,13 +259,61 @@ public class BeanCopyTests {
 		
 		//now convert dval into x
 		Method meth = methodCacheX.getMethod("s1");
-		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
+//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
+		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
 		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
-		
 	}
 	
+	@Test
+	public void testY() throws Exception {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCacheDTO = finder.getAllSetters(ClassY.class);
+		
+		ClassY y = new ClassY();
+		finder.invokeSetter(methodCacheDTO, y, "yy1", 15);
+		assertEquals(15, y.getYy1());
+		short sn = 23;
+		finder.invokeSetter(methodCacheDTO, y, "yy1", sn);
+		assertEquals(23, y.getYy1());
+		
+//		finder.invokeSetter(methodCacheDTO, y, "yy2", 15);
+//		assertEquals(15, y.getYy2());
+		sn = 23;
+		finder.invokeSetter(methodCacheDTO, y, "yy2", sn);
+		assertEquals(23, y.getYy2());
+		
+		List<Integer> list1 = Collections.singletonList(100);
+		finder.invokeSetter(methodCacheDTO, y, "yylist1", list1);
+		assertEquals(100, y.getYylist1().get(0).intValue());
+	}
+	
+	@Test
+	public void testConvert() throws Exception {
+		ClassX x = new ClassX();
+		DNALLoader loader = new DNALLoader();
+		String dnal = "type X struct { n1 int } end";
+		boolean b = loader.loadTypeDefinitionFromString(dnal);
+		assertEquals(true, b);
+		
+		DataSet ds = loader.getDataSet();
+		Transaction trans = ds.createTransaction();
+		DValue dval = trans.createIntBuilder().buildFrom(100);
+		assertEquals(100, dval.asInt());
+		ScalarConvertUtil util = new ScalarConvertUtil();
+		Object obj = util.toObject(dval);
+		Integer n = (Integer) obj;
+		assertEquals(100, n.intValue());
+		
+		obj = util.toObject(dval, Integer.class);
+		n = (Integer) obj;
+		assertEquals(100, n.intValue());
+		
+		obj = util.toObject(dval, Short.class);
+		Short sn = (Short) obj;
+		assertEquals(100, sn.intValue());
+	}
 	
 	private void log(String s) {
 		System.out.println(s);;
