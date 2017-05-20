@@ -22,6 +22,65 @@ import org.junit.Test;
 
 public class BeanCopyTests {
 
+	public static class BeanCopier {
+
+		public boolean copy(Object dto, Object x) {
+			boolean ok = false;
+			try {
+				ok = doCopy(dto, x);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return ok;
+		}
+		private boolean doCopy(Object dto, Object x) throws Exception {
+			BeanMethodInvoker finder = new BeanMethodInvoker();
+			BeanMethodCache methodCacheX = finder.getAllSetters(x.getClass());
+
+			DNALLoader loader = new DNALLoader();
+			List<String> xlist = finder.getAllFields(x.getClass());
+			List<String> dtolist = finder.getAllFields(dto.getClass());
+
+			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+			BeanMethodCache bmx = finder.getGetters(x.getClass(), xlist);
+			BeanMethodCache bmdto = finder.getGetters(dto.getClass(), dtolist);
+
+			String xName = x.getClass().getSimpleName();
+			String dtoName = dto.getClass().getSimpleName();
+			String viewName =  dtoName + "View";
+			String dnal = builder.buildDnalType(xName, bmx, xlist);
+			String dnal2 = builder.buildDnalType(dtoName, bmdto, dtolist);
+			String dnal3 = builder.buildDnalView(xName, viewName, bmx, bmdto, xlist, dtolist);
+			
+//			XErrorTracker.logErrors = true;
+//			Log.debugLogging = true;
+			boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
+			if (! b) {
+				return false;
+			}
+
+			//		ReflectionViewLoader vvv = new ReflectionViewLoader("XDTOView", ds, et, fieldConverter)
+			DValue dvalDTO = loader.createFromBean(viewName, dto);
+
+			DataSet ds = loader.getDataSet();
+			ViewLoader viewLoader = new ViewLoader(ds);
+			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
+
+			//now convert dval into x
+			Method meth = methodCacheX.getMethod("s1");
+			//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
+			finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
+
+			ScalarConvertUtil util = new ScalarConvertUtil();
+			Class<?> paramClass = meth.getParameterTypes()[0];
+			//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
+			finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
+			return true;
+		}
+	}
+
+
 	@Test
 	public void test() {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
@@ -145,8 +204,8 @@ public class BeanCopyTests {
 		//		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
 		//		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
 
-//		List<String> xlist = Arrays.asList("s1", "s2");
-//		List<String> dtolist = Arrays.asList("ss1", "ss2");
+		//		List<String> xlist = Arrays.asList("s1", "s2");
+		//		List<String> dtolist = Arrays.asList("ss1", "ss2");
 		List<String> xlist = finder.getAllFields(ClassX.class);
 		List<String> dtolist = finder.getAllFields(ClassXDTO.class);
 
@@ -186,6 +245,20 @@ public class BeanCopyTests {
 		Class<?> paramClass = meth.getParameterTypes()[0];
 		//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
 		finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
+		assertEquals("abc", x.getS1());
+		assertEquals("abc2", x.getS2());
+	}
+	
+	@Test
+	public void testBeanCopier() {
+		BeanCopier copier = new BeanCopier();
+		ClassXDTO dto = new ClassXDTO();
+		dto.ss1 = "abc";
+		dto.ss2 = "abc2";
+		ClassX x = new ClassX();
+		
+		boolean b = copier.copy(dto, x);
+		assertEquals(true, b);
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
 	}
