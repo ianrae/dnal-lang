@@ -21,108 +21,7 @@ import org.junit.Test;
 
 
 public class BeanCopyTests {
-	
-	public static class BeanMethodInvoker {
-		public BeanMethodCache getAllGetters(Class<?> beanClass) {
-			return doGetAllGetters(beanClass, null);
-		}
-		public BeanMethodCache getGetters(Class<?> beanClass, List<String> filter) {
-			return doGetAllGetters(beanClass, filter);
-		}
-		
-		private BeanMethodCache doGetAllGetters(Class<?> beanClass, List<String> filter) {
-			BeanMethodCache methodCache = new BeanMethodCache();
-			Method[] ar = beanClass.getMethods();
-			for(Method method: ar) {
-				String mname = method.getName();
-				if (method.getParameterCount() == 0) {
-					if (mname.equals("getClass")) {
-						continue;
-					}
 
-					if (mname.startsWith("get")) {
-						String name = mname.substring(3); //remove get
-						name = lowify(name);
-						if (wantMethod(name, filter)) {
-							methodCache.add(name, method);
-						}
-					} else if (mname.startsWith("is")) {
-						String name = mname.substring(2); //remove is
-						name = lowify(name);
-						if (wantMethod(name, filter)) {
-							methodCache.add(name, method);
-						}
-					}
-				}
-			}
-			return methodCache;
-		}
-		
-		public Object invokeGetter(BeanMethodCache methodCache, Object bean, String fieldName) throws Exception {
-			Method meth = methodCache.getMethod(fieldName);
-			if (meth == null) {
-				throw new IllegalArgumentException(String.format("missing method for: '%s'", fieldName));
-			}
-
-			Object res = null;
-			res = meth.invoke(bean);
-			return res;
-		}
-		
-		//--setters
-		public BeanMethodCache getAllSetters(Class<?> beanClass) {
-			return doGetAllSetters(beanClass, null);
-		}
-		public BeanMethodCache getSetters(Class<?> beanClass, List<String> filter) {
-			return doGetAllSetters(beanClass, filter);
-		}
-		
-		private BeanMethodCache doGetAllSetters(Class<?> beanClass, List<String> filter) {
-			BeanMethodCache methodCache = new BeanMethodCache();
-			Method[] ar = beanClass.getMethods();
-			for(Method method: ar) {
-				String mname = method.getName();
-				if (method.getParameterCount() == 1) {
-
-					if (mname.startsWith("set")) {
-						String name = mname.substring(3); //remove set
-						name = lowify(name);
-						if (wantMethod(name, filter)) {
-							methodCache.add(name, method);
-						}
-					}
-				}
-			}
-			return methodCache;
-		}
-		
-		public void invokeSetter(BeanMethodCache methodCache, Object bean, String fieldName, Object value) throws Exception {
-			Method meth = methodCache.getMethod(fieldName);
-			if (meth == null) {
-				throw new IllegalArgumentException(String.format("missing method for: '%s'", fieldName));
-			}
-
-			meth.invoke(bean, value);
-		}
-		
-
-		private boolean wantMethod(String name, List<String> filter) {
-			if (filter == null) {
-				return true;
-			}
-			return filter.contains(name);
-		}
-
-		private String lowify(String s) {
-			if (s.isEmpty()) {
-				return s;
-			} else {
-				String s1 = s.substring(0, 1).toLowerCase() + s.substring(1);
-				return s1;
-			}
-		}
-	}
-	
 	@Test
 	public void test() {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
@@ -138,32 +37,32 @@ public class BeanCopyTests {
 		assertEquals(1, methodCache.size());
 		assertNotNull(methodCache.getMethod("nval"));
 	}
-	
+
 	@Test
 	public void testInvokeGetter() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		List<String> filter = Collections.singletonList("nval");
 		BeanMethodCache methodCache = finder.getGetters(ReflectionBeanLoaderTest.ClassA.class, filter);
-		
+
 		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
 		beanA.setNval(44);
 		Object obj = finder.invokeGetter(methodCache, beanA, "nval");
 		Integer nval = (Integer) obj;
 		assertEquals(44, nval.intValue());
 	}
-	
+
 	@Test
 	public void testInvokeSetter() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		List<String> filter = Collections.singletonList("nval");
 		BeanMethodCache methodCache = finder.getSetters(ReflectionBeanLoaderTest.ClassA.class, filter);
-		
+
 		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
 		beanA.setNval(44);
 		finder.invokeSetter(methodCache, beanA, "nval", Integer.valueOf(55));
 		assertEquals(55, beanA.getNval());
 	}
-	
+
 	//================================
 	public static class ClassX {
 		private String s1;
@@ -201,7 +100,7 @@ public class BeanCopyTests {
 		private int yy1;
 		private short yy2;
 		private List<Integer> yylist1;
-		
+
 		public int getYy1() {
 			return yy1;
 		}
@@ -226,96 +125,50 @@ public class BeanCopyTests {
 			this.yylist1 = yylist1;
 		}
 	}
-	
-//	public static class MyInt extends Integer {  not allowed
-//		
-//	}
-	
-	public static class BeanToDTypeBuilder {
-		
-		public String buildDnalType(String typeName, BeanMethodCache methodCache, List<String> xlist) {
-//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
-			StringBuilder sb = new StringBuilder();
-			sb.append("type ");
-			sb.append(typeName);
-			sb.append(" struct { ");
-//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
-			for(String fieldName: xlist) {
-				String dnalTypeName = getDnalTypeName(methodCache, fieldName);
-				sb.append(" ");
-				sb.append(fieldName);
-				sb.append(" ");
-				sb.append(dnalTypeName);
-				sb.append(" optional");
-			}
-			sb.append(" } end");
-			return sb.toString();
-		}
-		public String buildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist) {
-//			String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("inview %s <- %s {", typeName, viewName));
-			for(int i = 0; i < xlist.size(); i++) {
-				String fieldName = xlist.get(i);
-				String dtoName = dtolist.get(i);
-				String dnalTypeName = getDnalTypeName(methodCache1, fieldName);
-				String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
-				sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
-			}
-			sb.append(" } end");
-			return sb.toString();
-		}
-		
-		private String getDnalTypeName(BeanMethodCache methodCache, String fieldName) {
-			Method meth = methodCache.getMethod(fieldName);
-			Class<?> paramClass = meth.getReturnType();
-			String dnalTypeName = convert(paramClass);
-			return dnalTypeName;
-		}
-		
 
-		private String convert(Class<?> paramClass) {
-			return "string";
-		}
-	}
-	
+	//	public static class MyInt extends Integer {  not allowed
+	//		
+	//	}
+
 	@Test
 	public void testCopy() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		BeanMethodCache methodCacheX = finder.getAllSetters(ClassX.class);
-		
+
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";
-		
+
 		ClassX x = new ClassX();
 		DNALLoader loader = new DNALLoader();
-//		String dnal = "type X struct { s1 string optional s2 string optional  } end";
-//		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
-//		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
-		
-		List<String> xlist = Arrays.asList("s1", "s2");
-		List<String> dtolist = Arrays.asList("ss1", "ss2");
-		
+		//		String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		//		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
+		//		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
+
+//		List<String> xlist = Arrays.asList("s1", "s2");
+//		List<String> dtolist = Arrays.asList("ss1", "ss2");
+		List<String> xlist = finder.getAllFields(ClassX.class);
+		List<String> dtolist = finder.getAllFields(ClassXDTO.class);
+
 		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
 		BeanMethodCache bmx = finder.getGetters(ClassX.class, xlist);
 		BeanMethodCache bmdto = finder.getGetters(ClassXDTO.class, dtolist);
-		
+
 		String dnal = builder.buildDnalType("X", bmx, xlist);
 		String dnal2 = builder.buildDnalType("XDTO", bmdto, dtolist);
 		String dnal3 = builder.buildDnalView("X", "XDTOView", bmx, bmdto, xlist, dtolist);
-		
-		
-        XErrorTracker.logErrors = true;
-        Log.debugLogging = true;
+
+
+		XErrorTracker.logErrors = true;
+		Log.debugLogging = true;
 		boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
 		assertEquals(true, b);
-		
-//		ReflectionViewLoader vvv = new ReflectionViewLoader("XDTOView", ds, et, fieldConverter)
+
+		//		ReflectionViewLoader vvv = new ReflectionViewLoader("XDTOView", ds, et, fieldConverter)
 		DValue dvalDTO = loader.createFromBean("XDTOView", dto);
 		assertEquals("abc", dvalDTO.asStruct().getField("ss1").asString());
 		assertEquals("abc2", dvalDTO.asStruct().getField("ss2").asString());
-		
+
 		DataSet ds = loader.getDataSet();
 		ViewLoader viewLoader = new ViewLoader(ds);
 		DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType("X"));
@@ -323,43 +176,43 @@ public class BeanCopyTests {
 		assertEquals("X", dval.getType().getName());
 		assertEquals("abc", dval.asStruct().getField("s1").asString());
 		assertEquals("abc2", dval.asStruct().getField("s2").asString());
-		
+
 		//now convert dval into x
 		Method meth = methodCacheX.getMethod("s1");
-//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
+		//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
 		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
-		
+
 		ScalarConvertUtil util = new ScalarConvertUtil();
 		Class<?> paramClass = meth.getParameterTypes()[0];
-//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
+		//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
 		finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
 	}
-	
+
 	@Test
 	public void testY() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		BeanMethodCache methodCacheDTO = finder.getAllSetters(ClassY.class);
-		
+
 		ClassY y = new ClassY();
 		finder.invokeSetter(methodCacheDTO, y, "yy1", 15);
 		assertEquals(15, y.getYy1());
 		short sn = 23;
 		finder.invokeSetter(methodCacheDTO, y, "yy1", sn);
 		assertEquals(23, y.getYy1());
-		
-//		finder.invokeSetter(methodCacheDTO, y, "yy2", 15);
-//		assertEquals(15, y.getYy2());
+
+		//		finder.invokeSetter(methodCacheDTO, y, "yy2", 15);
+		//		assertEquals(15, y.getYy2());
 		sn = 23;
 		finder.invokeSetter(methodCacheDTO, y, "yy2", sn);
 		assertEquals(23, y.getYy2());
-		
+
 		List<Integer> list1 = Collections.singletonList(100);
 		finder.invokeSetter(methodCacheDTO, y, "yylist1", list1);
 		assertEquals(100, y.getYylist1().get(0).intValue());
 	}
-	
+
 	@Test
 	public void testConvert() throws Exception {
 		ClassX x = new ClassX();
@@ -367,7 +220,7 @@ public class BeanCopyTests {
 		String dnal = "type X struct { n1 int } end";
 		boolean b = loader.loadTypeDefinitionFromString(dnal);
 		assertEquals(true, b);
-		
+
 		DataSet ds = loader.getDataSet();
 		Transaction trans = ds.createTransaction();
 		DValue dval = trans.createIntBuilder().buildFrom(100);
@@ -376,22 +229,22 @@ public class BeanCopyTests {
 		Object obj = util.toObject(dval);
 		Integer n = (Integer) obj;
 		assertEquals(100, n.intValue());
-		
+
 		obj = util.toObject(dval, Integer.class);
 		n = (Integer) obj;
 		assertEquals(100, n.intValue());
-		
+
 		obj = util.toObject(dval, Short.class);
 		Short sn = (Short) obj;
 		assertEquals(100, sn.intValue());
 	}
-	
+
 	@Test
 	public void testConvertI()  {
 		assertEquals(false, Long.class.isAssignableFrom(Integer.class));
 		assertEquals(false, Integer.class.isAssignableFrom(Long.class));
 	}	
-	
+
 	@Test
 	public void testBeanToDTypeBuilder() {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
@@ -401,8 +254,8 @@ public class BeanCopyTests {
 		String dnal = builder.buildDnalType("X", methodCache, xlist);
 		assertEquals("type X struct {  s1 string optional s2 string optional } end", dnal);
 	}
-	
-	
+
+
 	private void log(String s) {
 		System.out.println(s);;
 	}
