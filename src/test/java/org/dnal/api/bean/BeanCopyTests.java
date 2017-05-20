@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +12,11 @@ import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
 import org.dnal.api.view.ViewLoader;
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DStructType;
+import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 
@@ -223,15 +227,62 @@ public class BeanCopyTests {
 		}
 	}
 	
-//	public static class MyInt extends Integer {
+//	public static class MyInt extends Integer {  not allowed
 //		
 //	}
+	
+	public static class BeanToDTypeBuilder {
+		
+		public String buildDnalType(String typeName, BeanMethodCache methodCache, List<String> xlist) {
+//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+			StringBuilder sb = new StringBuilder();
+			sb.append("type ");
+			sb.append(typeName);
+			sb.append(" struct { ");
+//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+			for(String fieldName: xlist) {
+				String dnalTypeName = getDnalTypeName(methodCache, fieldName);
+				sb.append(" ");
+				sb.append(fieldName);
+				sb.append(" ");
+				sb.append(dnalTypeName);
+				sb.append(" optional");
+			}
+			sb.append(" } end");
+			return sb.toString();
+		}
+		public String buildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist) {
+//			String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("inview %s <- %s {", typeName, viewName));
+			for(int i = 0; i < xlist.size(); i++) {
+				String fieldName = xlist.get(i);
+				String dtoName = dtolist.get(i);
+				String dnalTypeName = getDnalTypeName(methodCache1, fieldName);
+				String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
+				sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
+			}
+			sb.append(" } end");
+			return sb.toString();
+		}
+		
+		private String getDnalTypeName(BeanMethodCache methodCache, String fieldName) {
+			Method meth = methodCache.getMethod(fieldName);
+			Class<?> paramClass = meth.getReturnType();
+			String dnalTypeName = convert(paramClass);
+			return dnalTypeName;
+		}
+		
+
+		private String convert(Class<?> paramClass) {
+			return "string";
+		}
+	}
 	
 	@Test
 	public void testCopy() throws Exception {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		BeanMethodCache methodCacheX = finder.getAllSetters(ClassX.class);
-		BeanMethodCache methodCacheDTO = finder.getAllSetters(ClassXDTO.class);
 		
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
@@ -239,13 +290,25 @@ public class BeanCopyTests {
 		
 		ClassX x = new ClassX();
 		DNALLoader loader = new DNALLoader();
-		String dnal = "type X struct { s1 string optional s2 string optional  } end";
-		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
-		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
+//		String dnal = "type X struct { s1 string optional s2 string optional  } end";
+//		String dnal2 = " type XDTO struct { ss1 string optional ss2 string optional } end";
+//		String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
 		
-//        XErrorTracker.logErrors = true;
-//        Log.debugLogging = true;
-		boolean b = loader.loadTypeDefinitionFromString(dnal + dnal2 + dnal3);
+		List<String> xlist = Arrays.asList("s1", "s2");
+		List<String> dtolist = Arrays.asList("ss1", "ss2");
+		
+		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+		BeanMethodCache bmx = finder.getGetters(ClassX.class, xlist);
+		BeanMethodCache bmdto = finder.getGetters(ClassXDTO.class, dtolist);
+		
+		String dnal = builder.buildDnalType("X", bmx, xlist);
+		String dnal2 = builder.buildDnalType("XDTO", bmdto, dtolist);
+		String dnal3 = builder.buildDnalView("X", "XDTOView", bmx, bmdto, xlist, dtolist);
+		
+		
+        XErrorTracker.logErrors = true;
+        Log.debugLogging = true;
+		boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
 		assertEquals(true, b);
 		
 //		ReflectionViewLoader vvv = new ReflectionViewLoader("XDTOView", ds, et, fieldConverter)
@@ -328,6 +391,18 @@ public class BeanCopyTests {
 		assertEquals(false, Long.class.isAssignableFrom(Integer.class));
 		assertEquals(false, Integer.class.isAssignableFrom(Long.class));
 	}	
+	
+	@Test
+	public void testBeanToDTypeBuilder() {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCache = finder.getAllGetters(ClassX.class);
+		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+		List<String> xlist = Arrays.asList("s1", "s2");
+		String dnal = builder.buildDnalType("X", methodCache, xlist);
+		assertEquals("type X struct {  s1 string optional s2 string optional } end", dnal);
+	}
+	
+	
 	private void log(String s) {
 		System.out.println(s);;
 	}
