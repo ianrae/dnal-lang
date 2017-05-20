@@ -14,4 +14,7 @@ public class BeanMethodCache {
     public Method getMethod(String fieldName) {
         return map.get(fieldName);
     }
+    public int size() {
+    	return map.size();
+    }
 }
