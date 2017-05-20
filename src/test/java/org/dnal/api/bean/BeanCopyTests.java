@@ -323,7 +323,11 @@ public class BeanCopyTests {
 		assertEquals(100, sn.intValue());
 	}
 	
-	
+	@Test
+	public void testConvertI()  {
+		assertEquals(false, Long.class.isAssignableFrom(Integer.class));
+		assertEquals(false, Integer.class.isAssignableFrom(Long.class));
+	}	
 	private void log(String s) {
 		System.out.println(s);;
 	}

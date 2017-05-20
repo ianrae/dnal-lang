@@ -1,5 +1,6 @@
 package org.dnal.api.bean;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import org.dnal.api.Transaction;
@@ -12,10 +13,7 @@ import org.dnal.core.DValue;
  *
  */
 public class ScalarConvertUtil {
-	
-	public String toString(DValue dval) {
-		return dval.asString();
-	}
+
 	public Object toObject(DValue dval) {
 		return dval.getObject();
 	}
@@ -27,24 +25,35 @@ public class ScalarConvertUtil {
 		//can't convert. assume dval is not null
 		switch(dval.getType().getShape()) {
 		case INTEGER:
-			if (clazz.equals(Short.class)) {
-				Integer n = (Integer) dval.getObject();
-//				  if ((i < Byte.MIN_VALUE) || (i > Byte.MAX_VALUE)) {
-//				      throw new ArithmeticException("Value is out of range");
-//				    }				
-				return n.shortValue(); //narrowing. may lose info
+			Integer nInt = (Integer) dval.getObject();
+			if (isShort(nInt, clazz)) {
+				return nInt.shortValue(); //narrowing. 
+			} else if (isByte(nInt, clazz)) {
+				return nInt.byteValue(); //narrowing. 
+			} else if (isLong(nInt, clazz)) {
+				return Long.valueOf(nInt.longValue());
 			}
 			break;
 		case LONG:
-			if (clazz.equals(Short.class)) {
-				Long n = (Long) dval.getObject();
-				return n.shortValue();
+			Long nLong = (Long) dval.getObject();
+			if (isShort(nLong, clazz)) {
+				return nLong.shortValue(); //narrowing. 
+			} else if (isByte(nLong, clazz)) {
+				return nLong.byteValue();
 			}
 			break;
 		case NUMBER:
-			if (clazz.equals(Short.class)) {
-				Double n = (Double) dval.getObject();
-				return n.shortValue();
+			Double nDouble = (Double) dval.getObject();
+			if (isFractional(nDouble)) {
+
+			} else {
+				if (isShort(nDouble.intValue(), clazz)) {
+					return nDouble.shortValue(); //narrowing. 
+				} else if (isByte(nDouble.intValue(), clazz)) {
+					return nDouble.byteValue();
+				} else if (isLong(nDouble.longValue(), clazz)) {
+					return Long.valueOf(nDouble.longValue());
+				}
 			}
 			break;
 		case BOOLEAN:
@@ -62,48 +71,78 @@ public class ScalarConvertUtil {
 		default:
 			break;
 		}
-		
+
 		return null;
 	}
-	
+
+	private boolean isFractional(Double dd) {
+		BigDecimal bd = new BigDecimal(dd);
+		boolean ok = false;
+		try {
+			bd.intValueExact();
+			ok = true;
+		} catch (ArithmeticException e) {
+		}
+		return ok;
+	}
+
+	private boolean isByte(Number num, Class<?> clazz) {
+		if (clazz.equals(Byte.class)) {
+			int n = num.intValue();
+			if ((n < Byte.MIN_VALUE) || (n > Byte.MAX_VALUE)) {
+				return false;
+			}				
+			return true;
+		}
+		return false;
+	}
+	private boolean isShort(Number num, Class<?> clazz) {
+		if (clazz.equals(Short.class)) {
+			int n = num.intValue();
+			if ((n < Short.MIN_VALUE) || (n > Short.MAX_VALUE)) {
+				return false;
+			}				
+			return true;
+		}
+		return false;
+	}
+	private boolean isLong(Number num, Class<?> clazz) {
+		if (clazz.equals(Long.class)) {
+			int n = num.intValue();
+			if ((n < Long.MIN_VALUE) || (n > Long.MAX_VALUE)) {
+				return false;
+			}				
+			return true;
+		}
+		return false;
+	}
 	//========= from conversion ===========
-	public DValue fromString(String input, DType type, Transaction trans) {
-		switch(type.getShape()) {
-		case INTEGER:
-			return trans.createIntBuilder(type).buildFromString(input);
-		case LONG:
-			return trans.createLongBuilder(type).buildFromString(input);
-		case NUMBER:
-			return trans.createNumberBuilder(type).buildFromString(input);
-		case BOOLEAN:
-			return trans.createBooleanBuilder(type).buildFromString(input);
-		case STRING:
-			return trans.createStringBuilder(type).buildFromString(input);
-		case DATE:
-			return trans.createDateBuilder(type).buildFromString(input);
-		case LIST:
-			break;
-		case STRUCT:
-			break;
-		case ENUM:
-			return trans.createEnumBuilder(type).buildFromString(input);
-		default:
-			break;
-		}
-		
-		return null;
-	}
-	
+	//TODO: much more to do here
+
 	public DValue fromObject(Object obj, DType type, Transaction trans) {
+		final Class<?> clazz = obj.getClass();
+		
 		switch(type.getShape()) {
 		case INTEGER:
-			if (Integer.class.isAssignableFrom(obj.getClass())) {
+			if (Integer.class.isAssignableFrom(clazz)) {
 				return trans.createIntBuilder(type).buildFrom((Integer) obj);
+			} else if (Byte.class.equals(clazz)) {
+				Byte bb = (Byte) obj;
+				return trans.createIntBuilder(type).buildFrom(bb.intValue());
+			} else if (Short.class.equals(clazz)) {
+				Short bb = (Short) obj;
+				return trans.createIntBuilder(type).buildFrom(bb.intValue());
 			}
 			break;
 		case LONG:
 			if (Long.class.isAssignableFrom(obj.getClass())) {
 				return trans.createLongBuilder(type).buildFrom((Long) obj);
+			} else if (Byte.class.equals(clazz)) {
+				Byte bb = (Byte) obj;
+				return trans.createLongBuilder(type).buildFrom(bb.longValue());
+			} else if (Short.class.equals(clazz)) {
+				Short bb = (Short) obj;
+				return trans.createLongBuilder(type).buildFrom(bb.longValue());
 			}
 			break;
 		case NUMBER:
@@ -137,7 +176,7 @@ public class ScalarConvertUtil {
 		default:
 			break;
 		}
-		
+
 		return null;
 	}
 }
