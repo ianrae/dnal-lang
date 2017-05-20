@@ -139,6 +139,11 @@ public class TransactionImpl implements Transaction {
         DStructType structType = (DStructType) registry.getType(typeName);
         return structType;
     }
+    @Override
+    public DViewType getViewType(String viewName) {
+    	DViewType viewType = (DViewType) registry.getViewType(viewName);
+        return viewType;
+    }
 
     @Override
     public StructBuilder createStructBuilder(DStructType structType) {

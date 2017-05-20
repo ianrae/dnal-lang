@@ -24,7 +24,7 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 
 	private Transaction trans;
 	private DataSet ds;
-	private String typeName;
+	private String typeName; //type or view
 	private BeanMethodBuilder beanMethodBuilder;
     private XErrorTracker et;
     private String currentFieldName; //for logging only
@@ -59,15 +59,22 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 	}
 
 	private void buildMethodCacheIfNeeded(Object bean) {
-		DStructType dtype = trans.getStructType(typeName);
+		DStructType dtype = getTypeName();
 		beanMethodBuilder.buildMethodCacheIfNeeded(bean, dtype);
+	}
+	private DStructType getTypeName() {
+		DStructType dtype = trans.getStructType(typeName);
+		if (dtype == null) {
+			dtype = trans.getViewType(typeName);
+		}
+		return dtype;
 	}
 
 	@Override
 	public DValue createDValue(Object bean) {
 		this.trans = ds.createTransaction();
 		buildMethodCacheIfNeeded(bean);
-		DStructType dtype = trans.getStructType(typeName);
+		DStructType dtype = getTypeName();
 		StructBuilder builder = trans.createStructBuilder(dtype);
 		List<TypePair> allFields = dtype.getAllFields();
 		for(TypePair pair: allFields) {
