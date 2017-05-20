@@ -14,8 +14,10 @@ import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
 import org.dnal.api.view.ViewLoader;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
 
@@ -34,14 +36,19 @@ public class BeanCopyTests {
 	}
 
 	public static class BeanCopier {
+		private DNALLoader loader;
+		
+		public BeanCopier() {
+			loader = new DNALLoader();
+			loader.initCompiler();
+		}
 
 		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
 			boolean ok = false;
 			try {
 				ok = doCopy(dto, x, fieldL);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				addError("Exception:" + e.getMessage());
 			}
 			return ok;
 		}
@@ -49,14 +56,26 @@ public class BeanCopyTests {
 			BeanMethodInvoker finder = new BeanMethodInvoker();
 			BeanMethodCache methodCacheX = finder.getAllSetters(x.getClass());
 
-			DNALLoader loader = new DNALLoader();
-//			List<String> xlist = finder.getAllFields(x.getClass());
-//			List<String> dtolist = finder.getAllFields(dto.getClass());
+			List<String> allDestFields = finder.getAllFields(x.getClass());
+			List<String> allSourceFields = finder.getAllFields(dto.getClass());
 			List<String> xlist = new ArrayList<>();
 			List<String> dtolist = new ArrayList<>();
 			for(FieldSpec field: fieldL) {
-				xlist.add(field.destField);
-				dtolist.add(field.srcField);
+				if (allSourceFields.contains(field.srcField)) {
+					dtolist.add(field.srcField);
+				} else {
+					addError(String.format("src can't find field '%s'", field.srcField));
+				}
+
+				if (allDestFields.contains(field.destField)) {
+					xlist.add(field.destField);
+				} else {
+					addError(String.format("dest can't find field '%s'", field.destField));
+				}
+			}
+			
+			if (areErrors()) {
+				return false;
 			}
 
 			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
@@ -78,10 +97,16 @@ public class BeanCopyTests {
 			}
 
 			DValue dvalDTO = loader.createFromBean(viewName, dto);
+			if (dvalDTO == null) {
+				return false;
+			}
 
 			DataSet ds = loader.getDataSet();
 			ViewLoader viewLoader = new ViewLoader(ds);
 			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
+			if (dval == null) {
+				return false;
+			}
 
 			//now convert dval into x
 			ScalarConvertUtil util = new ScalarConvertUtil();
@@ -89,10 +114,27 @@ public class BeanCopyTests {
 				Method meth = methodCacheX.getMethod(fieldName);
 				
 				Class<?> paramClass = meth.getParameterTypes()[0];
-				Object obj = util.toObject(dval.asStruct().getField(fieldName), paramClass);
-				finder.invokeSetter(methodCacheX, x, fieldName, obj);
+				DValue inner = dval.asStruct().getField(fieldName);
+				if (inner != null) {
+					Object obj = util.toObject(inner, paramClass);
+					if (obj == null) {
+						return false;
+					}
+					finder.invokeSetter(methodCacheX, x, fieldName, obj);
+				}
 			}
 			return true;
+		}
+		
+		private boolean areErrors() {
+			return loader.getErrorTracker().areErrors();
+		}
+
+		private void addError(String message) {
+			NewErrorMessage nem = new NewErrorMessage();
+			nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
+			nem.setMessage(message);
+			loader.getErrorTracker().addError(nem);
 		}
 	}
 
@@ -281,6 +323,31 @@ public class BeanCopyTests {
 		assertEquals(true, b);
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
+	}
+	
+	@Test
+	public void testBeanCopierPerf() {
+		BeanCopier copier = new BeanCopier();
+		ClassXDTO dto = new ClassXDTO();
+		dto.ss1 = "abc";
+		dto.ss2 = "abc2";
+		List<FieldSpec> fields = new ArrayList<>();
+		fields.add(new FieldSpec("ss1", "s1"));
+		fields.add(new FieldSpec("ss2", "s2"));
+		
+		PerfTimer perf = new PerfTimer();
+		perf.startTimer("a");
+		int n = 1000; //7899
+		for(int i = 0; i < n; i++) {
+			ClassX x = new ClassX();
+			boolean b = copier.copy(dto, x, fields);
+			assertEquals(true, b);
+			assertEquals("abc", x.getS1());
+			assertEquals("abc2", x.getS2());
+		}
+		perf.endTimer("a");
+		perf.dump();
+		
 	}
 
 	@Test
