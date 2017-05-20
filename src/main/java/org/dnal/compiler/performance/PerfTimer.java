@@ -21,6 +21,7 @@ public class PerfTimer {
         mark.endTime = new Date();
         finishedL.add(mark);
     }
+    
     //yyyy-MM-dd'T'HH:mm:ss.SSSZ;
     
     public void dump() {
@@ -31,4 +32,13 @@ public class PerfTimer {
                     
         }
     }
-}
+    
+    public long calcDuration(String name) {
+        for(PerfMark mark: finishedL) {
+        	if (mark.name.equals(name)) {
+        		long duration = mark.endTime.getTime() - mark.startTime.getTime();
+        		return duration;
+        	}
+        }
+        return 0L;
+    }}

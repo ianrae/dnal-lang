@@ -14,6 +14,7 @@ import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
 import org.dnal.api.view.ViewLoader;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.performance.PerfContinuingTimer;
 import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
@@ -37,6 +38,19 @@ public class BeanCopyTests {
 
 	public static class BeanCopier {
 		private DNALLoader loader;
+		private PerfTimer perfTimer;
+		public PerfContinuingTimer pctA = new PerfContinuingTimer();
+		public PerfContinuingTimer pctB = new PerfContinuingTimer();
+		public PerfContinuingTimer pctC = new PerfContinuingTimer();
+		public PerfContinuingTimer pctD = new PerfContinuingTimer();
+		
+		private BeanMethodCache methodCacheX;
+		private List<String> allDestFields;
+		private List<String> allSourceFields;
+		private BeanMethodCache bmx;
+		private BeanMethodCache bmdto;
+		private boolean isPrepared;
+		
 		
 		public BeanCopier() {
 			loader = new DNALLoader();
@@ -46,18 +60,29 @@ public class BeanCopyTests {
 		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
 			boolean ok = false;
 			try {
+				if (! isPrepared) {
+					if (! prepare(dto, x, fieldL)) {
+						return false;
+					}
+				}
 				ok = doCopy(dto, x, fieldL);
 			} catch (Exception e) {
 				addError("Exception:" + e.getMessage());
 			}
 			return ok;
 		}
-		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+		
+		private void startPerf(String name) {
+		}
+		private void endPerf(String name) {
+		}
+		private boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+			startPerf("prepare");
 			BeanMethodInvoker finder = new BeanMethodInvoker();
-			BeanMethodCache methodCacheX = finder.getAllSetters(x.getClass());
+			methodCacheX = finder.getAllSetters(x.getClass());
 
-			List<String> allDestFields = finder.getAllFields(x.getClass());
-			List<String> allSourceFields = finder.getAllFields(dto.getClass());
+			allDestFields = finder.getAllFields(x.getClass());
+			allSourceFields = finder.getAllFields(dto.getClass());
 			List<String> xlist = new ArrayList<>();
 			List<String> dtolist = new ArrayList<>();
 			for(FieldSpec field: fieldL) {
@@ -79,8 +104,8 @@ public class BeanCopyTests {
 			}
 
 			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
-			BeanMethodCache bmx = finder.getGetters(x.getClass(), xlist);
-			BeanMethodCache bmdto = finder.getGetters(dto.getClass(), dtolist);
+			bmx = finder.getGetters(x.getClass(), xlist);
+			bmdto = finder.getGetters(dto.getClass(), dtolist);
 
 			String xName = x.getClass().getSimpleName();
 			String dtoName = dto.getClass().getSimpleName();
@@ -95,20 +120,59 @@ public class BeanCopyTests {
 			if (! b) {
 				return false;
 			}
+			isPrepared = true;
+			endPerf("prepare");
+			
+			return true;
+		}
+		
+		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+			BeanMethodInvoker finder = new BeanMethodInvoker();
 
+			pctA.start();
+			List<String> xlist = new ArrayList<>();
+			List<String> dtolist = new ArrayList<>();
+			for(FieldSpec field: fieldL) {
+				if (allSourceFields.contains(field.srcField)) {
+					dtolist.add(field.srcField);
+				} else {
+					addError(String.format("src can't find field '%s'", field.srcField));
+				}
+
+				if (allDestFields.contains(field.destField)) {
+					xlist.add(field.destField);
+				} else {
+					addError(String.format("dest can't find field '%s'", field.destField));
+				}
+			}
+			pctA.end();
+			
+			if (areErrors()) {
+				return false;
+			}
+
+			String xName = x.getClass().getSimpleName();
+			String dtoName = dto.getClass().getSimpleName();
+			String viewName =  dtoName + "View";
+			
+			pctB.start();
 			DValue dvalDTO = loader.createFromBean(viewName, dto);
 			if (dvalDTO == null) {
 				return false;
 			}
+			pctB.end();
 
+			pctC.start();
 			DataSet ds = loader.getDataSet();
 			ViewLoader viewLoader = new ViewLoader(ds);
 			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
 			if (dval == null) {
 				return false;
 			}
+			pctC.end();
 
 			//now convert dval into x
+			pctD.start();
 			ScalarConvertUtil util = new ScalarConvertUtil();
 			for(String fieldName: xlist) {
 				Method meth = methodCacheX.getMethod(fieldName);
@@ -123,6 +187,7 @@ public class BeanCopyTests {
 					finder.invokeSetter(methodCacheX, x, fieldName, obj);
 				}
 			}
+			pctD.end();
 			return true;
 		}
 		
@@ -135,6 +200,10 @@ public class BeanCopyTests {
 			nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
 			nem.setMessage(message);
 			loader.getErrorTracker().addError(nem);
+		}
+
+		public void setPerfTimer(PerfTimer perfTimer) {
+			this.perfTimer = perfTimer;
 		}
 	}
 
@@ -336,8 +405,10 @@ public class BeanCopyTests {
 		fields.add(new FieldSpec("ss2", "s2"));
 		
 		PerfTimer perf = new PerfTimer();
+		copier.setPerfTimer(perf);
 		perf.startTimer("a");
-		int n = 1000; //7899
+		int n = 1000; //1000; //7899
+		//with perf 800. so 0.8 msec per run
 		for(int i = 0; i < n; i++) {
 			ClassX x = new ClassX();
 			boolean b = copier.copy(dto, x, fields);
@@ -347,6 +418,10 @@ public class BeanCopyTests {
 		}
 		perf.endTimer("a");
 		perf.dump();
+		log(String.format("pctA %d", copier.pctA.getDuration()));
+		log(String.format("pctB %d", copier.pctB.getDuration()));
+		log(String.format("pctC %d", copier.pctC.getDuration()));
+		log(String.format("pctD %d", copier.pctD.getDuration()));
 		
 	}
 
