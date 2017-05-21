@@ -39,7 +39,11 @@ public class BeanToDTypeBuilder {
 	}
 	
 	private String convert(Class<?> clazz) {
-		return map.get(clazz);
+		String dnalType = map.get(clazz);
+		if (dnalType == null) {
+			et.addParsingError(String.format("unsupported type '%s'", clazz.getSimpleName()));
+		}
+		return dnalType;
 	}
 	
 
@@ -61,17 +65,25 @@ public class BeanToDTypeBuilder {
 		sb.append(" } end");
 		return sb.toString();
 	}
-	public String buildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist) {
+	public String buildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist, List<FieldSpec> fieldL) {
 		//			String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("inview %s <- %s {", typeName, viewName));
-		for(int i = 0; i < xlist.size(); i++) {
-			String fieldName = xlist.get(i);
-			String dtoName = dtolist.get(i);
+		
+		for(FieldSpec spec: fieldL) {
+			String fieldName = spec.destField;
+			String dtoName = spec.srcField;
 			String dnalTypeName = getDnalTypeName(methodCache1, fieldName);
 			String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
 			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
 		}
+//		for(int i = 0; i < xlist.size(); i++) {
+//			String fieldName = xlist.get(i);
+//			String dtoName = dtolist.get(i);
+//			String dnalTypeName = getDnalTypeName(methodCache1, fieldName);
+//			String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
+//			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
+//		}
 		sb.append(" } end");
 		return sb.toString();
 	}

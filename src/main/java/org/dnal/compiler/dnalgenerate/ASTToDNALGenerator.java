@@ -463,7 +463,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		Inner inner = tb.start(viewExp.viewName.name());
 
 		for(ViewMemberExp membExp : viewExp.memberL) {
-			log(" vm " + membExp.strValue());
+//			log(" vm " + membExp.strValue());
 
 			switch(TypeInfo.typeOf(membExp.rightType)) {
 			case INT:

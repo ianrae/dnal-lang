@@ -102,6 +102,12 @@ public class IntegerTests {
 		public void setBbigd1(BigDecimal bbigd1) {
 			this.bbigd1 = bbigd1;
 		}
+		public Short getSh2() {
+			return sh2;
+		}
+		public void setSh2(Short sh2) {
+			this.sh2 = sh2;
+		}
 	}
 
 
@@ -135,6 +141,19 @@ public class IntegerTests {
 		assertEquals(0, x.sh1);
 		assertEquals(null, x.sh2);
 	}
+	@Test
+	public void test3bDuplicate() {
+		dto.sh2 = Short.valueOf((short) 111);
+		List<FieldSpec> fields = new ArrayList<>();
+		fields.add(new FieldSpec("sh2", "sh1"));
+		fields.add(new FieldSpec("sh2", "sh2"));
+		x = new ClassX();
+		chkCopy(dto, x, fields);
+		assertEquals(111, x.sh1);
+		assertEquals(111, x.sh2.shortValue());
+	}
+	
+	
 	@Test
 	public void test3IntToStr() {
 		List<FieldSpec> fields = new ArrayList<>();

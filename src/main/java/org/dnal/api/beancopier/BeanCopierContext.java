@@ -50,15 +50,20 @@ public class BeanCopierContext {
 		allSourceFields = finder.getAllFields(sourceObj.getClass());
 		List<String> destFieldList = new ArrayList<>();
 		List<String> sourceFieldList = new ArrayList<>();
+		//only the needed fields, and avoid duplicates
 		for(FieldSpec field: fieldL) {
 			if (allSourceFields.contains(field.srcField)) {
-				sourceFieldList.add(field.srcField);
+				if (! sourceFieldList.contains(field.srcField)) {
+					sourceFieldList.add(field.srcField);
+				}
 			} else {
 				addError(String.format("src can't find field '%s'", field.srcField));
 			}
 
 			if (allDestFields.contains(field.destField)) {
-				destFieldList.add(field.destField);
+				if (! destFieldList.contains(field.destField)) {
+					destFieldList.add(field.destField);
+				}
 			} else {
 				addError(String.format("dest can't find field '%s'", field.destField));
 			}
@@ -77,8 +82,12 @@ public class BeanCopierContext {
 		String viewName =  dtoName + "View";
 		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
 		String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
-		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList);
+		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
 
+		if (areErrors()) {
+			return false;
+		}
+		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
 		boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
