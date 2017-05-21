@@ -12,6 +12,8 @@ import org.dnal.core.NewErrorMessage;
 
 public class BeanCopier {
 	public BeanCopierContext bctx;
+	
+	
 
 	public boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
 		boolean ok = false;
@@ -111,5 +113,18 @@ public class BeanCopier {
 		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
 		nem.setMessage(message);
 		bctx.loader.getErrorTracker().addError(nem);
+	}
+	
+	public List<NewErrorMessage> getErrors() {
+		List<NewErrorMessage> list = new ArrayList<>();
+		if (bctx != null) {
+			list = bctx.loader.getErrorTracker().getErrL();
+		}
+		return list;
+	}
+	public void dumpErrors() {
+		if (bctx != null) {
+			bctx.loader.getErrorTracker().dumpErrors();
+		}
 	}
 }

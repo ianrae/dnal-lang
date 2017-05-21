@@ -26,7 +26,9 @@ public class ScalarConvertUtil {
 		switch(dval.getType().getShape()) {
 		case INTEGER:
 			Integer nInt = (Integer) dval.getObject();
-			if (isShort(nInt, clazz)) {
+			if (clazz.equals(int.class)) {
+				return nInt;
+			} else if (isShort(nInt, clazz)) {
 				return nInt.shortValue(); //narrowing. 
 			} else if (isByte(nInt, clazz)) {
 				return nInt.byteValue(); //narrowing. 
@@ -36,7 +38,9 @@ public class ScalarConvertUtil {
 			break;
 		case LONG:
 			Long nLong = (Long) dval.getObject();
-			if (isShort(nLong, clazz)) {
+			if (clazz.equals(long.class)) {
+				return nLong;
+			} else if (isShort(nLong, clazz)) {
 				return nLong.shortValue(); //narrowing. 
 			} else if (isByte(nLong, clazz)) {
 				return nLong.byteValue();
@@ -44,6 +48,10 @@ public class ScalarConvertUtil {
 			break;
 		case NUMBER:
 			Double nDouble = (Double) dval.getObject();
+			if (clazz.equals(double.class)) {
+				return nDouble;
+			}
+			
 			if (isFractional(nDouble)) {
 
 			} else {
@@ -57,6 +65,10 @@ public class ScalarConvertUtil {
 			}
 			break;
 		case BOOLEAN:
+			Boolean bool = (Boolean) dval.getObject();
+			if (clazz.equals(boolean.class)) {
+				return bool;
+			}
 			break;
 		case STRING:
 			break;

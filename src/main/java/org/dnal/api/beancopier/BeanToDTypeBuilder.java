@@ -2,11 +2,37 @@ package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.api.bean.BeanMethodCache;
 
 public class BeanToDTypeBuilder {
+	
+	//TODO:much more complicated that this
+	//make into singleton!!
+	private Map<Class<?>, String> map = new HashMap<>();
+	
+	public BeanToDTypeBuilder() {
+		map.put(int.class, "int");
+		map.put(long.class, "int");
+		map.put(double.class, "int");
+		map.put(boolean.class, "int");
+		
+		
+		map.put(String.class, "string");
+		map.put(Boolean.class, "boolean");
+		map.put(Integer.class, "int");
+		map.put(Long.class, "long");
+		map.put(Double.class, "number");
+		map.put(Date.class, "date");
+	}
+	
+	private String convert(Class<?> clazz) {
+		return map.get(clazz);
+	}
+	
 
 	public String buildDnalType(String typeName, BeanMethodCache methodCache, List<String> xlist) {
 		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
@@ -48,23 +74,4 @@ public class BeanToDTypeBuilder {
 		return dnalTypeName;
 	}
 
-
-	//TODO:much more complicated that this
-	private String convert(Class<?> clazz) {
-		if (clazz.equals(String.class)) {
-			return "string";
-		} else if (clazz.equals(Boolean.class)) {
-			return "boolean";
-		} else if (clazz.equals(Integer.class)) {
-			return "int";
-		} else if (clazz.equals(Long.class)) {
-			return "long";
-		} else if (clazz.equals(Double.class)) {
-			return "number";
-		} else if (clazz.equals(Date.class)) {
-			return "date";
-		} else {
-			return null;
-		}
-	}
 }
