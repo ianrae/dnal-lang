@@ -157,7 +157,7 @@ public class BeanCopyTests {
 		List<String> xlist = finder.getAllFields(ClassX.class);
 		List<String> dtolist = finder.getAllFields(ClassXDTO.class);
 
-		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+		BeanToDTypeBuilder builder = new BeanToDTypeBuilder(null);
 		BeanMethodCache bmx = finder.getGetters(ClassX.class, xlist);
 		BeanMethodCache bmdto = finder.getGetters(ClassXDTO.class, dtolist);
 
@@ -312,7 +312,7 @@ public class BeanCopyTests {
 	public void testBeanToDTypeBuilder() {
 		BeanMethodInvoker finder = new BeanMethodInvoker();
 		BeanMethodCache methodCache = finder.getAllGetters(ClassX.class);
-		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+		BeanToDTypeBuilder builder = new BeanToDTypeBuilder(null);
 		List<String> xlist = Arrays.asList("s1", "s2");
 		String dnal = builder.buildDnalType("X", methodCache, xlist);
 		assertEquals("type X struct {  s1 string optional s2 string optional } end", dnal);

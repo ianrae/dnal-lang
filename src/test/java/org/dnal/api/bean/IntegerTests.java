@@ -107,9 +107,6 @@ public class IntegerTests {
 
 	@Test
 	public void test() {
-		ClassXDTO dto = new ClassXDTO(45, 46);
-		ClassX x = new ClassX();
-
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("nn1", "n1"));
 		fields.add(new FieldSpec("nn2", "n2"));
@@ -117,9 +114,6 @@ public class IntegerTests {
 	}
 	@Test
 	public void test2() {
-		ClassXDTO dto = new ClassXDTO(45, 46);
-		ClassX x = new ClassX();
-
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("nn1", "n2"));
 		fields.add(new FieldSpec("nn2", "n1"));
@@ -128,9 +122,6 @@ public class IntegerTests {
 	
 	@Test
 	public void test3() {
-		ClassXDTO dto = new ClassXDTO(45, 46);
-		ClassX x = new ClassX();
-
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("nn1", "sh1"));
 		fields.add(new FieldSpec("nn2", "sh2"));
@@ -146,9 +137,6 @@ public class IntegerTests {
 	}
 	@Test
 	public void test3IntToStr() {
-		ClassXDTO dto = new ClassXDTO(45, 46);
-		ClassX x = new ClassX();
-
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("nn1", "str1"));
 		chkCopy(dto, x, fields);
@@ -156,19 +144,29 @@ public class IntegerTests {
 	}
 	@Test
 	public void test3StrToInt() {
-		ClassXDTO dto = new ClassXDTO(45, 46);
+		dto = new ClassXDTO(45, 46);
 		dto.sstr1 = "400";
-		ClassX x = new ClassX();
 
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("sstr1", "n1"));
 		chkCopy(dto, x, fields);
 		assertEquals(400, x.n1);
 	}
+	@Test
+	public void test4() {
+		List<FieldSpec> fields = new ArrayList<>();
+		fields.add(new FieldSpec("nn1", "bigd1"));
+		x = new ClassX();
+		chkCopyFail(dto, x, fields);
+		assertEquals(0, x.sh1);
+		assertEquals(null, x.sh2);
+	}
 
 
 	//----------
 	private BeanCopier copier = new BeanCopier();
+	private ClassXDTO dto = new ClassXDTO(45, 46);
+	private ClassX x = new ClassX();
 	
 	@Before
 	public void init() {

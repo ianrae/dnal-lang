@@ -7,14 +7,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.dnal.api.bean.BeanMethodCache;
+import org.dnal.compiler.et.XErrorTracker;
 
 public class BeanToDTypeBuilder {
 	
 	//TODO:much more complicated that this
 	//make into singleton!!
 	private Map<Class<?>, String> map = new HashMap<>();
+	private XErrorTracker et;
 	
-	public BeanToDTypeBuilder() {
+	public BeanToDTypeBuilder(XErrorTracker et) {
+		this.et = et;
 		map.put(int.class, "int");
 		map.put(byte.class, "int");
 		map.put(short.class, "int");

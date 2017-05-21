@@ -68,7 +68,7 @@ public class BeanCopierContext {
 			return false;
 		}
 
-		BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
+		BeanToDTypeBuilder builder = new BeanToDTypeBuilder(loader.getErrorTracker());
 		destGetterMethodCache = finder.getGetters(destObj.getClass(), destFieldList);
 		sourceGetterMethodCache = finder.getGetters(sourceObj.getClass(), sourceFieldList);
 
