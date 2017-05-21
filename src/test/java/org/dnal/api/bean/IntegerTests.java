@@ -21,6 +21,8 @@ public class IntegerTests {
 		private Short sh2;
 		private String str1;
 		private BigDecimal bigd1;
+		private long long1;
+		private Long long2;
 		
 		public int getN1() {
 			return n1;
@@ -58,6 +60,18 @@ public class IntegerTests {
 		public void setBigd1(BigDecimal bigd1) {
 			this.bigd1 = bigd1;
 		}
+		public long getLong1() {
+			return long1;
+		}
+		public void setLong1(long long1) {
+			this.long1 = long1;
+		}
+		public Long getLong2() {
+			return long2;
+		}
+		public void setLong2(Long long2) {
+			this.long2 = long2;
+		}
 	}
 	public static class ClassXDTO {
 		private int nn1;
@@ -66,6 +80,8 @@ public class IntegerTests {
 		private Short sh2;
 		private String sstr1;
 		private BigDecimal bbigd1;
+		private long nlong1;
+		private Long nlong2;
 
 		public ClassXDTO(int nn1, Integer nn2) {
 			super();
@@ -107,6 +123,18 @@ public class IntegerTests {
 		}
 		public void setSh2(Short sh2) {
 			this.sh2 = sh2;
+		}
+		public long getNlong1() {
+			return nlong1;
+		}
+		public void setNlong1(long nlong1) {
+			this.nlong1 = nlong1;
+		}
+		public Long getNlong2() {
+			return nlong2;
+		}
+		public void setNlong2(Long nlong2) {
+			this.nlong2 = nlong2;
 		}
 	}
 
@@ -179,6 +207,24 @@ public class IntegerTests {
 		chkCopyFail(dto, x, fields);
 		assertEquals(0, x.sh1);
 		assertEquals(null, x.sh2);
+	}
+	
+	@Test
+	public void test5() {
+		dto.nlong1 = 445;
+		dto.nlong2 = Long.valueOf(446);
+		List<FieldSpec> fields = new ArrayList<>();
+		fields.add(new FieldSpec("nlong1", "n1"));
+		fields.add(new FieldSpec("nlong2", "n2"));
+		chkCopy(dto, x, fields, 445, 446);
+
+		x = new ClassX();
+		fields = new ArrayList<>();
+		fields.add(new FieldSpec("nn1", "long1"));
+		fields.add(new FieldSpec("nn2", "long2"));
+		chkCopy(dto, x, fields);
+		assertEquals(45, x.long1);
+		assertEquals(46, x.long2.intValue());
 	}
 
 
