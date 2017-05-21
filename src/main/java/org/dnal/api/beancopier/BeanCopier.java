@@ -86,7 +86,7 @@ public class BeanCopier {
 
 		//now convert dval into x
 		bctx.pctD.start();
-		ScalarConvertUtil util = new ScalarConvertUtil();
+		ScalarConvertUtil util = new ScalarConvertUtil(bctx.loader.getErrorTracker());
 		for(String fieldName: destFieldList) {
 			Method meth = bctx.destSetterMethodCache.getMethod(fieldName);
 

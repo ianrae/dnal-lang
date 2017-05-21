@@ -189,7 +189,7 @@ public class BeanCopyTests {
 		//		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").asString());
 		finder.invokeSetter(methodCacheX, x, "s1", dval.asStruct().getField("s1").getObject());
 
-		ScalarConvertUtil util = new ScalarConvertUtil();
+		ScalarConvertUtil util = new ScalarConvertUtil(null);
 		Class<?> paramClass = meth.getParameterTypes()[0];
 		//		finder.invokeSetter(methodCacheX, x, "s2", dval.asStruct().getField("s2").asString());
 		finder.invokeSetter(methodCacheX, x, "s2", util.toObject(dval.asStruct().getField("s2"), paramClass));
@@ -281,7 +281,7 @@ public class BeanCopyTests {
 		Transaction trans = ds.createTransaction();
 		DValue dval = trans.createIntBuilder().buildFrom(100);
 		assertEquals(100, dval.asInt());
-		ScalarConvertUtil util = new ScalarConvertUtil();
+		ScalarConvertUtil util = new ScalarConvertUtil(null);
 		Object obj = util.toObject(dval);
 		Integer n = (Integer) obj;
 		assertEquals(100, n.intValue());

@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.dnal.api.Transaction;
+import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.NewErrorMessage;
 
 /**
  * Common code for converting to and from scalar values.
@@ -13,7 +15,11 @@ import org.dnal.core.DValue;
  *
  */
 public class ScalarConvertUtil {
+	private XErrorTracker et;
 
+	public ScalarConvertUtil(XErrorTracker errorTracker) {
+		this.et = errorTracker;
+	}
 	public Object toObject(DValue dval) {
 		return dval.getObject();
 	}
@@ -102,6 +108,7 @@ public class ScalarConvertUtil {
 		if (clazz.equals(Byte.class) || clazz.equals(byte.class)) {
 			int n = num.intValue();
 			if ((n < Byte.MIN_VALUE) || (n > Byte.MAX_VALUE)) {
+				addRangeError(n, clazz);
 				return false;
 			}				
 			return true;
@@ -112,6 +119,7 @@ public class ScalarConvertUtil {
 		if (clazz.equals(Short.class) || clazz.equals(short.class)) {
 			int n = num.intValue();
 			if ((n < Short.MIN_VALUE) || (n > Short.MAX_VALUE)) {
+				addRangeError(n, clazz);
 				return false;
 			}				
 			return true;
@@ -122,6 +130,7 @@ public class ScalarConvertUtil {
 		if (clazz.equals(Long.class) || clazz.equals(long.class)) {
 			int n = num.intValue();
 			if ((n < Long.MIN_VALUE) || (n > Long.MAX_VALUE)) {
+				addRangeError(n, clazz);
 				return false;
 			}				
 			return true;
@@ -190,5 +199,16 @@ public class ScalarConvertUtil {
 		}
 
 		return null;
+	}
+	
+	private void addRangeError(long val, Class<?> clazz) {
+		addError(String.format("value %d is out of range for '%s'", val, clazz.getSimpleName()));
+	}
+	
+	private void addError(String message) {
+		NewErrorMessage nem = new NewErrorMessage();
+		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
+		nem.setMessage(message);
+		et.addError(nem);
 	}
 }
