@@ -202,13 +202,6 @@ public class ScalarConvertUtil {
 	}
 	
 	private void addRangeError(long val, Class<?> clazz) {
-		addError(String.format("value %d is out of range for '%s'", val, clazz.getSimpleName()));
-	}
-	
-	private void addError(String message) {
-		NewErrorMessage nem = new NewErrorMessage();
-		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
-		nem.setMessage(message);
-		et.addError(nem);
+		et.addParsingError(String.format("value %d is out of range for '%s'", val, clazz.getSimpleName()));
 	}
 }

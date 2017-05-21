@@ -95,10 +95,7 @@ public class BeanCopierContext {
 	}
 
 	private void addError(String message) {
-		NewErrorMessage nem = new NewErrorMessage();
-		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
-		nem.setMessage(message);
-		loader.getErrorTracker().addError(nem);
+		loader.getErrorTracker().addParsingError(message);
 	}
 
 	public boolean compareKeys(Object dto, Object x, List<FieldSpec> fieldL) {

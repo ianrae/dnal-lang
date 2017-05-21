@@ -109,10 +109,7 @@ public class BeanCopier {
 	}
 
 	private void addError(String message) {
-		NewErrorMessage nem = new NewErrorMessage();
-		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
-		nem.setMessage(message);
-		bctx.loader.getErrorTracker().addError(nem);
+		bctx.loader.getErrorTracker().addParsingError(message);
 	}
 	
 	public List<NewErrorMessage> getErrors() {
