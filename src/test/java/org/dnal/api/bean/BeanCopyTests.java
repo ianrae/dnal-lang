@@ -35,6 +35,45 @@ public class BeanCopyTests {
 		public String destField;
 		public String formatOptions;
 	}
+	
+	public static class BeanCopierContextKey {
+		public Object dto;
+		public Object x;
+		public List<FieldSpec> fieldL;
+		
+		public BeanCopierContextKey(Object dto, Object x, List<FieldSpec> fieldL) {
+			super();
+			this.dto = dto;
+			this.x = x;
+			this.fieldL = fieldL;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (! (obj instanceof BeanCopierContextKey)) {
+				return false;
+			}
+			
+			BeanCopierContextKey other = (BeanCopierContextKey) obj;
+			if (! isSameClass(dto, other.dto)) {
+				return false;
+			}
+			if (! isSameClass(x, other.x)) {
+				return false;
+			}
+			
+			if (! fieldL.equals(other.fieldL)) {
+				return false;
+			}
+			return true;
+		}
+
+		private boolean isSameClass(Object obj1, Object obj2) {
+			String s1 = obj1.getClass().getName();
+			String s2 = obj2.getClass().getName();
+			return s1.equals(s2);
+		}
+	}
 
 	public static class BeanCopierContext {
 		private DNALLoader loader;
@@ -49,6 +88,7 @@ public class BeanCopyTests {
 		private List<String> allSourceFields;
 		private BeanMethodCache bmx;
 		private BeanMethodCache bmdto;
+		private BeanCopierContextKey contextKey;
 
 
 		public BeanCopierContext() {
@@ -57,6 +97,7 @@ public class BeanCopyTests {
 		}
 
 		public boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) {
+			this.contextKey = new BeanCopierContextKey(dto, x, fieldL);
 			try {
 				if (! doPrepare(dto, x, fieldL)) {
 					return false;
@@ -126,25 +167,30 @@ public class BeanCopyTests {
 			nem.setMessage(message);
 			loader.getErrorTracker().addError(nem);
 		}
+
+		public boolean compareKeys(Object dto, Object x, List<FieldSpec> fieldL) {
+			BeanCopierContextKey newKey = new BeanCopierContextKey(dto, x, fieldL);
+			if (contextKey.equals(newKey)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	public static class BeanCopier {
-		BeanCopierContext bctx;
-		private boolean isPrepared;
-
-
-		public BeanCopier() {
-			bctx = new BeanCopierContext();
-		}
+		private BeanCopierContext bctx;
 
 		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
 			boolean ok = false;
 			try {
-				if (! isPrepared) {
-					if (! prepare(dto, x, fieldL)) {
-						return false;
-					}
-				} 
+				if (bctx == null) {
+					ok = prepare(dto, x, fieldL);
+				} else if (! bctx.compareKeys(dto, x, fieldL)) {
+					//new params, so re-create context
+					ok = prepare(dto, x, fieldL);
+				}
+				
 				ok = doCopy(dto, x, fieldL);
 			} catch (Exception e) {
 				addError("Exception:" + e.getMessage());
@@ -153,11 +199,8 @@ public class BeanCopyTests {
 		}
 
 		private boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
-			boolean ok = bctx.prepare(dto, x, fieldL);
-			if (ok) {
-				isPrepared = true;
-			}
-			return ok;
+			bctx = new BeanCopierContext();
+			return  bctx.prepare(dto, x, fieldL);
 		}
 
 		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
@@ -436,7 +479,7 @@ public class BeanCopyTests {
 
 		PerfTimer perf = new PerfTimer();
 		perf.startTimer("a");
-		int n = 10; //1000; //7899
+		int n = 10000; //1000; //7899
 		//with perf 800. so 0.8 msec per run
 		for(int i = 0; i < n; i++) {
 			ClassX x = new ClassX();
