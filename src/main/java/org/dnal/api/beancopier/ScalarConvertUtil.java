@@ -99,7 +99,7 @@ public class ScalarConvertUtil {
 	}
 
 	private boolean isByte(Number num, Class<?> clazz) {
-		if (clazz.equals(Byte.class)) {
+		if (clazz.equals(Byte.class) || clazz.equals(byte.class)) {
 			int n = num.intValue();
 			if ((n < Byte.MIN_VALUE) || (n > Byte.MAX_VALUE)) {
 				return false;
@@ -109,7 +109,7 @@ public class ScalarConvertUtil {
 		return false;
 	}
 	private boolean isShort(Number num, Class<?> clazz) {
-		if (clazz.equals(Short.class)) {
+		if (clazz.equals(Short.class) || clazz.equals(short.class)) {
 			int n = num.intValue();
 			if ((n < Short.MIN_VALUE) || (n > Short.MAX_VALUE)) {
 				return false;
@@ -119,7 +119,7 @@ public class ScalarConvertUtil {
 		return false;
 	}
 	private boolean isLong(Number num, Class<?> clazz) {
-		if (clazz.equals(Long.class)) {
+		if (clazz.equals(Long.class) || clazz.equals(long.class)) {
 			int n = num.intValue();
 			if ((n < Long.MIN_VALUE) || (n > Long.MAX_VALUE)) {
 				return false;

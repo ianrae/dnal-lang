@@ -16,16 +16,22 @@ public class BeanToDTypeBuilder {
 	
 	public BeanToDTypeBuilder() {
 		map.put(int.class, "int");
-		map.put(long.class, "int");
-		map.put(double.class, "int");
-		map.put(boolean.class, "int");
+		map.put(byte.class, "int");
+		map.put(short.class, "int");
+		map.put(long.class, "long");
+		map.put(double.class, "double");
+		map.put(float.class, "double");
+		map.put(boolean.class, "boolean");
 		
 		
 		map.put(String.class, "string");
 		map.put(Boolean.class, "boolean");
 		map.put(Integer.class, "int");
+		map.put(Byte.class, "int");
+		map.put(Short.class, "int");
 		map.put(Long.class, "long");
 		map.put(Double.class, "number");
+		map.put(Float.class, "number");
 		map.put(Date.class, "date");
 	}
 	
