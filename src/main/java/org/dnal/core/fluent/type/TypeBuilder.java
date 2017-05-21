@@ -328,5 +328,9 @@ public class TypeBuilder {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
+    
+    public boolean fieldNameExists(String fieldName) {
+    	return fieldMap.containsKey(fieldName);
+    }
 	
 }

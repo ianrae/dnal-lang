@@ -461,9 +461,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 //		DType baseType = null; //no base type for views
 
 		Inner inner = tb.start(viewExp.viewName.name());
+		boolean isOutbound = viewExp.direction.equals(ViewDirection.OUTBOUND);
 
 		for(ViewMemberExp membExp : viewExp.memberL) {
 //			log(" vm " + membExp.strValue());
+			
+			if (! isOutbound) {
+				//remove duplicates
+				if (tb.fieldNameExists(membExp.right.strValue())) {
+					continue;
+				}
+			}
 
 			switch(TypeInfo.typeOf(membExp.rightType)) {
 			case INT:
