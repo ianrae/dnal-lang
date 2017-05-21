@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.dnal.api.beancopier.BeanCopier;
 import org.dnal.api.beancopier.FieldSpec;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -141,24 +140,21 @@ public class IntegerTests {
 
 	@Test
 	public void test() {
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "n1"));
-		fields.add(new FieldSpec("nn2", "n2"));
+		addField("nn1", "n1");
+		addField("nn2", "n2");
 		chkCopy(dto, x, fields, 45, 46);
 	}
 	@Test
 	public void test2() {
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "n2"));
-		fields.add(new FieldSpec("nn2", "n1"));
+		addField("nn1", "n2");
+		addField("nn2", "n1");
 		chkCopy(dto, x, fields, 46, 45);
 	}
 	
 	@Test
 	public void test3() {
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "sh1"));
-		fields.add(new FieldSpec("nn2", "sh2"));
+		addField("nn1", "sh1");
+		addField("nn2", "sh2");
 		chkCopy(dto, x, fields);
 		assertEquals(45, x.sh1);
 		assertEquals(46, x.sh2.shortValue());
@@ -172,9 +168,8 @@ public class IntegerTests {
 	@Test
 	public void test3bDuplicate() {
 		dto.sh2 = Short.valueOf((short) 111);
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("sh2", "sh1"));
-		fields.add(new FieldSpec("sh2", "sh2"));
+		addField("sh2", "sh1");
+		addField("sh2", "sh2");
 		x = new ClassX();
 		chkCopy(dto, x, fields);
 		assertEquals(111, x.sh1);
@@ -184,8 +179,7 @@ public class IntegerTests {
 	
 	@Test
 	public void test3IntToStr() {
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "str1"));
+		addField("nn1", "str1");
 		chkCopy(dto, x, fields);
 		assertEquals("45", x.str1);
 	}
@@ -194,15 +188,13 @@ public class IntegerTests {
 		dto = new ClassXDTO(45, 46);
 		dto.sstr1 = "400";
 
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("sstr1", "n1"));
+		addField("sstr1", "n1");
 		chkCopy(dto, x, fields);
 		assertEquals(400, x.n1);
 	}
 	@Test
 	public void test4() {
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "bigd1"));
+		addField("nn1", "bigd1");
 		x = new ClassX();
 		chkCopyFail(dto, x, fields);
 		assertEquals(0, x.sh1);
@@ -213,15 +205,14 @@ public class IntegerTests {
 	public void test5() {
 		dto.nlong1 = 445;
 		dto.nlong2 = Long.valueOf(446);
-		List<FieldSpec> fields = new ArrayList<>();
-		fields.add(new FieldSpec("nlong1", "n1"));
-		fields.add(new FieldSpec("nlong2", "n2"));
+		addField("nlong1", "n1");
+		addField("nlong2", "n2");
 		chkCopy(dto, x, fields, 445, 446);
 
 		x = new ClassX();
 		fields = new ArrayList<>();
-		fields.add(new FieldSpec("nn1", "long1"));
-		fields.add(new FieldSpec("nn2", "long2"));
+		addField("nn1", "long1");
+		addField("nn2", "long2");
 		chkCopy(dto, x, fields);
 		assertEquals(45, x.long1);
 		assertEquals(46, x.long2.intValue());
@@ -232,9 +223,10 @@ public class IntegerTests {
 	private BeanCopier copier = new BeanCopier();
 	private ClassXDTO dto = new ClassXDTO(45, 46);
 	private ClassX x = new ClassX();
+	private List<FieldSpec> fields = new ArrayList<>();
 	
-	@Before
-	public void init() {
+	private void addField(String s1, String s2) {
+		fields.add(new FieldSpec(s1, s2));
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields, int expected1, int expected2) {
 		chkCopy(dto, x, fields);
