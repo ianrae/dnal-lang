@@ -1,4 +1,4 @@
-package org.dnal.api.bean;
+package org.dnal.api.beancopier;
 
 import java.util.Date;
 

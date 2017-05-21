@@ -12,323 +12,22 @@ import java.util.List;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
+import org.dnal.api.beancopier.BeanCopier;
+import org.dnal.api.beancopier.BeanMethodInvoker;
+import org.dnal.api.beancopier.BeanToDTypeBuilder;
+import org.dnal.api.beancopier.FieldSpec;
+import org.dnal.api.beancopier.ScalarConvertUtil;
 import org.dnal.api.view.ViewLoader;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.performance.PerfContinuingTimer;
 import org.dnal.compiler.performance.PerfTimer;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
-import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 
 public class BeanCopyTests {
 
-	public static class FieldSpec {
-		public FieldSpec(String srcField, String destField) {
-			super();
-			this.srcField = srcField;
-			this.destField = destField;
-		}
-		public String srcField;
-		public String destField;
-		public String formatOptions;
-	}
-	
-	public static class BeanCopierContextKey {
-		public Object sourceObj;
-		public Object destObj;
-		public List<FieldSpec> fieldL;
-		
-		public BeanCopierContextKey(Object dto, Object x, List<FieldSpec> fieldL) {
-			super();
-			this.sourceObj = dto;
-			this.destObj = x;
-			this.fieldL = fieldL;
-		}
-
-		@Override
-		public boolean equals(Object obj) {
-			if (! (obj instanceof BeanCopierContextKey)) {
-				return false;
-			}
-			
-			BeanCopierContextKey other = (BeanCopierContextKey) obj;
-			if (! isSameClass(sourceObj, other.sourceObj)) {
-				return false;
-			}
-			if (! isSameClass(destObj, other.destObj)) {
-				return false;
-			}
-			
-			if (! fieldL.equals(other.fieldL)) {
-				return false;
-			}
-			return true;
-		}
-
-		private boolean isSameClass(Object obj1, Object obj2) {
-			String s1 = obj1.getClass().getName();
-			String s2 = obj2.getClass().getName();
-			return s1.equals(s2);
-		}
-	}
-
-	public static class BeanCopierContext {
-		private DNALLoader loader;
-		public PerfContinuingTimer pctA = new PerfContinuingTimer();
-		public PerfContinuingTimer pctB = new PerfContinuingTimer();
-		public PerfContinuingTimer pctC = new PerfContinuingTimer();
-		public PerfContinuingTimer pctD = new PerfContinuingTimer();
-		public PerfContinuingTimer pctE = new PerfContinuingTimer();
-
-		private BeanMethodCache destSetterMethodCache;
-		private List<String> allDestFields;
-		private List<String> allSourceFields;
-		private BeanMethodCache destGetterMethodCache;
-		private BeanMethodCache sourceGetterMethodCache;
-		private BeanCopierContextKey contextKey;
-
-
-		public BeanCopierContext() {
-			loader = new DNALLoader();
-			loader.initCompiler();
-		}
-
-		public boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
-			this.contextKey = new BeanCopierContextKey(sourceObj, destObj, fieldL);
-			try {
-				if (! doPrepare(sourceObj, destObj, fieldL)) {
-					return false;
-				}
-			} catch (Exception e) {
-				addError("Exception:" + e.getMessage());
-			}
-			return ! areErrors();
-		}
-
-		private boolean doPrepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
-			pctE.start();
-			BeanMethodInvoker finder = new BeanMethodInvoker();
-			destSetterMethodCache = finder.getAllSetters(destObj.getClass());
-
-			allDestFields = finder.getAllFields(destObj.getClass());
-			allSourceFields = finder.getAllFields(sourceObj.getClass());
-			List<String> destFieldList = new ArrayList<>();
-			List<String> sourceFieldList = new ArrayList<>();
-			for(FieldSpec field: fieldL) {
-				if (allSourceFields.contains(field.srcField)) {
-					sourceFieldList.add(field.srcField);
-				} else {
-					addError(String.format("src can't find field '%s'", field.srcField));
-				}
-
-				if (allDestFields.contains(field.destField)) {
-					destFieldList.add(field.destField);
-				} else {
-					addError(String.format("dest can't find field '%s'", field.destField));
-				}
-			}
-
-			if (areErrors()) {
-				return false;
-			}
-
-			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
-			destGetterMethodCache = finder.getGetters(destObj.getClass(), destFieldList);
-			sourceGetterMethodCache = finder.getGetters(sourceObj.getClass(), sourceFieldList);
-
-			String xName = destObj.getClass().getSimpleName();
-			String dtoName = sourceObj.getClass().getSimpleName();
-			String viewName =  dtoName + "View";
-			String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
-			String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
-			String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList);
-
-			//			XErrorTracker.logErrors = true;
-			//			Log.debugLogging = true;
-			boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
-			if (! b) {
-				return false;
-			}
-			pctE.end();
-
-			return true;
-		}
-
-		private boolean areErrors() {
-			return loader.getErrorTracker().areErrors();
-		}
-
-		private void addError(String message) {
-			NewErrorMessage nem = new NewErrorMessage();
-			nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
-			nem.setMessage(message);
-			loader.getErrorTracker().addError(nem);
-		}
-
-		public boolean compareKeys(Object dto, Object x, List<FieldSpec> fieldL) {
-			BeanCopierContextKey newKey = new BeanCopierContextKey(dto, x, fieldL);
-			if (contextKey.equals(newKey)) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-		public void clearErrors() {
-			loader.getErrorTracker().clear();
-		}
-	}
-
-	public static class BeanCopier {
-		private BeanCopierContext bctx;
-
-		public boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
-			boolean ok = false;
-			try {
-				if (bctx == null || (! bctx.compareKeys(sourceObj, destObj, fieldL))) {
-					//new params, so re-create context
-					if (! prepare(sourceObj, destObj, fieldL)) {
-						return false;
-					}
-				}
-				
-				ok = doCopy(sourceObj, destObj, fieldL);
-				
-			} catch (Exception e) {
-				addError("Exception:" + e.getMessage());
-			}
-			return ok;
-		}
-
-		private boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
-			bctx = new BeanCopierContext();
-			return  bctx.prepare(sourceObj, destObj, fieldL);
-		}
-
-		private boolean doCopy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
-			BeanMethodInvoker finder = new BeanMethodInvoker();
-			bctx.clearErrors();
-			
-			bctx.pctA.start();
-			List<String> destFieldList = new ArrayList<>();
-			List<String> sourceFieldList = new ArrayList<>();
-			for(FieldSpec field: fieldL) {
-				if (bctx.allSourceFields.contains(field.srcField)) {
-					sourceFieldList.add(field.srcField);
-				} else {
-					addError(String.format("src can't find field '%s'", field.srcField));
-				}
-
-				if (bctx.allDestFields.contains(field.destField)) {
-					destFieldList.add(field.destField);
-				} else {
-					addError(String.format("dest can't find field '%s'", field.destField));
-				}
-			}
-			bctx.pctA.end();
-
-			if (areErrors()) {
-				return false;
-			}
-
-			String destTypeName = destObj.getClass().getSimpleName();
-			String sourceTypeName = sourceObj.getClass().getSimpleName();
-			String viewName =  sourceTypeName + "View";
-
-			bctx.pctB.start();
-			DValue dvalSource = bctx.loader.createFromBean(viewName, sourceObj);
-			if (dvalSource == null) {
-				return false;
-			}
-			bctx.pctB.end();
-
-			bctx.pctC.start();
-			DataSet ds = bctx.loader.getDataSet();
-			ViewLoader viewLoader = new ViewLoader(ds);
-			DValue dval = viewLoader.load(dvalSource, (DStructType) ds.getType(destTypeName));
-			if (dval == null) {
-				return false;
-			}
-			bctx.pctC.end();
-
-			//now convert dval into x
-			bctx.pctD.start();
-			ScalarConvertUtil util = new ScalarConvertUtil();
-			for(String fieldName: destFieldList) {
-				Method meth = bctx.destSetterMethodCache.getMethod(fieldName);
-
-				Class<?> paramClass = meth.getParameterTypes()[0];
-				DValue inner = dval.asStruct().getField(fieldName);
-				if (inner != null) {
-					Object obj = util.toObject(inner, paramClass);
-					if (obj == null) {
-						return false;
-					}
-					finder.invokeSetter(bctx.destSetterMethodCache, destObj, fieldName, obj);
-				}
-			}
-			bctx.pctD.end();
-			return true;
-		}
-
-		private boolean areErrors() {
-			return bctx.loader.getErrorTracker().areErrors();
-		}
-
-		private void addError(String message) {
-			NewErrorMessage nem = new NewErrorMessage();
-			nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
-			nem.setMessage(message);
-			bctx.loader.getErrorTracker().addError(nem);
-		}
-	}
-
-
-	@Test
-	public void test() {
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		BeanMethodCache methodCache = finder.getAllGetters(ReflectionBeanLoaderTest.ClassA.class);
-		assertEquals(6, methodCache.size());
-		assertNotNull(methodCache.getMethod("nval"));
-	}
-	@Test
-	public void testFilter() {
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		List<String> filter = Collections.singletonList("nval");
-		BeanMethodCache methodCache = finder.getGetters(ReflectionBeanLoaderTest.ClassA.class, filter);
-		assertEquals(1, methodCache.size());
-		assertNotNull(methodCache.getMethod("nval"));
-	}
-
-	@Test
-	public void testInvokeGetter() throws Exception {
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		List<String> filter = Collections.singletonList("nval");
-		BeanMethodCache methodCache = finder.getGetters(ReflectionBeanLoaderTest.ClassA.class, filter);
-
-		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
-		beanA.setNval(44);
-		Object obj = finder.invokeGetter(methodCache, beanA, "nval");
-		Integer nval = (Integer) obj;
-		assertEquals(44, nval.intValue());
-	}
-
-	@Test
-	public void testInvokeSetter() throws Exception {
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		List<String> filter = Collections.singletonList("nval");
-		BeanMethodCache methodCache = finder.getSetters(ReflectionBeanLoaderTest.ClassA.class, filter);
-
-		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
-		beanA.setNval(44);
-		finder.invokeSetter(methodCache, beanA, "nval", Integer.valueOf(55));
-		assertEquals(55, beanA.getNval());
-	}
-
-	//================================
 	public static class ClassX {
 		private String s1;
 		private String s2;
@@ -394,6 +93,49 @@ public class BeanCopyTests {
 	//	public static class MyInt extends Integer {  not allowed
 	//		
 	//	}
+	
+	@Test
+	public void test() {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCache = finder.getAllGetters(ReflectionBeanLoaderTest.ClassA.class);
+		assertEquals(6, methodCache.size());
+		assertNotNull(methodCache.getMethod("nval"));
+	}
+	@Test
+	public void testFilter() {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		List<String> filter = Collections.singletonList("nval");
+		BeanMethodCache methodCache = finder.getGetters(ReflectionBeanLoaderTest.ClassA.class, filter);
+		assertEquals(1, methodCache.size());
+		assertNotNull(methodCache.getMethod("nval"));
+	}
+
+	@Test
+	public void testInvokeGetter() throws Exception {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		List<String> filter = Collections.singletonList("nval");
+		BeanMethodCache methodCache = finder.getGetters(ReflectionBeanLoaderTest.ClassA.class, filter);
+
+		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
+		beanA.setNval(44);
+		Object obj = finder.invokeGetter(methodCache, beanA, "nval");
+		Integer nval = (Integer) obj;
+		assertEquals(44, nval.intValue());
+	}
+
+	@Test
+	public void testInvokeSetter() throws Exception {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		List<String> filter = Collections.singletonList("nval");
+		BeanMethodCache methodCache = finder.getSetters(ReflectionBeanLoaderTest.ClassA.class, filter);
+
+		ReflectionBeanLoaderTest.ClassA beanA = new ClassA();
+		beanA.setNval(44);
+		finder.invokeSetter(methodCache, beanA, "nval", Integer.valueOf(55));
+		assertEquals(55, beanA.getNval());
+	}
+
+	//================================
 
 	@Test
 	public void testCopy() throws Exception {

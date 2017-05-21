@@ -1,8 +1,10 @@
-package org.dnal.api.bean;
+package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.dnal.api.bean.BeanMethodCache;
 
 public class BeanMethodInvoker {
 	public List<String> getAllFields(Class<?> beanClass) {

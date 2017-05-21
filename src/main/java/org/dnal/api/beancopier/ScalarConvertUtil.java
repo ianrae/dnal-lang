@@ -1,4 +1,4 @@
-package org.dnal.api.bean;
+package org.dnal.api.beancopier;
 
 import java.math.BigDecimal;
 import java.util.Date;
