@@ -37,14 +37,14 @@ public class BeanCopyTests {
 	}
 	
 	public static class BeanCopierContextKey {
-		public Object dto;
-		public Object x;
+		public Object sourceObj;
+		public Object destObj;
 		public List<FieldSpec> fieldL;
 		
 		public BeanCopierContextKey(Object dto, Object x, List<FieldSpec> fieldL) {
 			super();
-			this.dto = dto;
-			this.x = x;
+			this.sourceObj = dto;
+			this.destObj = x;
 			this.fieldL = fieldL;
 		}
 
@@ -55,10 +55,10 @@ public class BeanCopyTests {
 			}
 			
 			BeanCopierContextKey other = (BeanCopierContextKey) obj;
-			if (! isSameClass(dto, other.dto)) {
+			if (! isSameClass(sourceObj, other.sourceObj)) {
 				return false;
 			}
-			if (! isSameClass(x, other.x)) {
+			if (! isSameClass(destObj, other.destObj)) {
 				return false;
 			}
 			
@@ -83,11 +83,11 @@ public class BeanCopyTests {
 		public PerfContinuingTimer pctD = new PerfContinuingTimer();
 		public PerfContinuingTimer pctE = new PerfContinuingTimer();
 
-		private BeanMethodCache methodCacheX;
+		private BeanMethodCache destSetterMethodCache;
 		private List<String> allDestFields;
 		private List<String> allSourceFields;
-		private BeanMethodCache bmx;
-		private BeanMethodCache bmdto;
+		private BeanMethodCache destGetterMethodCache;
+		private BeanMethodCache sourceGetterMethodCache;
 		private BeanCopierContextKey contextKey;
 
 
@@ -111,7 +111,7 @@ public class BeanCopyTests {
 		private boolean doPrepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
 			pctE.start();
 			BeanMethodInvoker finder = new BeanMethodInvoker();
-			methodCacheX = finder.getAllSetters(destObj.getClass());
+			destSetterMethodCache = finder.getAllSetters(destObj.getClass());
 
 			allDestFields = finder.getAllFields(destObj.getClass());
 			allSourceFields = finder.getAllFields(sourceObj.getClass());
@@ -136,15 +136,15 @@ public class BeanCopyTests {
 			}
 
 			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
-			bmx = finder.getGetters(destObj.getClass(), destFieldList);
-			bmdto = finder.getGetters(sourceObj.getClass(), sourceFieldList);
+			destGetterMethodCache = finder.getGetters(destObj.getClass(), destFieldList);
+			sourceGetterMethodCache = finder.getGetters(sourceObj.getClass(), sourceFieldList);
 
 			String xName = destObj.getClass().getSimpleName();
 			String dtoName = sourceObj.getClass().getSimpleName();
 			String viewName =  dtoName + "View";
-			String dnal = builder.buildDnalType(xName, bmx, destFieldList);
-			String dnal2 = builder.buildDnalType(dtoName, bmdto, sourceFieldList);
-			String dnal3 = builder.buildDnalView(xName, viewName, bmx, bmdto, destFieldList, sourceFieldList);
+			String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
+			String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
+			String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList);
 
 			//			XErrorTracker.logErrors = true;
 			//			Log.debugLogging = true;
@@ -258,7 +258,7 @@ public class BeanCopyTests {
 			bctx.pctD.start();
 			ScalarConvertUtil util = new ScalarConvertUtil();
 			for(String fieldName: destFieldList) {
-				Method meth = bctx.methodCacheX.getMethod(fieldName);
+				Method meth = bctx.destSetterMethodCache.getMethod(fieldName);
 
 				Class<?> paramClass = meth.getParameterTypes()[0];
 				DValue inner = dval.asStruct().getField(fieldName);
@@ -267,7 +267,7 @@ public class BeanCopyTests {
 					if (obj == null) {
 						return false;
 					}
-					finder.invokeSetter(bctx.methodCacheX, destObj, fieldName, obj);
+					finder.invokeSetter(bctx.destSetterMethodCache, destObj, fieldName, obj);
 				}
 			}
 			bctx.pctD.end();
@@ -485,7 +485,7 @@ public class BeanCopyTests {
 
 		PerfTimer perf = new PerfTimer();
 		perf.startTimer("a");
-		int n = 10000; //1000; //7899
+		int n = 10; //1000; //7899
 		//with perf 800. so 0.8 msec per run
 		for(int i = 0; i < n; i++) {
 			ClassX x = new ClassX();
