@@ -133,6 +133,7 @@ public class DNALLoader {
 		this.cloneMainDataSet = cloneMainDataSet;
 	}
 	public void initCompiler() {
+		compiler = null;
 		createCompilerIfNeeded();
 	}
 }

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 
 public class BeanCopyTests {
-	
+
 	public static class FieldSpec {
 		public FieldSpec(String srcField, String destField) {
 			super();
@@ -36,48 +36,39 @@ public class BeanCopyTests {
 		public String formatOptions;
 	}
 
-	public static class BeanCopier {
+	public static class BeanCopierContext {
 		private DNALLoader loader;
-		private PerfTimer perfTimer;
 		public PerfContinuingTimer pctA = new PerfContinuingTimer();
 		public PerfContinuingTimer pctB = new PerfContinuingTimer();
 		public PerfContinuingTimer pctC = new PerfContinuingTimer();
 		public PerfContinuingTimer pctD = new PerfContinuingTimer();
-		
+		public PerfContinuingTimer pctE = new PerfContinuingTimer();
+
 		private BeanMethodCache methodCacheX;
 		private List<String> allDestFields;
 		private List<String> allSourceFields;
 		private BeanMethodCache bmx;
 		private BeanMethodCache bmdto;
-		private boolean isPrepared;
-		
-		
-		public BeanCopier() {
+
+
+		public BeanCopierContext() {
 			loader = new DNALLoader();
 			loader.initCompiler();
 		}
 
-		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
-			boolean ok = false;
+		public boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) {
 			try {
-				if (! isPrepared) {
-					if (! prepare(dto, x, fieldL)) {
-						return false;
-					}
+				if (! doPrepare(dto, x, fieldL)) {
+					return false;
 				}
-				ok = doCopy(dto, x, fieldL);
 			} catch (Exception e) {
 				addError("Exception:" + e.getMessage());
 			}
-			return ok;
+			return ! areErrors();
 		}
-		
-		private void startPerf(String name) {
-		}
-		private void endPerf(String name) {
-		}
-		private boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
-			startPerf("prepare");
+
+		private boolean doPrepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+			pctE.start();
 			BeanMethodInvoker finder = new BeanMethodInvoker();
 			methodCacheX = finder.getAllSetters(x.getClass());
 
@@ -98,7 +89,7 @@ public class BeanCopyTests {
 					addError(String.format("dest can't find field '%s'", field.destField));
 				}
 			}
-			
+
 			if (areErrors()) {
 				return false;
 			}
@@ -113,84 +104,18 @@ public class BeanCopyTests {
 			String dnal = builder.buildDnalType(xName, bmx, xlist);
 			String dnal2 = builder.buildDnalType(dtoName, bmdto, dtolist);
 			String dnal3 = builder.buildDnalView(xName, viewName, bmx, bmdto, xlist, dtolist);
-			
-//			XErrorTracker.logErrors = true;
-//			Log.debugLogging = true;
+
+			//			XErrorTracker.logErrors = true;
+			//			Log.debugLogging = true;
 			boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
 			if (! b) {
 				return false;
 			}
-			isPrepared = true;
-			endPerf("prepare");
-			
+			pctE.end();
+
 			return true;
 		}
-		
-		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
-			BeanMethodInvoker finder = new BeanMethodInvoker();
 
-			pctA.start();
-			List<String> xlist = new ArrayList<>();
-			List<String> dtolist = new ArrayList<>();
-			for(FieldSpec field: fieldL) {
-				if (allSourceFields.contains(field.srcField)) {
-					dtolist.add(field.srcField);
-				} else {
-					addError(String.format("src can't find field '%s'", field.srcField));
-				}
-
-				if (allDestFields.contains(field.destField)) {
-					xlist.add(field.destField);
-				} else {
-					addError(String.format("dest can't find field '%s'", field.destField));
-				}
-			}
-			pctA.end();
-			
-			if (areErrors()) {
-				return false;
-			}
-
-			String xName = x.getClass().getSimpleName();
-			String dtoName = dto.getClass().getSimpleName();
-			String viewName =  dtoName + "View";
-			
-			pctB.start();
-			DValue dvalDTO = loader.createFromBean(viewName, dto);
-			if (dvalDTO == null) {
-				return false;
-			}
-			pctB.end();
-
-			pctC.start();
-			DataSet ds = loader.getDataSet();
-			ViewLoader viewLoader = new ViewLoader(ds);
-			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
-			if (dval == null) {
-				return false;
-			}
-			pctC.end();
-
-			//now convert dval into x
-			pctD.start();
-			ScalarConvertUtil util = new ScalarConvertUtil();
-			for(String fieldName: xlist) {
-				Method meth = methodCacheX.getMethod(fieldName);
-				
-				Class<?> paramClass = meth.getParameterTypes()[0];
-				DValue inner = dval.asStruct().getField(fieldName);
-				if (inner != null) {
-					Object obj = util.toObject(inner, paramClass);
-					if (obj == null) {
-						return false;
-					}
-					finder.invokeSetter(methodCacheX, x, fieldName, obj);
-				}
-			}
-			pctD.end();
-			return true;
-		}
-		
 		private boolean areErrors() {
 			return loader.getErrorTracker().areErrors();
 		}
@@ -201,9 +126,114 @@ public class BeanCopyTests {
 			nem.setMessage(message);
 			loader.getErrorTracker().addError(nem);
 		}
+	}
 
-		public void setPerfTimer(PerfTimer perfTimer) {
-			this.perfTimer = perfTimer;
+	public static class BeanCopier {
+		BeanCopierContext bctx;
+		private boolean isPrepared;
+
+
+		public BeanCopier() {
+			bctx = new BeanCopierContext();
+		}
+
+		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
+			boolean ok = false;
+			try {
+				if (! isPrepared) {
+					if (! prepare(dto, x, fieldL)) {
+						return false;
+					}
+				} 
+				ok = doCopy(dto, x, fieldL);
+			} catch (Exception e) {
+				addError("Exception:" + e.getMessage());
+			}
+			return ok;
+		}
+
+		private boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+			boolean ok = bctx.prepare(dto, x, fieldL);
+			if (ok) {
+				isPrepared = true;
+			}
+			return ok;
+		}
+
+		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+			BeanMethodInvoker finder = new BeanMethodInvoker();
+
+			bctx.pctA.start();
+			List<String> xlist = new ArrayList<>();
+			List<String> dtolist = new ArrayList<>();
+			for(FieldSpec field: fieldL) {
+				if (bctx.allSourceFields.contains(field.srcField)) {
+					dtolist.add(field.srcField);
+				} else {
+					addError(String.format("src can't find field '%s'", field.srcField));
+				}
+
+				if (bctx.allDestFields.contains(field.destField)) {
+					xlist.add(field.destField);
+				} else {
+					addError(String.format("dest can't find field '%s'", field.destField));
+				}
+			}
+			bctx.pctA.end();
+
+			if (areErrors()) {
+				return false;
+			}
+
+			String xName = x.getClass().getSimpleName();
+			String dtoName = dto.getClass().getSimpleName();
+			String viewName =  dtoName + "View";
+
+			bctx.pctB.start();
+			DValue dvalDTO = bctx.loader.createFromBean(viewName, dto);
+			if (dvalDTO == null) {
+				return false;
+			}
+			bctx.pctB.end();
+
+			bctx.pctC.start();
+			DataSet ds = bctx.loader.getDataSet();
+			ViewLoader viewLoader = new ViewLoader(ds);
+			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
+			if (dval == null) {
+				return false;
+			}
+			bctx.pctC.end();
+
+			//now convert dval into x
+			bctx.pctD.start();
+			ScalarConvertUtil util = new ScalarConvertUtil();
+			for(String fieldName: xlist) {
+				Method meth = bctx.methodCacheX.getMethod(fieldName);
+
+				Class<?> paramClass = meth.getParameterTypes()[0];
+				DValue inner = dval.asStruct().getField(fieldName);
+				if (inner != null) {
+					Object obj = util.toObject(inner, paramClass);
+					if (obj == null) {
+						return false;
+					}
+					finder.invokeSetter(bctx.methodCacheX, x, fieldName, obj);
+				}
+			}
+			bctx.pctD.end();
+			return true;
+		}
+
+		private boolean areErrors() {
+			return bctx.loader.getErrorTracker().areErrors();
+		}
+
+		private void addError(String message) {
+			NewErrorMessage nem = new NewErrorMessage();
+			nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
+			nem.setMessage(message);
+			bctx.loader.getErrorTracker().addError(nem);
 		}
 	}
 
@@ -375,7 +405,7 @@ public class BeanCopyTests {
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
 	}
-	
+
 	@Test
 	public void testBeanCopier() {
 		BeanCopier copier = new BeanCopier();
@@ -383,17 +413,17 @@ public class BeanCopyTests {
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";
 		ClassX x = new ClassX();
-		
+
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("ss1", "s1"));
 		fields.add(new FieldSpec("ss2", "s2"));
-		
+
 		boolean b = copier.copy(dto, x, fields);
 		assertEquals(true, b);
 		assertEquals("abc", x.getS1());
 		assertEquals("abc2", x.getS2());
 	}
-	
+
 	@Test
 	public void testBeanCopierPerf() {
 		BeanCopier copier = new BeanCopier();
@@ -403,11 +433,10 @@ public class BeanCopyTests {
 		List<FieldSpec> fields = new ArrayList<>();
 		fields.add(new FieldSpec("ss1", "s1"));
 		fields.add(new FieldSpec("ss2", "s2"));
-		
+
 		PerfTimer perf = new PerfTimer();
-		copier.setPerfTimer(perf);
 		perf.startTimer("a");
-		int n = 1000; //1000; //7899
+		int n = 10; //1000; //7899
 		//with perf 800. so 0.8 msec per run
 		for(int i = 0; i < n; i++) {
 			ClassX x = new ClassX();
@@ -418,11 +447,12 @@ public class BeanCopyTests {
 		}
 		perf.endTimer("a");
 		perf.dump();
-		log(String.format("pctA %d", copier.pctA.getDuration()));
-		log(String.format("pctB %d", copier.pctB.getDuration()));
-		log(String.format("pctC %d", copier.pctC.getDuration()));
-		log(String.format("pctD %d", copier.pctD.getDuration()));
-		
+		log(String.format("pctA %d", copier.bctx.pctA.getDuration()));
+		log(String.format("pctB %d", copier.bctx.pctB.getDuration()));
+		log(String.format("pctC %d", copier.bctx.pctC.getDuration()));
+		log(String.format("pctD %d", copier.bctx.pctD.getDuration()));
+		log(String.format("pctE %d", copier.bctx.pctE.getDuration()));
+
 	}
 
 	@Test
@@ -478,6 +508,13 @@ public class BeanCopyTests {
 	public void testConvertI()  {
 		assertEquals(false, Long.class.isAssignableFrom(Integer.class));
 		assertEquals(false, Integer.class.isAssignableFrom(Long.class));
+
+		List<String> list1 = Arrays.asList("a", "bbb", "ccc");
+		List<String> list2 = Arrays.asList("a", "bb", "ccc");
+		assertEquals(false, list1.equals(list2));
+		list1 = Arrays.asList("a", "bbb", "ccc");
+		list2 = Arrays.asList("a", "bbb", "ccc");
+		assertEquals(true, list1.equals(list2));
 	}	
 
 	@Test
