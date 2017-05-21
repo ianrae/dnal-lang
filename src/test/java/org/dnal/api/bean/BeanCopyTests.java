@@ -96,10 +96,10 @@ public class BeanCopyTests {
 			loader.initCompiler();
 		}
 
-		public boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) {
-			this.contextKey = new BeanCopierContextKey(dto, x, fieldL);
+		public boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
+			this.contextKey = new BeanCopierContextKey(sourceObj, destObj, fieldL);
 			try {
-				if (! doPrepare(dto, x, fieldL)) {
+				if (! doPrepare(sourceObj, destObj, fieldL)) {
 					return false;
 				}
 			} catch (Exception e) {
@@ -108,24 +108,24 @@ public class BeanCopyTests {
 			return ! areErrors();
 		}
 
-		private boolean doPrepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+		private boolean doPrepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
 			pctE.start();
 			BeanMethodInvoker finder = new BeanMethodInvoker();
-			methodCacheX = finder.getAllSetters(x.getClass());
+			methodCacheX = finder.getAllSetters(destObj.getClass());
 
-			allDestFields = finder.getAllFields(x.getClass());
-			allSourceFields = finder.getAllFields(dto.getClass());
-			List<String> xlist = new ArrayList<>();
-			List<String> dtolist = new ArrayList<>();
+			allDestFields = finder.getAllFields(destObj.getClass());
+			allSourceFields = finder.getAllFields(sourceObj.getClass());
+			List<String> destFieldList = new ArrayList<>();
+			List<String> sourceFieldList = new ArrayList<>();
 			for(FieldSpec field: fieldL) {
 				if (allSourceFields.contains(field.srcField)) {
-					dtolist.add(field.srcField);
+					sourceFieldList.add(field.srcField);
 				} else {
 					addError(String.format("src can't find field '%s'", field.srcField));
 				}
 
 				if (allDestFields.contains(field.destField)) {
-					xlist.add(field.destField);
+					destFieldList.add(field.destField);
 				} else {
 					addError(String.format("dest can't find field '%s'", field.destField));
 				}
@@ -136,15 +136,15 @@ public class BeanCopyTests {
 			}
 
 			BeanToDTypeBuilder builder = new BeanToDTypeBuilder();
-			bmx = finder.getGetters(x.getClass(), xlist);
-			bmdto = finder.getGetters(dto.getClass(), dtolist);
+			bmx = finder.getGetters(destObj.getClass(), destFieldList);
+			bmdto = finder.getGetters(sourceObj.getClass(), sourceFieldList);
 
-			String xName = x.getClass().getSimpleName();
-			String dtoName = dto.getClass().getSimpleName();
+			String xName = destObj.getClass().getSimpleName();
+			String dtoName = sourceObj.getClass().getSimpleName();
 			String viewName =  dtoName + "View";
-			String dnal = builder.buildDnalType(xName, bmx, xlist);
-			String dnal2 = builder.buildDnalType(dtoName, bmdto, dtolist);
-			String dnal3 = builder.buildDnalView(xName, viewName, bmx, bmdto, xlist, dtolist);
+			String dnal = builder.buildDnalType(xName, bmx, destFieldList);
+			String dnal2 = builder.buildDnalType(dtoName, bmdto, sourceFieldList);
+			String dnal3 = builder.buildDnalView(xName, viewName, bmx, bmdto, destFieldList, sourceFieldList);
 
 			//			XErrorTracker.logErrors = true;
 			//			Log.debugLogging = true;
@@ -176,48 +176,54 @@ public class BeanCopyTests {
 				return false;
 			}
 		}
+
+		public void clearErrors() {
+			loader.getErrorTracker().clear();
+		}
 	}
 
 	public static class BeanCopier {
 		private BeanCopierContext bctx;
 
-		public boolean copy(Object dto, Object x, List<FieldSpec> fieldL) {
+		public boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
 			boolean ok = false;
 			try {
-				if (bctx == null) {
-					ok = prepare(dto, x, fieldL);
-				} else if (! bctx.compareKeys(dto, x, fieldL)) {
+				if (bctx == null || (! bctx.compareKeys(sourceObj, destObj, fieldL))) {
 					//new params, so re-create context
-					ok = prepare(dto, x, fieldL);
+					if (! prepare(sourceObj, destObj, fieldL)) {
+						return false;
+					}
 				}
 				
-				ok = doCopy(dto, x, fieldL);
+				ok = doCopy(sourceObj, destObj, fieldL);
+				
 			} catch (Exception e) {
 				addError("Exception:" + e.getMessage());
 			}
 			return ok;
 		}
 
-		private boolean prepare(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+		private boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
 			bctx = new BeanCopierContext();
-			return  bctx.prepare(dto, x, fieldL);
+			return  bctx.prepare(sourceObj, destObj, fieldL);
 		}
 
-		private boolean doCopy(Object dto, Object x, List<FieldSpec> fieldL) throws Exception {
+		private boolean doCopy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
 			BeanMethodInvoker finder = new BeanMethodInvoker();
-
+			bctx.clearErrors();
+			
 			bctx.pctA.start();
-			List<String> xlist = new ArrayList<>();
-			List<String> dtolist = new ArrayList<>();
+			List<String> destFieldList = new ArrayList<>();
+			List<String> sourceFieldList = new ArrayList<>();
 			for(FieldSpec field: fieldL) {
 				if (bctx.allSourceFields.contains(field.srcField)) {
-					dtolist.add(field.srcField);
+					sourceFieldList.add(field.srcField);
 				} else {
 					addError(String.format("src can't find field '%s'", field.srcField));
 				}
 
 				if (bctx.allDestFields.contains(field.destField)) {
-					xlist.add(field.destField);
+					destFieldList.add(field.destField);
 				} else {
 					addError(String.format("dest can't find field '%s'", field.destField));
 				}
@@ -228,13 +234,13 @@ public class BeanCopyTests {
 				return false;
 			}
 
-			String xName = x.getClass().getSimpleName();
-			String dtoName = dto.getClass().getSimpleName();
-			String viewName =  dtoName + "View";
+			String destTypeName = destObj.getClass().getSimpleName();
+			String sourceTypeName = sourceObj.getClass().getSimpleName();
+			String viewName =  sourceTypeName + "View";
 
 			bctx.pctB.start();
-			DValue dvalDTO = bctx.loader.createFromBean(viewName, dto);
-			if (dvalDTO == null) {
+			DValue dvalSource = bctx.loader.createFromBean(viewName, sourceObj);
+			if (dvalSource == null) {
 				return false;
 			}
 			bctx.pctB.end();
@@ -242,7 +248,7 @@ public class BeanCopyTests {
 			bctx.pctC.start();
 			DataSet ds = bctx.loader.getDataSet();
 			ViewLoader viewLoader = new ViewLoader(ds);
-			DValue dval = viewLoader.load(dvalDTO, (DStructType) ds.getType(xName));
+			DValue dval = viewLoader.load(dvalSource, (DStructType) ds.getType(destTypeName));
 			if (dval == null) {
 				return false;
 			}
@@ -251,7 +257,7 @@ public class BeanCopyTests {
 			//now convert dval into x
 			bctx.pctD.start();
 			ScalarConvertUtil util = new ScalarConvertUtil();
-			for(String fieldName: xlist) {
+			for(String fieldName: destFieldList) {
 				Method meth = bctx.methodCacheX.getMethod(fieldName);
 
 				Class<?> paramClass = meth.getParameterTypes()[0];
@@ -261,7 +267,7 @@ public class BeanCopyTests {
 					if (obj == null) {
 						return false;
 					}
-					finder.invokeSetter(bctx.methodCacheX, x, fieldName, obj);
+					finder.invokeSetter(bctx.methodCacheX, destObj, fieldName, obj);
 				}
 			}
 			bctx.pctD.end();
