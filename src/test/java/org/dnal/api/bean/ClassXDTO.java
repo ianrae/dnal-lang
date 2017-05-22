@@ -19,6 +19,7 @@ public class ClassXDTO {
 	float ff1;
 	Float ff2;
 	Date ddt1;
+	Direction ddirection1;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -114,5 +115,11 @@ public class ClassXDTO {
 	}
 	public void setDdt1(Date ddt1) {
 		this.ddt1 = ddt1;
+	}
+	public Direction getDdirection1() {
+		return ddirection1;
+	}
+	public void setDdirection1(Direction ddirection1) {
+		this.ddirection1 = ddirection1;
 	}
 }

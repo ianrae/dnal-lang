@@ -19,6 +19,7 @@ public class ClassX {
 	float f1;
 	Float f2;
 	Date dt1;
+	Direction direction1;
 	
 	public int getN1() {
 		return n1;
@@ -109,5 +110,11 @@ public class ClassX {
 	}
 	public void setDt1(Date dt1) {
 		this.dt1 = dt1;
+	}
+	public Direction getDirection1() {
+		return direction1;
+	}
+	public void setDirection1(Direction direction1) {
+		this.direction1 = direction1;
 	}
 }

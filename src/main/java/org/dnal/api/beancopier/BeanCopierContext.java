@@ -7,6 +7,7 @@ import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.api.bean.DNALLoader;
 import org.dnal.compiler.performance.PerfContinuingTimer;
 import org.dnal.core.NewErrorMessage;
+import org.dnal.core.logger.Log;
 
 public class BeanCopierContext {
 	DNALLoader loader;
@@ -80,6 +81,7 @@ public class BeanCopierContext {
 		String xName = destObj.getClass().getSimpleName();
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
+		String dnalEnum = builder.buildEnums(sourceGetterMethodCache, destGetterMethodCache);
 		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
 		String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
 		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
@@ -90,8 +92,10 @@ public class BeanCopierContext {
 		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
-		boolean b = loader.loadTypeDefinitionFromString(String.format("%s %s %s", dnal, dnal2, dnal3));
+		String fullSource = String.format("%s %s %s %s", dnalEnum, dnal, dnal2, dnal3);
+		boolean b = loader.loadTypeDefinitionFromString(fullSource);
 		if (! b) {
+			Log.log("FAILED: " + fullSource);
 			return false;
 		}
 		pctE.end();

@@ -41,6 +41,10 @@ public class BeanToDTypeBuilder {
 	private String convert(Class<?> clazz) {
 		String dnalType = map.get(clazz);
 		if (dnalType == null) {
+			if (clazz.isEnum()) {
+				return clazz.getSimpleName();
+			}
+			
 			et.addParsingError(String.format("unsupported type '%s'", clazz.getSimpleName()));
 		}
 		return dnalType;
@@ -93,6 +97,54 @@ public class BeanToDTypeBuilder {
 		Class<?> paramClass = meth.getReturnType();
 		String dnalTypeName = convert(paramClass);
 		return dnalTypeName;
+	}
+
+	public String buildEnums(BeanMethodCache sourceGetterMethodCache, BeanMethodCache destGetterMethodCache) {
+		Map<Class<?>, String> seenAlreadyMap = new HashMap<>();
+		String dnal = "";
+		
+		for(String fieldName : sourceGetterMethodCache.keySet()) {
+			Method meth = sourceGetterMethodCache.getMethod(fieldName);
+			Class<?> clazz = meth.getReturnType();
+			if (clazz.isEnum()) {
+				String className = clazz.getName();
+				if (!seenAlreadyMap.containsKey(clazz)) {
+					dnal += generateEnum(clazz);
+					seenAlreadyMap.put(clazz, "");
+				}
+			}
+		}
+		
+		for(String fieldName : destGetterMethodCache.keySet()) {
+			Method meth = destGetterMethodCache.getMethod(fieldName);
+			Class<?> clazz = meth.getReturnType();
+			if (clazz.isEnum()) {
+				String className = clazz.getName();
+				if (!seenAlreadyMap.containsKey(clazz)) {
+					dnal += generateEnum(clazz);
+					seenAlreadyMap.put(clazz, "");
+				}
+			}
+		}
+		return dnal;
+	}
+
+	private String generateEnum(Class<?> paramClass) {
+		
+		StringBuilder sb = new StringBuilder();
+		sb.append("type ");
+		sb.append(paramClass.getSimpleName());
+		sb.append(" enum { ");
+		
+		for(int i = 0; i < paramClass.getEnumConstants().length; i++) {
+			Object x = paramClass.getEnumConstants()[i];
+			if (i > 0) {
+				sb.append(" ");
+			}
+			sb.append(x.toString());
+		}
+		sb.append(" } end ");
+		return sb.toString();
 	}
 
 }
