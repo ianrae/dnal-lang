@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.compiler.et.XErrorTracker;
 
@@ -19,6 +20,7 @@ public class BeanToDTypeBuilder {
 	private Map<Class<?>, String> map = new HashMap<>();
 	private XErrorTracker et;
 	private Map<String, String> listTypeMap = new HashMap<>();
+	private Map<String, String> structTypeMap = new HashMap<>();
 	private ListTypeFinder listTypeFinder;
 
 	public BeanToDTypeBuilder(XErrorTracker et) {
@@ -45,15 +47,22 @@ public class BeanToDTypeBuilder {
 		map.put(List.class, "list");
 	}
 
-	private String convert(Class<?> clazz) {
+//	private String convert(Class<?> clazz) {
+//		return convert(clazz, false);
+//	}
+	private String convert(Class<?> clazz, boolean allowMissing) {
 		String dnalType = map.get(clazz);
-
+		
 		if (dnalType == null) {
 			if (clazz.isEnum()) {
 				return clazz.getSimpleName();
 			}
 
-			et.addParsingError(String.format("unsupported type '%s'", clazz.getSimpleName()));
+			if (! allowMissing) {
+				et.addParsingError(String.format("unsupported type '%s'", clazz.getSimpleName()));
+			} else {
+				return "STRUCT:" + clazz.getSimpleName();
+			}
 		}
 		return dnalType;
 	}
@@ -88,31 +97,31 @@ public class BeanToDTypeBuilder {
 			String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
 			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
 		}
-		//		for(int i = 0; i < xlist.size(); i++) {
-		//			String fieldName = xlist.get(i);
-		//			String dtoName = dtolist.get(i);
-		//			String dnalTypeName = getDnalTypeName(methodCache1, fieldName);
-		//			String dnalTypeNameDTO = getDnalTypeName(methodCache2, dtoName);
-		//			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
-		//		}
 		sb.append(" } end");
 		return sb.toString();
 	}
 
 	private String getDnalTypeName(BeanMethodCache methodCache, String fieldName) {
+		return getDnalTypeNameRaw(methodCache, fieldName, false);
+	}
+	private String getDnalTypeNameRaw(BeanMethodCache methodCache, String fieldName, boolean allowMissing) {
 		Method meth = methodCache.getMethod(fieldName);
 		Class<?> paramClass = meth.getReturnType();
-		if (listTypeFinder.isListType(paramClass)) {
-			return calculateListType(meth, paramClass);
+		if (structTypeMap.containsKey(paramClass.getSimpleName())) {
+			return structTypeMap.get(paramClass.getSimpleName());
 		}
-		String dnalTypeName = convert(paramClass);
+		
+		if (listTypeFinder.isListType(paramClass)) {
+			return calculateListType(meth, paramClass, allowMissing);
+		}
+		String dnalTypeName = convert(paramClass, allowMissing);
 		return dnalTypeName;
 	}
 
-	private String calculateListType(Method meth, Class<?> paramClass) {
+	private String calculateListType(Method meth, Class<?> paramClass, boolean allowMissing) {
 		Class<?> inner = listTypeFinder.getListElementType(meth, paramClass);
 		if (inner != null) {
-			String elType = convert(inner);
+			String elType = convert(inner, allowMissing);
 			
 			String s = "";
 			switch(listTypeFinder.listDepth) {
@@ -178,7 +187,7 @@ public class BeanToDTypeBuilder {
 		int nextInstanceId = 100;
 		for(String fieldName : sourceGetterMethodCache.keySet()) {
 			String dnalTypeName = getDnalTypeName(sourceGetterMethodCache, fieldName);
-			if (dnalTypeName.startsWith("list<")) {
+			if (dnalTypeName != null && dnalTypeName.startsWith("list<")) {
 				if (!listTypeMap.containsKey(dnalTypeName)) {
 					String listTypeName = generateListTypeName(nextInstanceId++);
 					dnal += generateListType(listTypeName, dnalTypeName);
@@ -189,7 +198,7 @@ public class BeanToDTypeBuilder {
 
 		for(String fieldName : destGetterMethodCache.keySet()) {
 			String dnalTypeName = getDnalTypeName(destGetterMethodCache, fieldName);
-			if (dnalTypeName.startsWith("list<")) {
+			if (dnalTypeName != null && dnalTypeName.startsWith("list<")) {
 				if (!listTypeMap.containsKey(dnalTypeName)) {
 					String listTypeName = generateListTypeName(nextInstanceId++);
 					dnal += generateListType(listTypeName, dnalTypeName);
@@ -226,5 +235,47 @@ public class BeanToDTypeBuilder {
 		sb.append(" } end ");
 		return sb.toString();
 	}
+	
+	public String buildStructTypes(BeanMethodCache sourceGetterMethodCache, BeanMethodCache destGetterMethodCache) {
+		String dnal = "";
+
+		int nextInstanceId = 100;
+		for(String fieldName : sourceGetterMethodCache.keySet()) {
+			dnal += doStruct(sourceGetterMethodCache, fieldName, nextInstanceId++);
+			dnal += "\n";
+		}
+
+		for(String fieldName : destGetterMethodCache.keySet()) {
+			dnal += doStruct(destGetterMethodCache, fieldName, nextInstanceId++);
+		}
+		return dnal;
+	}
+	
+	private String doStruct(BeanMethodCache methodCache, String fieldName, int nextInstanceId) {
+		String dnal = "";
+		String target = "STRUCT:";
+
+		String dnalTypeName = getDnalTypeNameRaw(methodCache, fieldName, true);
+		if (dnalTypeName.startsWith(target)) {
+			dnalTypeName = StringUtils.substringAfter(dnalTypeName, target);
+			if (!structTypeMap.containsKey(dnalTypeName)) {
+				
+				Method meth = methodCache.getMethod(fieldName);
+				Class<?> paramClass = meth.getReturnType();
+				String structTypeName = String.format("%s%d", "Struct", nextInstanceId++);
+				dnal += generateStructType(structTypeName, dnalTypeName, paramClass);
+				structTypeMap.put(dnalTypeName, structTypeName);
+			}
+		}
+		return dnal;
+	}
+
+	private String generateStructType(String structTypeName, String dnalTypeName, Class<?> paramClass) {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCache = finder.getAllGetters(paramClass);
+		List<String> allGetters = finder.getAllFields(paramClass);
+		return buildDnalType(structTypeName, methodCache, allGetters);
+	}
+	
 
 }

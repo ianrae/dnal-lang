@@ -52,10 +52,7 @@ public class ListTests {
 		assertEquals(list, x.strlistlist1);
 	}
 	
-	//TODO: list of list
 	//TODO: list of structs
-	
-
 
 	//----------
 	private BeanCopier copier = new BeanCopier();

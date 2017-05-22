@@ -84,6 +84,7 @@ public class BeanCopierContext {
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
 		String dnalEnum = builder.buildEnums(sourceGetterMethodCache, destGetterMethodCache);
+		String dnalStruct = builder.buildStructTypes(sourceGetterMethodCache, destGetterMethodCache);
 		String dnalList = builder.buildListTypes(sourceGetterMethodCache, destGetterMethodCache);
 		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
 		String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
@@ -95,7 +96,7 @@ public class BeanCopierContext {
 		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
-		String fullSource = String.format("%s\n %s\n %s\n %s\n %s\n", dnalEnum, dnalList, dnal, dnal2, dnal3);
+		String fullSource = String.format("%s\n %s\n %s\n %s\n %s\n %s\n", dnalEnum, dnalStruct, dnalList, dnal, dnal2, dnal3);
 		boolean b = loader.loadTypeDefinitionFromString(fullSource);
 		if (! b) {
 			Log.log("FAILED: " + fullSource); 
