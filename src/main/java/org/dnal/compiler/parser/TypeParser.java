@@ -1,5 +1,6 @@
 package org.dnal.compiler.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jparsec.Parser;
@@ -20,6 +21,7 @@ import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
+import org.dnal.compiler.parser.ast.ListAssignExp;
 import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.RuleWithFieldExp;
@@ -208,8 +210,12 @@ public class TypeParser extends ParserBase {
 		new FullEnumTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
 	
+	public static final Parser.Reference<IdentExp> listangleRef = Parser.newReference();
+	public static Parser<IdentExp> listangleinner() {
+		return Parsers.or(listangleRef.lazy(), VarParser.ident());
+	}
 	public static Parser<IdentExp> listangle() {
-		return Parsers.sequence(term("list"), term("<"), VarParser.ident(), term(">"),
+		return Parsers.sequence(term("list"), term("<"), listangleinner(), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
 		new IdentExp(String.format("list<%s>", elementType.name())));
 	}

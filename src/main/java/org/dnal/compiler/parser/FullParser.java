@@ -19,6 +19,7 @@ public class FullParser {
 	public static Exp parse02(String input){
 		VarParser.listmemberRef.set(VarParser.valueassign());		
 		VarParser.structmemberRef.set(VarParser.valueassignstruct00());
+		TypeParser.listangleRef.set(TypeParser.listangle());
 		return FullParser.allStatements().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(input);
 	}
 	public static FullAssignmentExp parse01(String input){
@@ -28,6 +29,7 @@ public class FullParser {
 	public static List<Exp> fullParse(String input) {
 		VarParser.listmemberRef.set(VarParser.valueassign());		
 		VarParser.structmemberRef.set(VarParser.valueassignstruct00());
+		TypeParser.listangleRef.set(TypeParser.listangle());
 		return FullParser.allStatements().many().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(input);
 	}
 }
