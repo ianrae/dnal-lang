@@ -1,6 +1,5 @@
 package org.dnal.api.systest;
 
-import org.dnal.core.DValue;
 import org.junit.Test;
 
 /*
@@ -10,7 +9,7 @@ public class SourceTests extends SysTestBase {
 
 	@Test
 	public void test() {
-        add("type Foo list<list<string>> end let x Foo = [['abc', 'def'], ['z']");
+        add("type Foo list<list<string>> end let x Foo = [ ['abc', 'def'], ['z'] ]");
 
 		load(dnal, true);
 	}

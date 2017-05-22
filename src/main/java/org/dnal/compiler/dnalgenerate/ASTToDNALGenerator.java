@@ -84,6 +84,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			}
 		}
 		context.perf.endTimer("ast-to-dval:types");
+//		registry.dump();
 
 		context.perf.startTimer("ast-to-dval:values");
 		String packageName = packageHelper.getPackageName();

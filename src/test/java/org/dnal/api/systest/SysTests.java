@@ -144,18 +144,10 @@ public class SysTests extends SysTestBase {
     @Test
     public void testT100() {
 //        DValue dval = chkValue("x", "type Foo list<string> end let x Foo = ['abc', 'def']", 1, 1);
-        DValue dval = chkValue("x", "type Foo list<list<string>> end let x Foo = [['abc', 'def'], ['z']", 1, 1);
+        DValue dval = chkValue("x", "type Foo list<list<string>> end let x Foo = [['abc', 'def'], ['z']]", 2, 1);
         assertEquals(2, dval.asList().size());
-        assertEquals("abc", dval.asList().get(0).asString());
-        assertEquals("def", dval.asList().get(1).asString());
-        
-//        dval = chkValue("x", "type Foo enum { RED BLUE } end let x Foo = BLUE", 1, 1);
-//        assertEquals("BLUE", dval.asString());
-//
-//        dval = chkValue("x", "type Foo struct { x int y string } end let x Foo = { 15, 'abc' }", 1, 1);
-//        assertEquals(2, dval.asMap().size());
-//        assertEquals(15, dval.asMap().get("x").asInt());
-//        assertEquals("abc", dval.asMap().get("y").asString());
+        assertEquals("abc", dval.asList().get(0).asList().get(0).asString());
+        assertEquals("def", dval.asList().get(0).asList().get(1).asString());
     }
     
 }
