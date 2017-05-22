@@ -1,6 +1,7 @@
 package org.dnal.api.bean;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class ClassXDTO {
 	private int nn1;
@@ -17,6 +18,7 @@ public class ClassXDTO {
 	Double dd2;
 	float ff1;
 	Float ff2;
+	Date ddt1;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -106,5 +108,11 @@ public class ClassXDTO {
 	}
 	public void setFf2(Float ff2) {
 		this.ff2 = ff2;
+	}
+	public Date getDdt1() {
+		return ddt1;
+	}
+	public void setDdt1(Date ddt1) {
+		this.ddt1 = ddt1;
 	}
 }
