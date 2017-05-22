@@ -14,7 +14,6 @@ public class SourceTests extends SysTestBase {
         
         addSrc("type ClassX struct {  strlist1 list<string> optional } end");
         addSrc(" type ClassXDTO struct {  sstrlist1 list<string> optional } end ");
-        addSrc("inview ClassX <- ClassXDTOView { strlist1 <- sstrlist1 list<string> } end");
         
         load(dnal, true);
 	}

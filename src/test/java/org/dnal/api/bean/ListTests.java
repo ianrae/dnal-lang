@@ -2,8 +2,6 @@ package org.dnal.api.bean;
 
 import static org.junit.Assert.assertEquals;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,37 +16,15 @@ public class ListTests {
 
 	@Test
 	public void test() throws Exception {
-//	      Field stringListField = ClassXDTO.class.getDeclaredField("sstrlist1");
-//	        ParameterizedType stringListType = (ParameterizedType) stringListField.getGenericType();
-//	        Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
-//	        System.out.println(stringListClass); // class java.lang.String.
-		
 		addField("sstrlist1", "strlist1");
 		List<String> list = Arrays.asList("abc", "def");
 		chkCopy(dto, x, fields, list);
 	}
 	
-//
-//	@Test
-//	public void testToString() {
-//		addField("ddirection1", "str1");
-//		chkCopy(dto, x, fields);
-//		assertEquals("WEST", x.str1);
-//	}
-//
-//	@Test
-//	public void testFromString() {
-//		dto.sstr1 = "SOUTH";
-//		addField("sstr1", "direction1");
-//		chkCopy(dto, x, fields, Direction.SOUTH);
-//	}
-//
-//	@Test
-//	public void testFromStringFail() {
-//		dto.sstr1 = "boom";
-//		addField("sstr1", "direction1");
-//		chkCopyFail(dto, x, fields);
-//	}
+	//TODO: list of enums
+	//TODO: list of list
+	//TODO: list of structs
+	
 
 
 	//----------
