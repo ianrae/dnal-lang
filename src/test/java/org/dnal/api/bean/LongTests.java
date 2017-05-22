@@ -2,7 +2,6 @@ package org.dnal.api.bean;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +10,7 @@ import org.dnal.api.beancopier.FieldSpec;
 import org.junit.Test;
 
 
-public class IntegerTests {
+public class LongTests {
 
 	@Test
 	public void test() {
