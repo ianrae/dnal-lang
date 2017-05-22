@@ -32,54 +32,28 @@ public class EnumTests {
 		}
 		return null;
 	}
-	
-//	@Test
-//	public void test1() {
-//		Date sometime = getDate(2013, 3, 25);
-//		dto.ddt1 = sometime;
-//		addField("ddt1", "dt1");
-//		chkCopy(dto, x, fields, sometime);
-//	}
-//	
-//	@Test
-//	public void testStr() {
-//		Date sometime = getDate(2013, 3, 25);
-//        String s = DateFormatParser.format(sometime);
-//        log(s);
-//		
-//		dto.sstr1 = s;
-//		addField("sstr1", "dt1");
-//		chkCopy(dto, x, fields, sometime);
-//	}
-//	@Test
-//	public void testToStr() {
-//		Date sometime = getDate(2013, 3, 25);
-//        String s = DateFormatParser.format(sometime);
-//        log(s);
-//		
-//		dto.ddt1 = sometime;
-//		addField("ddt1", "str1");
-//		chkCopy(dto, x, fields);
-//		log(x.str1);
-//		assertEquals("Mon Mar 25 07:30:41 EDT 2013", x.str1);
-//	}
-//	
-//	@Test
-//	public void testLong() {
-//		addField("ddt1", "long1");
-//		chkCopy(dto, x, fields);
-//		
-//		Date dt = new Date(x.long1);
-//		assertEquals(dt, dto.ddt1);
-//	}
-//	@Test
-//	public void testFromLong() {
-//		dto.nlong1 = timestamp.getTime();
-//		addField("nlong1", "dt1");
-//		chkCopy(dto, x, fields);
-//		assertEquals(timestamp, x.dt1);
-//	}
-//	
+
+	@Test
+	public void testToString() {
+		addField("ddirection1", "str1");
+		chkCopy(dto, x, fields);
+		assertEquals("WEST", x.str1);
+	}
+
+	@Test
+	public void testFromString() {
+		dto.sstr1 = "SOUTH";
+		addField("sstr1", "direction1");
+		chkCopy(dto, x, fields, Direction.SOUTH);
+	}
+
+	@Test
+	public void testFromStringFail() {
+		dto.sstr1 = "boom";
+		addField("sstr1", "direction1");
+		chkCopyFail(dto, x, fields);
+	}
+
 
 	//----------
 	private BeanCopier copier = new BeanCopier();

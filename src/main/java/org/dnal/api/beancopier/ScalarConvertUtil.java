@@ -87,6 +87,11 @@ public class ScalarConvertUtil {
 		case STRUCT:
 			break;
 		case ENUM:
+			if (! clazz.isEnum()) {
+				addEnumError(clazz);
+			} else {
+				return convertToEnum(dval, clazz);
+			}
 			break;
 		default:
 			break;
@@ -95,6 +100,18 @@ public class ScalarConvertUtil {
 		return null;
 	}
 
+	private Object convertToEnum(DValue dval, Class<?> clazz) {
+		String strval = dval.asString();
+		
+		for(int i = 0; i < clazz.getEnumConstants().length; i++) {
+			Object x = clazz.getEnumConstants()[i];
+			if (strval.equals(x.toString())) {
+				return x;
+			}
+		}
+		
+		return null;
+	}
 	private boolean isFractional(Double dd) {
 		BigDecimal bd = new BigDecimal(dd);
 		boolean ok = false;
@@ -218,5 +235,8 @@ public class ScalarConvertUtil {
 	
 	private void addRangeError(long val, Class<?> clazz) {
 		et.addParsingError(String.format("value %d is out of range for '%s'", val, clazz.getSimpleName()));
+	}
+	private void addEnumError(Class<?> clazz) {
+		et.addParsingError(String.format("class '%s' is not an enum", clazz.getSimpleName()));
 	}
 }

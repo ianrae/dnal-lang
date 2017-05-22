@@ -496,7 +496,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			default:
 			{
 				DType eltype = packageHelper.findRegisteredType(membExp.rightType.name());
-				String fieldName = membExp.left.name();
+				String fieldName = membExp.right.name();
 				if (eltype != null) {
 					inner.other(fieldName, eltype);
 				} else {
