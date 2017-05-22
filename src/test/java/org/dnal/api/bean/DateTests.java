@@ -53,6 +53,22 @@ public class DateTests {
 		assertEquals("Mon Mar 25 07:30:41 EDT 2013", x.str1);
 	}
 	
+	@Test
+	public void testLong() {
+		addField("ddt1", "long1");
+		chkCopy(dto, x, fields);
+		
+		Date dt = new Date(x.long1);
+		assertEquals(dt, dto.ddt1);
+	}
+	@Test
+	public void testFromLong() {
+		dto.nlong1 = timestamp.getTime();
+		addField("nlong1", "dt1");
+		chkCopy(dto, x, fields);
+		assertEquals(timestamp, x.dt1);
+	}
+	
 
 	//----------
 	private BeanCopier copier = new BeanCopier();

@@ -63,6 +63,9 @@ public class ViewLoaderRendererBase {
 				if (obj instanceof Number) {
 					Number num = (Number) obj;
 					nnLong = num.longValue();
+				} else if (obj instanceof Date) {
+					Date ddt = (Date) obj;
+					nnLong = ddt.getTime();
 				} else {
 					nnLong = Long.parseLong(obj.toString());
 				}
@@ -90,6 +93,9 @@ public class ViewLoaderRendererBase {
 			{
 				if (obj instanceof Date) {
 					dt = (Date) obj;
+					dval = trans.createDateBuilder(destType).buildFrom(dt);
+				} else if (obj instanceof Long) {
+					dt = new Date((Long)obj);
 					dval = trans.createDateBuilder(destType).buildFrom(dt);
 				} else {
 					dval = trans.createDateBuilder(destType).buildFromString(obj.toString());
