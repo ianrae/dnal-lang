@@ -22,6 +22,8 @@ public class ClassX {
 	Date dt1;
 	Direction direction1;
 	List<String> strlist1;
+	List<Direction> dirlist1;
+	List<Integer> nlist1;
 	
 	public int getN1() {
 		return n1;
@@ -124,5 +126,17 @@ public class ClassX {
 	}
 	public void setStrlist1(List<String> strlist1) {
 		this.strlist1 = strlist1;
+	}
+	public List<Direction> getDirlist1() {
+		return dirlist1;
+	}
+	public void setDirlist1(List<Direction> dirlist1) {
+		this.dirlist1 = dirlist1;
+	}
+	public List<Integer> getNlist1() {
+		return nlist1;
+	}
+	public void setNlist1(List<Integer> nlist1) {
+		this.nlist1 = nlist1;
 	}
 }

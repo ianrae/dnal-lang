@@ -95,7 +95,7 @@ public class BeanCopierContext {
 		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
-		String fullSource = String.format("%s %s %s %s %s", dnalList, dnalEnum, dnal, dnal2, dnal3);
+		String fullSource = String.format("%s %s %s %s %s", dnalEnum, dnalList, dnal, dnal2, dnal3);
 		boolean b = loader.loadTypeDefinitionFromString(fullSource);
 		if (! b) {
 			Log.log("FAILED: " + fullSource);

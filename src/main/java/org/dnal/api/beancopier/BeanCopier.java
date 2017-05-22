@@ -101,6 +101,10 @@ public class BeanCopier {
 			}
 		}
 		bctx.pctD.end();
+		
+		if (areErrors()) {
+			return false;
+		}
 		return true;
 	}
 

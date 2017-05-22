@@ -143,26 +143,27 @@ public class BeanToDTypeBuilder {
 		String dnal = "";
 
 		for(String fieldName : sourceGetterMethodCache.keySet()) {
-			Method meth = sourceGetterMethodCache.getMethod(fieldName);
-			Class<?> clazz = meth.getReturnType();
-			if (clazz.isEnum()) {
-				String className = clazz.getName();
-				if (!seenAlreadyMap.containsKey(clazz)) {
-					dnal += generateEnum(clazz);
-					seenAlreadyMap.put(clazz, "");
-				}
-			}
+			dnal += doEnum(sourceGetterMethodCache, fieldName, seenAlreadyMap);
 		}
 
 		for(String fieldName : destGetterMethodCache.keySet()) {
-			Method meth = destGetterMethodCache.getMethod(fieldName);
-			Class<?> clazz = meth.getReturnType();
-			if (clazz.isEnum()) {
-				String className = clazz.getName();
-				if (!seenAlreadyMap.containsKey(clazz)) {
-					dnal += generateEnum(clazz);
-					seenAlreadyMap.put(clazz, "");
-				}
+			dnal += doEnum(destGetterMethodCache, fieldName, seenAlreadyMap);
+		}
+		return dnal;
+	}
+	private String doEnum(BeanMethodCache methodCache, String fieldName, Map<Class<?>, String> seenAlreadyMap) {
+		Method meth = methodCache.getMethod(fieldName);
+		Class<?> clazz = meth.getReturnType();
+		if (Collection.class.isAssignableFrom(clazz)) {
+			clazz = getListElementType(meth, clazz);
+		}
+		
+		String dnal = "";
+		if (clazz.isEnum()) {
+			String className = clazz.getName();
+			if (!seenAlreadyMap.containsKey(clazz)) {
+				dnal += generateEnum(clazz);
+				seenAlreadyMap.put(clazz, "");
 			}
 		}
 		return dnal;
@@ -201,14 +202,14 @@ public class BeanToDTypeBuilder {
 		return s;
 	}
 	private String generateListType(String listTypeName, String dnalTypeName) {
-		String s = String.format("type %s %s end", listTypeName, dnalTypeName);
+		String s = String.format(" type %s %s end", listTypeName, dnalTypeName);
 		return s;
 	}
 
 	private String generateEnum(Class<?> paramClass) {
 
 		StringBuilder sb = new StringBuilder();
-		sb.append("type ");
+		sb.append(" type ");
 		sb.append(paramClass.getSimpleName());
 		sb.append(" enum { ");
 

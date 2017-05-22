@@ -20,6 +20,26 @@ public class ListTests {
 		List<String> list = Arrays.asList("abc", "def");
 		chkCopy(dto, x, fields, list);
 	}
+	@Test
+	public void test2() throws Exception {
+		addField("ddirlist1", "dirlist1");
+		List<Direction> list = Arrays.asList(Direction.NORTH, Direction.SOUTH);
+		chkCopy(dto, x, fields);
+		assertEquals(list, x.dirlist1);
+	}
+	@Test
+	public void test2a() throws Exception {
+		addField("ddirlist1", "strlist1");
+		List<String> list = Arrays.asList("NORTH", "SOUTH");
+		chkCopy(dto, x, fields);
+		assertEquals(list, x.strlist1);
+	}
+	
+	@Test
+	public void test3Fail() throws Exception {
+		addField("ddirlist1", "nlist1");
+		chkCopyFail(dto, x, fields);
+	}
 	
 	//TODO: list of enums
 	//TODO: list of list
@@ -40,6 +60,7 @@ public class ListTests {
 	@Before
 	public void init() {
 		dto.sstrlist1 = Arrays.asList("abc", "def");
+		dto.ddirlist1 = Arrays.asList(Direction.NORTH, Direction.SOUTH);
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields, List<String> expected) {
 		chkCopy(dto, x, fields);
