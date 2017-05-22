@@ -93,7 +93,7 @@ public class BeanCopier {
 			Class<?> paramClass = meth.getParameterTypes()[0];
 			DValue inner = dval.asStruct().getField(fieldName);
 			if (inner != null) {
-				Object obj = util.toObject(inner, paramClass);
+				Object obj = convertToObject(util, inner, paramClass, fieldName);
 				if (obj == null) {
 					return false;
 				}
@@ -102,6 +102,24 @@ public class BeanCopier {
 		}
 		bctx.pctD.end();
 		return true;
+	}
+
+	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName) {
+		if (dval.getType().isListShape()) {
+			List<Object> list = new ArrayList<>();
+			for(DValue inner: dval.asList()) {
+				if (inner != null) {
+					Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
+					Class<?> elClass = bctx.getListElementType(meth, paramClass);
+					Object obj = convertToObject(util, inner, elClass, fieldName);  //recursion!
+					if (obj != null) {
+						list.add(obj);
+					}
+				}
+			}
+			return list;
+		}
+		return util.toObject(dval, paramClass);
 	}
 
 	private boolean areErrors() {

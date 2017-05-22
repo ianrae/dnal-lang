@@ -1,5 +1,6 @@
 package org.dnal.api.beancopier;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,14 +21,16 @@ public class BeanCopierContext {
 	BeanMethodCache destSetterMethodCache;
 	List<String> allDestFields;
 	List<String> allSourceFields;
-	private BeanMethodCache destGetterMethodCache;
+	BeanMethodCache destGetterMethodCache;
 	private BeanMethodCache sourceGetterMethodCache;
 	private BeanCopierContextKey contextKey;
+	private BeanToDTypeBuilder builder;
 
 
 	public BeanCopierContext() {
 		loader = new DNALLoader();
 		loader.initCompiler();
+		builder = new BeanToDTypeBuilder(loader.getErrorTracker());
 	}
 
 	public boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
@@ -74,7 +77,6 @@ public class BeanCopierContext {
 			return false;
 		}
 
-		BeanToDTypeBuilder builder = new BeanToDTypeBuilder(loader.getErrorTracker());
 		destGetterMethodCache = finder.getGetters(destObj.getClass(), destFieldList);
 		sourceGetterMethodCache = finder.getGetters(sourceObj.getClass(), sourceFieldList);
 
@@ -102,6 +104,10 @@ public class BeanCopierContext {
 		pctE.end();
 
 		return true;
+	}
+	
+	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
+		return builder.getListElementType(meth, paramClass);
 	}
 
 	private boolean areErrors() {

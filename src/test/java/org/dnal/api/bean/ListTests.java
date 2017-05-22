@@ -18,12 +18,10 @@ public class ListTests {
 
 	@Test
 	public void test() throws Exception {
-	      Field stringListField = ClassXDTO.class.getDeclaredField("sstrlist1");
-	        ParameterizedType stringListType = (ParameterizedType) stringListField.getGenericType();
-	        Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
-	        System.out.println(stringListClass); // class java.lang.String.
-		
-		
+//	      Field stringListField = ClassXDTO.class.getDeclaredField("sstrlist1");
+//	        ParameterizedType stringListType = (ParameterizedType) stringListField.getGenericType();
+//	        Class<?> stringListClass = (Class<?>) stringListType.getActualTypeArguments()[0];
+//	        System.out.println(stringListClass); // class java.lang.String.
 		
 		addField("sstrlist1", "strlist1");
 		List<String> list = Arrays.asList("abc", "def");

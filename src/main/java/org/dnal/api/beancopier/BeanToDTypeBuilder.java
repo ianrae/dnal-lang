@@ -111,11 +111,15 @@ public class BeanToDTypeBuilder {
 		if (inner != null) {
 			//TODO: handle list of lists later!!!
 			String elType = convert(inner);
-			return String.format("list<%s>", elType);
+			String s = String.format("list<%s>", elType);
+			if (listTypeMap.containsKey(s)) {
+				return listTypeMap.get(s);
+			}
+			return s;
 		}
 		return null;
 	}
-	private Class<?> getListElementType(Method meth, Class<?> paramClass) {
+	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
 		Type returnType = meth.getGenericReturnType();
 		if (returnType instanceof ParameterizedType) {
 			ParameterizedType paramType = (ParameterizedType) returnType;
@@ -174,7 +178,7 @@ public class BeanToDTypeBuilder {
 				if (!listTypeMap.containsKey(dnalTypeName)) {
 					String listTypeName = generateListTypeName(nextInstanceId++);
 					dnal += generateListType(listTypeName, dnalTypeName);
-					listTypeMap.put(dnalTypeName, "");
+					listTypeMap.put(dnalTypeName, listTypeName);
 				}
 			}
 		}
@@ -185,7 +189,7 @@ public class BeanToDTypeBuilder {
 				if (!listTypeMap.containsKey(dnalTypeName)) {
 					String listTypeName = generateListTypeName(nextInstanceId++);
 					dnal += generateListType(listTypeName, dnalTypeName);
-					listTypeMap.put(dnalTypeName, "");
+					listTypeMap.put(dnalTypeName, listTypeName);
 				}
 			}
 		}
