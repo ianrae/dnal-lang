@@ -41,7 +41,17 @@ public class ListTests {
 		chkCopyFail(dto, x, fields);
 	}
 	
-	//TODO: list of enums
+	@Test
+	public void testListList() {
+		addField("sstrlistlist1", "strlistlist1");
+		
+		List<String> list1 = Arrays.asList("A", "B");
+		List<String> list2 = Arrays.asList("C", "D");
+		List<List<String>> list = Arrays.asList(list1, list2);
+		chkCopy(dto, x, fields);
+		assertEquals(list, x.strlistlist1);
+	}
+	
 	//TODO: list of list
 	//TODO: list of structs
 	
@@ -61,6 +71,10 @@ public class ListTests {
 	public void init() {
 		dto.sstrlist1 = Arrays.asList("abc", "def");
 		dto.ddirlist1 = Arrays.asList(Direction.NORTH, Direction.SOUTH);
+		
+		List<String> list1 = Arrays.asList("A", "B");
+		List<String> list2 = Arrays.asList("C", "D");
+		dto.sstrlistlist1 = Arrays.asList(list1, list2);
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields, List<String> expected) {
 		chkCopy(dto, x, fields);

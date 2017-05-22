@@ -121,6 +121,13 @@ public class BeanToDTypeBuilder {
 	}
 	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
 		Type returnType = meth.getGenericReturnType();
+		Class<?> clazz = handleType(returnType, paramClass);
+		return clazz;
+	}
+
+	//				} else if (type.getTypeName().equals("java.util.List")) {
+
+	private Class<?> handleType(Type returnType, Class<?> paramClass) {
 		if (returnType instanceof ParameterizedType) {
 			ParameterizedType paramType = (ParameterizedType) returnType;
 			Type[] argTypes = paramType.getActualTypeArguments();
@@ -130,6 +137,8 @@ public class BeanToDTypeBuilder {
 					@SuppressWarnings("unchecked")
 					Class<?> inner = (Class<?>) type;
 					return inner;
+				} else if (type instanceof ParameterizedType) {
+					return handleType(type, paramClass);
 				} else {
 					et.addParsingError(String.format("generiuc list element type is unsupported type '%s'", paramClass.getSimpleName()));
 				}

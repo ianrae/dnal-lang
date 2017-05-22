@@ -24,6 +24,7 @@ public class ClassXDTO {
 	List<String> sstrlist1;
 	List<Direction> ddirlist1;
 	List<Integer> nnlist1;
+	List<List<String>> sstrlistlist1;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -143,5 +144,11 @@ public class ClassXDTO {
 	}
 	public void setNnlist1(List<Integer> nnlist1) {
 		this.nnlist1 = nnlist1;
+	}
+	public List<List<String>> getSstrlistlist1() {
+		return sstrlistlist1;
+	}
+	public void setSstrlistlist1(List<List<String>> sstrlistlist1) {
+		this.sstrlistlist1 = sstrlistlist1;
 	}
 }
