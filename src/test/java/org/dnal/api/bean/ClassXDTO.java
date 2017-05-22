@@ -15,6 +15,8 @@ public class ClassXDTO {
 	Boolean bb2;
 	double dd1;
 	Double dd2;
+	float ff1;
+	Float ff2;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -92,5 +94,17 @@ public class ClassXDTO {
 	}
 	public void setDd2(Double dd2) {
 		this.dd2 = dd2;
+	}
+	public float getFf1() {
+		return ff1;
+	}
+	public void setFf1(float ff1) {
+		this.ff1 = ff1;
+	}
+	public Float getFf2() {
+		return ff2;
+	}
+	public void setFf2(Float ff2) {
+		this.ff2 = ff2;
 	}
 }

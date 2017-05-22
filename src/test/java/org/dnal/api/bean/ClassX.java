@@ -15,6 +15,8 @@ public class ClassX {
 	Boolean b2;
 	double d1;
 	Double d2;
+	float f1;
+	Float f2;
 	
 	public int getN1() {
 		return n1;
@@ -87,5 +89,17 @@ public class ClassX {
 	}
 	public void setD2(Double d2) {
 		this.d2 = d2;
+	}
+	public float getF1() {
+		return f1;
+	}
+	public void setF1(float f1) {
+		this.f1 = f1;
+	}
+	public Float getF2() {
+		return f2;
+	}
+	public void setF2(Float f2) {
+		this.f2 = f2;
 	}
 }

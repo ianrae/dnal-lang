@@ -59,7 +59,9 @@ public class ScalarConvertUtil {
 			}
 			
 			if (isFractional(nDouble)) {
-
+				if (isFloat(nDouble.floatValue(), clazz)) {
+					return nDouble.floatValue();
+				}
 			} else {
 				if (isShort(nDouble.intValue(), clazz)) {
 					return nDouble.shortValue(); //narrowing. 
@@ -100,8 +102,9 @@ public class ScalarConvertUtil {
 			bd.intValueExact();
 			ok = true;
 		} catch (ArithmeticException e) {
+			ok = false;
 		}
-		return ok;
+		return !ok;
 	}
 
 	private boolean isByte(Number num, Class<?> clazz) {
@@ -137,6 +140,18 @@ public class ScalarConvertUtil {
 		}
 		return false;
 	}
+	private boolean isFloat(Number num, Class<?> clazz) {
+		if (clazz.equals(Float.class) || clazz.equals(float.class)) {
+			int n = num.intValue();
+			if ((n < Float.MIN_VALUE) || (n > Float.MAX_VALUE)) {
+				addRangeError(n, clazz);
+				return false;
+			}				
+			return true;
+		}
+		return false;
+	}
+	
 	//========= from conversion ===========
 	//TODO: much more to do here
 
