@@ -2,6 +2,7 @@ package org.dnal.api.bean;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ClassX {
 	int n1;
@@ -20,6 +21,7 @@ public class ClassX {
 	Float f2;
 	Date dt1;
 	Direction direction1;
+	List<String> strlist1;
 	
 	public int getN1() {
 		return n1;
@@ -116,5 +118,11 @@ public class ClassX {
 	}
 	public void setDirection1(Direction direction1) {
 		this.direction1 = direction1;
+	}
+	public List<String> getStrlist1() {
+		return strlist1;
+	}
+	public void setStrlist1(List<String> strlist1) {
+		this.strlist1 = strlist1;
 	}
 }

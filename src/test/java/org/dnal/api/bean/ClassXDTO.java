@@ -2,6 +2,7 @@ package org.dnal.api.bean;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class ClassXDTO {
 	private int nn1;
@@ -20,6 +21,7 @@ public class ClassXDTO {
 	Float ff2;
 	Date ddt1;
 	Direction ddirection1;
+	List<String> sstrlist1;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -121,5 +123,11 @@ public class ClassXDTO {
 	}
 	public void setDdirection1(Direction ddirection1) {
 		this.ddirection1 = ddirection1;
+	}
+	public List<String> getSstrlist1() {
+		return sstrlist1;
+	}
+	public void setSstrlist1(List<String> sstrlist1) {
+		this.sstrlist1 = sstrlist1;
 	}
 }

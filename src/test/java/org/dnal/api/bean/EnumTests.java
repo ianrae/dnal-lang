@@ -60,7 +60,6 @@ public class EnumTests {
 	private ClassXDTO dto = new ClassXDTO(0,0);
 	private ClassX x = new ClassX();
 	private List<FieldSpec> fields = new ArrayList<>();
-	private Date timestamp = new Date();
 	
 	private void addField(String s1, String s2) {
 		fields.add(new FieldSpec(s1, s2));
