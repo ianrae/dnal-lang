@@ -13,6 +13,8 @@ public class ClassXDTO {
 	Long nlong2;
 	boolean bb1;
 	Boolean bb2;
+	double dd1;
+	Double dd2;
 
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -78,5 +80,17 @@ public class ClassXDTO {
 	}
 	public void setBb2(Boolean bb2) {
 		this.bb2 = bb2;
+	}
+	public double getDd1() {
+		return dd1;
+	}
+	public void setDd1(double dd1) {
+		this.dd1 = dd1;
+	}
+	public Double getDd2() {
+		return dd2;
+	}
+	public void setDd2(Double dd2) {
+		this.dd2 = dd2;
 	}
 }

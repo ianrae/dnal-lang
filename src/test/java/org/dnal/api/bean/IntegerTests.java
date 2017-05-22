@@ -2,7 +2,6 @@ package org.dnal.api.bean;
 
 import static org.junit.Assert.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 

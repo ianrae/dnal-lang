@@ -22,8 +22,8 @@ public class BeanToDTypeBuilder {
 		map.put(byte.class, "int");
 		map.put(short.class, "int");
 		map.put(long.class, "long");
-		map.put(double.class, "double");
-		map.put(float.class, "double");
+		map.put(double.class, "number");
+		map.put(float.class, "number");
 		map.put(boolean.class, "boolean");
 		
 		

@@ -13,6 +13,8 @@ public class ClassX {
 	Long long2;
 	boolean b1;
 	Boolean b2;
+	double d1;
+	Double d2;
 	
 	public int getN1() {
 		return n1;
@@ -73,5 +75,17 @@ public class ClassX {
 	}
 	public void setB2(Boolean b2) {
 		this.b2 = b2;
+	}
+	public double getD1() {
+		return d1;
+	}
+	public void setD1(double d1) {
+		this.d1 = d1;
+	}
+	public Double getD2() {
+		return d2;
+	}
+	public void setD2(Double d2) {
+		this.d2 = d2;
 	}
 }
