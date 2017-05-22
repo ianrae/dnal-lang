@@ -19,9 +19,12 @@ public class BeanToDTypeBuilder {
 	private Map<Class<?>, String> map = new HashMap<>();
 	private XErrorTracker et;
 	private Map<String, String> listTypeMap = new HashMap<>();
+	private ListTypeFinder listTypeFinder;
 
 	public BeanToDTypeBuilder(XErrorTracker et) {
 		this.et = et;
+		listTypeFinder = new ListTypeFinder(et);
+		
 		map.put(int.class, "int");
 		map.put(byte.class, "int");
 		map.put(short.class, "int");
@@ -99,7 +102,7 @@ public class BeanToDTypeBuilder {
 	private String getDnalTypeName(BeanMethodCache methodCache, String fieldName) {
 		Method meth = methodCache.getMethod(fieldName);
 		Class<?> paramClass = meth.getReturnType();
-		if (Collection.class.isAssignableFrom(paramClass)) {
+		if (listTypeFinder.isListType(paramClass)) {
 			return calculateListType(meth, paramClass);
 		}
 		String dnalTypeName = convert(paramClass);
@@ -107,11 +110,25 @@ public class BeanToDTypeBuilder {
 	}
 
 	private String calculateListType(Method meth, Class<?> paramClass) {
-		Class<?> inner = getListElementType(meth, paramClass);
+		Class<?> inner = listTypeFinder.getListElementType(meth, paramClass);
 		if (inner != null) {
-			//TODO: handle list of lists later!!!
 			String elType = convert(inner);
-			String s = String.format("list<%s>", elType);
+			
+			String s = "";
+			switch(listTypeFinder.listDepth) {
+			case 1:
+				s =  String.format("list<%s>", elType);
+				break;
+			case 2:
+				s =  String.format("list<list<%s>>", elType);
+				break;
+			case 3:
+				s =  String.format("list<list<list<%s>>>", elType);
+				break;
+			default:
+				break;
+			}
+			
 			if (listTypeMap.containsKey(s)) {
 				return listTypeMap.get(s);
 			}
@@ -120,32 +137,9 @@ public class BeanToDTypeBuilder {
 		return null;
 	}
 	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
-		Type returnType = meth.getGenericReturnType();
-		Class<?> clazz = handleType(returnType, paramClass);
-		return clazz;
+		return listTypeFinder.getListElementType(meth, paramClass);
 	}
 
-	//				} else if (type.getTypeName().equals("java.util.List")) {
-
-	private Class<?> handleType(Type returnType, Class<?> paramClass) {
-		if (returnType instanceof ParameterizedType) {
-			ParameterizedType paramType = (ParameterizedType) returnType;
-			Type[] argTypes = paramType.getActualTypeArguments();
-			if (argTypes.length > 0) {
-				Type type = argTypes[0];
-				if (type instanceof Class) {
-					@SuppressWarnings("unchecked")
-					Class<?> inner = (Class<?>) type;
-					return inner;
-				} else if (type instanceof ParameterizedType) {
-					return handleType(type, paramClass);
-				} else {
-					et.addParsingError(String.format("generiuc list element type is unsupported type '%s'", paramClass.getSimpleName()));
-				}
-			}
-		}		
-		return null;
-	}
 
 	public String buildEnums(BeanMethodCache sourceGetterMethodCache, BeanMethodCache destGetterMethodCache) {
 		Map<Class<?>, String> seenAlreadyMap = new HashMap<>();
@@ -164,7 +158,7 @@ public class BeanToDTypeBuilder {
 		Method meth = methodCache.getMethod(fieldName);
 		Class<?> clazz = meth.getReturnType();
 		if (Collection.class.isAssignableFrom(clazz)) {
-			clazz = getListElementType(meth, clazz);
+			clazz = listTypeFinder.getListElementType(meth, clazz);
 		}
 		
 		String dnal = "";
