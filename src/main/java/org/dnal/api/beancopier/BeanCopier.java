@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.api.DataSet;
+import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.api.view.ViewLoader;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
@@ -108,7 +109,7 @@ public class BeanCopier {
 		return true;
 	}
 
-	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName) {
+	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName) throws Exception {
 		if (dval.getType().isListShape()) {
 			List<Object> list = new ArrayList<>();
 			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
@@ -125,7 +126,23 @@ public class BeanCopier {
 		} else if (dval.getType().isStructShape()) {
 			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
 			Class<?> structClass = bctx.getListElementType(meth, paramClass);
-			Object targetObj = createNewObject(structClass); 
+			Object targetObj = createNewObject(structClass);
+			BeanMethodInvoker finder = new BeanMethodInvoker();
+			BeanMethodCache getterMethodCache = finder.getAllGetters(structClass);
+			BeanMethodCache setterMethodCache = finder.getAllSetters(structClass);
+			
+			for(String member: dval.asStruct().getFieldNames()) {
+				DValue inner = dval.asStruct().getField(member);
+				if (inner != null) {
+					Method im = getterMethodCache.getMethod(member);
+					//!!fix for lists,ect
+					Class<?> imClass = im.getReturnType();
+					
+					Object obj = convertToObject(util, inner, imClass, member);  //recursion!
+					finder.invokeSetter(setterMethodCache, targetObj, member, obj);
+				}
+			}
+			return targetObj;
 		}
 		return util.toObject(dval, paramClass);
 	}
@@ -135,7 +152,9 @@ public class BeanCopier {
 		try {
 			obj = elClass.newInstance();
 		} catch (InstantiationException e) {
+			addError(String.format("InstantiationException. failed to create object '%s': %s", elClass.getName(), e.getMessage()));
 		} catch (IllegalAccessException e) {
+			addError(String.format("IllegalAccessException. failed to create object '%s': %s", elClass.getName(), e.getMessage()));
 		}
 		return obj;
 	}

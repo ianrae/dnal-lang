@@ -17,7 +17,7 @@ public class PersonTests {
 	@Test
 	public void test() throws Exception {
 		addField("pperson1", "person1");
-		Person person = new Person("bob", 23);
+		Person person = new Person("bob", 22);
 		chkCopy(dto, x, fields, person);
 	}
 //	@Test

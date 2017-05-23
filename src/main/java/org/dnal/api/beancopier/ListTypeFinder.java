@@ -49,7 +49,9 @@ public class ListTypeFinder {
 					et.addParsingError(String.format("generiuc list element type is unsupported type '%s'", paramClass.getSimpleName()));
 				}
 			}
-		}		
+		} else if (returnType instanceof Class) {
+			return (Class<?>) returnType;
+		}
 		return null;
 	}
 	
