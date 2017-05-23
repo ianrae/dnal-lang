@@ -111,10 +111,10 @@ public class BeanCopier {
 	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName) {
 		if (dval.getType().isListShape()) {
 			List<Object> list = new ArrayList<>();
+			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
+			Class<?> elClass = bctx.getListElementType(meth, paramClass);
 			for(DValue inner: dval.asList()) {
 				if (inner != null) {
-					Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
-					Class<?> elClass = bctx.getListElementType(meth, paramClass);
 					Object obj = convertToObject(util, inner, elClass, fieldName);  //recursion!
 					if (obj != null) {
 						list.add(obj);
@@ -122,8 +122,22 @@ public class BeanCopier {
 				}
 			}
 			return list;
+		} else if (dval.getType().isStructShape()) {
+			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
+			Class<?> structClass = bctx.getListElementType(meth, paramClass);
+			Object targetObj = createNewObject(structClass); 
 		}
 		return util.toObject(dval, paramClass);
+	}
+
+	private Object createNewObject(Class<?> elClass) {
+		Object obj = null;
+		try {
+			obj = elClass.newInstance();
+		} catch (InstantiationException e) {
+		} catch (IllegalAccessException e) {
+		}
+		return obj;
 	}
 
 	private boolean areErrors() {

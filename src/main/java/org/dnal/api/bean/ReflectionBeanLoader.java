@@ -58,14 +58,14 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 		et.addError(errMsg);
 	}
 
-	private void buildMethodCacheIfNeeded(Object bean) {
-		DStructType dtype = getTypeName();
+	private void buildMethodCacheIfNeeded(Object bean, String typeNameParam) {
+		DStructType dtype = getTypeName(typeNameParam);
 		beanMethodBuilder.buildMethodCacheIfNeeded(bean, dtype);
 	}
-	private DStructType getTypeName() {
-		DStructType dtype = trans.getStructType(typeName);
+	private DStructType getTypeName(String typeNameParam) {
+		DStructType dtype = trans.getStructType(typeNameParam);
 		if (dtype == null) {
-			dtype = trans.getViewType(typeName);
+			dtype = trans.getViewType(typeNameParam);
 		}
 		return dtype;
 	}
@@ -73,8 +73,12 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 	@Override
 	public DValue createDValue(Object bean) {
 		this.trans = ds.createTransaction();
-		buildMethodCacheIfNeeded(bean);
-		DStructType dtype = getTypeName();
+		return doCreateDValue(bean, typeName);
+	}
+	
+	private DValue doCreateDValue(Object bean, String typeNameParam) {
+		buildMethodCacheIfNeeded(bean, typeNameParam);
+		DStructType dtype = getTypeName(typeNameParam);
 		StructBuilder builder = trans.createStructBuilder(dtype);
 		List<TypePair> allFields = dtype.getAllFields();
 		for(TypePair pair: allFields) {
@@ -88,6 +92,10 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 
 		DValue dval = builder.finish();
 		if (! builder.wasSuccessful()) {
+	        for(NewErrorMessage err: trans.getValErrorList()) {
+	            et.addError(err);
+	        }
+			
 			et.dumpErrors();
 			return null;
 		}
@@ -141,6 +149,7 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 			dval = buildList(trans, type, res);
 			break;
 		case STRUCT:
+			dval = buildStruct(trans, type, res);
 			break;
 		case ENUM:
 			dval = trans.createEnumBuilder(type).buildFromString(res.toString());
@@ -171,6 +180,16 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 		
 		return builder.finish();
 	}
+	private DValue buildStruct(Transaction trans, DType type, Object res) {
+		if (! (type instanceof DStructType)) {
+			addError(String.format("type %s not a struct", type.getName()));
+			return null;
+		}
+		
+		DValue dval = doCreateDValue(res, type.getName());
+		return dval;
+	}
+
 
 	private void addWrongTypeError(String expectedType, Object res) {
 		String typename = (res == null) ? "?" : res.getClass().getName();
