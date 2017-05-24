@@ -1,8 +1,11 @@
 package org.dnal.api.bean;
 
+import java.util.List;
+
 public class Person {
 	private String name;
 	private int age;
+	List<String> roles;
 	
 	public Person() {
 	}
@@ -22,6 +25,12 @@ public class Person {
 	}
 	public void setAge(int age) {
 		this.age = age;
+	}
+	public List<String> getRoles() {
+		return roles;
+	}
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
 	}
 
 }

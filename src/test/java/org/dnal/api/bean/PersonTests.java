@@ -67,6 +67,7 @@ public class PersonTests {
 	@Before
 	public void init() {
 		dto.pperson1 = new Person("bob", 22);
+		dto.pperson1.roles = Arrays.asList("a");
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields, Person expected) {
 		chkCopy(dto, x, fields);

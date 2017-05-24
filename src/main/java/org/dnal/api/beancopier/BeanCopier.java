@@ -2,7 +2,9 @@ package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.bean.BeanMethodCache;
@@ -13,8 +15,8 @@ import org.dnal.core.NewErrorMessage;
 
 public class BeanCopier {
 	public BeanCopierContext bctx;
-	
-	
+	private Map<Class<?>, BeanMethodCache> innerGetterCache = new HashMap<>();
+	private Map<Class<?>, BeanMethodCache> innerSetterCache = new HashMap<>();
 
 	public boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
 		boolean ok = false;
@@ -94,7 +96,7 @@ public class BeanCopier {
 			Class<?> paramClass = meth.getParameterTypes()[0];
 			DValue inner = dval.asStruct().getField(fieldName);
 			if (inner != null) {
-				Object obj = convertToObject(util, inner, paramClass, fieldName);
+				Object obj = convertToObject(util, inner, paramClass, fieldName, finder);
 				if (obj == null) {
 					return false;
 				}
@@ -109,14 +111,14 @@ public class BeanCopier {
 		return true;
 	}
 
-	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName) throws Exception {
+	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName, BeanMethodInvoker finder) throws Exception {
 		if (dval.getType().isListShape()) {
 			List<Object> list = new ArrayList<>();
 			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
 			Class<?> elClass = bctx.getListElementType(meth, paramClass);
 			for(DValue inner: dval.asList()) {
 				if (inner != null) {
-					Object obj = convertToObject(util, inner, elClass, fieldName);  //recursion!
+					Object obj = convertToObject(util, inner, elClass, fieldName, finder);  //recursion!
 					if (obj != null) {
 						list.add(obj);
 					}
@@ -127,9 +129,8 @@ public class BeanCopier {
 			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
 			Class<?> structClass = bctx.getListElementType(meth, paramClass);
 			Object targetObj = createNewObject(structClass);
-			BeanMethodInvoker finder = new BeanMethodInvoker();
-			BeanMethodCache getterMethodCache = finder.getAllGetters(structClass);
-			BeanMethodCache setterMethodCache = finder.getAllSetters(structClass);
+			BeanMethodCache getterMethodCache = getInnerGetterCache(structClass, finder);
+			BeanMethodCache setterMethodCache = getInnerSetterCache(structClass, finder);
 			
 			for(String member: dval.asStruct().getFieldNames()) {
 				DValue inner = dval.asStruct().getField(member);
@@ -138,7 +139,7 @@ public class BeanCopier {
 					//!!fix for lists,ect
 					Class<?> imClass = im.getReturnType();
 					
-					Object obj = convertToObject(util, inner, imClass, member);  //recursion!
+					Object obj = convertToObject(util, inner, imClass, member, finder);  //recursion!
 					finder.invokeSetter(setterMethodCache, targetObj, member, obj);
 				}
 			}
@@ -146,6 +147,24 @@ public class BeanCopier {
 		}
 		return util.toObject(dval, paramClass);
 	}
+
+	private BeanMethodCache getInnerGetterCache(Class<?> structClass, BeanMethodInvoker finder) {
+		BeanMethodCache methodCache = this.innerGetterCache.get(structClass);
+		if (methodCache == null) {
+			methodCache = finder.getAllGetters(structClass);
+			innerGetterCache.put(structClass, methodCache);
+		}
+		return methodCache;
+	}
+	private BeanMethodCache getInnerSetterCache(Class<?> structClass, BeanMethodInvoker finder) {
+		BeanMethodCache methodCache = this.innerSetterCache.get(structClass);
+		if (methodCache == null) {
+			methodCache = finder.getAllSetters(structClass);
+			innerSetterCache.put(structClass, methodCache);
+		}
+		return methodCache;
+	}
+
 
 	private Object createNewObject(Class<?> elClass) {
 		Object obj = null;
