@@ -19,6 +19,7 @@ public class PersonTests {
 		addField("pperson1", "person1");
 		Person person = new Person("bob", 22);
 		chkCopy(dto, x, fields, person);
+		assertEquals("a", x.person1.roles.get(0));
 	}
 //	@Test
 //	public void test2() throws Exception {

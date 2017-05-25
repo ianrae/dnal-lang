@@ -89,6 +89,8 @@ public class BeanCopier {
 
 		//now convert dval into x
 		bctx.pctD.start();
+		innerGetterCache.put(destObj.getClass(), bctx.destGetterMethodCache);
+		innerSetterCache.put(destObj.getClass(), bctx.destSetterMethodCache);
 		ScalarConvertUtil util = new ScalarConvertUtil(bctx.loader.getErrorTracker());
 		for(String fieldName: destFieldList) {
 			Method meth = bctx.destSetterMethodCache.getMethod(fieldName);
@@ -96,7 +98,7 @@ public class BeanCopier {
 			Class<?> paramClass = meth.getParameterTypes()[0];
 			DValue inner = dval.asStruct().getField(fieldName);
 			if (inner != null) {
-				Object obj = convertToObject(util, inner, paramClass, fieldName, finder);
+				Object obj = convertToObject(util, inner, paramClass, fieldName, finder, destObj.getClass());
 				if (obj == null) {
 					return false;
 				}
@@ -111,14 +113,14 @@ public class BeanCopier {
 		return true;
 	}
 
-	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName, BeanMethodInvoker finder) throws Exception {
+	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName, BeanMethodInvoker finder, Class<?> classDest) throws Exception {
 		if (dval.getType().isListShape()) {
 			List<Object> list = new ArrayList<>();
-			Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
+			Method meth = this.getInnerGetterCache(classDest, finder).getMethod(fieldName);
 			Class<?> elClass = bctx.getListElementType(meth, paramClass);
 			for(DValue inner: dval.asList()) {
 				if (inner != null) {
-					Object obj = convertToObject(util, inner, elClass, fieldName, finder);  //recursion!
+					Object obj = convertToObject(util, inner, elClass, fieldName, finder, classDest);  //recursion!
 					if (obj != null) {
 						list.add(obj);
 					}
@@ -139,7 +141,7 @@ public class BeanCopier {
 					//!!fix for lists,ect
 					Class<?> imClass = im.getReturnType();
 					
-					Object obj = convertToObject(util, inner, imClass, member, finder);  //recursion!
+					Object obj = convertToObject(util, inner, imClass, member, finder, structClass);  //recursion!
 					finder.invokeSetter(setterMethodCache, targetObj, member, obj);
 				}
 			}
