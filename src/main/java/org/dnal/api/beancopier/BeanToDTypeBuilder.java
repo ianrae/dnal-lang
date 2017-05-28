@@ -46,6 +46,10 @@ public class BeanToDTypeBuilder {
 		map.put(Date.class, "date");
 		map.put(List.class, "list");
 	}
+	
+	public String getPrimitive(Class<?> clazz) {
+		return map.get(clazz);
+	}
 
 //	private String convert(Class<?> clazz) {
 //		return convert(clazz, false);
