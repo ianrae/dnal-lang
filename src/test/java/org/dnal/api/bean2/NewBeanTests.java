@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.dnal.api.bean.BeanMethodCache;
+import org.dnal.api.bean.ClassX;
 import org.dnal.api.bean.Person;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.BeanToDTypeBuilder;
@@ -28,6 +29,7 @@ public class NewBeanTests {
 		public boolean isEnum;
 		public boolean isList;
 		public boolean needsType;
+		public boolean haveResolvedStruct;
 		
 		public FieldInfo(Class<?> clazz, String name) {
 			this.clazz = clazz;
@@ -58,6 +60,7 @@ public class NewBeanTests {
 				outputFieldList.add(finfo);
 			}
 			
+			//now resolve all types on the stack
 			int retries = 0;
 			while(! stack.isEmpty())  {
 				if (retries > 10) {
@@ -68,7 +71,6 @@ public class NewBeanTests {
 				retries++;
 				FieldInfo finfo = stack.peek();
 				if (resolve(finfo)) {
-//					genList.add(finfo);
 					stack.pop();
 					retries = 0;
 				}
@@ -112,7 +114,7 @@ public class NewBeanTests {
 				return b;
 			}
 			
-			et.addParsingError("bad " + finfo.fieldName);
+			et.addParsingError(String.format("bad field '%s'", finfo.fieldName));
 			return true; //!!error
 		}
 		
@@ -129,6 +131,7 @@ public class NewBeanTests {
 				
 				finfo.dnalTypeName = String.format("List%d", nextListNameId++);
 				
+				//we will duplicate similar types, eg list<string>
 				FieldInfo newInfo = new FieldInfo(clazz, finfo.dnalTypeName);
 				newInfo.isList = true;
 				newInfo.dnalTypeName = calculateListType(elementClazz);
@@ -137,10 +140,16 @@ public class NewBeanTests {
 			}
 			
 			if (clazz.isEnum()) {
-				FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
-				newInfo.isEnum = true;
-				newInfo.dnalTypeName = clazz.getSimpleName();
-				genList.add(newInfo);
+				String existingType = findAlreadyDefinedType(clazz);
+				if (existingType == null) {
+					FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
+					newInfo.isEnum = true;
+					newInfo.dnalTypeName = clazz.getSimpleName();
+					genList.add(newInfo);
+					finfo.dnalTypeName = newInfo.dnalTypeName;
+				} else {
+					finfo.dnalTypeName = existingType;
+				}
 				return true;
 			}
 			
@@ -151,24 +160,40 @@ public class NewBeanTests {
 			}
 			
 			//else struct
-			FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
-			stack.push(newInfo);
-			return false;
+			if (! finfo.haveResolvedStruct) {
+				finfo.haveResolvedStruct = true;
+				BeanMethodCache structMethodCache = finder.getAllGetters(clazz);
+				for(String inner: structMethodCache.keySet()) {
+					FieldInfo newInfo = new FieldInfo(clazz, inner);
+					stack.push(newInfo);
+				}
+				finfo.dnalTypeName = clazz.getSimpleName();
+				return false;
+			} else {
+				FieldInfo newInfo = new FieldInfo(clazz, clazz.getSimpleName());
+				newInfo.dnalTypeName = newInfo.fieldName;
+				genList.add(newInfo);
+				return true;
+			}
+			
 		}
 		
 		private boolean alreadyDefined(Class<?> clazz) {
+			return (findAlreadyDefinedType(clazz) != null);
+		}
+		private String findAlreadyDefinedType(Class<?> clazz) {
 			String className = builder.getPrimitive(clazz);
 			if (className != null) {
-				return true;
+				return className;
 			}
 			
 			String target = clazz.getSimpleName();
 			for(FieldInfo finfo: genList) {
 				if (target.equals(finfo.dnalTypeName)) {
-					return true;
+					return finfo.dnalTypeName;
 				}
 			}
-			return false;
+			return null;
 		}
 		private String calculateListType(Class<?> elementClass) {
 			String elType = elementClass.getSimpleName();
@@ -196,6 +221,7 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("name", "age");
 		String source = zc.createForClass(Person.class, fields);
 		assertEquals("name:string;age:int;", source);
+		chkSuccess();
 	}
 
 	@Test
@@ -203,6 +229,7 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("roles");
 		String source = zc.createForClass(Person.class, fields);
 		assertEquals("LIST List1:list<String>;roles:List1;", source);
+		chkSuccess();
 	}
 
 	@Test
@@ -210,6 +237,7 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("directions");
 		String source = zc.createForClass(Person.class, fields);
 		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;directions:List1;", source);
+		chkSuccess();
 	}
 
 	@Test
@@ -217,16 +245,43 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("directions", "age", "name", "roles");
 		String source = zc.createForClass(Person.class, fields);
 		log(source);
-//		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;directions:List1;", source);
+		chkSuccess();
 	}
+	
+	@Test
+	public void testX1() {
+		List<String> fields = Arrays.asList("direction1", "dirlist1");
+		String source = zc.createForClass(ClassX.class, fields);
+		chkSuccess();
+		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;direction1:Direction;dirlist1:List1;", source);
+	}
+	@Test
+	public void testX1Inner() {
+		List<String> fields = Arrays.asList("person1");
+		String source = zc.createForClass(ClassX.class, fields);
+		chkSuccess();
+		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;person1:Person;";
+		assertEquals(s, source);
+	}
+	
 
 	//--
 	private ZCreator zc;
+	private XErrorTracker et = new XErrorTracker();
 	
 	@Before 
 	public void init() {
-		zc = new ZCreator(null);
+		zc = new ZCreator(et);
 	}
+	
+	private void chkSuccess() {
+		if (et.areErrors()) {
+			et.dumpErrors();
+		}
+		assertEquals(false, et.areErrors());
+	}
+
+	
 
 	private void log(String s) {
 		System.out.println(s);
