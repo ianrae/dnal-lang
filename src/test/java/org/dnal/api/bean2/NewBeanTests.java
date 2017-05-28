@@ -41,6 +41,7 @@ public class NewBeanTests {
 		private XErrorTracker et;
 		private BeanToDTypeBuilder builder;
 		private Stack<FieldInfo> stack = new Stack<>();
+		private List<FieldInfo> outputFieldList = new ArrayList<>();
 		private List<FieldInfo> genList = new ArrayList<>();
 		private BeanMethodInvoker finder = new BeanMethodInvoker();
 		private int nextListNameId = 1;
@@ -54,6 +55,7 @@ public class NewBeanTests {
 			for(String fieldName: fields) {
 				FieldInfo finfo = new FieldInfo(clazz, fieldName);
 				stack.push(finfo);
+				outputFieldList.add(finfo);
 			}
 			
 			int retries = 0;
@@ -73,7 +75,14 @@ public class NewBeanTests {
 			}
 			
 			String src = "";
-			for(FieldInfo fino: genList) {
+			src += doOutput(genList);
+			src += doOutput(outputFieldList);
+			return src;	
+		}
+		
+		private String doOutput(List<FieldInfo> list) {
+			String src = "";
+			for(FieldInfo fino: list) {
 				if (fino.isEnum) {
 					String s = String.format("ENUM %s:%s;", fino.fieldName, fino.dnalTypeName);
 					src += s;
@@ -85,7 +94,7 @@ public class NewBeanTests {
 					src += s;
 				}
 			}
-			return src;	
+			return src;
 		}
 
 		private boolean resolve(FieldInfo finfo) {
@@ -124,7 +133,6 @@ public class NewBeanTests {
 				newInfo.isList = true;
 				newInfo.dnalTypeName = calculateListType(elementClazz);
 				genList.add(newInfo);
-				genList.add(finfo);
 				return true;
 			}
 			
@@ -139,7 +147,6 @@ public class NewBeanTests {
 			String className = builder.getPrimitive(clazz);
 			if (className != null) {
 				finfo.dnalTypeName = className;
-				genList.add(finfo);
 				return true;
 			}
 			
@@ -188,7 +195,7 @@ public class NewBeanTests {
 	public void test() {
 		List<String> fields = Arrays.asList("name", "age");
 		String source = zc.createForClass(Person.class, fields);
-		assertEquals("age:int;name:string;", source);
+		assertEquals("name:string;age:int;", source);
 	}
 
 	@Test
