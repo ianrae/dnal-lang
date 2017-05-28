@@ -3,8 +3,10 @@ package org.dnal.api.bean2;
 import static org.junit.Assert.*;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 
@@ -19,8 +21,16 @@ import org.junit.Test;
 
 public class NewBeanTests {
 	public static class FieldInfo {
-		public String name;
+		public Class<?> clazz;
+		public String fieldName;
 		public Method meth; //getter i think
+		public String dnalTypeName;
+		public boolean isEnum;
+		
+		public FieldInfo(Class<?> clazz, String name) {
+			this.clazz = clazz;
+			this.fieldName = name;
+		}
 	}
 	
 	
@@ -29,6 +39,8 @@ public class NewBeanTests {
 		private XErrorTracker et;
 		private BeanToDTypeBuilder builder;
 		private Stack<FieldInfo> stack = new Stack<>();
+		private List<FieldInfo> genList = new ArrayList<>();
+		private BeanMethodInvoker finder = new BeanMethodInvoker();
 
 		public ZCreator(XErrorTracker et) {
 			this.et = et;
@@ -36,38 +48,80 @@ public class NewBeanTests {
 			builder = new BeanToDTypeBuilder(et);
 		}
 		public String createForClass(Class<?> clazz, List<String> fields) {
-			BeanMethodInvoker finder = new BeanMethodInvoker();
-			BeanMethodCache methodCache = finder.getGetters(clazz, fields);
+			for(String fieldName: fields) {
+				FieldInfo finfo = new FieldInfo(clazz, fieldName);
+				stack.push(finfo);
+			}
+			
+			int retries = 0;
+			while(! stack.isEmpty())  {
+				if (retries > 10) {
+					et.addParsingError("retry runaway!");
+					break; //!!error
+				}
+				
+				retries++;
+				FieldInfo finfo = stack.peek();
+				if (resolve(finfo)) {
+					genList.add(finfo);
+					stack.pop();
+					retries = 0;
+				}
+			}
+			
+			
 			
 			String src = "";
-			for(String fieldName: methodCache.keySet()) {
-				Method method = methodCache.getMethod(fieldName);
-				String classname = dotype(method);
-				String s = String.format("%s:%s;", fieldName, classname);
+			for(FieldInfo fino: genList) {
+				String s = String.format("%s:%s;", fino.fieldName, fino.dnalTypeName);
 				src += s;
 			}
 			return src;	
 		}
 
-		private String dotype(Method meth) {
-			Class<?> clazz = meth.getReturnType();
+		private boolean resolve(FieldInfo finfo) {
+			BeanMethodCache methodCache = finder.getGetters(finfo.clazz, Collections.singletonList(finfo.fieldName));
+			
+			//should be only one
+			for(String fieldName: methodCache.keySet()) {
+				finfo.meth = methodCache.getMethod(fieldName);
+				boolean b = determineClass(finfo);
+				return b;
+			}
+			
+			et.addParsingError("bad " + finfo.fieldName);
+			return true; //!!error
+		}
+		
+		
+		private boolean determineClass(FieldInfo finfo) {
+			Class<?> clazz = finfo.meth.getReturnType();
 			if (Collection.class.isAssignableFrom(clazz)) {
-				clazz = listTypeFinder.getListElementType(meth, clazz);
-				return "LIST:" + clazz.getSimpleName();
+				clazz = listTypeFinder.getListElementType(finfo.meth, clazz);
+				FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
+				newInfo.dnalTypeName = "list<" +clazz.getSimpleName() + ">";
+				stack.push(newInfo);
+				return false;
 			}
 			
 			if (clazz.isEnum()) {
-				String className = clazz.getName();
-				return "ENUM: " + className;
+				FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
+				newInfo.isEnum = true;
+				newInfo.dnalTypeName = clazz.getSimpleName();
+				genList.add(newInfo);
+				return true;
 			}
 			
 			String className = builder.getPrimitive(clazz);
 			if (className != null) {
-				return className;
+				finfo.dnalTypeName = className;
+				return true;
 			}
 			
 			//else struct
-			return clazz.getName();
+			FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
+			stack.push(newInfo);
+			return false;
 		}
 	}
 
@@ -75,7 +129,7 @@ public class NewBeanTests {
 	public void test() {
 		List<String> fields = Arrays.asList("name", "age");
 		String source = zc.createForClass(Person.class, fields);
-		assertEquals("name:string;age:int;", source);
+		assertEquals("age:int;name:string;", source);
 	}
 
 	@Test
