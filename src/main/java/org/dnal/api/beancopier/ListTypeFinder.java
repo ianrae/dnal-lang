@@ -30,8 +30,7 @@ public class ListTypeFinder {
 		return clazz;
 	}
 
-	//				} else if (type.getTypeName().equals("java.util.List")) {
-
+	//handles list<list<>> but not list<set<>>. TODO:fix later!!
 	private Class<?> handleType(Type returnType, Class<?> paramClass) {
 		if (returnType instanceof ParameterizedType) {
 			listDepth++;

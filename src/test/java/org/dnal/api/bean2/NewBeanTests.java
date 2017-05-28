@@ -26,6 +26,8 @@ public class NewBeanTests {
 		public Method meth; //getter i think
 		public String dnalTypeName;
 		public boolean isEnum;
+		public boolean isList;
+		public boolean needsType;
 		
 		public FieldInfo(Class<?> clazz, String name) {
 			this.clazz = clazz;
@@ -41,6 +43,7 @@ public class NewBeanTests {
 		private Stack<FieldInfo> stack = new Stack<>();
 		private List<FieldInfo> genList = new ArrayList<>();
 		private BeanMethodInvoker finder = new BeanMethodInvoker();
+		private int nextListNameId = 1;
 
 		public ZCreator(XErrorTracker et) {
 			this.et = et;
@@ -63,29 +66,40 @@ public class NewBeanTests {
 				retries++;
 				FieldInfo finfo = stack.peek();
 				if (resolve(finfo)) {
-					genList.add(finfo);
+//					genList.add(finfo);
 					stack.pop();
 					retries = 0;
 				}
 			}
 			
-			
-			
 			String src = "";
 			for(FieldInfo fino: genList) {
-				String s = String.format("%s:%s;", fino.fieldName, fino.dnalTypeName);
-				src += s;
+				if (fino.isEnum) {
+					String s = String.format("ENUM %s:%s;", fino.fieldName, fino.dnalTypeName);
+					src += s;
+				} else if (fino.isList) {
+					String s = String.format("LIST %s:%s;", fino.fieldName, fino.dnalTypeName);
+					src += s;
+				} else {
+					String s = String.format("%s:%s;", fino.fieldName, fino.dnalTypeName);
+					src += s;
+				}
 			}
 			return src;	
 		}
 
 		private boolean resolve(FieldInfo finfo) {
+			if (finfo.needsType) {
+				return determineClass(finfo, finfo.clazz);
+			}
+			
 			BeanMethodCache methodCache = finder.getGetters(finfo.clazz, Collections.singletonList(finfo.fieldName));
 			
 			//should be only one
 			for(String fieldName: methodCache.keySet()) {
 				finfo.meth = methodCache.getMethod(fieldName);
-				boolean b = determineClass(finfo);
+				Class<?> fieldClass = finfo.meth.getReturnType();
+				boolean b = determineClass(finfo, fieldClass);
 				return b;
 			}
 			
@@ -94,14 +108,24 @@ public class NewBeanTests {
 		}
 		
 		
-		private boolean determineClass(FieldInfo finfo) {
-			Class<?> clazz = finfo.meth.getReturnType();
+		private boolean determineClass(FieldInfo finfo, Class<?> clazz) {
 			if (Collection.class.isAssignableFrom(clazz)) {
-				clazz = listTypeFinder.getListElementType(finfo.meth, clazz);
-				FieldInfo newInfo = new FieldInfo(clazz, finfo.fieldName);
-				newInfo.dnalTypeName = "list<" +clazz.getSimpleName() + ">";
-				stack.push(newInfo);
-				return false;
+				Class<?> elementClazz = listTypeFinder.getListElementType(finfo.meth, clazz);
+				if (! alreadyDefined(elementClazz)) {
+					FieldInfo newInfo = new FieldInfo(elementClazz, elementClazz.getSimpleName());
+					newInfo.needsType = true;
+					stack.push(newInfo);
+					return false;
+				}
+				
+				finfo.dnalTypeName = String.format("List%d", nextListNameId++);
+				
+				FieldInfo newInfo = new FieldInfo(clazz, finfo.dnalTypeName);
+				newInfo.isList = true;
+				newInfo.dnalTypeName = calculateListType(elementClazz);
+				genList.add(newInfo);
+				genList.add(finfo);
+				return true;
 			}
 			
 			if (clazz.isEnum()) {
@@ -115,6 +139,7 @@ public class NewBeanTests {
 			String className = builder.getPrimitive(clazz);
 			if (className != null) {
 				finfo.dnalTypeName = className;
+				genList.add(finfo);
 				return true;
 			}
 			
@@ -123,6 +148,40 @@ public class NewBeanTests {
 			stack.push(newInfo);
 			return false;
 		}
+		
+		private boolean alreadyDefined(Class<?> clazz) {
+			String className = builder.getPrimitive(clazz);
+			if (className != null) {
+				return true;
+			}
+			
+			String target = clazz.getSimpleName();
+			for(FieldInfo finfo: genList) {
+				if (target.equals(finfo.dnalTypeName)) {
+					return true;
+				}
+			}
+			return false;
+		}
+		private String calculateListType(Class<?> elementClass) {
+			String elType = elementClass.getSimpleName();
+			String s = "";
+				switch(listTypeFinder.listDepth) {
+				case 1:
+					s =  String.format("list<%s>", elType);
+					break;
+				case 2:
+					s =  String.format("list<list<%s>>", elType);
+					break;
+				case 3:
+					s =  String.format("list<list<list<%s>>>", elType);
+					break;
+				default:
+					break;
+				}
+			return s;
+		}
+		
 	}
 
 	@Test
@@ -136,14 +195,22 @@ public class NewBeanTests {
 	public void testList() {
 		List<String> fields = Arrays.asList("roles");
 		String source = zc.createForClass(Person.class, fields);
-		assertEquals("roles:LIST:string;", source);
+		assertEquals("LIST List1:list<String>;roles:List1;", source);
 	}
 
 	@Test
 	public void testListEnum() {
 		List<String> fields = Arrays.asList("directions");
 		String source = zc.createForClass(Person.class, fields);
-		assertEquals("roles:LIST:string;", source);
+		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;directions:List1;", source);
+	}
+
+	@Test
+	public void testAll() {
+		List<String> fields = Arrays.asList("directions", "age", "name", "roles");
+		String source = zc.createForClass(Person.class, fields);
+		log(source);
+//		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;directions:List1;", source);
 	}
 
 	//--
@@ -154,4 +221,8 @@ public class NewBeanTests {
 		zc = new ZCreator(null);
 	}
 
+	private void log(String s) {
+		System.out.println(s);
+	}
+	
 }
