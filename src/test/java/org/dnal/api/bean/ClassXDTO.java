@@ -25,6 +25,7 @@ public class ClassXDTO {
 	List<Direction> ddirlist1;
 	List<Integer> nnlist1;
 	List<List<String>> sstrlistlist1;
+	List<List<Direction>> sdirlistlist1;
 	Person pperson1;
 
 	public ClassXDTO(int nn1, Integer nn2) {
@@ -157,5 +158,11 @@ public class ClassXDTO {
 	}
 	public void setPperson1(Person pperson1) {
 		this.pperson1 = pperson1;
+	}
+	public List<List<Direction>> getSdirlistlist1() {
+		return sdirlistlist1;
+	}
+	public void setSdirlistlist1(List<List<Direction>> sdirlistlist1) {
+		this.sdirlistlist1 = sdirlistlist1;
 	}
 }

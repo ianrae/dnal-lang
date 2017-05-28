@@ -50,7 +50,7 @@ public class DateTests {
 		addField("ddt1", "str1");
 		chkCopy(dto, x, fields);
 		log(x.str1);
-		assertEquals("Mon Mar 25 19:30:41 EDT 2013", x.str1);
+		assertEquals("Mon Mar 25 07:30:41 EDT 2013", x.str1);
 	}
 	
 	@Test

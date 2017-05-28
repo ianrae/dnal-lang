@@ -6,6 +6,7 @@ public class Person {
 	private String name;
 	private int age;
 	List<String> roles;
+	List<Direction> directions;
 	
 	public Person() {
 	}
@@ -31,6 +32,12 @@ public class Person {
 	}
 	public void setRoles(List<String> roles) {
 		this.roles = roles;
+	}
+	public List<Direction> getDirections() {
+		return directions;
+	}
+	public void setDirections(List<Direction> directions) {
+		this.directions = directions;
 	}
 
 }
