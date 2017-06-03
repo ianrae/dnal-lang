@@ -21,7 +21,6 @@ public class BeanCopierContext {
 	List<String> allDestFields;
 	List<String> allSourceFields;
 	BeanMethodCache destGetterMethodCache;
-	private BeanMethodCache sourceGetterMethodCache;
 	private BeanCopierContextKey contextKey;
 	private BeanToDTypeBuilder builder;
 	private DnalTypeDiscoverer zc;
@@ -78,7 +77,6 @@ public class BeanCopierContext {
 		}
 
 		destGetterMethodCache = finder.getGetters(destObj.getClass(), destFieldList);
-		sourceGetterMethodCache = finder.getGetters(sourceObj.getClass(), sourceFieldList);
 
 		String xName = destObj.getClass().getSimpleName();
 		String dtoName = sourceObj.getClass().getSimpleName();
@@ -86,7 +84,7 @@ public class BeanCopierContext {
 		String dnalGen = buildGeneratedTypes(sourceObj.getClass(), sourceFieldList, destObj.getClass(), destFieldList);
 		String dnal = mybuildDnalType(xName, destFieldList, false);
 		String dnal2 = ""; //builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
-		String dnal3 = mybuildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
+		String dnal3 = mybuildDnalView(xName, viewName, destFieldList, sourceFieldList, fieldL);
 
 		if (areErrors()) {
 			return false;
@@ -126,39 +124,11 @@ public class BeanCopierContext {
 			} else if (finfo.isList) {
 				s += builder.generateListType(finfo.fieldName, finfo.dnalTypeName) + lf;
 			} else {
-				s += generateStructType(finfo) + lf;
+				s += builder.generateStructType(finfo, zc) + lf;
 			}
 		}
 		
 		return s;
-	}
-	
-	private String generateStructType(FieldInfo finfo) {
-		//, String structTypeName, String dnalTypeName, Class<?> paramClass
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		BeanMethodCache methodCache = finder.getAllGetters(finfo.clazz);
-		List<String> allGetters = finder.getAllFields(finfo.clazz);
-		return mybuildGenDnalType(finfo.dnalTypeName, methodCache, allGetters);
-	}
-	
-	private String mybuildGenDnalType(String typeName, BeanMethodCache methodCache, List<String> xlist) {
-		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
-		StringBuilder sb = new StringBuilder();
-		sb.append("type ");
-		sb.append(typeName);
-		sb.append(" struct { ");
-		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
-		for(String fieldName: xlist) {
-			Method meth = methodCache.getMethod(fieldName);
-			String dnalTypeName = getGenDnalTypeName(meth);
-			sb.append(" ");
-			sb.append(fieldName);
-			sb.append(" ");
-			sb.append(dnalTypeName);
-			sb.append(" optional");
-		}
-		sb.append(" } end");
-		return sb.toString();
 	}
 	
 	private String mybuildDnalType(String typeName, List<String> xlist, boolean isSourceClass) {
@@ -188,18 +158,8 @@ public class BeanCopierContext {
 		}
 		return null;
 	}
-	private String getGenDnalTypeName(Method meth) {
-		Class<?> clazz = zc.getElementClassIfList(meth);
-		if (clazz != null) {
-			String typeName = String.format("list<%s>", zc.findAlreadyDefinedType(clazz));
-			return typeName;
-		} else {
-			clazz = meth.getReturnType();
-			return zc.findAlreadyDefinedType(clazz);
-		}
-	}
 	
-	private String mybuildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist, List<FieldSpec> fieldL) {
+	private String mybuildDnalView(String typeName, String viewName, List<String> xlist, List<String> dtolist, List<FieldSpec> fieldL) {
 		//			String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("inview %s <- %s {", typeName, viewName));
@@ -207,7 +167,7 @@ public class BeanCopierContext {
 		for(FieldSpec spec: fieldL) {
 			String fieldName = spec.destField;
 			String dtoName = spec.srcField;
-			String dnalTypeName = getOutputFieldDnalTypeName(fieldName, false);
+//			String dnalTypeName = getOutputFieldDnalTypeName(fieldName, false);
 			String dnalTypeNameDTO = getOutputFieldDnalTypeName(dtoName, true);
 			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
 		}

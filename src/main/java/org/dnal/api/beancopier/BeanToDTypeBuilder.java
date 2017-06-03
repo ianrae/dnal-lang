@@ -3,8 +3,10 @@ package org.dnal.api.beancopier;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.compiler.et.XErrorTracker;
 
 public class BeanToDTypeBuilder {
@@ -34,7 +36,7 @@ public class BeanToDTypeBuilder {
 		map.put(Double.class, "number");
 		map.put(Float.class, "number");
 		map.put(Date.class, "date");
-//		map.put(List.class, "list");
+		//list is handled separately
 	}
 	
 	public String getPrimitive(Class<?> clazz) {
@@ -66,5 +68,47 @@ public class BeanToDTypeBuilder {
 		sb.append(" } end ");
 		return sb.toString();
 	}
+	
+	public String generateStructType(FieldInfo finfo, DnalTypeDiscoverer zc) {
+		//, String structTypeName, String dnalTypeName, Class<?> paramClass
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCache = finder.getAllGetters(finfo.clazz);
+		List<String> allGetters = finder.getAllFields(finfo.clazz);
+		return mybuildGenDnalType(finfo.dnalTypeName, methodCache, allGetters, zc);
+	}
+	
+	private String mybuildGenDnalType(String typeName, BeanMethodCache methodCache, List<String> xlist, DnalTypeDiscoverer zc) {
+		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		StringBuilder sb = new StringBuilder();
+		sb.append("type ");
+		sb.append(typeName);
+		sb.append(" struct { ");
+		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		for(String fieldName: xlist) {
+			Method meth = methodCache.getMethod(fieldName);
+			String dnalTypeName = getGenDnalTypeName(meth, zc);
+			sb.append(" ");
+			sb.append(fieldName);
+			sb.append(" ");
+			sb.append(dnalTypeName);
+			sb.append(" optional");
+		}
+		sb.append(" } end");
+		return sb.toString();
+	}
+	
+	private String getGenDnalTypeName(Method meth, DnalTypeDiscoverer zc) {
+		Class<?> clazz = zc.getElementClassIfList(meth);
+		if (clazz != null) {
+			String typeName = String.format("list<%s>", zc.findAlreadyDefinedType(clazz));
+			return typeName;
+		} else {
+			clazz = meth.getReturnType();
+			return zc.findAlreadyDefinedType(clazz);
+		}
+	}
+	
+	
+	
 
 }
