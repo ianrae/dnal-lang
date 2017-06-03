@@ -22,39 +22,57 @@ public class PersonTests {
 		chkCopy(dto, x, fields, person);
 		assertEquals("a", x.person1.roles.get(0));
 	}
-//	@Test
-//	public void test2() throws Exception {
-//		addField("ddirlist1", "dirlist1");
-//		List<Direction> list = Arrays.asList(Direction.NORTH, Direction.SOUTH);
-//		chkCopy(dto, x, fields);
-//		assertEquals(list, x.dirlist1);
-//	}
-//	@Test
-//	public void test2a() throws Exception {
-//		addField("ddirlist1", "strlist1");
-//		List<String> list = Arrays.asList("NORTH", "SOUTH");
-//		chkCopy(dto, x, fields);
-//		assertEquals(list, x.strlist1);
-//	}
-//	
-//	@Test
-//	public void test3Fail() throws Exception {
-//		addField("ddirlist1", "nlist1");
-//		chkCopyFail(dto, x, fields);
-//	}
-//	
-//	@Test
-//	public void testListList() {
-//		addField("sstrlistlist1", "strlistlist1");
-//		
-//		List<String> list1 = Arrays.asList("A", "B");
-//		List<String> list2 = Arrays.asList("C", "D");
-//		List<List<String>> list = Arrays.asList(list1, list2);
-//		chkCopy(dto, x, fields);
-//		assertEquals(list, x.strlistlist1);
-//	}
-//	
-	//TODO: list of structs
+	@Test
+	public void test2() throws Exception {
+		addField("ddirlist1", "dirlist1");
+		List<Direction> list = Arrays.asList(Direction.NORTH, Direction.SOUTH);
+		dto.ddirlist1 = list;
+		chkCopy(dto, x, fields);
+		assertEquals(list, x.dirlist1);
+	}
+	@Test
+	public void test2a() throws Exception {
+		addField("ddirlist1", "strlist1");
+		List<Direction> list = Arrays.asList(Direction.NORTH, Direction.SOUTH);
+		dto.ddirlist1 = list;
+		chkCopy(dto, x, fields);
+		List<String> strlist = Arrays.asList("NORTH", "SOUTH");
+		assertEquals(strlist, x.strlist1);
+	}
+	
+	@Test
+	public void test3Fail() throws Exception {
+		addField("ddirlist1", "nlist1");
+		List<Direction> list = Arrays.asList(Direction.NORTH, Direction.SOUTH);
+		dto.ddirlist1 = list;
+		chkCopyFail(dto, x, fields);
+	}
+	
+	@Test
+	public void testListList() {
+		addField("sstrlistlist1", "strlistlist1");
+		
+		List<String> list1 = Arrays.asList("A", "B");
+		List<String> list2 = Arrays.asList("C", "D");
+		List<List<String>> list = Arrays.asList(list1, list2);
+		dto.sstrlistlist1 = list;
+		chkCopy(dto, x, fields);
+		assertEquals(list, x.strlistlist1);
+	}
+	
+	@Test
+	public void testStructList() {
+		addField("ppersonList", "personList");
+		List<Person> list = new ArrayList<>();
+		list.add(new Person("bob", 22));
+		list.add(new Person("sue", 23));
+		
+		dto.ppersonList = list;
+		chkCopy(dto, x, fields);
+		chkPerson(x.personList.get(0), "bob", 22);
+		chkPerson(x.personList.get(1), "sue", 23);
+		assertEquals(2, x.personList.size());
+	}
 
 	//----------
 //	private BeanCopier copier = new BeanCopierImpl();
@@ -74,8 +92,11 @@ public class PersonTests {
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields, Person expected) {
 		chkCopy(dto, x, fields);
-		assertEquals(expected.getName(), x.person1.getName());
-		assertEquals(expected.getAge(), x.person1.getAge());
+		chkPerson(expected, x.person1.getName(), x.person1.getAge());
+	}
+	private void chkPerson(Person person, String name, int age) {
+		assertEquals(name, person.getName());
+		assertEquals(age, person.getAge());
 	}
 	private void chkCopy(ClassXDTO dto, ClassX x, List<FieldSpec> fields) {
 		boolean b = copier.copy(dto, x, fields);
