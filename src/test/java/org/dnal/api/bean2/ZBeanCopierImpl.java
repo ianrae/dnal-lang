@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.bean.BeanMethodCache;
+import org.dnal.api.beancopier.BeanCopier;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.FieldSpec;
 import org.dnal.api.beancopier.ScalarConvertUtil;
@@ -16,11 +17,12 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
 
-public class ZBeanCopier {
+public class ZBeanCopierImpl implements BeanCopier {
 	public ZBeanCopierContext bctx;
 	private Map<Class<?>, BeanMethodCache> innerGetterCache = new HashMap<>();
 	private Map<Class<?>, BeanMethodCache> innerSetterCache = new HashMap<>();
 
+	@Override
 	public boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
 		boolean ok = false;
 		try {
@@ -191,6 +193,7 @@ public class ZBeanCopier {
 		bctx.loader.getErrorTracker().addParsingError(message);
 	}
 	
+	@Override
 	public List<NewErrorMessage> getErrors() {
 		List<NewErrorMessage> list = new ArrayList<>();
 		if (bctx != null) {
@@ -198,6 +201,7 @@ public class ZBeanCopier {
 		}
 		return list;
 	}
+	@Override
 	public void dumpErrors() {
 		if (bctx != null) {
 			bctx.loader.getErrorTracker().dumpErrors();

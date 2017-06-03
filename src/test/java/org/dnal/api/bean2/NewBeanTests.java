@@ -53,7 +53,7 @@ public class NewBeanTests {
 			listTypeFinder = new ListTypeFinder(et);
 			builder = new BeanToDTypeBuilder(et);
 		}
-		public String createForClass(Class<?> clazz, List<String> fields) {
+		public boolean createForClass(Class<?> clazz, List<String> fields) {
 			for(String fieldName: fields) {
 				FieldInfo finfo = new FieldInfo(clazz, fieldName);
 				stack.push(finfo);
@@ -76,6 +76,10 @@ public class NewBeanTests {
 				}
 			}
 			
+			return et.areNoErrors();
+		}
+		
+		public String getOutput() {
 			String src = "";
 			src += doOutput(genList);
 			src += doOutput(outputFieldList);
@@ -219,7 +223,7 @@ public class NewBeanTests {
 	@Test
 	public void test() {
 		List<String> fields = Arrays.asList("name", "age");
-		String source = zc.createForClass(Person.class, fields);
+		String source = createForClass(Person.class, fields);
 		assertEquals("name:string;age:int;", source);
 		chkSuccess();
 	}
@@ -227,7 +231,7 @@ public class NewBeanTests {
 	@Test
 	public void testList() {
 		List<String> fields = Arrays.asList("roles");
-		String source = zc.createForClass(Person.class, fields);
+		String source = createForClass(Person.class, fields);
 		assertEquals("LIST List1:list<String>;roles:List1;", source);
 		chkSuccess();
 	}
@@ -235,7 +239,7 @@ public class NewBeanTests {
 	@Test
 	public void testListEnum() {
 		List<String> fields = Arrays.asList("directions");
-		String source = zc.createForClass(Person.class, fields);
+		String source = createForClass(Person.class, fields);
 		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;directions:List1;", source);
 		chkSuccess();
 	}
@@ -243,7 +247,7 @@ public class NewBeanTests {
 	@Test
 	public void testAll() {
 		List<String> fields = Arrays.asList("directions", "age", "name", "roles");
-		String source = zc.createForClass(Person.class, fields);
+		String source = createForClass(Person.class, fields);
 		log(source);
 		chkSuccess();
 	}
@@ -251,14 +255,14 @@ public class NewBeanTests {
 	@Test
 	public void testX1() {
 		List<String> fields = Arrays.asList("direction1", "dirlist1");
-		String source = zc.createForClass(ClassX.class, fields);
+		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
 		assertEquals("ENUM Direction:Direction;LIST List1:list<Direction>;direction1:Direction;dirlist1:List1;", source);
 	}
 	@Test
 	public void testX1Inner() {
 		List<String> fields = Arrays.asList("person1");
-		String source = zc.createForClass(ClassX.class, fields);
+		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
 		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;person1:Person;";
 		assertEquals(s, source);
@@ -266,7 +270,7 @@ public class NewBeanTests {
 	@Test
 	public void testPersonList() {
 		List<String> fields = Arrays.asList("personList");
-		String source = zc.createForClass(ClassX.class, fields);
+		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
 		log(source);
 		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Person>;personList:List3;";
@@ -288,6 +292,13 @@ public class NewBeanTests {
 			et.dumpErrors();
 		}
 		assertEquals(false, et.areErrors());
+	}
+
+	private String createForClass(Class<?> clazz, List<String> fields) {
+		boolean b = zc.createForClass(clazz, fields);
+		chkSuccess();
+		assertEquals(true, b);
+		return zc.getOutput();
 	}
 
 	

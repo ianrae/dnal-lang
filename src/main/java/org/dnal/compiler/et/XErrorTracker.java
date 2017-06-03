@@ -29,7 +29,7 @@ public class XErrorTracker {
     	errL.clear();
     }
     
-    protected boolean areNoErrors() {
+    public boolean areNoErrors() {
         return errL.size() == 0;
     }
     

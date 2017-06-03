@@ -86,11 +86,8 @@ public class ZBeanCopierContext {
 		String xName = destObj.getClass().getSimpleName();
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
-		String dnalEnum = builder.buildEnums(sourceGetterMethodCache, destGetterMethodCache);
-		String dnalStruct = builder.buildStructTypes(sourceGetterMethodCache, destGetterMethodCache);
-		String dnalList = builder.buildListTypes(sourceGetterMethodCache, destGetterMethodCache);
 		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
-		String dnal2 = builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
+		String dnal2 = ""; //builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
 		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
 
 		if (areErrors()) {
@@ -99,7 +96,7 @@ public class ZBeanCopierContext {
 		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
-		String fullSource = String.format("%s\n %s\n %s\n %s\n %s\n %s\n", dnalEnum, dnalStruct, dnalList, dnal, dnal2, dnal3);
+		String fullSource = String.format("%s\n %s\n %s\n", dnal, dnal2, dnal3);
 		Log.log("fullsrc:" + fullSource);
 		boolean b = loader.loadTypeDefinitionFromString(fullSource);
 		if (! b) {
