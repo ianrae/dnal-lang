@@ -12,7 +12,7 @@ import java.util.List;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
-import org.dnal.api.beancopier.BeanCopier;
+import org.dnal.api.beancopier.BeanCopierImpl;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.BeanToDTypeBuilder;
 import org.dnal.api.beancopier.FieldSpec;
@@ -139,7 +139,7 @@ public class BeanCopyTests {
 
 	@Test
 	public void testBeanCopier() {
-		BeanCopier copier = new BeanCopier();
+		BeanCopierImpl copier = new BeanCopierImpl();
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";
@@ -157,7 +157,7 @@ public class BeanCopyTests {
 
 	@Test
 	public void testBeanCopierPerf() {
-		BeanCopier copier = new BeanCopier();
+		BeanCopierImpl copier = new BeanCopierImpl();
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";

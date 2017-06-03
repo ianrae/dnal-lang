@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.api.beancopier.BeanCopier;
+import org.dnal.api.beancopier.BeanCopierImpl;
 import org.dnal.api.beancopier.FieldSpec;
 import org.junit.Test;
 
@@ -94,7 +95,7 @@ public class IntegerTests {
 
 
 	//----------
-	private BeanCopier copier = new BeanCopier();
+	private BeanCopier copier = new BeanCopierImpl();
 	private ClassXDTO dto = new ClassXDTO(45, 46);
 	private ClassX x = new ClassX();
 	private List<FieldSpec> fields = new ArrayList<>();
