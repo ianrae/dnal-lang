@@ -194,11 +194,11 @@ public class ZBeanCopierContext {
 	}
 	private String getGenDnalTypeName(Method meth) {
 		Class<?> clazz = zc.getElementClassIfList(meth);
-		if (clazz == null) {
-			clazz = meth.getReturnType();
+		if (clazz != null) {
 			String typeName = String.format("list<%s>", zc.findAlreadyDefinedType(clazz));
 			return typeName;
 		} else {
+			clazz = meth.getReturnType();
 			return zc.findAlreadyDefinedType(clazz);
 		}
 	}

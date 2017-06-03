@@ -16,6 +16,7 @@ import org.dnal.api.view.ViewLoader;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
+import org.dnal.core.logger.Log;
 
 public class ZBeanCopierImpl implements BeanCopier {
 	public ZBeanCopierContext bctx;
@@ -29,6 +30,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 			if (bctx == null || (! bctx.compareKeys(sourceObj, destObj, fieldL))) {
 				//new params, so re-create context
 				if (! prepare(sourceObj, destObj, fieldL)) {
+					Log.log("BeanCopier: prepare failed");
 					return false;
 				}
 			}
@@ -36,7 +38,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 			ok = doCopy(sourceObj, destObj, fieldL);
 			
 		} catch (Exception e) {
-			addError("Exception:" + e.getMessage());
+			addError("BeanCopier Exception:" + e.getMessage());
 		}
 		return ok;
 	}
@@ -69,6 +71,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 		bctx.pctA.end();
 
 		if (areErrors()) {
+			Log.log("BeanCopier: field list error");
 			return false;
 		}
 
@@ -79,6 +82,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 		bctx.pctB.start();
 		DValue dvalSource = bctx.loader.createFromBean(viewName, sourceObj);
 		if (dvalSource == null) {
+			Log.log("BeanCopier: loader.createFromBean failed on sourceObj");
 			return false;
 		}
 		bctx.pctB.end();
@@ -88,6 +92,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 		ViewLoader viewLoader = new ViewLoader(ds);
 		DValue dval = viewLoader.load(dvalSource, (DStructType) ds.getType(destTypeName));
 		if (dval == null) {
+			Log.log("BeanCopier: viewLoader failed ");
 			return false;
 		}
 		bctx.pctC.end();
@@ -105,6 +110,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 			if (inner != null) {
 				Object obj = convertToObject(util, inner, paramClass, fieldName, finder, destObj.getClass());
 				if (obj == null) {
+					Log.log("BeanCopier: unexpected null in convertToObject, setting destobj");
 					return false;
 				}
 				finder.invokeSetter(bctx.destSetterMethodCache, destObj, fieldName, obj);
@@ -113,6 +119,7 @@ public class ZBeanCopierImpl implements BeanCopier {
 		bctx.pctD.end();
 		
 		if (areErrors()) {
+			Log.log("BeanCopier: setting destObj failed");
 			return false;
 		}
 		return true;
