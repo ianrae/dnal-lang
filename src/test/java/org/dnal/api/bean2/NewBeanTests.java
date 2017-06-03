@@ -263,6 +263,15 @@ public class NewBeanTests {
 		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;person1:Person;";
 		assertEquals(s, source);
 	}
+	@Test
+	public void testPersonList() {
+		List<String> fields = Arrays.asList("personList");
+		String source = zc.createForClass(ClassX.class, fields);
+		chkSuccess();
+		log(source);
+		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Person>;personList:List3;";
+		assertEquals(s, source);
+	}
 	
 
 	//--

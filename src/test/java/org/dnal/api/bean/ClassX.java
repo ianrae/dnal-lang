@@ -26,6 +26,7 @@ public class ClassX {
 	List<Integer> nlist1;
 	List<List<String>> strlistlist1;
 	Person person1;
+	List<Person> personList;
 	
 	public int getN1() {
 		return n1;
@@ -152,5 +153,11 @@ public class ClassX {
 	}
 	public void setPerson1(Person person1) {
 		this.person1 = person1;
+	}
+	public List<Person> getPersonList() {
+		return personList;
+	}
+	public void setPersonList(List<Person> personList) {
+		this.personList = personList;
 	}
 }
