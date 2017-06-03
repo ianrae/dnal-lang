@@ -44,7 +44,7 @@ public class BeanToDTypeBuilder {
 		map.put(Double.class, "number");
 		map.put(Float.class, "number");
 		map.put(Date.class, "date");
-		map.put(List.class, "list");
+//		map.put(List.class, "list");
 	}
 	
 	public String getPrimitive(Class<?> clazz) {

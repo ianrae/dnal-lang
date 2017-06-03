@@ -1,5 +1,6 @@
 package org.dnal.api.bean2;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +11,7 @@ import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.BeanToDTypeBuilder;
 import org.dnal.api.beancopier.ListTypeFinder;
-import org.dnal.compiler.et.XErrorTracker;import org.hamcrest.beans.HasPropertyWithValue;
+import org.dnal.compiler.et.XErrorTracker;
 
 public class ZCreator {
 	private ListTypeFinder listTypeFinder;
@@ -101,6 +102,15 @@ public class ZCreator {
 		return true; //!!error
 	}
 	
+	public Class<?> getElementClassIfList(Method meth) {
+		Class<?> clazz = meth.getReturnType();
+		if (Collection.class.isAssignableFrom(clazz)) {
+			Class<?> elementClazz = listTypeFinder.getListElementType(meth, clazz);
+			return elementClazz;
+		}
+		return null;
+	}
+	
 	
 	private boolean determineClass(FieldInfo finfo, Class<?> clazz) {
 		if (Collection.class.isAssignableFrom(clazz)) {
@@ -168,7 +178,7 @@ public class ZCreator {
 	private boolean alreadyDefined(Class<?> clazz) {
 		return (findAlreadyDefinedType(clazz) != null);
 	}
-	private String findAlreadyDefinedType(Class<?> clazz) {
+	public String findAlreadyDefinedType(Class<?> clazz) {
 		String className = builder.getPrimitive(clazz);
 		if (className != null) {
 			return className;

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dnal.api.bean2.ZBeanCopierImpl;
 import org.dnal.api.beancopier.BeanCopier;
 import org.dnal.api.beancopier.BeanCopierImpl;
 import org.dnal.api.beancopier.FieldSpec;
@@ -15,8 +16,7 @@ import org.junit.Test;
 
 public class PersonTests {
 
-	//!!fix later
-//	@Test
+	@Test
 	public void test() throws Exception {
 		addField("pperson1", "person1");
 		Person person = new Person("bob", 22);
@@ -58,7 +58,8 @@ public class PersonTests {
 	//TODO: list of structs
 
 	//----------
-	private BeanCopier copier = new BeanCopierImpl();
+//	private BeanCopier copier = new BeanCopierImpl();
+	private BeanCopier copier = new ZBeanCopierImpl();
 	private ClassXDTO dto = new ClassXDTO(0,0);
 	private ClassX x = new ClassX();
 	private List<FieldSpec> fields = new ArrayList<>();

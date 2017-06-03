@@ -9,9 +9,14 @@ public class SourceTests extends SysTestBase {
 
 	@Test
 	public void test() {
-        add("type Foo list<list<string>> end let x Foo = [ ['abc', 'def'], ['z'] ]");
-
-		load(dnal, true);
+//        add("type Foo list<list<string>> end let x Foo = [ ['abc', 'def'], ['z'] ]");
+        
+//       add("type Person struct {  name string optional age int optional } end");
+//		load(dnal, true);
+		
+		String path = "c:\\tmp\\file1.dnal";
+		this.loadFile = true;
+		this.load(path, true);
 	}
 
 	//---
