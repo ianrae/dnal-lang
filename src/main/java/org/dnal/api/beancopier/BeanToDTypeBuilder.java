@@ -222,7 +222,7 @@ public class BeanToDTypeBuilder {
 		return s;
 	}
 
-	private String generateEnum(Class<?> paramClass) {
+	public String generateEnum(Class<?> paramClass) {
 
 		StringBuilder sb = new StringBuilder();
 		sb.append(" type ");

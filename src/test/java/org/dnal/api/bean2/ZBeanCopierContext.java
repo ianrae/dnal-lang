@@ -86,6 +86,7 @@ public class ZBeanCopierContext {
 		String xName = destObj.getClass().getSimpleName();
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
+		String dnalGen = buildGeneratedTypes(sourceObj.getClass(), sourceFieldList, destObj.getClass(), destFieldList);
 		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
 		String dnal2 = ""; //builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
 		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
@@ -96,7 +97,7 @@ public class ZBeanCopierContext {
 		
 		//			XErrorTracker.logErrors = true;
 		//			Log.debugLogging = true;
-		String fullSource = String.format("%s\n %s\n %s\n", dnal, dnal2, dnal3);
+		String fullSource = String.format("%s\n %s\n %s\n %s\n", dnalGen, dnal, dnal2, dnal3);
 		Log.log("fullsrc:" + fullSource);
 		boolean b = loader.loadTypeDefinitionFromString(fullSource);
 		if (! b) {
@@ -108,6 +109,31 @@ public class ZBeanCopierContext {
 		return true;
 	}
 	
+	private String buildGeneratedTypes(Class<?> srcClass, List<String> sourceFieldList, Class<?> destClass, List<String> destFieldList) {
+		ZCreator zc = new ZCreator(loader.getErrorTracker());
+		boolean b = zc.createForClass(srcClass, sourceFieldList);
+		if (! b) {
+			return "";
+		}
+		
+		b = zc.createForClass(destClass, destFieldList);
+		if (! b) {
+			return "";
+		}
+		
+		String s = "";
+		List<FieldInfo> infos = zc.getGenList();
+		for(FieldInfo finfo: infos) {
+			if (finfo.isEnum) {
+				s += builder.generateEnum(finfo.clazz);
+			} else {
+				s += "a";
+			}
+		}
+		
+		return s;
+	}
+
 	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
 		return builder.getListElementType(meth, paramClass);
 	}
