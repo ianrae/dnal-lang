@@ -2,6 +2,7 @@ package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dnal.api.bean.BeanMethodCache;
@@ -42,6 +43,13 @@ public class BeanCopierContext {
 			addError("Exception:" + e.getMessage());
 		}
 		return ! areErrors();
+	}
+	
+	public Method findGetterMethodOnDemand(Class<?> clazz, String fieldName) {
+		BeanMethodInvoker finder = new BeanMethodInvoker();
+		BeanMethodCache methodCache = finder.getGetters(clazz, Collections.singletonList(fieldName));
+		Method meth = methodCache.getMethod(fieldName);
+		return meth;
 	}
 
 	private boolean doPrepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
@@ -199,5 +207,14 @@ public class BeanCopierContext {
 
 	public void clearErrors() {
 		loader.getErrorTracker().clear();
+	}
+
+	public Class<?> findGenClassByDnalTypename(String typeName) {
+		for(FieldInfo finfo: zc.getGenList()) {
+			if (finfo.dnalTypeName.equals(typeName)) {
+				return finfo.clazz;
+			}
+		}
+		return null;
 	}
 }
