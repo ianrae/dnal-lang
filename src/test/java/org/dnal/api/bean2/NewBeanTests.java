@@ -126,7 +126,7 @@ public class NewBeanTests {
 	}
 
 	private String createForClass(Class<?> clazz, List<String> fields) {
-		boolean b = zc.createForClass(clazz, fields);
+		boolean b = zc.createForClass(clazz, fields, true);
 		chkSuccess();
 		assertEquals(true, b);
 		return zc.getGenOutput();

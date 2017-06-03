@@ -88,7 +88,7 @@ public class ZBeanCopierContext {
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
 		String dnalGen = buildGeneratedTypes(sourceObj.getClass(), sourceFieldList, destObj.getClass(), destFieldList);
-		String dnal = mybuildDnalType(xName, destFieldList);
+		String dnal = mybuildDnalType(xName, destFieldList, false);
 		String dnal2 = ""; //builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
 		String dnal3 = mybuildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
 
@@ -111,12 +111,12 @@ public class ZBeanCopierContext {
 	}
 	
 	private String buildGeneratedTypes(Class<?> srcClass, List<String> sourceFieldList, Class<?> destClass, List<String> destFieldList) {
-		boolean b = zc.createForClass(srcClass, sourceFieldList);
+		boolean b = zc.createForClass(srcClass, sourceFieldList, true);
 		if (! b) {
 			return "";
 		}
 		
-		b = zc.createForClass(destClass, destFieldList);
+		b = zc.createForClass(destClass, destFieldList, false);
 		if (! b) {
 			return "";
 		}
@@ -136,7 +136,7 @@ public class ZBeanCopierContext {
 		return s;
 	}
 	
-	private String mybuildDnalType(String typeName, List<String> xlist) {
+	private String mybuildDnalType(String typeName, List<String> xlist, boolean isSourceClass) {
 		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
 		StringBuilder sb = new StringBuilder();
 		sb.append("type ");
@@ -144,7 +144,7 @@ public class ZBeanCopierContext {
 		sb.append(" struct { ");
 		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
 		for(String fieldName: xlist) {
-			String dnalTypeName = getDnalTypeName(fieldName);
+			String dnalTypeName = getDnalTypeName(fieldName, isSourceClass);
 			sb.append(" ");
 			sb.append(fieldName);
 			sb.append(" ");
@@ -155,9 +155,9 @@ public class ZBeanCopierContext {
 		return sb.toString();
 	}
 
-	private String getDnalTypeName(String fieldName) {
+	private String getDnalTypeName(String fieldName, boolean isSourceClass) {
 		for(FieldInfo finfo: zc.getOutputFieldList()) {
-			if (finfo.fieldName.equals(fieldName)) {
+			if (finfo.isSourceClass == isSourceClass && finfo.fieldName.equals(fieldName)) {
 				return finfo.dnalTypeName;
 			}
 		}
@@ -172,8 +172,8 @@ public class ZBeanCopierContext {
 		for(FieldSpec spec: fieldL) {
 			String fieldName = spec.destField;
 			String dtoName = spec.srcField;
-			String dnalTypeName = getDnalTypeName(fieldName);
-			String dnalTypeNameDTO = getDnalTypeName(dtoName);
+			String dnalTypeName = getDnalTypeName(fieldName, false);
+			String dnalTypeNameDTO = getDnalTypeName(dtoName, true);
 			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
 		}
 		sb.append(" } end");

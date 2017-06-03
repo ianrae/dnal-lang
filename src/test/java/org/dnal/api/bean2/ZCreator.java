@@ -27,9 +27,10 @@ public class ZCreator {
 		listTypeFinder = new ListTypeFinder(et);
 		builder = new BeanToDTypeBuilder(et);
 	}
-	public boolean createForClass(Class<?> clazz, List<String> fields) {
+	public boolean createForClass(Class<?> clazz, List<String> fields, boolean isSourceClass) {
 		for(String fieldName: fields) {
 			FieldInfo finfo = new FieldInfo(clazz, fieldName);
+			finfo.isSourceClass = isSourceClass;
 			stack.push(finfo);
 			outputFieldList.add(finfo);
 		}

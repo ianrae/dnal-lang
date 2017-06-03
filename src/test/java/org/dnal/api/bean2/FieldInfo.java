@@ -11,6 +11,7 @@ public class FieldInfo {
 	public boolean isList;
 	public boolean needsType;
 	public boolean haveResolvedStruct;
+	public boolean isSourceClass; //if false then is dest
 	
 	public FieldInfo(Class<?> clazz, String name) {
 		this.clazz = clazz;
