@@ -5,9 +5,9 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.api.bean2.ZBeanCopierImpl;
 import org.dnal.api.beancopier.BeanCopier;
 import org.dnal.api.beancopier.FieldSpec;
+import org.dnal.api.beancopier.BeanCopierImpl;
 import org.junit.Test;
 
 
@@ -96,7 +96,7 @@ public class IntegerTests {
 
 	//----------
 //	private BeanCopier copier = new BeanCopierImpl();
-	private BeanCopier copier = new ZBeanCopierImpl();
+	private BeanCopier copier = new BeanCopierImpl();
 	private ClassXDTO dto = new ClassXDTO(45, 46);
 	private ClassX x = new ClassX();
 	private List<FieldSpec> fields = new ArrayList<>();

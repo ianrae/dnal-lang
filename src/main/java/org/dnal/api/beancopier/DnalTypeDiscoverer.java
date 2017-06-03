@@ -1,4 +1,4 @@
-package org.dnal.api.bean2;
+package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -8,12 +8,9 @@ import java.util.List;
 import java.util.Stack;
 
 import org.dnal.api.bean.BeanMethodCache;
-import org.dnal.api.beancopier.BeanMethodInvoker;
-import org.dnal.api.beancopier.BeanToDTypeBuilder;
-import org.dnal.api.beancopier.ListTypeFinder;
 import org.dnal.compiler.et.XErrorTracker;
 
-public class ZCreator {
+public class DnalTypeDiscoverer {
 	private ListTypeFinder listTypeFinder;
 	private XErrorTracker et;
 	private BeanToDTypeBuilder builder;
@@ -23,7 +20,7 @@ public class ZCreator {
 	private BeanMethodInvoker finder = new BeanMethodInvoker();
 	private int nextListNameId = 1;
 
-	public ZCreator(XErrorTracker et) {
+	public DnalTypeDiscoverer(XErrorTracker et) {
 		this.et = et;
 		listTypeFinder = new ListTypeFinder(et);
 		builder = new BeanToDTypeBuilder(et);

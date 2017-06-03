@@ -8,6 +8,7 @@ import java.util.List;
 import org.dnal.api.bean.ClassX;
 import org.dnal.api.bean.ClassXDTO;
 import org.dnal.api.bean.Person;
+import org.dnal.api.beancopier.DnalTypeDiscoverer;
 import org.dnal.compiler.et.XErrorTracker;
 import org.junit.Before;
 import org.junit.Test;
@@ -110,12 +111,12 @@ public class NewBeanTests {
 	}
 
 	//--
-	private ZCreator zc;
+	private DnalTypeDiscoverer zc;
 	private XErrorTracker et = new XErrorTracker();
 	
 	@Before 
 	public void init() {
-		zc = new ZCreator(et);
+		zc = new DnalTypeDiscoverer(et);
 	}
 	
 	private void chkSuccess() {

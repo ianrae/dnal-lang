@@ -1,4 +1,4 @@
-package org.dnal.api.bean2;
+package org.dnal.api.beancopier;
 
 import java.lang.reflect.Method;
 
