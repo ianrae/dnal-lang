@@ -28,6 +28,7 @@ public class ClassXDTO {
 	List<List<Direction>> sdirlistlist1;
 	Person pperson1;
 	List<Person> ppersonList;
+	List<PersonGroup> ppersonGroupList;
 	
 	public ClassXDTO(int nn1, Integer nn2) {
 		super();
@@ -171,5 +172,11 @@ public class ClassXDTO {
 	}
 	public void setPpersonList(List<Person> ppersonList) {
 		this.ppersonList = ppersonList;
+	}
+	public List<PersonGroup> getPpersonGroupList() {
+		return ppersonGroupList;
+	}
+	public void setPpersonGroupList(List<PersonGroup> ppersonGroupList) {
+		this.ppersonGroupList = ppersonGroupList;
 	}
 }

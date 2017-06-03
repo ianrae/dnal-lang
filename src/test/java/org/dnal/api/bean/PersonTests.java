@@ -73,6 +73,20 @@ public class PersonTests {
 		chkPerson(x.personList.get(1), "sue", 23);
 		assertEquals(2, x.personList.size());
 	}
+	@Test
+	public void testPersonGroupList() {
+		addField("ppersonGroupList", "personGroupList");
+		List<PersonGroup> list = new ArrayList<>();
+		list.add(new PersonGroup("group1", new Person("bob", 22)));
+		list.add(new PersonGroup("group2", new Person("sue", 23)));
+		
+		dto.ppersonGroupList = list;
+		chkCopy(dto, x, fields);
+		chkPerson(x.personList.get(0), "bob", 22);
+		chkPerson(x.personList.get(1), "sue", 23);
+		assertEquals(2, x.personList.size());
+	}
+
 
 	//----------
 //	private BeanCopier copier = new BeanCopierImpl();

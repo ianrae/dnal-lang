@@ -27,6 +27,7 @@ public class ClassX {
 	List<List<String>> strlistlist1;
 	Person person1;
 	List<Person> personList;
+	List<PersonGroup> personGroupList;
 	
 	public int getN1() {
 		return n1;
@@ -159,5 +160,11 @@ public class ClassX {
 	}
 	public void setPersonList(List<Person> personList) {
 		this.personList = personList;
+	}
+	public List<PersonGroup> getPersonGroupList() {
+		return personGroupList;
+	}
+	public void setPersonGroupList(List<PersonGroup> personGroupList) {
+		this.personGroupList = personGroupList;
 	}
 }
