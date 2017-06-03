@@ -3,7 +3,6 @@ package org.dnal.api.bean;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,17 +11,14 @@ import java.util.List;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.bean.ReflectionBeanLoaderTest.ClassA;
-import org.dnal.api.beancopier.BeanCopierImpl;
+import org.dnal.api.bean2.ZBeanCopierImpl;
+import org.dnal.api.beancopier.BeanCopier;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.BeanToDTypeBuilder;
 import org.dnal.api.beancopier.FieldSpec;
 import org.dnal.api.beancopier.ScalarConvertUtil;
-import org.dnal.api.view.ViewLoader;
-import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.performance.PerfTimer;
-import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
-import org.dnal.core.logger.Log;
 import org.junit.Test;
 
 
@@ -139,7 +135,7 @@ public class BeanCopyTests {
 
 	@Test
 	public void testBeanCopier() {
-		BeanCopierImpl copier = new BeanCopierImpl();
+		BeanCopier copier = new ZBeanCopierImpl();
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";
@@ -157,7 +153,7 @@ public class BeanCopyTests {
 
 	@Test
 	public void testBeanCopierPerf() {
-		BeanCopierImpl copier = new BeanCopierImpl();
+		BeanCopier copier = new ZBeanCopierImpl();
 		ClassXDTO dto = new ClassXDTO();
 		dto.ss1 = "abc";
 		dto.ss2 = "abc2";
@@ -178,11 +174,7 @@ public class BeanCopyTests {
 		}
 		perf.endTimer("a");
 		perf.dump();
-		log(String.format("pctA %d", copier.bctx.pctA.getDuration()));
-		log(String.format("pctB %d", copier.bctx.pctB.getDuration()));
-		log(String.format("pctC %d", copier.bctx.pctC.getDuration()));
-		log(String.format("pctD %d", copier.bctx.pctD.getDuration()));
-		log(String.format("pctE %d", copier.bctx.pctE.getDuration()));
+		copier.dumpPeformanceInfo();
 
 	}
 

@@ -214,4 +214,13 @@ public class ZBeanCopierImpl implements BeanCopier {
 			bctx.loader.getErrorTracker().dumpErrors();
 		}
 	}
+
+	@Override
+	public void dumpPeformanceInfo() {
+		Log.log(String.format("pctA %d", bctx.pctA.getDuration()));
+		Log.log(String.format("pctB %d", bctx.pctB.getDuration()));
+		Log.log(String.format("pctC %d", bctx.pctC.getDuration()));
+		Log.log(String.format("pctD %d", bctx.pctD.getDuration()));
+		Log.log(String.format("pctE %d", bctx.pctE.getDuration()));
+	}
 }

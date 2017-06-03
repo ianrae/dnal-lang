@@ -9,4 +9,5 @@ public interface BeanCopier {
 	boolean copy(Object sourceObj, Object destObj, List<FieldSpec> fieldL);
 	List<NewErrorMessage> getErrors();
 	void dumpErrors();
+	void dumpPeformanceInfo();
 }

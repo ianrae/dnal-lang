@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.dnal.api.bean2.ZBeanCopierImpl;
 import org.dnal.api.beancopier.BeanCopier;
-import org.dnal.api.beancopier.BeanCopierImpl;
 import org.dnal.api.beancopier.FieldSpec;
 import org.dnal.compiler.dnalgenerate.DateFormatParser;
 import org.junit.Before;
@@ -116,7 +115,7 @@ public class DateTests {
 	    cal.set(Calendar.YEAR, year);
 	    cal.set(Calendar.MONTH, mon - 1);
 	    cal.set(Calendar.DATE, day);
-	    cal.set(Calendar.HOUR, 7);
+	    cal.set(Calendar.HOUR_OF_DAY, 7);
 	    cal.set(Calendar.MINUTE, 30);
 	    cal.set(Calendar.SECOND, 41);
 	    cal.set(Calendar.MILLISECOND, 0);

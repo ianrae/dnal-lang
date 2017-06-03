@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.dnal.api.bean2.ZBeanCopierImpl;
 import org.dnal.api.beancopier.BeanCopier;
-import org.dnal.api.beancopier.BeanCopierImpl;
 import org.dnal.api.beancopier.FieldSpec;
 import org.junit.Test;
 
