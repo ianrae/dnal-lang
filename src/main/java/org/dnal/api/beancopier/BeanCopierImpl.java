@@ -157,7 +157,7 @@ public class BeanCopierImpl implements BeanCopier {
 					//!!fix for lists,ect
 					Class<?> imClass = im.getReturnType();
 					
-					Object obj = convertToObject(util, inner, null, imClass, finder); //imClass, member, finder, structClass);  //recursion!
+					Object obj = convertToObject(util, inner, im, imClass, finder); //imClass, member, finder, structClass);  //recursion!
 					finder.invokeSetter(setterMethodCache, targetObj, member, obj);
 				}
 			}
@@ -165,16 +165,6 @@ public class BeanCopierImpl implements BeanCopier {
 		}
 		
 		return util.toObject(dval, paramClass);
-	}
-
-	private Method findFieldGetterMethod(DType dtype, String fieldName) {
-		Method meth = bctx.destGetterMethodCache.getMethod(fieldName);
-		if (meth == null) {
-			String typeName = dtype.getCompleteName();
-			Class<?> clazz = bctx.findGenClassByDnalTypename(typeName);
-			meth = bctx.findGetterMethodOnDemand(clazz, fieldName);
-		}
-		return meth;
 	}
 
 	private BeanMethodCache getInnerGetterCache(Class<?> structClass, BeanMethodInvoker finder) {

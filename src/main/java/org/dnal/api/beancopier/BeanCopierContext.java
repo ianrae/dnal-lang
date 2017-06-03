@@ -45,12 +45,12 @@ public class BeanCopierContext {
 		return ! areErrors();
 	}
 	
-	public Method findGetterMethodOnDemand(Class<?> clazz, String fieldName) {
-		BeanMethodInvoker finder = new BeanMethodInvoker();
-		BeanMethodCache methodCache = finder.getGetters(clazz, Collections.singletonList(fieldName));
-		Method meth = methodCache.getMethod(fieldName);
-		return meth;
-	}
+//	public Method findGetterMethodOnDemand(Class<?> clazz, String fieldName) {
+//		BeanMethodInvoker finder = new BeanMethodInvoker();
+//		BeanMethodCache methodCache = finder.getGetters(clazz, Collections.singletonList(fieldName));
+//		Method meth = methodCache.getMethod(fieldName);
+//		return meth;
+//	}
 
 	private boolean doPrepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) throws Exception {
 		pctE.start();
