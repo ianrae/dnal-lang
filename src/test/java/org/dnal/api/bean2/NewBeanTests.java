@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.dnal.api.bean.ClassX;
+import org.dnal.api.bean.ClassXDTO;
 import org.dnal.api.bean.Person;
 import org.dnal.compiler.et.XErrorTracker;
 import org.junit.Before;
@@ -84,10 +85,11 @@ public class NewBeanTests {
 		assertEquals("person1:Person;", zc.getOutputFieldsOutput());
 		assertEquals(s, source);
 		
-		fields = Arrays.asList("person1");
-		source = createForClass(ClassX.class, fields);
+		fields = Arrays.asList("pperson1");
+		source = createForClass(ClassXDTO.class, fields);
 		chkSuccess();
 		assertEquals(s, source);
+		assertEquals("person1:Person;pperson1:Person;", zc.getOutputFieldsOutput());
 	}
 	
 	@Test
@@ -102,9 +104,9 @@ public class NewBeanTests {
 		fields = Arrays.asList("nlist1");
 		source = createForClass(ClassX.class, fields);
 		chkSuccess();
-		s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Integer>;person1:Person;nlist1:List3;";
+		s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Integer>;";
 		assertEquals(s, source);
-		
+		assertEquals("person1:Person;nlist1:List3;", zc.getOutputFieldsOutput());
 	}
 
 	//--

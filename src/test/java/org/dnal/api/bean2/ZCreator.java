@@ -10,7 +10,7 @@ import org.dnal.api.bean.BeanMethodCache;
 import org.dnal.api.beancopier.BeanMethodInvoker;
 import org.dnal.api.beancopier.BeanToDTypeBuilder;
 import org.dnal.api.beancopier.ListTypeFinder;
-import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.et.XErrorTracker;import org.hamcrest.beans.HasPropertyWithValue;
 
 public class ZCreator {
 	private ListTypeFinder listTypeFinder;
@@ -142,6 +142,10 @@ public class ZCreator {
 		}
 		
 		//else struct
+		if (alreadyDefined(clazz)) {
+			finfo.dnalTypeName = clazz.getSimpleName();
+			return true;
+		}
 		if (! finfo.haveResolvedStruct) {
 			finfo.haveResolvedStruct = true;
 			BeanMethodCache structMethodCache = finder.getAllGetters(clazz);
