@@ -217,7 +217,7 @@ public class BeanToDTypeBuilder {
 		String s = String.format("%s%d", "List", nextInstanceId);
 		return s;
 	}
-	private String generateListType(String listTypeName, String dnalTypeName) {
+	public String generateListType(String listTypeName, String dnalTypeName) {
 		String s = String.format(" type %s %s end", listTypeName, dnalTypeName);
 		return s;
 	}

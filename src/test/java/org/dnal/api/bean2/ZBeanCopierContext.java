@@ -28,12 +28,13 @@ public class ZBeanCopierContext {
 	private BeanMethodCache sourceGetterMethodCache;
 	private BeanCopierContextKey contextKey;
 	private BeanToDTypeBuilder builder;
-
+	private ZCreator zc;
 
 	public ZBeanCopierContext() {
 		loader = new DNALLoader();
 		loader.initCompiler();
 		builder = new BeanToDTypeBuilder(loader.getErrorTracker());
+		zc = new ZCreator(loader.getErrorTracker());
 	}
 
 	public boolean prepare(Object sourceObj, Object destObj, List<FieldSpec> fieldL) {
@@ -87,9 +88,9 @@ public class ZBeanCopierContext {
 		String dtoName = sourceObj.getClass().getSimpleName();
 		String viewName =  dtoName + "View";
 		String dnalGen = buildGeneratedTypes(sourceObj.getClass(), sourceFieldList, destObj.getClass(), destFieldList);
-		String dnal = builder.buildDnalType(xName, destGetterMethodCache, destFieldList);
+		String dnal = mybuildDnalType(xName, destFieldList);
 		String dnal2 = ""; //builder.buildDnalType(dtoName, sourceGetterMethodCache, sourceFieldList);
-		String dnal3 = builder.buildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
+		String dnal3 = mybuildDnalView(xName, viewName, destGetterMethodCache, sourceGetterMethodCache, destFieldList, sourceFieldList, fieldL);
 
 		if (areErrors()) {
 			return false;
@@ -110,7 +111,6 @@ public class ZBeanCopierContext {
 	}
 	
 	private String buildGeneratedTypes(Class<?> srcClass, List<String> sourceFieldList, Class<?> destClass, List<String> destFieldList) {
-		ZCreator zc = new ZCreator(loader.getErrorTracker());
 		boolean b = zc.createForClass(srcClass, sourceFieldList);
 		if (! b) {
 			return "";
@@ -126,6 +126,8 @@ public class ZBeanCopierContext {
 		for(FieldInfo finfo: infos) {
 			if (finfo.isEnum) {
 				s += builder.generateEnum(finfo.clazz);
+			} else if (finfo.isList) {
+				s += builder.generateListType(finfo.fieldName, finfo.dnalTypeName);
 			} else {
 				s += "a";
 			}
@@ -133,6 +135,51 @@ public class ZBeanCopierContext {
 		
 		return s;
 	}
+	
+	private String mybuildDnalType(String typeName, List<String> xlist) {
+		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		StringBuilder sb = new StringBuilder();
+		sb.append("type ");
+		sb.append(typeName);
+		sb.append(" struct { ");
+		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		for(String fieldName: xlist) {
+			String dnalTypeName = getDnalTypeName(fieldName);
+			sb.append(" ");
+			sb.append(fieldName);
+			sb.append(" ");
+			sb.append(dnalTypeName);
+			sb.append(" optional");
+		}
+		sb.append(" } end");
+		return sb.toString();
+	}
+
+	private String getDnalTypeName(String fieldName) {
+		for(FieldInfo finfo: zc.getOutputFieldList()) {
+			if (finfo.fieldName.equals(fieldName)) {
+				return finfo.dnalTypeName;
+			}
+		}
+		return null;
+	}
+	
+	private String mybuildDnalView(String typeName, String viewName, BeanMethodCache methodCache1, BeanMethodCache methodCache2, List<String> xlist, List<String> dtolist, List<FieldSpec> fieldL) {
+		//			String dnal3 = " inview X <- XDTOView { s1 <- ss1 string   s2 <- ss2 string } end";		
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("inview %s <- %s {", typeName, viewName));
+
+		for(FieldSpec spec: fieldL) {
+			String fieldName = spec.destField;
+			String dtoName = spec.srcField;
+			String dnalTypeName = getDnalTypeName(fieldName);
+			String dnalTypeNameDTO = getDnalTypeName(dtoName);
+			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
+		}
+		sb.append(" } end");
+		return sb.toString();
+	}
+	
 
 	public Class<?> getListElementType(Method meth, Class<?> paramClass) {
 		return builder.getListElementType(meth, paramClass);

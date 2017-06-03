@@ -182,7 +182,7 @@ public class ZCreator {
 		return null;
 	}
 	private String calculateListType(Class<?> elementClass) {
-		String elType = elementClass.getSimpleName();
+		String elType = findAlreadyDefinedType(elementClass);
 		String s = "";
 			switch(listTypeFinder.listDepth) {
 			case 1:

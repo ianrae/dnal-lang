@@ -26,7 +26,7 @@ public class NewBeanTests {
 	public void testList() {
 		List<String> fields = Arrays.asList("roles");
 		String source = createForClass(Person.class, fields);
-		assertEquals("LIST List1:list<String>;", source);
+		assertEquals("LIST List1:list<string>;", source);
 		assertEquals("roles:List1;", zc.getOutputFieldsOutput());
 		chkSuccess();
 	}
@@ -61,7 +61,7 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("person1");
 		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
-		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
+		String s = "LIST List1:list<string>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
 		assertEquals(s, source);
 		assertEquals("person1:Person;", zc.getOutputFieldsOutput());
 	}
@@ -71,7 +71,7 @@ public class NewBeanTests {
 		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
 		log(source);
-		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Person>;";
+		String s = "LIST List1:list<string>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Person>;";
 		assertEquals(s, source);
 		assertEquals("personList:List3;", zc.getOutputFieldsOutput());
 	}
@@ -81,7 +81,7 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("person1");
 		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
-		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
+		String s = "LIST List1:list<string>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
 		assertEquals("person1:Person;", zc.getOutputFieldsOutput());
 		assertEquals(s, source);
 		
@@ -97,14 +97,14 @@ public class NewBeanTests {
 		List<String> fields = Arrays.asList("person1");
 		String source = createForClass(ClassX.class, fields);
 		chkSuccess();
-		String s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
+		String s = "LIST List1:list<string>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;";
 		assertEquals("person1:Person;", zc.getOutputFieldsOutput());
 		assertEquals(s, source);
 		
 		fields = Arrays.asList("nlist1");
 		source = createForClass(ClassX.class, fields);
 		chkSuccess();
-		s = "LIST List1:list<String>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<Integer>;";
+		s = "LIST List1:list<string>;ENUM Direction:Direction;LIST List2:list<Direction>;Person:Person;LIST List3:list<int>;";
 		assertEquals(s, source);
 		assertEquals("person1:Person;nlist1:List3;", zc.getOutputFieldsOutput());
 	}
