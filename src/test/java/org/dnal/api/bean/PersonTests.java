@@ -82,9 +82,14 @@ public class PersonTests {
 		
 		dto.ppersonGroupList = list;
 		chkCopy(dto, x, fields);
-		chkPerson(x.personList.get(0), "bob", 22);
-		chkPerson(x.personList.get(1), "sue", 23);
-		assertEquals(2, x.personList.size());
+		
+		PersonGroup grp = x.personGroupList.get(0);
+		assertEquals("group1", grp.getName());
+		chkPerson(grp.getBoss(), "bob", 22);
+		grp = x.personGroupList.get(1);
+		assertEquals("group2", grp.getName());
+		chkPerson(grp.getBoss(), "sue", 23);
+		assertEquals(2, x.personGroupList.size());
 	}
 
 

@@ -25,7 +25,7 @@ public class BeanCopierContext {
 	private BeanCopierContextKey contextKey;
 	private BeanToDTypeBuilder builder;
 	private DnalTypeDiscoverer zc;
-
+	
 	public BeanCopierContext() {
 		loader = new DNALLoader();
 		loader.initCompiler();

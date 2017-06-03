@@ -17,6 +17,7 @@ import org.dnal.core.logger.Log;
 
 public class BeanCopierImpl implements BeanCopier {
 	public BeanCopierContext bctx;
+	
 	private Map<Class<?>, BeanMethodCache> innerGetterCache = new HashMap<>();
 	private Map<Class<?>, BeanMethodCache> innerSetterCache = new HashMap<>();
 
@@ -102,11 +103,11 @@ public class BeanCopierImpl implements BeanCopier {
 		for(String fieldName: destFieldList) {
 			Method meth = bctx.destSetterMethodCache.getMethod(fieldName);
 
-//			Class<?> paramClass = meth.getParameterTypes()[0];
 			DValue inner = dval.asStruct().getField(fieldName);
 			if (inner != null) {
 				Method methGetter =  bctx.destGetterMethodCache.getMethod(fieldName);
-				Object obj = convertToObject(util, inner, methGetter, null, finder); //fieldName, finder, destObj.getClass());
+				Class<?> paramClass = methGetter.getReturnType();
+				Object obj = convertToObject(util, inner, methGetter, paramClass, finder, 0); //fieldName, finder, destObj.getClass());
 				if (obj == null) {
 					Log.log("BeanCopier: unexpected null in convertToObject, setting destobj");
 					return false;
@@ -126,18 +127,31 @@ public class BeanCopierImpl implements BeanCopier {
 //	private Object convertToObject(ScalarConvertUtil util, DValue dval, Class<?> paramClass, String fieldName, BeanMethodInvoker finder, Class<?> classDest) throws Exception {
 
 	
-	private Object convertToObject(ScalarConvertUtil util, DValue dval, Method methGetter, Class<?> paramClass, BeanMethodInvoker finder) throws Exception {
+	private Object convertToObject(ScalarConvertUtil util, DValue dval, Method methGetter, Class<?> paramClass, BeanMethodInvoker finder, int listDepth) throws Exception {
 		if (dval.getType().isListShape()) {
 			List<Object> list = new ArrayList<>();
-			Class<?> elClass = bctx.getListElementType(methGetter, null); //paramClass not used
-			for(DValue inner: dval.asList()) {
-				if (inner != null) {
-					Object obj = convertToObject(util, inner, null, elClass, finder); //elClass, fieldName, finder, classDest);  //recursion!
-					if (obj != null) {
-						list.add(obj);
+			if (listDepth > 0) {
+				for(DValue inner: dval.asList()) {
+					if (inner != null) {
+						Object obj = convertToObject(util, inner, null, paramClass, finder, listDepth - 1); //elClass, fieldName, finder, classDest);  //recursion!
+						if (obj != null) {
+							list.add(obj);
+						}
+					}
+				}
+			} else {
+				ListTypeFinder listTypeFinder = new ListTypeFinder(bctx.loader.getErrorTracker());
+				Class<?> elClass = listTypeFinder.getListElementType(methGetter, null); //paramClass not used
+				for(DValue inner: dval.asList()) {
+					if (inner != null) {
+						Object obj = convertToObject(util, inner, null, elClass, finder, listTypeFinder.listDepth - 1); //elClass, fieldName, finder, classDest);  //recursion!
+						if (obj != null) {
+							list.add(obj);
+						}
 					}
 				}
 			}
+			
 			return list;
 		} else if (dval.getType().isStructShape()) {
 //			Method meth = findFieldGetterMethod(dval.getType(), fieldName);// bctx.destGetterMethodCache.getMethod(fieldName);
@@ -157,7 +171,7 @@ public class BeanCopierImpl implements BeanCopier {
 					//!!fix for lists,ect
 					Class<?> imClass = im.getReturnType();
 					
-					Object obj = convertToObject(util, inner, im, imClass, finder); //imClass, member, finder, structClass);  //recursion!
+					Object obj = convertToObject(util, inner, im, imClass, finder, 0); //imClass, member, finder, structClass);  //recursion!
 					finder.invokeSetter(setterMethodCache, targetObj, member, obj);
 				}
 			}
