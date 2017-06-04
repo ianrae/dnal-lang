@@ -1,19 +1,16 @@
-package org.dnal.api.bean2;
+package org.dnal.api.bean;
 
 import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.dnal.api.bean.ClassX;
-import org.dnal.api.bean.ClassXDTO;
-import org.dnal.api.bean.Person;
 import org.dnal.api.beancopier.DnalTypeDiscoverer;
 import org.dnal.compiler.et.XErrorTracker;
 import org.junit.Before;
 import org.junit.Test;
 
-public class NewBeanTests {
+public class DnalTypeDiscovererTests {
 	@Test
 	public void test() {
 		List<String> fields = Arrays.asList("name", "age");
