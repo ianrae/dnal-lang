@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.dnal.core.fluent.type.TypeBuilder;
+import org.dnal.core.fluent.type.TypeBuilder.Inner;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.nrule.ValidationScorer;
@@ -38,9 +40,8 @@ public class BaseDValTest {
 		assertEquals(true, builder.finish());
 		return builder.getDValue();
 	}
-	protected DValue buildEnumVal(DTypeRegistry registry, String input) {
-		DType type = registry.getType(BuiltInTypes.ENUM_SHAPE);
-		XEnumValueBuilder builder = new XEnumValueBuilder(type);
+	protected DValue buildEnumVal(DTypeRegistry registry, DStructType enumType, String input) {
+		XEnumValueBuilder builder = new XEnumValueBuilder(enumType);
 		builder.buildFromString(input);
 		assertEquals(true, builder.finish());
 		return builder.getDValue();
@@ -156,6 +157,20 @@ public class BaseDValTest {
 	}
 	protected void xdumpValErrors(SimpleNRuleRunner runner) {
 		dumpValErrors(runner.getValidationErrors());
+	}
+	
+	
+	protected DStructType buildColourEnumType(DTypeRegistry registry) {
+		TypeBuilder tb = new TypeBuilder(registry, world);
+		tb.setAmBuildingEnum(true);
+		Inner inner = tb.start("Colour");
+
+		inner.string("RED");
+		inner.string("GREEN");
+		inner.string("BLUE");
+		inner.end();
+		DStructType structType = tb.getType();
+		return structType;
 	}
 	
 }

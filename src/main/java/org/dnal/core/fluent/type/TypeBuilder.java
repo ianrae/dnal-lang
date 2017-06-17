@@ -57,9 +57,9 @@ public class TypeBuilder {
             doAddField(fieldName, eltype);
             return new InnerString(currentField, rules, fieldName);
         }
-		public InnerEnum enumeration(String fieldName) {
+		public InnerEnum enumeration(String fieldName, String enumTypeName) {
 			validateFieldName(fieldName);
-			DType eltype = registry.getType(BuiltInTypes.ENUM_SHAPE);
+			DType eltype = registry.getType(enumTypeName);
             doAddField(fieldName, eltype);
 			return new InnerEnum(currentField, rules, fieldName);
 		}

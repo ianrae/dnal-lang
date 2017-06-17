@@ -11,6 +11,9 @@ public class FluentTests extends BaseDValTest {
 
 	@Test
 	public void test() {
+		DStructType enumType = buildColourEnumType(registry);
+		
+		
 		TypeBuilder tb = new TypeBuilder(registry, world);
 		tb.start("Person")
 		.string("name").notEmpty().minSize(35)
@@ -19,7 +22,7 @@ public class FluentTests extends BaseDValTest {
 		.longInteger("dbid")
 		.number("weight").min(10.0)
 		.bool("flag")
-		.enumeration("color")
+		.enumeration("color", "Colour")
 		.date("when")
 		.stringList("nickNames")
 		.end();

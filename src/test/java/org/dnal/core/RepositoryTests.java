@@ -38,12 +38,12 @@ public class RepositoryTests  extends BaseDValTest {
 	
 	@Test
 	public void test3() {
-		DType type = registry.getType(BuiltInTypes.ENUM_SHAPE);
+		DStructType type = buildColourEnumType(registry);
 
 		World world = new World();
 		world.setRepositoryFactory(new MockRepositoryFactory());
 		world.typeRegistered(type);
-		DValue dval = buildEnumVal(registry, "RED");
+		DValue dval = buildEnumVal(registry, type, "RED");
 		world.valueAdded(dval);
 
 		assertEquals(true, world.inRepo(dval));
