@@ -262,7 +262,7 @@ public class DValTests extends BaseDValTest {
 		builder = new XStructValueBuilder(type);
 		builder.finish();
 		assertEquals(false, builder.wasSuccessful());
-		chkErrors(builder, 2);
+		chkErrors(builder, 1);
 		
 		log("3..");
 		builder = new XStructValueBuilder(type);
