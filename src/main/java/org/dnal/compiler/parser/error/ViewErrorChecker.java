@@ -22,7 +22,7 @@ public class ViewErrorChecker extends ErrorCheckerBase {
 
 	public void checkForErrors() {
 		for(ViewExp exp : viewL) {
-			Log.log(exp.typeName + "vvvvvvvvv");
+//			Log.log(exp.typeName + "vvvvvvvvv");
 			checkView(exp);
 		}
 	}

@@ -310,6 +310,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         } else {
             FullListTypeExp fste = (FullListTypeExp) fullType;
             String xfieldType = fste.getListElementType();
+            if (xfieldType != null && xfieldType.startsWith("list<")) {
+            	xfieldType = fieldType;
+            }
 
             for(Exp exp: listExp.list) {
                 FullAssignmentExp tmp = createFAE("listel?", xfieldType, exp);

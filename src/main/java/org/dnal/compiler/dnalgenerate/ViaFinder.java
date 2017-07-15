@@ -45,6 +45,20 @@ public class ViaFinder extends ErrorTrackingBase {
                 }
             }
         }
+        
+    	repoList = buildRepoListForListTypes(dtype);
+        for(Repository repo: repoList) {
+            for(DValue tmp: repo.getAll()) {
+            	List<DValue> list = tmp.asList();
+            	for(DValue element: list) {
+                    if (isMatch(element, via)) {
+                        matchL.add(element);
+                    }
+            	}
+            }
+        }
+        
+        
         return matchL;
     }
 

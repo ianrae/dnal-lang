@@ -21,7 +21,7 @@ public class DNALLoader {
     private boolean cloneMainDataSet = true;
     
     public boolean loadTypeDefinition(String dnalPath) {
-        createCompiler();
+        createCompilerIfNeeded();
         mainDataSet = compiler.compile(dnalPath);
         if (mainDataSet == null) {
             return false;
@@ -30,7 +30,7 @@ public class DNALLoader {
         return true;
     }
     public boolean loadTypeDefinitionFromString(String source) {
-        createCompiler();
+        createCompilerIfNeeded();
         mainDataSet = compiler.compileString(source);
         if (mainDataSet == null) {
             return false;
@@ -58,10 +58,12 @@ public class DNALLoader {
     	return compiler.getContext().et;
     }
     
-    private void createCompiler() {
-        compiler = new CompilerImpl();
-        CompilerImpl impl = (CompilerImpl) compiler;
-        et = impl.getContext().et;
+    private void createCompilerIfNeeded() {
+    	if (compiler == null) {
+    		compiler = new CompilerImpl();
+    		CompilerImpl impl = (CompilerImpl) compiler;
+    		et = impl.getContext().et;
+    	}
     }
     
     
@@ -129,5 +131,9 @@ public class DNALLoader {
 	}
 	public void setCloneMainDataSet(boolean cloneMainDataSet) {
 		this.cloneMainDataSet = cloneMainDataSet;
+	}
+	public void initCompiler() {
+		compiler = null;
+		createCompilerIfNeeded();
 	}
 }

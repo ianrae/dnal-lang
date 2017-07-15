@@ -16,7 +16,7 @@ public class FullListTypeExp extends FullTypeExp {
 	public String getListElementType() {
 		String s = elementType.name();
 		int pos = s.indexOf('<');
-		int pos2 = s.indexOf('>');
+		int pos2 = s.lastIndexOf('>');
 		String elType = s.substring(pos + 1, pos2);
 		return elType;
 	}

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import org.apache.commons.lang.StringUtils;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.UniqueRule;
@@ -51,6 +53,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	private List<RuleDeclaration> ruleDeclL;
 	private PackageHelper packageHelper;
 	private CompilerContext context;
+	private int nextInnerSuffix = 1000;
 
 	public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
 			CustomRuleFactory crf, CompilerContext context) {
@@ -81,6 +84,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			}
 		}
 		context.perf.endTimer("ast-to-dval:types");
+//		registry.dump();
 
 		context.perf.startTimer("ast-to-dval:values");
 		String packageName = packageHelper.getPackageName();
@@ -417,20 +421,34 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	private void buildListType(FullListTypeExp exp) {
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
-		IdentExp elexp = new IdentExp(elType);
-		if (TypeInfo.isPrimitiveType(elexp)) {
-			elType = TypeInfo.toShapeType(elType);
-		}
+		
+		DType dtype = doInner(typeName, elType);
+		this.addValidationRules(exp, dtype);
+	}
 
-		DType eltype = packageHelper.findRegisteredType(elType);
+	private DType doInner(String typeName, String elType) {
+		DType eltype = null;
+		String target = "list<";
+		if (elType.startsWith(target)) {
+			elType = StringUtils.substringAfter(elType, target);
+			elType = elType.substring(0, elType.length() - 1);
+			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
+			eltype = doInner(innerTypeName, elType); //recursion!
+		} else {
+			IdentExp elexp = new IdentExp(elType);
+			if (TypeInfo.isPrimitiveType(elexp)) {
+				elType = TypeInfo.toShapeType(elType);
+			}
+			eltype = packageHelper.findRegisteredType(elType);
+		}
+		
 		if (eltype == null) {
 			this.addError2s("type '%s': unknown list element type '%s'", typeName, elType);
 		}
 
 		DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
 		registerType(typeName, dtype);
-
-		this.addValidationRules(exp, dtype);
+		return dtype;
 	}
 
 	private void processImports() {
@@ -461,9 +479,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 //		DType baseType = null; //no base type for views
 
 		Inner inner = tb.start(viewExp.viewName.name());
+		boolean isOutbound = viewExp.direction.equals(ViewDirection.OUTBOUND);
 
 		for(ViewMemberExp membExp : viewExp.memberL) {
-			log(" vm " + membExp.strValue());
+//			log(" vm " + membExp.strValue());
+			
+			if (! isOutbound) {
+				//remove duplicates
+				if (tb.fieldNameExists(membExp.right.strValue())) {
+					continue;
+				}
+			}
 
 			switch(TypeInfo.typeOf(membExp.rightType)) {
 			case INT:
@@ -488,7 +514,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			default:
 			{
 				DType eltype = packageHelper.findRegisteredType(membExp.rightType.name());
-				String fieldName = membExp.left.name();
+				String fieldName = membExp.right.name();
 				if (eltype != null) {
 					inner.other(fieldName, eltype);
 				} else {

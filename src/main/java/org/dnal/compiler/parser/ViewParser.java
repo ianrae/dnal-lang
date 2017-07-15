@@ -5,13 +5,11 @@ import java.util.List;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IdentExp;
-import org.dnal.compiler.parser.ast.RuleWithFieldExp;
 import org.dnal.compiler.parser.ast.ViewExp;
-import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.ast.ViewFormatExp;
+import org.dnal.compiler.parser.ast.ViewMemberExp;
 
 public class ViewParser extends ParserBase {
 	

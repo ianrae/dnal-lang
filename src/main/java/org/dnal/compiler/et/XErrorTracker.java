@@ -29,7 +29,7 @@ public class XErrorTracker {
     	errL.clear();
     }
     
-    protected boolean areNoErrors() {
+    public boolean areNoErrors() {
         return errL.size() == 0;
     }
     
@@ -135,6 +135,32 @@ public class XErrorTracker {
 	        this.errL.add(err);
 	        logIfEnabled(err);
 		}
+	}
+	
+	
+	public void addParsingError(String message) {
+		NewErrorMessage nem = new NewErrorMessage();
+		nem.setErrorType(NewErrorMessage.Type.PARSING_ERROR);
+		nem.setMessage(message);
+		addError(nem);
+	}
+	public void addAPIError(String message) {
+		NewErrorMessage nem = new NewErrorMessage();
+		nem.setErrorType(NewErrorMessage.Type.API_ERROR);
+		nem.setMessage(message);
+		addError(nem);
+	}
+	public void addIOError(String message) {
+		NewErrorMessage nem = new NewErrorMessage();
+		nem.setErrorType(NewErrorMessage.Type.IO_ERROR);
+		nem.setMessage(message);
+		addError(nem);
+	}
+	public void addValidationError(String message) {
+		NewErrorMessage nem = new NewErrorMessage();
+		nem.setErrorType(NewErrorMessage.Type.VALIDATION_ERROR);
+		nem.setMessage(message);
+		addError(nem);
 	}
 
 

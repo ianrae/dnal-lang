@@ -6,7 +6,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.compiler.parser.ast.EnumMemberExp;
+import org.dnal.compiler.parser.ast.FullEnumTypeExp;
+import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.fluent.type.TypeBuilder;
+import org.dnal.core.fluent.type.TypeBuilder.Inner;
 import org.dnal.core.oldbuilder.XEnumValueBuilder;
 import org.dnal.core.oldbuilder.XListValueBuilder;
 import org.dnal.core.oldbuilder.XStructValueBuilder;
@@ -29,8 +33,8 @@ public class EnumTests extends BaseDValTest {
 
 	@Test
 	public void testBuilder() {
-		DType type = registry.getType(BuiltInTypes.ENUM_SHAPE);
-		XEnumValueBuilder builder = new XEnumValueBuilder(type);
+		DStructType enumType = buildColourEnumType(registry);
+		XEnumValueBuilder builder = new XEnumValueBuilder(enumType);
 
 		builder.buildFromString("RED");
 		assertEquals(false, builder.wasSuccessful());
@@ -43,10 +47,10 @@ public class EnumTests extends BaseDValTest {
 
 		DValue dval = builder.getDValue();
 		assertEquals("RED", dval.asString());
-		assertTrue(dval.getType()== type);
+		assertTrue(dval.getType()== enumType);
 
 		log("2..");
-		builder = new XEnumValueBuilder(type);
+		builder = new XEnumValueBuilder(enumType);
 		builder.buildFromString("GREEN");
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
@@ -55,7 +59,7 @@ public class EnumTests extends BaseDValTest {
 		dval = builder.getDValue();
 
 		log("3..");
-		builder = new XEnumValueBuilder(type);
+		builder = new XEnumValueBuilder(enumType);
 		builder.buildFromString(null);
 		builder.finish();
 		assertEquals(false, builder.wasSuccessful());
@@ -65,14 +69,14 @@ public class EnumTests extends BaseDValTest {
 		assertEquals(null, dval);
 
 		log("4..");
-		builder = new XEnumValueBuilder(type);
-		builder.buildFromString("BLACK");
+		builder = new XEnumValueBuilder(enumType);
+		builder.buildFromString("BLUE");
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
 
 		chkErrors(builder, 0);
 		dval = builder.getDValue();
-		assertEquals("BLACK", dval.asString());
+		assertEquals("BLUE", dval.asString());
 	}
 	
 	@Test
@@ -114,11 +118,12 @@ public class EnumTests extends BaseDValTest {
 	}
 	@Test
 	public void testStructBuilder() {
+		DStructType enumType = buildColourEnumType(registry);
 		DStructType type = this.buildSettingsType(registry);
 
 		XStructValueBuilder builder = new XStructValueBuilder(type);
 		builder.addField("flag1", buildBooleanVal(registry, true));
-		builder.addField("flag2", buildEnumVal(registry, "RED"));
+		builder.addField("flag2", buildEnumVal(registry, enumType, "RED"));
 		builder.finish();
 		assertEquals(true, builder.wasSuccessful());
 		DValue dval = builder.getDValue();
@@ -140,10 +145,12 @@ public class EnumTests extends BaseDValTest {
 		TypeBuilder tb = new TypeBuilder(registry, world);
 		tb.start("Settings")
 		.bool("flag1")
-		.enumeration("flag2")
+		.enumeration("flag2", "Colour")
 		.end();
 
 		DStructType type = tb.getType();
 		return type;
 	}
+	
+	
 }

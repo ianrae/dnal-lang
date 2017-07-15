@@ -574,5 +574,25 @@ public class B2Tests {
         assertEquals("abc", via.valueExp.strValue());
     }
     
+	@Test
+	public void test100() {
+		FullListTypeExp ax = (FullListTypeExp) FullParser.parse02("type X list<list<int>> end");
+		assertEquals("X", ax.var.val);
+		assertEquals("list", ax.type.val);
+		assertEquals("list<list<int>>", ax.elementType.name());
+		assertEquals(0, ax.ruleList.size());
+	}
+	
+	@Test
+	public void test100a() {
+		List<Exp> axlist = FullParser.fullParse("type X list<list<int>> end");
+		assertEquals(1, axlist.size());
+		FullListTypeExp ax = (FullListTypeExp) axlist.get(0);
+		
+		assertEquals("X", ax.var.val);
+		assertEquals("list", ax.type.val);
+		assertEquals("list<list<int>>", ax.elementType.name());
+		assertEquals(0, ax.ruleList.size());
+	}
 
 }

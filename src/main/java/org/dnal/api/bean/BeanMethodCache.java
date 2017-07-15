@@ -3,6 +3,7 @@ package org.dnal.api.bean;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 //---
 public class BeanMethodCache {
@@ -14,4 +15,10 @@ public class BeanMethodCache {
     public Method getMethod(String fieldName) {
         return map.get(fieldName);
     }
+    public int size() {
+    	return map.size();
+    }
+	public Set<String> keySet() {
+		return map.keySet();
+	}
 }

@@ -140,4 +140,14 @@ public class SysTests extends SysTestBase {
         chkFail("type Base Base end", 1, "type 'Base' - unknown Base");
     }
     
+    
+    @Test
+    public void testT100() {
+//        DValue dval = chkValue("x", "type Foo list<string> end let x Foo = ['abc', 'def']", 1, 1);
+        DValue dval = chkValue("x", "type Foo list<list<string>> end let x Foo = [['abc', 'def'], ['z']]", 2, 1);
+        assertEquals(2, dval.asList().size());
+        assertEquals("abc", dval.asList().get(0).asList().get(0).asString());
+        assertEquals("def", dval.asList().get(0).asList().get(1).asString());
+    }
+    
 }
