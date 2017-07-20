@@ -96,6 +96,12 @@ public class DValueProxy extends DValueImpl {
         DValue inner = (DValue) super.getObject();
         return inner.getPersistenceId();
     }
+    
+    @Override
+    public void changeValidState(ValidationState valState) {
+        DValueImpl inner = (DValueImpl) super.getObject();
+        inner.changeValidState(valState);
+    }
 
 	public boolean isFutureValue() {
 		return isFutureValue;
