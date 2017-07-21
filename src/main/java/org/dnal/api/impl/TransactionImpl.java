@@ -34,6 +34,9 @@ import org.dnal.core.builder.StructBuilder;
 import org.dnal.core.repository.World;
 
 public class TransactionImpl implements Transaction {
+	
+	//errors are local to the transaction. (some errors may still be logged in the
+	//the main context errorList)
     protected List<NewErrorMessage> errorList = new ArrayList<>();
     private DTypeRegistry registry;
     private World world;
@@ -70,25 +73,29 @@ public class TransactionImpl implements Transaction {
     //eventually add update and remove which will be handled using event log approach
     @Override
     public boolean commit() {
-    	context.et.propogateErrors(errorList);
+    	List<NewErrorMessage> savedErrors = context.et.swapErrorList(errorList);
     	
-        //validate
-        for(Pair<String,DValue> pair: pendingL) {
-            if (! validateSingleValue(pair)) {
-                return false;
-            }
-        }
+        try {
+			//validate
+			for(Pair<String,DValue> pair: pendingL) {
+			    if (! validateSingleValue(pair)) {
+			        return false;
+			    }
+			}
 
-        //everything is valid, so add to world
-        for(Pair<String,DValue> pair: pendingL) {
-            String name = pair.a;
-            DValue dval = pair.b;
-            //add all sub-vals
-            AddObserver observer = new AddObserver(world);
-            observer.observe(dval);
+			//everything is valid, so add to world
+			for(Pair<String,DValue> pair: pendingL) {
+			    String name = pair.a;
+			    DValue dval = pair.b;
+			    //add all sub-vals
+			    AddObserver observer = new AddObserver(world);
+			    observer.observe(dval);
 
-            world.addTopLevelValue(name, dval);
-        }
+			    world.addTopLevelValue(name, dval);
+			}
+		} finally {
+			context.et.swapErrorList(savedErrors); //restore
+		}
         return true;
     }
 
@@ -101,9 +108,11 @@ public class TransactionImpl implements Transaction {
         return b;
     }
 
+    //this is the only way to get the transaction's errors.
+    //they will be lost if you don't call this!
     @Override
     public List<NewErrorMessage> getValErrorList() {
-        return errorList;
+    	return errorList;
     }
 
     @Override

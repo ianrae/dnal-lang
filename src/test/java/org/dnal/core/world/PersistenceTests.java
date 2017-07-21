@@ -984,6 +984,7 @@ public class PersistenceTests extends BaseWorldTest {
         trans.add(name, dval);
         boolean b = trans.commit();
         assertEquals(true, b);
+        assertEquals(0, trans.getValErrorList().size());
         assertEquals(expected, ds.size());
 
         return dval;
@@ -997,6 +998,7 @@ public class PersistenceTests extends BaseWorldTest {
         trans.add(name, dval);
         boolean b = trans.commit();
         assertEquals(true, b);
+        assertEquals(0, trans.getValErrorList().size());
         assertEquals(expected, ds.size());
 
         return dval;
