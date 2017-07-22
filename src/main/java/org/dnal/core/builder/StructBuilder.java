@@ -57,29 +57,42 @@ public class StructBuilder extends Builder {
 
 	private DValue build(DType field, String input) {
 		DValue dval = null; 
-		if (field.isShape(Shape.INTEGER)) {
+		
+		Shape shape = field.getShape();
+		switch(shape) {
+		case INTEGER:
 			dval = buildIntVal(field, input);
-		} else if (field.isShape(Shape.LONG)) {
+			break;
+		case LONG:
 			dval = buildLongVal(field, input);
-		} else if (field.isShape(Shape.NUMBER)) {
+			break;
+		case NUMBER:
 			dval = buildNumberVal(field, input);
-		} else if (field.isShape(Shape.DATE)) {
-			dval = buildDateVal(field, input);
-		} else if (field.isShape(Shape.BOOLEAN)) {
+			break;
+		case BOOLEAN:
 			dval = buildBooleanVal(field, input);
-		} else if (field.isShape(Shape.STRING)){
+			break;
+		case STRING:
 			dval = buildStringVal(field, input);
-		} else {
+			break;
+		case DATE:
+			dval = buildDateVal(field, input);
+			break;
+		case ENUM:
+			dval = buildEnumVal(field, input);
+			break;
+		default:
 			NewErrorMessage nem = new NewErrorMessage();
 			nem.setErrorType(NewErrorMessage.Type.VALIDATION_ERROR);
 			nem.setFieldName("?");
-			nem.setTypeName("?");
+			nem.setTypeName(field.getName());
 			nem.setLineNum(0);
-			nem.setMessage("uknown shape");
+			nem.setMessage(String.format("uknown shape '%s'", field.getName()));
 			nem.setErrorName(ErrorType.WRONGTYPE.name());
-
 			this.valErrorList.add(nem);
+			break;
 		}
+		
 		return dval;
 	}
 
@@ -119,6 +132,16 @@ public class StructBuilder extends Builder {
 	}
 
 	protected DValue buildStringVal(DType field, String input) {
+		DType type = field; //registry.getType(BuiltInTypes.STRING_SHAPE);
+		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.buildFromString(input);
+		if (! builder.finish()) {
+			this.valErrorList.addAll(builder.getValidationErrors());
+			return null;
+		}
+		return builder.getDValue();
+	}
+	protected DValue buildEnumVal(DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.STRING_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
 		builder.buildFromString(input);
