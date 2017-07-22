@@ -13,6 +13,7 @@ import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
+import org.dnal.core.DViewType;
 import org.dnal.core.repository.World;
 
 public class DataSetImpl implements DataSet {
@@ -114,6 +115,12 @@ public class DataSetImpl implements DataSet {
 	public ViaFinder createViaFinder() {
 		ViaFinder finder = new ViaFinder(world, registry, context.et);
 		return finder;
+	}
+
+	@Override
+	public DViewType getViewType(String viewName) {
+    	DViewType viewType = (DViewType) registry.getViewType(viewName);
+        return viewType;
 	}
 
 }
