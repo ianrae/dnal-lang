@@ -8,4 +8,5 @@ public interface NRule {
 	String getRuleText();
 	void setRuleText(String ruleText);
 	int getMode();
+	String getFieldName();
 }
