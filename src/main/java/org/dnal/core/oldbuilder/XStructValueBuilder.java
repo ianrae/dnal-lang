@@ -47,7 +47,7 @@ public class XStructValueBuilder extends XDValueBuilder {
 		}
 		
 		if (this.map.containsKey(fieldName)) {
-			addDuplicateFieldError(String.format("already added field '%s'", fieldName));
+			addDuplicateFieldError(String.format("already added field '%s'", fieldName), fieldName);
 			return;
 		}
 		else if (! isValidFieldName(fieldName)) {
@@ -98,7 +98,7 @@ public class XStructValueBuilder extends XDValueBuilder {
 			for(TypePair pair : allFields) {
 			    String fieldName = pair.name;
 				if (! map.containsKey(fieldName) && ! structType.fieldIsOptional(fieldName)) {
-					addMissingFieldError(String.format("value for field '%s' not added to struct", fieldName));
+					addMissingFieldError(String.format("value for field '%s' not added to struct", fieldName), fieldName);
 				}
 			}
 			
