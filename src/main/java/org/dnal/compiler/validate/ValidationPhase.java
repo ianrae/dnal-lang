@@ -71,6 +71,10 @@ public class ValidationPhase extends ErrorTrackingBase {
 	}
 
 	public boolean validateDValue(String varName, DValue dval, DType type) {
+		if (validateOptions.isModeSet(ValidationOptions.VALIDATEMODE_NONE)) {
+			return true; //don't do any validation
+		}
+		
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		
 		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once

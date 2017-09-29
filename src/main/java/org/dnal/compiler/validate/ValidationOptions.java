@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ValidationOptions {
+	//NONE is an advanced mode. use carefully
+	public static final int VALIDATEMODE_NONE = 0x00;
 	public static final int VALIDATEMODE_VALUES = 0x01;
 	public static final int VALIDATEMODE_REFS = 0x02;
 	public static final int VALIDATEMODE_EXISTENCE = 0x04;
