@@ -27,6 +27,7 @@ public class ValidationOptions {
 		ValidationOptions copy = new ValidationOptions();
 		copy.validationMode = this.validationMode;
 		copy.revalidationEnabled = this.revalidationEnabled;
+		copy.passThroughMap = new HashMap<>(passThroughMap);
 		return copy;
 	}
 }
