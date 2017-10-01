@@ -22,6 +22,8 @@ public class XBuilderFactory {
 			return new XListValueBuilder((DListType)type);
 		case STRUCT:
 			return new XStructValueBuilder((DStructType)type);
+		case ENUM:
+			return new XEnumValueBuilder(type);
 		default:
 			return null;
 		}

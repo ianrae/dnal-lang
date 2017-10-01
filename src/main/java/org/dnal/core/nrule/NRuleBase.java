@@ -80,5 +80,10 @@ public abstract class NRuleBase implements NRule {
 	public int getMode() {
 		return validationMode;
 	}
+
+	@Override
+	public String getFieldName() {
+		return null;
+	}
 	
 }

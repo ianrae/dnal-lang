@@ -154,6 +154,7 @@ public class BeanTests extends BaseWorldTest {
         b = trans.commit();
         
         assertEquals(true, b);
+        assertEquals(0, trans.getValErrorList().size());
         assertEquals(n+1, dataSet.size());
     }
 

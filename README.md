@@ -19,9 +19,14 @@ The DNAL compiler validates and transforms your DNAL source into other data form
 	reflection-based loader,
 	many fixes
 
-## How to Use?
 
-DNAL is available in maven-central. [User's Guide](https://dnal-lang.org/documentation/)
+## User's Guide
+
+[User's Guide](https://dnal-lang.org/documentation/) describes the syntax and Java API.
+
+## Where to get
+
+DNAL is available in maven-central. 
 
 ## Maven
 
@@ -55,6 +60,9 @@ DNAL is a language for data.  It supports types, relations, and validation rules
 		  { 'Simone', 'Tremblay', '1965-12-31' },
 		  { 'Jason', 'Ackerman', '1991-01-15' }
 		]
+
+
+
 
 The *dnalc* compiler converts DNAL into other formats.  Use it to create JSON, XML, or to do code generation of bean or DTO classes.
 The compiler is extensible; add your own output generators.

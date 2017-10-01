@@ -3,6 +3,7 @@ package org.dnal.compiler.nrule;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
+import org.dnal.core.nrule.virtual.StructMember;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
 
 public abstract class Custom1Rule<T extends VirtualDataItem> extends NRuleBase {
@@ -45,5 +46,14 @@ public abstract class Custom1Rule<T extends VirtualDataItem> extends NRuleBase {
         setRuleText(s);
         return super.getRuleText();
     }
+
+	@Override
+	public String getFieldName() {
+		if (arg1 instanceof StructMember) {
+			StructMember sm = (StructMember) arg1;
+			return sm.getFieldName();
+		}
+		return null;
+	}
 
 }

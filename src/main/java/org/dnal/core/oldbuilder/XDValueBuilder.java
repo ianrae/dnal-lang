@@ -43,7 +43,7 @@ public abstract class XDValueBuilder {
 		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
 	}
 	
-    public void addOldErrorMsgZ(ErrorType errType, String message) {
+    public NewErrorMessage addOldErrorMsgZ(ErrorType errType, String message) {
         NewErrorMessage err = new NewErrorMessage();
         err.setErrorType(NewErrorMessage.Type.IO_ERROR); //!!
         err.setErrorName(errType.name());
@@ -52,7 +52,7 @@ public abstract class XDValueBuilder {
         err.setSrcFile("?");
         err.setTypeName("?");
         addError(err);
-    	
+    	return err;
     }
 	
 	protected void addNoDataError(String msg) {
@@ -64,11 +64,11 @@ public abstract class XDValueBuilder {
     protected void addNoDataError() {
     	addOldErrorMsgZ(ErrorType.NODATA, "no data");
     }
-	protected void addDuplicateFieldError(String msg) {
-		addOldErrorMsgZ(ErrorType.DUPLICATEFIELD, msg);
+	protected void addDuplicateFieldError(String msg, String fieldName) {
+		addOldErrorMsgZ(ErrorType.DUPLICATEFIELD, msg).setFieldName(fieldName);
 	}
-	protected void addMissingFieldError(String msg) {
-		addOldErrorMsgZ(ErrorType.MISSINGFIELD, msg);
+	protected void addMissingFieldError(String msg, String fieldName) {
+		addOldErrorMsgZ(ErrorType.MISSINGFIELD, msg).setFieldName(fieldName);
 	}
 	protected void addUnknownFieldError(String msg) {
 		addOldErrorMsgZ(ErrorType.UNKNOWNFIELD, msg);

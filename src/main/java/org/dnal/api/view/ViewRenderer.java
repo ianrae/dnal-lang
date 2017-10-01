@@ -32,9 +32,11 @@ public class ViewRenderer extends ViewLoaderRendererBase {
 			if (! sourceType.isAssignmentCompatible(source.getType())) {
 				throw new IllegalArgumentException(String.format("type mismatch. view expects %s but got %s", viewType.getRelatedTypeName(), source.getType().getName()));
 			}
-
 	
 			Transaction trans = ds.createTransaction();
+			return renderEx(viewType, source, sourceType, trans);
+		}
+		public DValue renderEx(DViewType viewType, DValue source, DType sourceType, Transaction trans) throws Exception {
 			Map<String,DValue> resultMap = new HashMap<>();
 			int errCount = 0;
 			for(String viewFieldName: viewType.getFields().keySet()) {

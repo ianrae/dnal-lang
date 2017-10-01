@@ -82,7 +82,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     }
     
     private DValue maybeGenProxy(DValue dval) {
-        if (dval != null && this.useProxyDVals) {
+        if (dval != null && this.useProxyDVals && !(dval instanceof DValueProxy)) {
             return new DValueProxy(dval);
         } else {
             return dval;

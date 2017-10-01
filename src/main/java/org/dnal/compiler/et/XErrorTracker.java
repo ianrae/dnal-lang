@@ -29,6 +29,19 @@ public class XErrorTracker {
     	errL.clear();
     }
     
+    /**
+     * Transactions use this so they can keep all errors during commit in their
+     * own error list.
+     * Note. This approach only works in single-threaded use of dataset!
+     * @param newL
+     * @return
+     */
+    public List<NewErrorMessage> swapErrorList(List<NewErrorMessage> newL) {
+    	List<NewErrorMessage> previous = errL;
+    	errL = newL;
+    	return previous;
+    }
+    
     public boolean areNoErrors() {
         return errL.size() == 0;
     }

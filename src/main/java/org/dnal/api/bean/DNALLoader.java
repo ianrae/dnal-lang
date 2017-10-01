@@ -118,7 +118,10 @@ public class DNALLoader {
         trans.add(name, dval);
     }
     public boolean commit() {
-        return trans.commit();
+    	//capture transaction errors and add back to main error list
+        boolean b = trans.commit();
+        et.propogateErrors(trans.getValErrorList());
+        return b;
     }
 	public FieldConverter getFieldConverter() {
 		return fieldConverter;

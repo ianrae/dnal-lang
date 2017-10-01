@@ -8,7 +8,7 @@ import java.util.TreeMap;
 
 public class OrderedMap {
     public Map<String,DType> map = new TreeMap<>();
-    public List<String> orderedList = new ArrayList<>();
+    public List<String> orderedList = new ArrayList<>();  //ordered by when added
     private Map<String,Boolean> optionalMap = new HashMap<>();
     private Map<String,Boolean> uniqueMap = new HashMap<>();
     
