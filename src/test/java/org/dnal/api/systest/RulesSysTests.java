@@ -13,7 +13,7 @@ public class RulesSysTests extends SysTestBase {
     public void testT100() {
         chkRules("");
         chkRules("< 100");
-        chkRules("> 0 < 100");
+        chkRules("> 0, < 100");
         
         chkRules("== 14");
         chkRules("!= 5");
@@ -22,13 +22,13 @@ public class RulesSysTests extends SysTestBase {
     }
     @Test
     public void testT101() {
-        chkRulesFail("> 20 < 100", "compare-gt: > 20");
+        chkRulesFail("> 20, < 100", "compare-gt: > 20");
     }
     @Test
     public void testT102a() {
         chkLongRules("");
         chkLongRules("< 100");
-        chkLongRules("> 0 < 100");
+        chkLongRules("> 0, < 100");
         
         chkLongRules("== 14");
         chkLongRules("!= 5");

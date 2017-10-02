@@ -17,9 +17,9 @@ public class ValidationStructTests extends BaseValidationTests {
 	
     @Test
     public void testLen() {
-        //legacy syntax
-        chkStringRule("len(x) == 99", "abc", false);
-        chkStringRule("len(x) == 3", "abc", true);
+//        //legacy syntax
+//        chkStringRule("len(x) == 99", "abc", false);
+//        chkStringRule("len(x) == 3", "abc", true);
         
         //new syntax
         chkStringRule("x.len() == 3", "abc", true);

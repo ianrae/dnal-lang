@@ -24,7 +24,7 @@ public class GeneratorTests extends BaseTest {
 
 	@Test
 	public void testRules() {
-		chkGen("type X int > 0  < 5 end", "type:X:int| r: > 0| r: < 5|endtype|");
+		chkGen("type X int > 0,  < 5 end", "type:X:int| r: > 0| r: < 5|endtype|");
 	}
 
 	@Test
