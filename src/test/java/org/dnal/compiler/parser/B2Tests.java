@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
+import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullAssignmentExp;
@@ -307,7 +308,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test12() {
-		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int > 0  < 5 end");
+		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int > 0,  < 5 end");
 		assertEquals("X", ax.var.val);
 		assertEquals("int", ax.type.val);
 		assertEquals(2, ax.ruleList.size());
@@ -316,7 +317,7 @@ public class B2Tests {
 	}
     @Test
     public void test12a() {
-        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X string > 'a'  < 'z' end");
+        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X string > 'a',  < 'z' end");
         assertEquals("X", ax.var.val);
         assertEquals("string", ax.type.val);
         assertEquals(2, ax.ruleList.size());

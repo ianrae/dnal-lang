@@ -129,15 +129,40 @@ public class TypeParser extends ParserBase {
 		return Parsers.or(ruleOr(), ruleAnd(), rule0(), ruleCustom(), isaDecl());
 	}
 
+	public static Parser<List<RuleExp>> ruleMany() {
+        return rule().many().sepBy(term(","))
+                .map(new org.codehaus.jparsec.functors.Map<List<List<RuleExp>>, List<RuleExp>>() {
+                    @Override
+                    public List<RuleExp> map(List<List<RuleExp>> arg0) {
+						List<RuleExp> cc = new ArrayList<>();
+						for(List<RuleExp> sub: arg0) {
+							if (sub.size() > 1) {
+								throw new IllegalArgumentException("Rules must be separated by commas");
+							}
+							for(RuleExp re: sub) {
+								cc.add(re);
+							}
+						}
+						return cc;
+                    }
+                });    
+	}
+
 	//type x int > 0 end
 	public static Parser<FullTypeExp> type01() {
-		return Parsers.or(term("type")).next(Parsers.tuple(VarParser.ident(), VarParser.ident(), rule().many(), VarParser.doEnd()))
+		return Parsers.or(term("type")).next(Parsers.tuple(VarParser.ident(), VarParser.ident(), ruleMany(), VarParser.doEnd()))
 				.map(new org.codehaus.jparsec.functors.Map<Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp>, FullTypeExp>() {
 					@Override
 					public FullTypeExp map(Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp> arg0) {
-						List<RuleExp>cc = arg0.c;
+//						List<List<RuleExp>> ccx = arg0.c;
+//						List<RuleExp> cc = new ArrayList<>();
+//						for(List<RuleExp> sub: ccx) {
+//							for(RuleExp re: sub) {
+//								cc.add(re);
+//							}
+//						}
 
-						return new FullTypeExp(arg0.a, arg0.b, cc);
+						return new FullTypeExp(arg0.a, arg0.b, arg0.c);
 					}
 				});
 	}
@@ -173,7 +198,7 @@ public class TypeParser extends ParserBase {
 
 	//type Colour struct { x int y int } end
 	public static Parser<FullStructTypeExp> typestruct01() {
-		return Parsers.sequence(term("type"), VarParser.ident(), doStruct(), structMembers(), rule().many(),
+		return Parsers.sequence(term("type"), VarParser.ident(), doStruct(), structMembers(), ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, StructExp structMembers, List<RuleExp> rules) -> 
 		new FullStructTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
@@ -205,7 +230,7 @@ public class TypeParser extends ParserBase {
 
 	//type Colour struct { x int y int } end
 	public static Parser<FullEnumTypeExp> typeenum01() {
-		return Parsers.sequence(term("type"), VarParser.ident(), doEnum(), enumMembers(), rule().many(),
+		return Parsers.sequence(term("type"), VarParser.ident(), doEnum(), enumMembers(), ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, EnumExp structMembers, List<RuleExp> rules) -> 
 		new FullEnumTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
@@ -222,7 +247,7 @@ public class TypeParser extends ParserBase {
 
 	public static Parser<FullListTypeExp> typelist01() {
 		return Parsers.sequence(term("type"), VarParser.ident(), 
-				listangle(), rule().many(),
+				listangle(), ruleMany(),
 				(Token tok, IdentExp varName, 
 				 IdentExp elementType, List<RuleExp> rules) -> 
 		new FullListTypeExp(varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());
