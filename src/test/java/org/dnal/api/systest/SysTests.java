@@ -91,7 +91,7 @@ public class SysTests extends SysTestBase {
         dval = chkValue("x", "type Foo enum { RED, BLUE } end let x Foo = BLUE", 1, 1);
         assertEquals("BLUE", dval.asString());
 
-        dval = chkValue("x", "type Foo struct { x int y string } end let x Foo = { 15, 'abc' }", 1, 1);
+        dval = chkValue("x", "type Foo struct { x int, y string } end let x Foo = { 15, 'abc' }", 1, 1);
         assertEquals(2, dval.asMap().size());
         assertEquals(15, dval.asMap().get("x").asInt());
         assertEquals("abc", dval.asMap().get("y").asString());
@@ -99,11 +99,11 @@ public class SysTests extends SysTestBase {
     @Test
     public void testT4a() {
         String err = "fieldName 'x' can't be null. is not optional";
-        chkFail("type Foo struct { x int y string } end let x Foo = { null, 'abc' }", 1, err);
+        chkFail("type Foo struct { x int, y string } end let x Foo = { null, 'abc' }", 1, err);
     }
     @Test
     public void testT4b() {
-        DValue dval = chkValue("x", "type Foo struct { x int optional y string } end let x Foo = { null, 'abc' }", 1, 1);
+        DValue dval = chkValue("x", "type Foo struct { x int optional, y string } end let x Foo = { null, 'abc' }", 1, 1);
         assertEquals(2, dval.asMap().size());
         assertEquals(null, dval.asMap().get("x"));
         assertEquals("abc", dval.asMap().get("y").asString());
@@ -111,7 +111,7 @@ public class SysTests extends SysTestBase {
     @Test
     public void testT4c() {
         String err = "fieldName 'y' can't be null. is not optional";
-        chkFail("type Foo struct { x int y string } end let x Foo = { 15 }", 1, err);
+        chkFail("type Foo struct { x int, y string } end let x Foo = { 15 }", 1, err);
     }
 
     @Test
@@ -121,13 +121,13 @@ public class SysTests extends SysTestBase {
     }
     @Test
     public void testT5b() {
-        chkFail("type Foo struct { x int x string } end let x Foo = { 15, 'abc' }", 2, "field name already used: x");
+        chkFail("type Foo struct { x int, x string } end let x Foo = { 15, 'abc' }", 2, "field name already used: x");
     }
     
     @Test
     public void testT6() {
-        String src1 = "type Foo struct { x int y int} end ";
-        String src2 = "type Bar struct { a string foos list<Foo> } end ";
+        String src1 = "type Foo struct { x int, y int} end ";
+        String src2 = "type Bar struct { a string, foos list<Foo> } end ";
         String src3 = "type Circle struct { bar Bar } end ";
 //        String src4 = "let x Circle = { [ { 'abc', [ ] } ] }";
         String src4 = "let x Circle = {  { 'abc', [ ] }  }";

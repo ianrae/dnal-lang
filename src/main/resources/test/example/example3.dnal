@@ -1,15 +1,15 @@
 //example
 type Coord struct {
-  x int
+  x int,
   y int
 }
 end
 
 
 type Address struct {
-  flag boolean
-  size int
-  origin Coord
+  flag boolean,
+  size int,
+  origin Coord,
   points list<Coord>
 } end
 
