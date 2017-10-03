@@ -3,6 +3,7 @@ package org.dnal.compiler.parser;
 import static org.junit.Assert.assertEquals;
 
 import org.dnal.compiler.parser.ast.BooleanExp;
+import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IdentExp;
@@ -97,6 +98,27 @@ public class B4Tests {
 		assertEquals(0, exp.argL.size());
 		assertEquals(null, exp.fieldName);
 		assertEquals(true, exp.polarity);
+	}
+	@Test
+	public void test20a() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("x < 5");
+		assertEquals("< 5", exp.strValue());
+		assertEquals(5, exp.val.intValue());
+		assertEquals("x", exp.optionalArg.strValue());
+	}
+	@Test
+	public void test20b() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("x < 5.6");
+		assertEquals("< 5.60000", exp.strValue());
+		assertEquals(5.6, exp.zval, 0.001);
+		assertEquals("x", exp.optionalArg.strValue());
+	}
+	@Test
+	public void test20c() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("x < 'ab'");
+		assertEquals("< ab", exp.strValue());
+		assertEquals("ab", exp.strVal);
+		assertEquals("x", exp.optionalArg.strValue());
 	}
 	
 	
