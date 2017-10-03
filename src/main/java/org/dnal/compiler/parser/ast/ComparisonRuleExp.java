@@ -1,7 +1,7 @@
 package org.dnal.compiler.parser.ast;
 
 public class ComparisonRuleExp extends RuleExp {
-    public IdentExp optionalArg;  //may be null
+    public Exp optionalArg;  //may be null
 	public String op;
 	public Integer val;
 	public Long longVal;
@@ -9,10 +9,27 @@ public class ComparisonRuleExp extends RuleExp {
 	public String strVal;
 	public String identVal; //for enum and reference
 	
-	public ComparisonRuleExp(IdentExp optArg, String op, Integer val) {
+	public ComparisonRuleExp(Exp optArg, String op, Exp valExp) {
 	    this.optionalArg = optArg;
 		this.op = op;
-		this.val = val;
+		if (valExp instanceof IntegerExp) {
+			IntegerExp iexp = (IntegerExp) valExp;
+			this.val = iexp.val;
+		} else if (valExp instanceof LongExp) {
+			LongExp iexp = (LongExp) valExp;
+			this.longVal = iexp.val;
+		} else if (valExp instanceof NumberExp) {
+			NumberExp iexp = (NumberExp) valExp;
+			this.zval = iexp.val;
+		} else if (valExp instanceof StringExp) {
+			StringExp iexp = (StringExp) valExp;
+			this.strVal = iexp.val;
+		} else if (valExp instanceof IdentExp) {
+			IdentExp iexp = (IdentExp) valExp;
+			this.identVal = iexp.val;
+		} else {
+			throw new IllegalArgumentException("uknown ComparisonRulExp arg: " + valExp.getClass().getSimpleName());
+		}
 	}
     public ComparisonRuleExp(IdentExp optArg, String op, Double zval) {
         this.optionalArg = optArg;

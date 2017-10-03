@@ -254,10 +254,17 @@ public class RuleConverter extends ErrorTrackingBase {
 	}
 	
 	private boolean isPseudoLen(ComparisonRuleExp exp) {
-	    if (exp.optionalArg != null) {
-	        return exp.optionalArg.name().equals("len");
-	    }
-        return false;
+    	if (exp.optionalArg instanceof IdentExp) {
+    		IdentExp iexp = (IdentExp) exp.optionalArg;
+    		return (iexp.name().equals("len"));
+    	} else {
+    		return false;
+    	}
+//		
+//	    if (exp.optionalArg != null) {
+//	        return exp.optionalArg.name().equals("len");
+//	    }
+//        return false;
     }
 
     private NRule doStructComparisonRule(DType type, ComparisonRuleExp exp) {
