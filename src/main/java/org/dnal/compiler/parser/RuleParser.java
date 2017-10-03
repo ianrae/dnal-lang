@@ -1,5 +1,6 @@
 package org.dnal.compiler.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jparsec.Parser;
@@ -64,9 +65,8 @@ public class RuleParser extends ParserBase {
 //	}
 	
 	public static Parser<Exp> ruleOperand1() {
-		return Parsers.or(ruleOperand(), ruleFn());
+		return Parsers.or(ruleFn(), ruleOperand());
 	}
-	
 	
 	
 	//ruleExpr
@@ -92,6 +92,25 @@ public class RuleParser extends ParserBase {
 	
 	public static Parser<RuleExp> ruleExpr() {
 		return Parsers.or(ruleAnd(), ruleOr(), rule0(), ruleFn());
+	}
+	
+	public static Parser<List<RuleExp>> ruleMany() {
+        return ruleExpr().many().sepBy(term(","))
+                .map(new org.codehaus.jparsec.functors.Map<List<List<RuleExp>>, List<RuleExp>>() {
+                    @Override
+                    public List<RuleExp> map(List<List<RuleExp>> arg0) {
+						List<RuleExp> cc = new ArrayList<>();
+						for(List<RuleExp> sub: arg0) {
+							if (sub.size() > 1) {
+								throw new IllegalArgumentException("Rules must be separated by commas");
+							}
+							for(RuleExp re: sub) {
+								cc.add(re);
+							}
+						}
+						return cc;
+                    }
+                });    
 	}
 	
 	

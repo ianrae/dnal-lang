@@ -2,6 +2,8 @@ package org.dnal.compiler.parser;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
@@ -175,20 +177,33 @@ public class B4Tests {
 		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("x.a() < 5 or z < 10");
 		assertEquals("< 5 or < 10", exp.strValue());
 		assertEquals(5, exp.exp1.val.intValue());
-		assertEquals("x", exp.exp1.optionalArg.strValue());
+		CustomRule cr = (CustomRule) exp.exp1.optionalArg;
+		assertEquals("x", cr.fieldName);
+		assertEquals("a", cr.ruleName);
+		assertEquals(0, cr.argL.size());
+		
 		assertEquals(10, exp.exp2.val.intValue());
-		assertEquals("z", exp.exp2.optionalArg.strValue());
+		IdentExp iexp = (IdentExp) exp.exp2.optionalArg;
+		assertEquals("z", iexp.val);
 	}
-	@Test
-	public void test23a() {
-		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("< x.a() or < 10");
-		assertEquals("< 5 or < 10", exp.strValue());
-		assertEquals(5, exp.exp1.val.intValue());
-		assertEquals(null, exp.exp1.optionalArg);
-		assertEquals(10, exp.exp2.val.intValue());
-		assertEquals(null, exp.exp2.optionalArg);
-	}
+//	@Test
+//	public void test23a() {
+//		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("z < x.a() or < 10");
+//		assertEquals("< 5 or < 10", exp.strValue());
+//		assertEquals(5, exp.exp1.val.intValue());
+//		assertEquals(null, exp.exp1.optionalArg);
+//		assertEquals(10, exp.exp2.val.intValue());
+//		assertEquals(null, exp.exp2.optionalArg);
+//	}
 
+	@Test
+	public void test30() {
+		List<RuleExp> list = parseRuleMany("< 5, < 10");
+		assertEquals(2, list.size());
+		ComparisonRuleExp exp1 = (ComparisonRuleExp) list.get(0);
+		assertEquals(5, exp1.val.intValue());
+		assertEquals(null, exp1.optionalArg);
+	}
 	
 	
 	//--helpers
@@ -206,6 +221,10 @@ public class B4Tests {
 	}
 	private RuleExp parseRuleExpr(String src) {
 		RuleExp ax =  RuleParser.ruleExpr().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
+		return ax;
+	}
+	private List<RuleExp> parseRuleMany(String src) {
+		List<RuleExp> ax =  RuleParser.ruleMany().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
 		return ax;
 	}
 }
