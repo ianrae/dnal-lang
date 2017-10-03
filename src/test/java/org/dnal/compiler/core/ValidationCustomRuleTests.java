@@ -40,15 +40,15 @@ public class ValidationCustomRuleTests extends BaseValidationTests {
     }
     
 	
-	@Test
-	public void testRangeRule() {
-		VirtualInt vs = new VirtualInt();
-		IntegerRangeRule rule = new IntegerRangeRule("range", vs);
-		
-		chkCustomIntRule("range(4..8)", 4, true);
-		chkCustomIntRule("range(4..8)", 8, false);
-		chkCustomIntRule("!range(4..8)", 8, true);
-	}
+//	@Test
+//	public void testRangeRule() {
+//		VirtualInt vs = new VirtualInt();
+//		IntegerRangeRule rule = new IntegerRangeRule("range", vs);
+//		
+//		chkCustomIntRule("range(4..8)", 4, true);
+//		chkCustomIntRule("range(4..8)", 8, false);
+//		chkCustomIntRule("!range(4..8)", 8, true);
+//	}
 	
     @Test
     public void testEmptyRule() {

@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.dnal.compiler.nrule.LenRule;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
+import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -228,10 +229,13 @@ public class RuleBuilder {
         return newRule;
     }
     
-    private String getFieldName(ComparisonRuleExp exp) {
+    public String getFieldName(ComparisonRuleExp exp) {
     	if (exp.optionalArg instanceof IdentExp) {
     		IdentExp iexp = (IdentExp) exp.optionalArg;
     		return iexp.name();
+    	} else if (exp.optionalArg instanceof CustomRule) {
+    		CustomRule iexp = (CustomRule) exp.optionalArg;
+    		return iexp.fieldName;
     	} else {
     		return null;
     	}
