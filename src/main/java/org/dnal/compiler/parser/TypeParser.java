@@ -1,5 +1,6 @@
 package org.dnal.compiler.parser;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jparsec.Parser;
@@ -14,54 +15,13 @@ import org.dnal.compiler.parser.ast.FullListTypeExp;
 import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
-import org.dnal.compiler.parser.ast.IntegerExp;
-import org.dnal.compiler.parser.ast.IsaRuleExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
 
 public class TypeParser extends ParserBase {
     
-	/*
-	 * The parser gets confused with "15..20" and sees "15.". The workaround is
-	 * to accept 15. followed by another .
-	 */
-    public static Parser<Exp> intWithDotArg() {
-        return TerminalParser.numberSyntacticParser
-        .map(new org.codehaus.jparsec.functors.Map<String, IntegerExp>() {
-            @Override
-            public IntegerExp map(String arg) {
-                if (arg != null && ! arg.endsWith(".")) {
-                    throw new IllegalArgumentException("intWithDotArg: invalid " + arg);
-                }
-                Integer nval = Integer.parseInt(arg.substring(0, arg.length() - 1));
-
-                return new IntegerExp(nval);
-            }
-        });
-    }
-	
-//    //handles 15..20
-//	public static Parser<RangeExp> ruleRange() {
-//		return Parsers.sequence(intWithDotArg().followedBy(term(".")), intArg(), 
-//				(Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
-//	}
-//	
-//	//handles 15 .. 20
-//    public static Parser<RangeExp> ruleSpaceRange() {
-//        return Parsers.sequence(intArg(), term(".."), intArg(), 
-//                (Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(exp1, exp2));
-//    }
-//	
-//	public static Parser<Exp> ruleArg() {
-//		return Parsers.or(VarParser.someNumberValueassign(), strArg(), VarParser.ident());
-//	}
-//	
-//	public static Parser<Token> not() {
-//	    return term("!").optional();
-//	}
-	
-	
+	//rules have been moved to RuleParser
 
 	//type x int > 0 end
 	public static Parser<FullTypeExp> type01() {
@@ -69,14 +29,6 @@ public class TypeParser extends ParserBase {
 				.map(new org.codehaus.jparsec.functors.Map<Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp>, FullTypeExp>() {
 					@Override
 					public FullTypeExp map(Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp> arg0) {
-//						List<List<RuleExp>> ccx = arg0.c;
-//						List<RuleExp> cc = new ArrayList<>();
-//						for(List<RuleExp> sub: ccx) {
-//							for(RuleExp re: sub) {
-//								cc.add(re);
-//							}
-//						}
-
 						return new FullTypeExp(arg0.a, arg0.b, arg0.c);
 					}
 				});
@@ -132,9 +84,28 @@ public class TypeParser extends ParserBase {
 					}
 				});
 	}
+	
+	public static Parser<List<EnumMemberExp>> enumMembersMany() {
+        return enumMembers00().many().sepBy(term(","))
+                .map(new org.codehaus.jparsec.functors.Map<List<List<EnumMemberExp>>, List<EnumMemberExp>>() {
+                    @Override
+                    public List<EnumMemberExp> map(List<List<EnumMemberExp>> arg0) {
+						List<EnumMemberExp> cc = new ArrayList<>();
+						for(List<EnumMemberExp> sub: arg0) {
+							if (sub.size() > 1) {
+								throw new IllegalArgumentException("Enum members must be separated by commas");
+							}
+							for(EnumMemberExp re: sub) {
+								cc.add(re);
+							}
+						}
+						return cc;
+                    }
+                });    
+	}
 
 	public static Parser<EnumExp> enumMembers() {
-		return Parsers.between(term("{"), enumMembers00().many(), term("}")).
+		return Parsers.between(term("{"), enumMembersMany(), term("}")).
 				map(new org.codehaus.jparsec.functors.Map<List<EnumMemberExp>, EnumExp>() {
 					@Override
 					public EnumExp map(List<EnumMemberExp> arg0) {

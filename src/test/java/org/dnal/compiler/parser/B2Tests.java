@@ -385,7 +385,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test41() {
-		List<Exp> list = FullParser.fullParse("type X enum { RED BLUE } end");
+		List<Exp> list = FullParser.fullParse("type X enum { RED, BLUE } end");
 		assertEquals(1, list.size());
 		FullEnumTypeExp ax = (FullEnumTypeExp) list.get(0);
 		assertEquals("X", ax.var.val);
@@ -394,7 +394,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test42() {
-		List<Exp> list = FullParser.fullParse("type Colour enum { RED BLUE } end let x Colour = BLUE");
+		List<Exp> list = FullParser.fullParse("type Colour enum { RED, BLUE } end let x Colour = BLUE");
 		assertEquals(2, list.size());
 		FullEnumTypeExp ax = (FullEnumTypeExp) list.get(0);
 		assertEquals("Colour", ax.var.val);

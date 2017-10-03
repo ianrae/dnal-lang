@@ -38,18 +38,18 @@ public class ASTToDNALTests extends BaseTest {
 	public void testEnum() {
 		//unlike scalar types DVAL doesn't register 'struct' as a type, so baseType is null
 		checkTypeGen("type Foo enum {  } end", "Foo", null);
-		checkTypeGen("type Foo enum { RED BLUE } end", "Foo", null);
+		checkTypeGen("type Foo enum { RED, BLUE } end", "Foo", null);
 	}
 	@Test
 	public void testValueEnum() {
-		DValue dval = checkValueGen("type Foo enum { RED BLUE } end let x Foo = BLUE", "Foo");
+		DValue dval = checkValueGen("type Foo enum { RED, BLUE } end let x Foo = BLUE", "Foo");
 		assertEquals("BLUE", dval.asString());
 		assertEquals(true, dval.getType().isScalarShape());
 		assertEquals(true, dval.getType().isShape(Shape.ENUM));
 	}
 	@Test
 	public void testValueEnumFail() {
-		failingValueGen("type Foo enum { RED BLUE } end let x Foo = YELLOW", "Foo");
+		failingValueGen("type Foo enum { RED, BLUE } end let x Foo = YELLOW", "Foo");
 	}
 	
 	
