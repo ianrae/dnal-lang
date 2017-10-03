@@ -501,27 +501,6 @@ public class B2Tests {
         ax = (ImportExp) FullParser.parse02("import x.y.Product");
         assertEquals("x.y.Product", ax.val);
     }
-//    @Test
-//    public void test80() {
-//        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int z isa Product.id end");
-//        assertEquals("X", ax.var.val);
-//        assertEquals("int", ax.type.val);
-//        assertEquals(1, ax.ruleList.size());
-//        IsaRuleExp rule = (IsaRuleExp) ax.ruleList.get(0);
-//        assertEquals("z", rule.fieldName);
-//        assertEquals("Product.id", rule.val);
-//    }
-//    @Test
-//    public void test81() {
-//        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int isa Product.id end");
-//        assertEquals("X", ax.var.val);
-//        assertEquals("int", ax.type.val);
-//        assertEquals(1, ax.ruleList.size());
-//        IsaRuleExp rule = (IsaRuleExp) ax.ruleList.get(0);
-//        assertEquals(null, rule.fieldName);
-//        assertEquals("Product.id", rule.val);
-//    }
-    
     
     @Test
     public void test90() {

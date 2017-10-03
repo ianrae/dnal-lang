@@ -14,6 +14,7 @@ import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
+import org.dnal.compiler.parser.ast.IsaRuleExp;
 import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.RuleWithFieldExp;
@@ -106,6 +107,14 @@ public class RuleParser extends ParserBase {
 		return Parsers.or(ruleFn(), ruleOperand());
 	}
 	
+	//isa
+    public static Parser<IsaRuleExp> isaDecl() {
+        return Parsers.sequence(VarParser.ident().optional(), term("isa"), 
+                VarParser.ident().many().sepBy(term(".")), 
+                (IdentExp exp, Token tok, List<List<IdentExp>> arg)
+                -> new IsaRuleExp(exp, arg));
+    }    
+	
 	
 	//ruleExpr
     public static Parser<Exp> optionalRuleArg() {
@@ -128,7 +137,7 @@ public class RuleParser extends ParserBase {
 	}
 	
 	public static Parser<RuleExp> ruleExpr() {
-		return Parsers.or(ruleAnd(), ruleOr(), rule0(), ruleFn());
+		return Parsers.or(ruleAnd(), ruleOr(), rule0(), ruleFn(), isaDecl());
 	}
 	
 	

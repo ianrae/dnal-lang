@@ -1,16 +1,11 @@
 package org.dnal.compiler.parser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
 import org.codehaus.jparsec.functors.Tuple4;
-import org.dnal.compiler.parser.ast.ComparisonAndRuleExp;
-import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
-import org.dnal.compiler.parser.ast.ComparisonRuleExp;
-import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.EnumExp;
 import org.dnal.compiler.parser.ast.EnumMemberExp;
 import org.dnal.compiler.parser.ast.Exp;
@@ -21,21 +16,11 @@ import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.IsaRuleExp;
-import org.dnal.compiler.parser.ast.ListAssignExp;
-import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.RuleExp;
-import org.dnal.compiler.parser.ast.RuleWithFieldExp;
 import org.dnal.compiler.parser.ast.StructExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
 
 public class TypeParser extends ParserBase {
-    
-    public static Parser<IsaRuleExp> isaDecl() {
-        return Parsers.sequence(VarParser.ident().optional(), term("isa"), 
-                VarParser.ident().many().sepBy(term(".")), 
-                (IdentExp exp, Token tok, List<List<IdentExp>> arg)
-                -> new IsaRuleExp(exp, arg));
-    }    
     
 	/*
 	 * The parser gets confused with "15..20" and sees "15.". The workaround is
