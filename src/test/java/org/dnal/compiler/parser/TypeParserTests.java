@@ -37,21 +37,21 @@ public class TypeParserTests {
     }
     
 	
-    @Test
-    public void test2() {
-        String src = "15..20";
-        Exp exp = TypeParser.ruleRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
-        RangeExp rexp = (RangeExp)exp;
-        assertEquals(15, rexp.from.intValue());
-        assertEquals(20, rexp.to.intValue());
-    }
-    @Test
-    public void test2a() {
-        String src = "15 ..20";
-        Exp exp = TypeParser.ruleSpaceRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
-        RangeExp rexp = (RangeExp)exp;
-        assertEquals(15, rexp.from.intValue());
-        assertEquals(20, rexp.to.intValue());
-    }
+//    @Test
+//    public void test2() {
+//        String src = "15..20";
+//        Exp exp = TypeParser.ruleRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
+//        RangeExp rexp = (RangeExp)exp;
+//        assertEquals(15, rexp.from.intValue());
+//        assertEquals(20, rexp.to.intValue());
+//    }
+//    @Test
+//    public void test2a() {
+//        String src = "15 ..20";
+//        Exp exp = TypeParser.ruleSpaceRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
+//        RangeExp rexp = (RangeExp)exp;
+//        assertEquals(15, rexp.from.intValue());
+//        assertEquals(20, rexp.to.intValue());
+//    }
 
 }

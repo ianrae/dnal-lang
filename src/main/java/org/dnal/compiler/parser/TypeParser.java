@@ -37,25 +37,6 @@ public class TypeParser extends ParserBase {
                 -> new IsaRuleExp(exp, arg));
     }    
     
-    public static Parser<IdentExp> optionalRuleArg() {
-        return VarParser.ident().optional();
-    }
-    
-	public static Parser<RuleExp> rule0() {
-		return Parsers.sequence(optionalRuleArg(), 
-		        Parsers.or(term("<"), term(">"), term(">="), term("<="), term("=="), term("!=")), 
-		        ruleArg(), 
-				(IdentExp optArg, Token optok, Exp numExp) -> new ComparisonRuleExp(optArg, optok.toString(), numExp));
-	}
-	public static Parser<RuleExp> ruleOr() {
-		return Parsers.sequence(rule0(), term("or"), rule0(), 
-				(Exp exp1, Token ortok, Exp exp2) -> new ComparisonOrRuleExp((ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
-	}
-	public static Parser<RuleExp> ruleAnd() {
-		return Parsers.sequence(rule0(), term("and"), rule0(), 
-				(Exp exp1, Token ortok, Exp exp2) -> new ComparisonAndRuleExp((ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
-	}
-	
 	/*
 	 * The parser gets confused with "15..20" and sees "15.". The workaround is
 	 * to accept 15. followed by another .
@@ -75,82 +56,31 @@ public class TypeParser extends ParserBase {
         });
     }
 	
-    //handles 15..20
-	public static Parser<RangeExp> ruleRange() {
-		return Parsers.sequence(intWithDotArg().followedBy(term(".")), intArg(), 
-				(Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
-	}
+//    //handles 15..20
+//	public static Parser<RangeExp> ruleRange() {
+//		return Parsers.sequence(intWithDotArg().followedBy(term(".")), intArg(), 
+//				(Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
+//	}
+//	
+//	//handles 15 .. 20
+//    public static Parser<RangeExp> ruleSpaceRange() {
+//        return Parsers.sequence(intArg(), term(".."), intArg(), 
+//                (Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(exp1, exp2));
+//    }
+//	
+//	public static Parser<Exp> ruleArg() {
+//		return Parsers.or(VarParser.someNumberValueassign(), strArg(), VarParser.ident());
+//	}
+//	
+//	public static Parser<Token> not() {
+//	    return term("!").optional();
+//	}
 	
-	//handles 15 .. 20
-    public static Parser<RangeExp> ruleSpaceRange() {
-        return Parsers.sequence(intArg(), term(".."), intArg(), 
-                (Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(exp1, exp2));
-    }
 	
-	public static Parser<Exp> ruleArg() {
-		return Parsers.or(VarParser.someNumberValueassign(), strArg(), VarParser.ident());
-	}
-	
-	public static Parser<Token> not() {
-	    return term("!").optional();
-	}
-	
-	public static Parser<RuleWithFieldExp> ruleName01() {
-	    return Parsers.sequence(VarParser.ident(), term("."), VarParser.ident(), 
-	            (IdentExp field, Token tok, IdentExp rule) -> new RuleWithFieldExp(rule, field));
-	}
-    @SuppressWarnings("unchecked")
-    public static Parser<RuleWithFieldExp> ruleName02() {
-        return Parsers.or(VarParser.ident())
-                .map(new org.codehaus.jparsec.functors.Map<IdentExp, RuleWithFieldExp>() {
-                    @Override
-                    public RuleWithFieldExp map(IdentExp arg0) {
-                        return new RuleWithFieldExp(arg0, null);
-                    }
-                });    
-       }
-    public static Parser<RuleWithFieldExp> ruleName() {
-        return Parsers.or(ruleName01(), ruleName02());
-    }
-	
-	public static Parser<CustomRule> ruleCustom01() {
-		return Parsers.sequence(not(), ruleName(), term("("), ruleArg().many().sepBy(term(",")), term(")"), 
-				(Token notToken, RuleWithFieldExp exp1, Token tok, List<List<Exp>> arg, Token tok2) -> new CustomRule(exp1, arg, (notToken == null) ? null : notToken.toString()));
-	}
-	public static Parser<CustomRule> ruleCustom02() {
-		return Parsers.sequence(not(), ruleName(), term("("), Parsers.or(ruleRange(), ruleSpaceRange()), term(")"), 
-				(Token notToken, RuleWithFieldExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1, range, (notToken == null) ? null : notToken.toString()));
-	}
-	public static Parser<CustomRule> ruleCustom() {
-	    return Parsers.or(ruleCustom01(), ruleCustom02());
-	}
-	
-	public static Parser<RuleExp> rule() {
-		return Parsers.or(ruleOr(), ruleAnd(), rule0(), ruleCustom(), isaDecl());
-	}
-
-	public static Parser<List<RuleExp>> ruleMany() {
-        return rule().many().sepBy(term(","))
-                .map(new org.codehaus.jparsec.functors.Map<List<List<RuleExp>>, List<RuleExp>>() {
-                    @Override
-                    public List<RuleExp> map(List<List<RuleExp>> arg0) {
-						List<RuleExp> cc = new ArrayList<>();
-						for(List<RuleExp> sub: arg0) {
-							if (sub.size() > 1) {
-								throw new IllegalArgumentException("Rules must be separated by commas");
-							}
-							for(RuleExp re: sub) {
-								cc.add(re);
-							}
-						}
-						return cc;
-                    }
-                });    
-	}
 
 	//type x int > 0 end
 	public static Parser<FullTypeExp> type01() {
-		return Parsers.or(term("type")).next(Parsers.tuple(VarParser.ident(), VarParser.ident(), ruleMany(), VarParser.doEnd()))
+		return Parsers.or(term("type")).next(Parsers.tuple(VarParser.ident(), VarParser.ident(), RuleParser.ruleMany(), VarParser.doEnd()))
 				.map(new org.codehaus.jparsec.functors.Map<Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp>, FullTypeExp>() {
 					@Override
 					public FullTypeExp map(Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp> arg0) {
@@ -198,7 +128,7 @@ public class TypeParser extends ParserBase {
 
 	//type Colour struct { x int y int } end
 	public static Parser<FullStructTypeExp> typestruct01() {
-		return Parsers.sequence(term("type"), VarParser.ident(), doStruct(), structMembers(), ruleMany(),
+		return Parsers.sequence(term("type"), VarParser.ident(), doStruct(), structMembers(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, StructExp structMembers, List<RuleExp> rules) -> 
 		new FullStructTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
@@ -230,7 +160,7 @@ public class TypeParser extends ParserBase {
 
 	//type Colour struct { x int y int } end
 	public static Parser<FullEnumTypeExp> typeenum01() {
-		return Parsers.sequence(term("type"), VarParser.ident(), doEnum(), enumMembers(), ruleMany(),
+		return Parsers.sequence(term("type"), VarParser.ident(), doEnum(), enumMembers(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, EnumExp structMembers, List<RuleExp> rules) -> 
 		new FullEnumTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
@@ -247,7 +177,7 @@ public class TypeParser extends ParserBase {
 
 	public static Parser<FullListTypeExp> typelist01() {
 		return Parsers.sequence(term("type"), VarParser.ident(), 
-				listangle(), ruleMany(),
+				listangle(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, 
 				 IdentExp elementType, List<RuleExp> rules) -> 
 		new FullListTypeExp(varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());

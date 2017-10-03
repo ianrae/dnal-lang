@@ -132,6 +132,17 @@ public class B4Tests {
 	}
 	
 	@Test
+	public void test20e() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("x.len() == 3");
+		assertEquals("== 3", exp.strValue());
+		assertEquals(3, exp.val.intValue());
+		CustomRule cr = (CustomRule) exp.optionalArg;
+		assertEquals("len", cr.ruleName);
+		assertEquals("x", cr.fieldName);
+	}
+	
+	
+	@Test
 	public void test21a() {
 		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("< 5");
 		assertEquals("< 5", exp.strValue());
