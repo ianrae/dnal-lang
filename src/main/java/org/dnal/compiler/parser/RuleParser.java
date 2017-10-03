@@ -63,17 +63,22 @@ public class RuleParser extends ParserBase {
 //				(Token notToken, RuleWithFieldExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1, range, (notToken == null) ? null : notToken.toString()));
 //	}
 	
+	public static Parser<Exp> ruleOperand1() {
+		return Parsers.or(ruleOperand(), ruleFn());
+	}
+	
+	
 	
 	//ruleExpr
     public static Parser<Exp> optionalRuleArg() {
 //        return VarParser.ident().optional();
-    	return ruleOperand();
+    	return ruleOperand1().optional();
     }
     
 	public static Parser<RuleExp> rule0() {
 		return Parsers.sequence(optionalRuleArg(), 
 		        Parsers.or(term("<"), term(">"), term(">="), term("<="), term("=="), term("!=")), 
-		        ruleOperand(), 
+		        ruleOperand1(), 
 				(Exp optArg, Token optok, Exp numExp) -> new ComparisonRuleExp(optArg, optok.toString(), numExp));
 	}
 	public static Parser<RuleExp> ruleOr() {
@@ -86,7 +91,7 @@ public class RuleParser extends ParserBase {
 	}
 	
 	public static Parser<RuleExp> ruleExpr() {
-		return Parsers.or(rule0(), ruleAnd(), ruleOr(), ruleFn());
+		return Parsers.or(ruleAnd(), ruleOr(), rule0(), ruleFn());
 	}
 	
 	

@@ -3,6 +3,7 @@ package org.dnal.compiler.parser;
 import static org.junit.Assert.assertEquals;
 
 import org.dnal.compiler.parser.ast.BooleanExp;
+import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
@@ -120,7 +121,74 @@ public class B4Tests {
 		assertEquals("ab", exp.strVal);
 		assertEquals("x", exp.optionalArg.strValue());
 	}
+	@Test
+	public void test20d() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("x < z");
+		assertEquals("< z", exp.strValue());
+		assertEquals("z", exp.identVal);
+		assertEquals("x", exp.optionalArg.strValue());
+	}
 	
+	@Test
+	public void test21a() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("< 5");
+		assertEquals("< 5", exp.strValue());
+		assertEquals(5, exp.val.intValue());
+		assertEquals(null, exp.optionalArg);
+	}
+	@Test
+	public void test21c() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("< 'ab'");
+		assertEquals("< ab", exp.strValue());
+		assertEquals("ab", exp.strVal);
+		assertEquals(null, exp.optionalArg);
+	}
+	@Test
+	public void test21d() {
+		ComparisonRuleExp exp =  (ComparisonRuleExp) parseRuleExpr("< z");
+		assertEquals("< z", exp.strValue());
+		assertEquals("z", exp.identVal);
+		assertEquals(null, exp.optionalArg);
+	}
+	
+	@Test
+	public void test22() {
+		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("x < 5 or z < 10");
+		assertEquals("< 5 or < 10", exp.strValue());
+		assertEquals(5, exp.exp1.val.intValue());
+		assertEquals("x", exp.exp1.optionalArg.strValue());
+		assertEquals(10, exp.exp2.val.intValue());
+		assertEquals("z", exp.exp2.optionalArg.strValue());
+	}
+	@Test
+	public void test22a() {
+		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("< 5 or < 10");
+		assertEquals("< 5 or < 10", exp.strValue());
+		assertEquals(5, exp.exp1.val.intValue());
+		assertEquals(null, exp.exp1.optionalArg);
+		assertEquals(10, exp.exp2.val.intValue());
+		assertEquals(null, exp.exp2.optionalArg);
+	}
+	
+	@Test
+	public void test23() {
+		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("x.a() < 5 or z < 10");
+		assertEquals("< 5 or < 10", exp.strValue());
+		assertEquals(5, exp.exp1.val.intValue());
+		assertEquals("x", exp.exp1.optionalArg.strValue());
+		assertEquals(10, exp.exp2.val.intValue());
+		assertEquals("z", exp.exp2.optionalArg.strValue());
+	}
+	@Test
+	public void test23a() {
+		ComparisonOrRuleExp exp =  (ComparisonOrRuleExp) parseRuleExpr("< x.a() or < 10");
+		assertEquals("< 5 or < 10", exp.strValue());
+		assertEquals(5, exp.exp1.val.intValue());
+		assertEquals(null, exp.exp1.optionalArg);
+		assertEquals(10, exp.exp2.val.intValue());
+		assertEquals(null, exp.exp2.optionalArg);
+	}
+
 	
 	
 	//--helpers
