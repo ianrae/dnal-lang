@@ -1,5 +1,5 @@
 type Colour enum { 
-  RED GREEN BLUE 
+  RED, GREEN, BLUE 
  } end
 type AllTypes struct {
     nval int
