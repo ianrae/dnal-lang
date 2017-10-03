@@ -31,7 +31,7 @@ public class ASTToDNALTests extends BaseTest {
 	public void testStruct() {
 		//unlike scalar types DVAL doesn't register 'struct' as a type, so baseType is null
 		checkTypeGen("type Foo struct {  } end", "Foo", null);
-		checkTypeGen("type Foo struct { x int y string } end", "Foo", null);
+		checkTypeGen("type Foo struct { x int, y string } end", "Foo", null);
 	}
 
 	@Test
@@ -95,7 +95,7 @@ public class ASTToDNALTests extends BaseTest {
 	}
 	@Test
 	public void testValueStruct() {
-		DValue dval = checkValueGen("type Foo struct { x int y long } end let x Foo = { 10, 11 }", "Foo");
+		DValue dval = checkValueGen("type Foo struct { x int, y long } end let x Foo = { 10, 11 }", "Foo");
 		DStructHelper helper = new DStructHelper(dval);
 		assertEquals(10, helper.getField("x").asInt());
 		assertEquals(11, helper.getField("y").asLong());
@@ -103,7 +103,7 @@ public class ASTToDNALTests extends BaseTest {
 	
 	@Test
 	public void testValueStructErr() {
-		failingValueGen("type Foo struct { x intxxx y int } end let x Foo = { 10, 11 }", "Foo");
+		failingValueGen("type Foo struct { x intxxx, y int } end let x Foo = { 10, 11 }", "Foo");
 	}
 	
 	private void checkTypeGen(String input, String typeName, String baseType) {

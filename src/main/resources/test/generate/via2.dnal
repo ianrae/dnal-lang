@@ -5,8 +5,8 @@ type X enum {
 } end
 
 
-type Address struct { street X city string} end 
-type Person struct { name string addr Address } end 
+type Address struct { street X, city string} end 
+type Person struct { name string, addr Address } end 
 let a10 Address = { RED, 'Ottawa' }
 let x Person = { 'abc', via street RED  }
 

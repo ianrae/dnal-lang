@@ -332,7 +332,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test21() {
-		FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int optional unique y int } end");
+		FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int optional unique, y int } end");
 		assertEquals("Position", ax.var.val);
 		assertEquals("struct", ax.type.val);
 		assertEquals(2, ax.members.list.size());
@@ -350,7 +350,7 @@ public class B2Tests {
 	}
     @Test
     public void test22() {
-        FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int y list<int> } end");
+        FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int, y list<int> } end");
         assertEquals("Position", ax.var.val);
         assertEquals("struct", ax.type.val);
         assertEquals(2, ax.members.list.size());

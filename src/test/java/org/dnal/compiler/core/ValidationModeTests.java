@@ -29,7 +29,7 @@ public class ValidationModeTests extends BaseValidationTests {
 	}
 	@Test
 	public void testExistence() {
-        String dnal =  "type Foo struct { x string optional y string } end let x Foo = { 'abc', null }";
+        String dnal =  "type Foo struct { x string optional, y string } end let x Foo = { 'abc', null }";
 		validationMode = ValidationOptions.VALIDATEMODE_EXISTENCE;
 	    chkRule(dnal, false);
 	    

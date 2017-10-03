@@ -52,9 +52,29 @@ public class TypeParser extends ParserBase {
 		return Parsers.sequence(VarParser.ident(), Parsers.or(VarParser.ident(), listangle()), optionalOptionalArg(), optionalUniqueArg(),
 				(IdentExp varName, IdentExp varType, Token opt, Token unique) -> new StructMemberExp(varName, varType, opt, unique));
 	}
+	
+	public static Parser<List<StructMemberExp>> structMembersMany() {
+        return structMembers00().many().sepBy(term(","))
+                .map(new org.codehaus.jparsec.functors.Map<List<List<StructMemberExp>>, List<StructMemberExp>>() {
+                    @Override
+                    public List<StructMemberExp> map(List<List<StructMemberExp>> arg0) {
+						List<StructMemberExp> cc = new ArrayList<>();
+						for(List<StructMemberExp> sub: arg0) {
+							if (sub.size() > 1) {
+								throw new IllegalArgumentException("Struct members must be separated by commas");
+							}
+							for(StructMemberExp re: sub) {
+								cc.add(re);
+							}
+						}
+						return cc;
+                    }
+                });    
+	}
+	
 
 	public static Parser<StructExp> structMembers() {
-		return Parsers.between(term("{"), structMembers00().many(), term("}")).
+		return Parsers.between(term("{"), structMembersMany(), term("}")).
 				map(new org.codehaus.jparsec.functors.Map<List<StructMemberExp>, StructExp>() {
 					@Override
 					public StructExp map(List<StructMemberExp> arg0) {
