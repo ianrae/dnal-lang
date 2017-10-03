@@ -84,14 +84,19 @@ public class BeanToDTypeBuilder {
 		sb.append(typeName);
 		sb.append(" struct { ");
 		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
+		int index = 0;
 		for(String fieldName: xlist) {
 			Method meth = methodCache.getMethod(fieldName);
 			String dnalTypeName = getGenDnalTypeName(meth, zc);
+			if (index > 0) {
+				sb.append(",");
+			}
 			sb.append(" ");
 			sb.append(fieldName);
 			sb.append(" ");
 			sb.append(dnalTypeName);
 			sb.append(" optional");
+			index++;
 		}
 		sb.append(" } end");
 		return sb.toString();

@@ -1,8 +1,8 @@
 type Address struct { 
-  street string 
-  city string
-  flag boolean
-  flag2 boolean
+  street string, 
+  city string,
+  flag boolean,
+  flag2 boolean,
   inum int
 } end
 

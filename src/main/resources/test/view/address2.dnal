@@ -1,6 +1,6 @@
 type Address struct { 
-  street string 
-  city string
+  street string,
+  city string,
   dt date
 } end
 

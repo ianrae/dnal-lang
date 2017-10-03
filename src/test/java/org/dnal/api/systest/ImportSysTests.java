@@ -10,11 +10,11 @@ public class ImportSysTests extends SysTestBase {
     
     @Test
     public void testT300() {
-        chkFail("type Foo struct { x int y int} end package xyz ", 1, "package must be first statement");
+        chkFail("type Foo struct { x int, y int} end package xyz ", 1, "package must be first statement");
     }
     @Test
     public void testT301() {
-        chkFail("package abc package def type Foo struct { x int y int} end", 1, "not allowed to have more than one package statement");
+        chkFail("package abc package def type Foo struct { x int, y int} end", 1, "not allowed to have more than one package statement");
     }
     
     @Test
@@ -26,8 +26,8 @@ public class ImportSysTests extends SysTestBase {
     
     @Test
     public void testT303() {
-        String src1 = "package xyz type Foo struct { x int y int} end ";
-        String src2 = "type Bar struct { a string foos list<Foo> } end ";
+        String src1 = "package xyz type Foo struct { x int, y int} end ";
+        String src2 = "type Bar struct { a string, foos list<Foo> } end ";
         String src3 = "type Circle struct { bar Bar } end ";
 //        String src4 = "let x Circle = { [ { 'abc', [ ] } ] }";
         String src4 = "let x Circle = {  { 'abc', [ ] }  }";
@@ -39,8 +39,8 @@ public class ImportSysTests extends SysTestBase {
     
     @Test
     public void testT320() {
-        chkFail("type Foo struct { x int y int} end import xyz ", 1, "import must be before type or value statements");
-        chkFail("package abc type Foo struct { x int y int} end import xyz ", 1, "import must be before type or value statements");
+        chkFail("type Foo struct { x int, y int} end import xyz ", 1, "import must be before type or value statements");
+        chkFail("package abc type Foo struct { x int, y int} end import xyz ", 1, "import must be before type or value statements");
     }
     
     @Test

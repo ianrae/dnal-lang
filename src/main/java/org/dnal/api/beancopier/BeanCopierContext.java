@@ -145,14 +145,19 @@ public class BeanCopierContext {
 		sb.append("type ");
 		sb.append(typeName);
 		sb.append(" struct { ");
+		int index = 0;
 		//			String dnal = "type X struct { s1 string optional s2 string optional  } end";
 		for(String fieldName: xlist) {
 			String dnalTypeName = getOutputFieldDnalTypeName(fieldName, isSourceClass);
+			if (index > 0) {
+				sb.append(",");
+			}
 			sb.append(" ");
 			sb.append(fieldName);
 			sb.append(" ");
 			sb.append(dnalTypeName);
 			sb.append(" optional");
+			index++;
 		}
 		sb.append(" } end");
 		return sb.toString();

@@ -12,7 +12,7 @@ public class OutViewTests extends SysTestBase {
 
 	@Test
 	public void test() throws Exception {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("outview Address -> AddressDTO { ");
 		addSrc(" city -> town string   street -> lane string } end");
 		String src = addSrc(" let x Address = { 'elm', 'ottawa' }");
@@ -33,7 +33,7 @@ public class OutViewTests extends SysTestBase {
 
 	@Test
 	public void test2() throws Exception {
-		addSrc("type Address struct { street string code string} end ");
+		addSrc("type Address struct { street string, code string} end ");
 		addSrc("outview Address -> AddressDTO { ");
 		addSrc(" street -> lane string    code -> townId int } end");
 		String src = addSrc(" let x Address = { 'elm', '405' }");
@@ -54,35 +54,35 @@ public class OutViewTests extends SysTestBase {
 
 	@Test
 	public void testFail1() {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("outview AddressDTO -> Address { ");
 		String src = addSrc(" street -> street string    city -> city string } end");
 		chkFail(src, 2, "has already been defined");
 	}
 	@Test
 	public void testFail2() {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("outview ZZZ -> AddressDTO { ");
 		String src = addSrc(" street -> street string    city -> city string } end");
 		chkFail(src, 1, "has unknown type");
 	}
 	@Test
 	public void testFail3() {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("outview ZZZ -> AddressDTO { ");
 		String src = addSrc(" street <- street string    city -> city string } end");
 		chkFail(src, 2, "cannot mix");
 	}
 	@Test
 	public void testFail4() {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("outview Address -> AddressDTO { ");
 		String src = addSrc(" city -> town zzz   street -> lane string } end");
 		chkFail(src, 1, "has unknown type 'zzz'");
 	}
 	@Test
 	public void testFail5() {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("inview Address <- AddressDTO { ");
 		String src = addSrc(" city <- town string   street <- lane string } end");
 		chkValue("x", src, 1, 0);

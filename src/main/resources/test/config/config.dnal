@@ -1,5 +1,5 @@
 type Options struct {
- outputPath string
+ outputPath string,
  outputType string
 } end
 
