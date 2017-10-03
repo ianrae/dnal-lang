@@ -15,7 +15,7 @@ public class ErrorMessageTests extends SysTestBase {
 //	}
 	@Test
 	public void testValFail() {
-		chkRulesFail("> 20 < 100", "compare-gt: > 20");
+		chkRulesFail("> 20, < 100", "compare-gt: > 20");
 	}	
 
 	//---

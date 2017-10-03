@@ -9,8 +9,10 @@ import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
 import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
+import org.dnal.compiler.parser.ast.RangeExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.junit.Test;
@@ -215,6 +217,40 @@ public class B4Tests {
 		assertEquals(5, exp1.val.intValue());
 		assertEquals(null, exp1.optionalArg);
 	}
+	
+	
+	//--range
+    @Test
+    public void test40() {
+        String src = "15..20";
+        Exp exp = RuleParser.ruleRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
+        RangeExp rexp = (RangeExp)exp;
+        assertEquals(15, rexp.from.intValue());
+        assertEquals(20, rexp.to.intValue());
+    }
+    @Test
+    public void test40a() {
+        String src = "15 ..20";
+        Exp exp = RuleParser.ruleSpaceRange().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(src);
+        RangeExp rexp = (RangeExp)exp;
+        assertEquals(15, rexp.from.intValue());
+        assertEquals(20, rexp.to.intValue());
+    }
+    
+	@Test
+	public void test41() {
+		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int myrule(15..20) end");
+		assertEquals("X", ax.var.val);
+		assertEquals("int", ax.type.val);
+		assertEquals(1, ax.ruleList.size());
+		CustomRule rule = (CustomRule) ax.ruleList.get(0);
+		assertEquals("myrule", rule.ruleName);
+		RangeExp exp = (RangeExp) rule.argL.get(0);
+		assertEquals("15..20", exp.strValue());
+	}
+	
+    
+	
 	
 	
 	//--helpers
