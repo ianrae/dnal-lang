@@ -3,8 +3,8 @@ package com.foo
 import com.foo.core.Core
 
 type X enum {
-  RED
-  GREEN
+  RED,
+  GREEN,
   BLUE
 } end
 

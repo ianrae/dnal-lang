@@ -27,7 +27,7 @@ public class JSONGeneratorTests extends BaseTest {
 	}
     @Test
     public void test1a() {
-        chkGen("type Foo enum { RED BLUE } end let x Foo = RED",  "{'x':'RED'}|", 2);
+        chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "{'x':'RED'}|", 2);
     }
 
     @Test

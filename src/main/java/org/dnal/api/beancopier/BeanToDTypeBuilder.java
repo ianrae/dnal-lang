@@ -61,7 +61,7 @@ public class BeanToDTypeBuilder {
 		for(int i = 0; i < paramClass.getEnumConstants().length; i++) {
 			Object x = paramClass.getEnumConstants()[i];
 			if (i > 0) {
-				sb.append(" ");
+				sb.append(", ");
 			}
 			sb.append(x.toString());
 		}

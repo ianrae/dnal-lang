@@ -88,7 +88,7 @@ public class SysTests extends SysTestBase {
         assertEquals("abc", dval.asList().get(0).asString());
         assertEquals("def", dval.asList().get(1).asString());
         
-        dval = chkValue("x", "type Foo enum { RED BLUE } end let x Foo = BLUE", 1, 1);
+        dval = chkValue("x", "type Foo enum { RED, BLUE } end let x Foo = BLUE", 1, 1);
         assertEquals("BLUE", dval.asString());
 
         dval = chkValue("x", "type Foo struct { x int y string } end let x Foo = { 15, 'abc' }", 1, 1);

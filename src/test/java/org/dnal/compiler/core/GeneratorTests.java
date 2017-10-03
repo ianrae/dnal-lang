@@ -36,7 +36,7 @@ public class GeneratorTests extends BaseTest {
 	@Test
 	public void testEnum() {
 		chkGen("type Foo enum {  } end", "type:Foo:enum|endtype|");
-		chkGen("type Foo enum { RED BLUE } end", "type:Foo:enum| RED:string| BLUE:string|endtype|");
+		chkGen("type Foo enum { RED, BLUE } end", "type:Foo:enum| RED:string| BLUE:string|endtype|");
 	}
 
 	@Test
