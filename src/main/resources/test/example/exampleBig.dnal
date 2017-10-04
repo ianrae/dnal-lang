@@ -4,10 +4,10 @@ type NEString string
 end
 
 type Address struct {
-  street string
-  city NEString
-  flag boolean
-  size int
+  street string,
+  city NEString,
+  flag boolean,
+  size int,
   roles list<NEString>
 } end
 

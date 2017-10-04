@@ -11,8 +11,8 @@ public class ViaSysTests extends SysTestBase {
     //TYPE 1 - VIA-1
     @Test
     public void test500() {
-        String src1 = "type Address struct { street string city string} end ";
-        String src2 = "type Person struct { name string addr Address } end ";
+        String src1 = "type Address struct { street string, city string} end ";
+        String src2 = "type Person struct { name string, addr Address } end ";
         String src3 = "let x Person = { 'abc', { 'main st', 'Kingston' }  }";
         DValue dval = chkValue("x", src1 + src2 + src3, 2, 1);
 
@@ -27,8 +27,8 @@ public class ViaSysTests extends SysTestBase {
     //TYPE 2 - VIA-MULTI
     @Test
     public void test501() {
-        String src1 = "type Address struct { street string city string} end ";
-        String src2 = "type Person struct { name string addr Address } end ";
+        String src1 = "type Address struct { street string, city string} end ";
+        String src2 = "type Person struct { name string, addr Address } end ";
         String src3 = "let a10 Address = { 'queen st', 'Ottawa' }";
         String src4 = "let x Person = { 'abc', via city 'Ottawa'  }";
         DValue dval = chkValue("x", src1 + src2 + src3 + src4, 2, 2);
@@ -45,8 +45,8 @@ public class ViaSysTests extends SysTestBase {
     @Test
     public void test510() {
         sb = new StringBuilder();
-        o("type Address struct { id string city string} end ");
-        o("type Person struct { name string addrId string } addrId isa Address.id end ");
+        o("type Address struct { id string, city string} end ");
+        o("type Person struct { name string, addrId string } addrId isa Address.id end ");
         o("let a10 Address = { 'a5', 'Ottawa' }");
         o("let x Person = { 'abc', 'a5'  }");
         DValue dval = chkValue("x", sb.toString(), 2, 2);
@@ -63,8 +63,8 @@ public class ViaSysTests extends SysTestBase {
     public void test511() {
         //isa is validate only
         sb = new StringBuilder();
-        o("type Address struct { id string city string} end ");
-        o("type Person struct { name string addrId string } addrId isa Address.id end ");
+        o("type Address struct { id string, city string} end ");
+        o("type Person struct { name string, addrId string } addrId isa Address.id end ");
         o("let a10 Address = { 'a5', 'Ottawa' }");
         o("let x Person = { 'abc', 'a6'  }");
         chkFail(sb.toString(), 1, "isa:");
@@ -74,8 +74,8 @@ public class ViaSysTests extends SysTestBase {
     public void test512() {
         //isa is validate only
         sb = new StringBuilder();
-        o("type Address struct { id string personCode string} personCode isa Person.code end ");
-        o("type Person struct { code string addrIds list<string> } addrIds isa Address.id end ");
+        o("type Address struct { id string, personCode string} personCode isa Person.code end ");
+        o("type Person struct { code string, addrIds list<string> } addrIds isa Address.id end ");
         o("let a10 Address = { 'a5', 'p5' }");
         o("let a11 Address = { 'a6', 'p6' }");
         o("let a12 Address = { 'a7', 'p5' }");
@@ -89,8 +89,8 @@ public class ViaSysTests extends SysTestBase {
     @Test
     public void test513() {
         sb = new StringBuilder();
-        o("type Address struct { id string personCode string} personCode isa Person.code end ");
-        o("type Person struct { code string addrs list<Address> }  end ");
+        o("type Address struct { id string, personCode string} personCode isa Person.code end ");
+        o("type Person struct { code string, addrs list<Address> }  end ");
         o("let a10 Address = { 'a5', 'p5' }");
         o("let a11 Address = { 'a6', 'p6' }");
         o("let a12 Address = { 'a7', 'p5' }");
@@ -112,8 +112,8 @@ public class ViaSysTests extends SysTestBase {
     //TYPE 5 - BOTH-1
     private String buildBoth1() {
         sb = new StringBuilder();
-        o("type Address struct { id string personCode string} personCode isa Person.code end ");
-        o("type Person struct { code string addrId string } addrId isa Address.id end ");
+        o("type Address struct { id string, personCode string} personCode isa Person.code end ");
+        o("type Person struct { code string, addrId string } addrId isa Address.id end ");
         o("let a10 Address = { 'a5', 'p5' }");
         o("let a11 Address = { 'a6', 'p6' }");
         o("let a12 Address = { 'a7', 'p6' }");
@@ -151,8 +151,8 @@ public class ViaSysTests extends SysTestBase {
     //TYPE 6 - BOTH-MULTI
     private String buildBothMulti() {
         sb = new StringBuilder();
-        o("type Address struct { id string personCode string} personCode isa Person.code end ");
-        o("type Person struct { code string addrIds list<string> } addrIds isa Address.id end ");
+        o("type Address struct { id string, personCode string} personCode isa Person.code end ");
+        o("type Person struct { code string, addrIds list<string> } addrIds isa Address.id end ");
         o("let a10 Address = { 'a5', 'p5' }");
         o("let a11 Address = { 'a6', 'p6' }");
         o("let a12 Address = { 'a7', 'p5' }");

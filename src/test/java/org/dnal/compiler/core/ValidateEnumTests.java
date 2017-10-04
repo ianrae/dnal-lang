@@ -91,7 +91,7 @@ public class ValidateEnumTests extends BaseValidationTests {
 	//type X enum { RED BLUE GREEN } end type Foo struct { col X } contains(RED) end let x Foo = {RED}
 	private void chkCustomRule(String rule, String str, boolean ok) {
         expected = 3;
-        String senum = "type X enum { RED BLUE GREEN } end";
+        String senum = "type X enum { RED, BLUE, GREEN } end";
 		String s = String.format("%s type Foo struct { col X } %s end let x Foo = {%s}", senum, rule, str);
 		parseAndValidate(s, ok, null); //enum has no base type
 	}

@@ -1,17 +1,17 @@
 type Address struct { 
-  street string 
-  city string
-  flag boolean
-  flag2 boolean
+  street string, 
+  city string,
+  flag boolean,
+  flag2 boolean,
   inum int
 } end
 
 
 outview Address -> AddressDTO { 
- city -> town string   
- street -> lane string 
- flag -> enabled boolean
- flag2 -> flag2 string
+ city -> town string,  
+ street -> lane string ,
+ flag -> enabled boolean,
+ flag2 -> flag2 string,
  inum -> inum long
 } end
 

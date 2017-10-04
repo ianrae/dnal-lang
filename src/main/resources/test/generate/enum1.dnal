@@ -1,7 +1,7 @@
 type X enum {
-  RED
-  GREEN
-  BLUE
+  RED,
+  GREEN,
+  BLUE,
 } end
 
 let z X = BLUE

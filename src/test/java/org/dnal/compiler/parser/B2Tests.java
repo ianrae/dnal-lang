@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.ComparisonOrRuleExp;
+import org.dnal.compiler.parser.ast.ComparisonRuleExp;
 import org.dnal.compiler.parser.ast.CustomRule;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullAssignmentExp;
@@ -75,7 +76,9 @@ public class B2Tests {
 	}
     @Test
     public void test4c() {
-        FullAssignmentExp ax = FullParser.parse01("let x int = 35;");
+    	//';' no longer supported
+//        FullAssignmentExp ax = FullParser.parse01("let x int = 35;");
+        FullAssignmentExp ax = FullParser.parse01("let x int = 35");
         assertEquals("x", ax.var.val);
         assertEquals("int", ax.type.val);
 
@@ -278,18 +281,6 @@ public class B2Tests {
 	}
 	
 	@Test
-	public void test10e() {
-		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int myrule(15..20) end");
-		assertEquals("X", ax.var.val);
-		assertEquals("int", ax.type.val);
-		assertEquals(1, ax.ruleList.size());
-		CustomRule rule = (CustomRule) ax.ruleList.get(0);
-		assertEquals("myrule", rule.ruleName);
-		RangeExp exp = (RangeExp) rule.argL.get(0);
-		assertEquals("15..20", exp.strValue());
-	}
-	
-	@Test
 	public void test11() {
 		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int > 0 end");
 		assertEquals("X", ax.var.val);
@@ -307,7 +298,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test12() {
-		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int > 0  < 5 end");
+		FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int > 0,  < 5 end");
 		assertEquals("X", ax.var.val);
 		assertEquals("int", ax.type.val);
 		assertEquals(2, ax.ruleList.size());
@@ -316,7 +307,7 @@ public class B2Tests {
 	}
     @Test
     public void test12a() {
-        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X string > 'a'  < 'z' end");
+        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X string > 'a',  < 'z' end");
         assertEquals("X", ax.var.val);
         assertEquals("string", ax.type.val);
         assertEquals(2, ax.ruleList.size());
@@ -343,7 +334,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test21() {
-		FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int optional unique y int } end");
+		FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int optional unique, y int } end");
 		assertEquals("Position", ax.var.val);
 		assertEquals("struct", ax.type.val);
 		assertEquals(2, ax.members.list.size());
@@ -361,7 +352,7 @@ public class B2Tests {
 	}
     @Test
     public void test22() {
-        FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int y list<int> } end");
+        FullStructTypeExp ax = (FullStructTypeExp) FullParser.parse02("type Position struct { x int, y list<int> } end");
         assertEquals("Position", ax.var.val);
         assertEquals("struct", ax.type.val);
         assertEquals(2, ax.members.list.size());
@@ -396,7 +387,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test41() {
-		List<Exp> list = FullParser.fullParse("type X enum { RED BLUE } end");
+		List<Exp> list = FullParser.fullParse("type X enum { RED, BLUE } end");
 		assertEquals(1, list.size());
 		FullEnumTypeExp ax = (FullEnumTypeExp) list.get(0);
 		assertEquals("X", ax.var.val);
@@ -405,7 +396,7 @@ public class B2Tests {
 	}
 	@Test
 	public void test42() {
-		List<Exp> list = FullParser.fullParse("type Colour enum { RED BLUE } end let x Colour = BLUE");
+		List<Exp> list = FullParser.fullParse("type Colour enum { RED, BLUE } end let x Colour = BLUE");
 		assertEquals(2, list.size());
 		FullEnumTypeExp ax = (FullEnumTypeExp) list.get(0);
 		assertEquals("Colour", ax.var.val);
@@ -512,27 +503,6 @@ public class B2Tests {
         ax = (ImportExp) FullParser.parse02("import x.y.Product");
         assertEquals("x.y.Product", ax.val);
     }
-    @Test
-    public void test80() {
-        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int z isa Product.id end");
-        assertEquals("X", ax.var.val);
-        assertEquals("int", ax.type.val);
-        assertEquals(1, ax.ruleList.size());
-        IsaRuleExp rule = (IsaRuleExp) ax.ruleList.get(0);
-        assertEquals("z", rule.fieldName);
-        assertEquals("Product.id", rule.val);
-    }
-    @Test
-    public void test81() {
-        FullTypeExp ax = (FullTypeExp) FullParser.parse02("type X int isa Product.id end");
-        assertEquals("X", ax.var.val);
-        assertEquals("int", ax.type.val);
-        assertEquals(1, ax.ruleList.size());
-        IsaRuleExp rule = (IsaRuleExp) ax.ruleList.get(0);
-        assertEquals(null, rule.fieldName);
-        assertEquals("Product.id", rule.val);
-    }
-    
     
     @Test
     public void test90() {

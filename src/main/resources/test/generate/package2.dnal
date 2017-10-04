@@ -4,7 +4,7 @@ type NEString string
 end
 
 type X struct {
-  s string
+  s string,
   s2 NEString
 } end
 

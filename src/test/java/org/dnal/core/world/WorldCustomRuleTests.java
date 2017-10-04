@@ -59,7 +59,7 @@ public class WorldCustomRuleTests extends BaseWorldTest {
     
     @Test
     public void test() {
-        String s = String.format("rule isSentence string; type Foo string isSentence() end let x Foo = 'abc.' let y Foo = 'def.'");
+        String s = String.format("rule isSentence string type Foo string isSentence() end let x Foo = 'abc.' let y Foo = 'def.'");
         DNALCompiler compiler = createCompiler();
         compiler.registryRuleFactory(new SentenceRule.Factory());
         DataSet dataSet = compiler.compileString(s);

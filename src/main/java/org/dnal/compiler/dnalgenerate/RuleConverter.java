@@ -254,10 +254,20 @@ public class RuleConverter extends ErrorTrackingBase {
 	}
 	
 	private boolean isPseudoLen(ComparisonRuleExp exp) {
-	    if (exp.optionalArg != null) {
-	        return exp.optionalArg.name().equals("len");
-	    }
-        return false;
+    	if (exp.optionalArg instanceof IdentExp) {
+    		IdentExp iexp = (IdentExp) exp.optionalArg;
+    		return (iexp.name().equals("len"));
+    	} else if (exp.optionalArg instanceof CustomRule) {
+    		CustomRule iexp = (CustomRule) exp.optionalArg;
+    		return iexp.ruleName.equals("len");
+    	} else {
+    		return false;
+    	}
+//		
+//	    if (exp.optionalArg != null) {
+//	        return exp.optionalArg.name().equals("len");
+//	    }
+//        return false;
     }
 
     private NRule doStructComparisonRule(DType type, ComparisonRuleExp exp) {
@@ -269,6 +279,10 @@ public class RuleConverter extends ErrorTrackingBase {
         case "<=":
         case ">=":
         {
+            if (isPseudoLen(exp)) {
+                return builder.buildPseudoLenCompare(buildRuleName(exp), exp, true, builder.getFieldName(exp));
+            }        	
+        	
             if (! builder.isCompatibleMemberType(exp)) {
                 this.addError2s("MEMBcannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                 return null;
@@ -279,6 +293,11 @@ public class RuleConverter extends ErrorTrackingBase {
         case "==":
         case "!=":
         {
+            if (isPseudoLen(exp)) {
+                return builder.buildPseudoLenEq(buildRuleName(exp), exp, true, builder.getFieldName(exp));
+            }        	
+        	
+        	
             if (! builder.isCompatibleMemberType(exp)) {
                 this.addError2s("MEMBeq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                 return null;

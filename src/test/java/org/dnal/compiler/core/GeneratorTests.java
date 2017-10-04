@@ -24,19 +24,19 @@ public class GeneratorTests extends BaseTest {
 
 	@Test
 	public void testRules() {
-		chkGen("type X int > 0  < 5 end", "type:X:int| r: > 0| r: < 5|endtype|");
+		chkGen("type X int > 0,  < 5 end", "type:X:int| r: > 0| r: < 5|endtype|");
 	}
 
 	@Test
 	public void testStruct() {
 		chkGen("type Foo struct {  } end", "type:Foo:struct|endtype|");
-		chkGen("type Foo struct { x int y string } end", "type:Foo:struct| x:int| y:string|endtype|");
+		chkGen("type Foo struct { x int, y string } end", "type:Foo:struct| x:int| y:string|endtype|");
 	}
 
 	@Test
 	public void testEnum() {
 		chkGen("type Foo enum {  } end", "type:Foo:enum|endtype|");
-		chkGen("type Foo enum { RED BLUE } end", "type:Foo:enum| RED:string| BLUE:string|endtype|");
+		chkGen("type Foo enum { RED, BLUE } end", "type:Foo:enum| RED:string| BLUE:string|endtype|");
 	}
 
 	@Test
@@ -56,26 +56,26 @@ public class GeneratorTests extends BaseTest {
 	public void testStructVal() {
 		String s1 = "type:Foo:struct| x:int| y:int|endtype|";
 		String s2 = "value:x:Foo {| vx:10| vy:11|}|";
-		chkGen("type Foo struct { x int y int } end let x Foo = { 10, 11 }", s1 + s2, 2);
+		chkGen("type Foo struct { x int, y int } end let x Foo = { 10, 11 }", s1 + s2, 2);
 	}
 	
     @Test
     public void testStructValOptional() {
         String s1 = "type:Foo:struct| x:int| y:int|endtype|";
         String s2 = "value:x:Foo {| vx:10| vy:11|}|";
-        chkGen("type Foo struct { x int optional y int } end let x Foo = { 10, 11 }", s1 + s2, 2);
+        chkGen("type Foo struct { x int optional, y int } end let x Foo = { 10, 11 }", s1 + s2, 2);
     }
     @Test
     public void testStructValOptional2() {
         String s1 = "type:Foo:struct| x:int| y:int|endtype|";
         String s2 = "value:x:Foo {| vx:null| vy:11|}|";
-        chkGen("type Foo struct { x int optional y int } end let x Foo = { null, 11 }", s1 + s2, 2);
+        chkGen("type Foo struct { x int optional, y int } end let x Foo = { null, 11 }", s1 + s2, 2);
     }
     @Test
     public void testStructValOptional2a() {
         String s1 = "type:Foo:struct| x:int| y:int|endtype|";
         String s2 = "value:x:Foo {| vx:null| vy:11|}|";
-        chkGen("type Foo struct { x int optional y int } end let x Foo = { x:null, y:11 }", s1 + s2, 2);
+        chkGen("type Foo struct { x int optional, y int } end let x Foo = { x:null, y:11 }", s1 + s2, 2);
     }
 	
 	@Test

@@ -1,12 +1,12 @@
 type Colour enum { 
-  RED GREEN BLUE 
+  RED, GREEN, BLUE 
  } end
 type AllTypes struct {
-    nval int
-    lval long
-    dval number
-    bval boolean
-    eval Colour
+    nval int,
+    lval long,
+    dval number,
+    bval boolean,
+    eval Colour,
     sval string
 } end
 

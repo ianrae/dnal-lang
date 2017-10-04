@@ -1,5 +1,5 @@
-type Address struct { street string city string} end 
-type Person struct { name string addr Address } end 
+type Address struct { street string, city string} end 
+type Person struct { name string, addr Address } end 
 let a10 Address = { 'queen st', 'Ottawa' }
 let x Person = { 'abc', via city 'Ottawa'  }
 

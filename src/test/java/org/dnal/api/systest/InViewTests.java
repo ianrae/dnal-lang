@@ -17,9 +17,9 @@ public class InViewTests extends SysTestBase {
 	
 	@Test
 	public void test() throws Exception {
-		addSrc("type Address struct { street string city string} end ");
+		addSrc("type Address struct { street string, city string} end ");
 		addSrc("inview Address <- AddressDTO { ");
-		addSrc(" city <- town string   street <- lane string } end");
+		addSrc(" city <- town string,   street <- lane string } end");
 		String src = addSrc(" let x Address = { 'elm', 'ottawa' }");
 		chkValue("x", src, 1, 1);
 

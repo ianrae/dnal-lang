@@ -27,7 +27,7 @@ public class JSONGeneratorTests extends BaseTest {
 	}
     @Test
     public void test1a() {
-        chkGen("type Foo enum { RED BLUE } end let x Foo = RED",  "{'x':'RED'}|", 2);
+        chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "{'x':'RED'}|", 2);
     }
 
     @Test
@@ -37,14 +37,14 @@ public class JSONGeneratorTests extends BaseTest {
     }
     @Test
     public void test3() {
-        chkGen("type Z struct { x int y int } end let x Z = { 15, 20 }", "{'x':15,'y':20}|", 2);
+        chkGen("type Z struct { x int, y int } end let x Z = { 15, 20 }", "{'x':15,'y':20}|", 2);
         String s = "{'x':{'a':100,'b':101},'y':20}|";
-        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
+        chkGen("type Inner struct { a int, b int } end type Z struct { x Inner, y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
     }
     @Test
     public void test4() {
         String s = "{'x':[15,16],'y':20}|";
-        chkGen("type L list<int> end type Z struct { x L y int } end let x Z = { [15,16], 20 }", s, 3);
+        chkGen("type L list<int> end type Z struct { x L, y int } end let x Z = { [15,16], 20 }", s, 3);
 //        String s = "{'x':{'a':100,'b':101},'y':20}|";
 //        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
     }

@@ -1,5 +1,5 @@
 type X struct {
-  x int
+  x int,
   y string
 } end
 let x X = {  -15, "abc" }

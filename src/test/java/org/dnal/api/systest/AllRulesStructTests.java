@@ -206,7 +206,7 @@ public class AllRulesStructTests extends SysTestBase {
         expectedTypes = 1; //reset
     }
     private void chkEnum(String rule, boolean pass) {
-        String senum = "type X enum { RED BLUE GREEN } end";
+        String senum = "type X enum { RED, BLUE, GREEN } end";
         String source = String.format("%s type Foo struct { fld X } %s end let x Foo = {%s}", senum, rule, "RED");
         if (pass) {
             chkValue("x", source, 2, 1);

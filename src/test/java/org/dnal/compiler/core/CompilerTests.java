@@ -53,7 +53,7 @@ public class CompilerTests {
 	
     @Test
     public void testOptional() {
-        List<Exp> list = FullParser.fullParse("type X struct { x int y int } end let z X = { 10, 12 }");
+        List<Exp> list = FullParser.fullParse("type X struct { x int, y int } end let z X = { 10, 12 }");
         assertEquals(2, list.size());
         FullStructTypeExp ax = (FullStructTypeExp) list.get(0);
         assertEquals("X", ax.var.val);
