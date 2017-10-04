@@ -76,7 +76,9 @@ public class B2Tests {
 	}
     @Test
     public void test4c() {
-        FullAssignmentExp ax = FullParser.parse01("let x int = 35;");
+    	//';' no longer supported
+//        FullAssignmentExp ax = FullParser.parse01("let x int = 35;");
+        FullAssignmentExp ax = FullParser.parse01("let x int = 35");
         assertEquals("x", ax.var.val);
         assertEquals("int", ax.type.val);
 

@@ -22,7 +22,7 @@ type Rect Shape {
  height < 100
 end
 
-let x int = 12;
+let x int = 12
 
 let shape1 Shape = { x, x }
 

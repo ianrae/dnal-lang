@@ -8,10 +8,10 @@ type Address struct {
 
 
 outview Address -> AddressDTO { 
- city -> town string   
- street -> lane string 
- flag -> enabled boolean
- flag2 -> flag2 string
+ city -> town string,  
+ street -> lane string ,
+ flag -> enabled boolean,
+ flag2 -> flag2 string,
  inum -> inum long
 } end
 

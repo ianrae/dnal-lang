@@ -6,8 +6,8 @@ type Address struct {
 
 
 outview Address -> AddressDTO { 
- city -> town string   
- street -> lane string
+ city -> town string,   
+ street -> lane string,
  dt -> year string  format('yyyy')
 } end
 

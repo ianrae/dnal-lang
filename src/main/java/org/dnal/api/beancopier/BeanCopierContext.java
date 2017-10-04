@@ -177,12 +177,18 @@ public class BeanCopierContext {
 		StringBuilder sb = new StringBuilder();
 		sb.append(String.format("inview %s <- %s {", typeName, viewName));
 
+		int index = 0;
 		for(FieldSpec spec: fieldL) {
+			if (index > 0) {
+				sb.append(",");
+			}
+			
 			String fieldName = spec.destField;
 			String dtoName = spec.srcField;
 //			String dnalTypeName = getOutputFieldDnalTypeName(fieldName, false);
 			String dnalTypeNameDTO = getOutputFieldDnalTypeName(dtoName, true);
 			sb.append(String.format(" %s <- %s %s", fieldName, dtoName, dnalTypeNameDTO));
+			index++;
 		}
 		sb.append(" } end");
 		return sb.toString();

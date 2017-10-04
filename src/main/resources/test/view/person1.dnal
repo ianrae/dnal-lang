@@ -11,17 +11,17 @@ type Person struct {
 
 
 outview Person -> PersonDTO { 
- firstName -> fname string   
+ firstName -> fname string,  
  addr.city -> town string
 } end
 
 outview Person -> PersonBadDTO { 
- firstName -> fname string   
+ firstName -> fname string,  
  addr.zzz -> town string
 } end
 
 inview Person <- PersonInputBad { 
- firstName <- fname string   
+ firstName <- fname string,   
  addr <- town string
 } end
 
