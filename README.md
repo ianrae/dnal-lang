@@ -45,11 +45,11 @@ DNAL is a language for data.  It supports types, relations, and validation rules
 
 		//define a type
 		type Person struct {
-		    firstName string
-		    lastName string
+		    firstName string,
+		    lastName string,
 		    birthDate date
 		  }
-		  !empty(firstName)
+		  !empty(firstName),
 		  !empty(lastName)
 		end
 
