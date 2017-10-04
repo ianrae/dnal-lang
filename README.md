@@ -7,21 +7,20 @@ The DNAL compiler validates and transforms your DNAL source into other data form
 *Latest version*: 0.2.2 (requires Java 8+)
 
 ## News
-2017-10-04
-   Release v0.2.2 -
-   views have been added (inputview and outputview)
-   syntax change. comma delimiter in struct members, rules, and views. 
- 2017-05-14
-   Release v0.2.1 - 
-   compile from stream, 
-   validation options,
-   improved date format support,
-   prototype of views feature    
-2017-03-14
-    Release v0.2.0 - 
-	'unique' keyword, 
-	reflection-based loader,
-	many fixes
+##### 2017-10-04 - Release v0.2.2
+* views have been added (inputview and outputview)
+* syntax change. comma delimiter in struct members, rules, and views. 
+ 
+##### 2017-05-14 - Release v0.2.1 
+* compile from stream, 
+* validation options,
+* improved date format support,
+* prototype of views feature    
+
+##### 2017-03-14 - Release v0.2.0 
+* 'unique' keyword, 
+* reflection-based loader,
+* many fixes
 
 
 ## User's Guide
