@@ -33,7 +33,7 @@ public class ValueSysTests extends SysTestBase {
 		String src2 = "type Customer struct { firstName string, addr Address, age int} end ";
 		String src3 = "let addr1 Location = { '10 Main st', 'Ottawa'}";
 		String src4 = "let x Customer = { 'bobby', addr1, 44 }";
-        chkFail(src1 + src1a + src2 + src3 + src4, 2, "struct value builder failed unknown reason");
+        chkFail(src1 + src1a + src2 + src3 + src4, 1, "addr: cannot assign a value of type 'Location'");
     }
 
 }

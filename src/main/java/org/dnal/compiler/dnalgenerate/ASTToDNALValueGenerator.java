@@ -209,6 +209,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                     return null;
                 } else {
                 	DValue dd = world.findTopLevelValue(tmp.name());
+                	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
+                        this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
+                        return null;
+                	}
                 	resultVal = dd;
                 }
             	
