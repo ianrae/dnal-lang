@@ -123,7 +123,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 IntBuilder builder = factory.createIntegerBuilder(dtype);
                 IntegerExp tmp = (IntegerExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val); 
+                }
             }
             break;
             case LONG:
@@ -145,7 +147,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 NumberBuilder builder = factory.createNumberBuilder(dtype);
                 NumberExp tmp = (NumberExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val);
+                }
             }
             break;
             case DATE:
@@ -160,14 +164,18 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 BooleanBuilder builder = factory.createBooleanBuilder(dtype);
                 BooleanExp tmp = (BooleanExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val);
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val);
+                }
             }
             break;
             case STRING:
             {
                 StringBuilder builder = factory.createStringBuilder(dtype);
                 StringExp tmp = (StringExp) resolveRHS(assignExp);
-                resultVal = builder.buildFromString(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFromString(tmp.val);
+                }
             }
             break;
             case ENUM:
@@ -374,6 +382,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         } else if (typeExp.value instanceof IdentExp) {
             IdentExp tmp = (IdentExp) typeExp.value;
             FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
+            if (referencedValue == null) {
+                this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                return null;
+            }
             return resolveRHS(referencedValue); //recursion
         } else if (typeExp.value instanceof StructMemberAssignExp) {
             StructMemberAssignExp tmp = (StructMemberAssignExp) typeExp.value;

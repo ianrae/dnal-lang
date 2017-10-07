@@ -12,5 +12,9 @@ public class ValueSysTests extends SysTestBase {
         chkFail("type Foo int end let x Foo = 14 let x int = 44", 1, "value name 'x' has already been defined");
     }
     
+    @Test
+    public void testT201() {
+        chkFail("let x int = 5 let y int = zzz", 1, "cannot resolve reference to 'zzz'");
+    }
     
 }
