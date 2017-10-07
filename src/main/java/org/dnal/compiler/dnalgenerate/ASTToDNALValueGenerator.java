@@ -199,6 +199,27 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 resultVal = builder.buildFromString(tmp.name()); 
             }
             break;
+            case STRUCT:
+            {
+//                NumberBuilder builder = factory.createNumberBuilder(dtype);
+                IdentExp tmp = (IdentExp) assignExp.value;
+                FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
+                if (referencedValue == null) {
+                    this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                    return null;
+                } else {
+                	DValue dd = world.findTopLevelValue(tmp.name());
+                	resultVal = dd;
+                }
+            	
+//                StructAssignExp tmp = (StructAssignExp) resolveRHS(assignExp);
+//                if (tmp != null) {
+//                	resultVal = null;
+//                	//resultVal = builder.buildFrom(tmp.val);
+//                }
+            }
+            break;
+            
             //				case LIST:
             //					break;
 
