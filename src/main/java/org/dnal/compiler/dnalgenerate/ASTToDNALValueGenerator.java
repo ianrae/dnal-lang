@@ -201,26 +201,26 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             break;
             case STRUCT:
             {
-//                NumberBuilder builder = factory.createNumberBuilder(dtype);
-                IdentExp tmp = (IdentExp) assignExp.value;
-                FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
+            	String refVarName = null;
+            	if (assignExp.value instanceof IdentExp) {
+            		IdentExp tmp = (IdentExp) assignExp.value;
+            		refVarName = tmp.name();
+            	} else if (assignExp.value instanceof StructMemberAssignExp) {
+            		StructMemberAssignExp tmp = (StructMemberAssignExp) assignExp.value;
+            		refVarName = tmp.value.strValue();
+            	}
+                FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
                 if (referencedValue == null) {
-                    this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                    this.addError2s("cannot resolve reference to '%s'", refVarName, "");
                     return null;
                 } else {
-                	DValue dd = world.findTopLevelValue(tmp.name());
+                	DValue dd = world.findTopLevelValue(refVarName);
                 	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
                         this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
                         return null;
                 	}
                 	resultVal = dd;
                 }
-            	
-//                StructAssignExp tmp = (StructAssignExp) resolveRHS(assignExp);
-//                if (tmp != null) {
-//                	resultVal = null;
-//                	//resultVal = builder.buildFrom(tmp.val);
-//                }
             }
             break;
             

@@ -36,4 +36,13 @@ public class ValueSysTests extends SysTestBase {
         chkFail(src1 + src1a + src2 + src3 + src4, 1, "addr: cannot assign a value of type 'Location'");
     }
 
+    @Test
+    public void testT203() {
+		String src1 = "type Address struct { street string, city string} end ";
+		String src2 = "type Customer struct { firstName string, addr Address, age int} end ";
+		String src3 = "let addr1 Address = { '10 Main st', 'Ottawa'}";
+		String src4 = "let x Customer = { firstName:'bobby', addr:addr1, age:44 }";
+        chk(src1 + src2 + src3 + src4, 2, 2);
+    }
+    
 }
