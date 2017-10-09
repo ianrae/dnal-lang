@@ -2,27 +2,136 @@ package org.dnal.compiler.core.generator;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.core.DListType;
+import org.dnal.core.DStructType;
+import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
+import org.dnal.core.DValue;
+import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
+import org.dnal.dnalc.ConfigFileOptions;
 import org.junit.Test;
 
 public class DNALGeneratorTests extends BaseTest {
 	
-	public static class DNALGenerator implements OutputGenerator {
-		
+	public static abstract class ValueGeneratorAdaptor implements OutputGenerator {
+
+		@Override
+		public void setOptions(ConfigFileOptions configFileOptions) {
+		}
+
+		@Override
+		public void startStructType(String name, DStructType dtype) throws Exception {
+		}
+
+		@Override
+		public void startEnumType(String name, DStructType dtype) throws Exception {
+		}
+
+		@Override
+		public void startType(String name, DType dtype) throws Exception {
+		}
+
+		@Override
+		public void startListType(String name, DListType type) throws Exception {
+		}
+
+		@Override
+		public void structMember(String name, DType type) throws Exception {
+		}
+
+		@Override
+		public void rule(int index, String ruleText, NRule rule) throws Exception {
+		}
+
+		@Override
+		public void enumMember(String name, DType memberType) throws Exception {
+		}
+
+		@Override
+		public void endType(String name, DType type) throws Exception {
+		}
+
+		@Override
+		public void finish() throws Exception {
+		}
 	}
+
+	public static class DNALGenerator extends ValueGeneratorAdaptor {
+	    public List<String> outputL = new ArrayList<>();
+
+		
+		@Override
+		public void value(String name, DValue dval, DValue parentVal) throws Exception {
+			if (dval == null) {
+				return;
+			}
+			String s = null;
+			switch(dval.getType().getShape()) {
+			case BOOLEAN:
+				s = Boolean.valueOf(dval.asBoolean()).toString();
+				break;
+			case DATE:
+				s = dval.asDate().toString();
+				break;
+			case ENUM:
+				s = dval.toString();
+				break;
+			case INTEGER:
+				s = Integer.valueOf(dval.asInt()).toString();
+				break;
+			case LONG:
+				s = Long.valueOf(dval.asLong()).toString();
+				break;
+			case NUMBER:
+				s = Double.valueOf(dval.asNumber()).toString();
+				break;
+			case STRING:
+				s = dval.asString();
+				break;
+			default:
+				break;
+			}
+			
+			if (s != null) {
+				String str = String.format("let %s %s = %s", name, dval.getType().getName(), s);
+				outputL.add(str);
+			}
+			
+		}
+
+		@Override
+		public void startStruct(String name, DValue dval) throws Exception {
+		}
+
+		@Override
+		public void startList(String name, DValue value) throws Exception {
+		}
+
+		@Override
+		public void endStruct(String name, DValue value) throws Exception {
+		}
+
+		@Override
+		public void endList(String name, DValue value) throws Exception {
+		}
+
+	}
+	
 	
     @Test
 	public void test() {
-	    chkGen("type Foo boolean end let x Foo = false",  "{'x':false}|", 2);
+	    chkGen("type Foo boolean end let x Foo = false",  "let x Foo = false|", 2);
 	}
 	
     
@@ -71,7 +180,7 @@ public class DNALGeneratorTests extends BaseTest {
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
 		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world);
-		JSONGenerator visitor = new JSONGenerator();
+		DNALGenerator visitor = new DNALGenerator();
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
