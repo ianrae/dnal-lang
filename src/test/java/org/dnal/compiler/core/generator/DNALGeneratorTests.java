@@ -90,7 +90,7 @@ public class DNALGeneratorTests extends BaseTest {
 				s = Long.valueOf(dval.asDate().getTime()).toString();
 				break;
 			case ENUM:
-				s = dval.toString();
+				s = dval.asString();
 				break;
 			case INTEGER:
 				s = Integer.valueOf(dval.asInt()).toString();
@@ -113,21 +113,28 @@ public class DNALGeneratorTests extends BaseTest {
 					String typeName = TypeInfo.parserTypeOf(dtype.getName());
 					String str = String.format("let %s %s = %s", name, typeName, s);
 					outputL.add(str);
+				} else if (parentVal.getType().isStructShape()){
+					DNALGenerator gen = genStack.peek();
+					String str = String.format("%s:%s", name, s);
+					gen.outputL.add(str);
 				} else {
 					DNALGenerator gen = genStack.peek();
 					gen.outputL.add(s);
 				}
 			}
-			
 		}
 
 		@Override
 		public void startStruct(String name, DValue dval) throws Exception {
+			listTypeName = TypeInfo.parserTypeOf(dval.getType().getName());
+			listName = name;
+			DNALGenerator gen = new DNALGenerator();
+			genStack.push(gen);
 		}
 
 		@Override
-		public void startList(String name, DValue value) throws Exception {
-			listTypeName = TypeInfo.parserTypeOf(value.getType().getName());
+		public void startList(String name, DValue dval) throws Exception {
+			listTypeName = TypeInfo.parserTypeOf(dval.getType().getName());
 			listName = name;
 			DNALGenerator gen = new DNALGenerator();
 			genStack.push(gen);
@@ -135,6 +142,20 @@ public class DNALGeneratorTests extends BaseTest {
 
 		@Override
 		public void endStruct(String name, DValue value) throws Exception {
+			DNALGenerator gen = genStack.pop();
+			StringBuilder sb = new StringBuilder();
+			int index = 0;
+			for(String s: gen.outputL) {
+				if (index > 0) {
+					sb.append(',');
+					sb.append(' ');
+				}
+				sb.append(s);
+				index++;
+			}
+			
+			String str = String.format("let %s %s = {%s}", listName, listTypeName, sb.toString());
+			outputL.add(str);
 		}
 
 		@Override
@@ -154,9 +175,7 @@ public class DNALGeneratorTests extends BaseTest {
 			String str = String.format("let %s %s = [%s]", listName, listTypeName, sb.toString());
 			outputL.add(str);
 		}
-
 	}
-	
 	
     @Test
 	public void test() {
@@ -169,20 +188,17 @@ public class DNALGeneratorTests extends BaseTest {
 		chkGen("let x list<int> = [44, 45]",  "let x list<int> = [44, 45]|");
 	}
     
-//    @Test
-//	public void test1() {
-//	    chkGen("type Foo boolean end let x Foo = false",  "{'x':false}|", 2);
-//	    chkGen("let x int = 44",  "{'x':44}|");
-//	    chkGen("let x long = 555666",  "{'x':555666}|");
-//	    chkGen("let x number = 3.14",  "{'x':3.14}|");
-//	    chkGen("let x string = 'abc def'",  "{'x':'abc def'}|");
-//		chkGen("let x date = '2017'",  "{'x':1483246800000}|");
-//	}
-//    @Test
-//    public void test1a() {
-//        chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "{'x':'RED'}|", 2);
-//    }
-//
+    @Test
+    public void test1a() {
+        chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "let x Foo = RED|", 2);
+    }
+
+    @Test
+    public void test1b() {
+    	//!!fix field order
+        chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {name:'amy', age:33}|", 2);
+    }
+
 //    @Test
 //    public void test2() {
 //        chkGen("let x list<int> = [44, 45]", "{'x':[44,45]}|");

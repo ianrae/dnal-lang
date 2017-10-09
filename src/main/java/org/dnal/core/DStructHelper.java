@@ -1,7 +1,10 @@
 package org.dnal.core;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 //convenience class only
 public class DStructHelper {
@@ -11,6 +14,7 @@ public class DStructHelper {
 		this.dval = dval;
 	}
 
+	//names are not ordered by declaration order (use DStructType.orderedList for that)
 	public Set<String> getFieldNames() {
 		Map<String, DValue> map = dval.asMap();
 		return map.keySet();

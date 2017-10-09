@@ -98,7 +98,8 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
             DStructHelper helper = new DStructHelper(dval);
 
             int index = 0;
-            for(String fieldName : helper.getFieldNames()) {
+            DStructType structType = (DStructType) dval.getType();
+            for(String fieldName : structType.orderedList()) {
                 DValue inner = helper.getField(fieldName);
                 doval(visitor, indent+1, fieldName, inner, dval); //!recursion!
                 index++;
