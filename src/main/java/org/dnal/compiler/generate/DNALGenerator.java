@@ -1,20 +1,17 @@
 package org.dnal.compiler.generate;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
-public class DNALGenerator extends ValueGeneratorAdaptor {
+public class DNALGenerator extends ValueGeneratorVisitor {
 	private static class StringPair {
 		public String name;
 		public String typeName;
 	}
 	
-    public List<String> outputL = new ArrayList<>();
     private Stack<DNALGenerator> genStack = new Stack<>();
     private Stack<DNALGenerator.StringPair> nameStack = new Stack<>();
 	

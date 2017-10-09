@@ -8,6 +8,7 @@ import org.dnal.api.DataSet;
 import org.dnal.api.impl.DataSetImpl;
 import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.DNALGenerator;
+import org.dnal.compiler.generate.ValueGeneratorVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
@@ -17,12 +18,11 @@ public class DNALGeneratorTests extends SysTestBase {
 	
 	public static class ValueRenderer {
 		
-		public String render(DataSet ds, String varName) {
+		public String render(DataSet ds, String varName, ValueGeneratorVisitor visitor) {
 			DataSetImpl dsimpl = (DataSetImpl) ds;
 			World world = dsimpl.getInternals().getWorld();
 	        DTypeRegistry registry = dsimpl.getCompilerContext().registry;
 			DNALGeneratePhase phase = new DNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world);
-			DNALGenerator visitor = new DNALGenerator();
 			DValue dval = ds.getValue(varName);
 			boolean b = phase.generate(visitor, varName, dval);
 			assertEquals(true, b);
@@ -45,7 +45,8 @@ public class DNALGeneratorTests extends SysTestBase {
     	DValue dval = ds.getValue("x");
     	assertEquals(14, dval.asInt());
     	ValueRenderer renderer = new ValueRenderer();
-    	String s = renderer.render(ds, "x");
+		DNALGenerator visitor = new DNALGenerator();
+    	String s = renderer.render(ds, "x", visitor);
     	assertEquals("let x Foo = 14", s);
     }
     

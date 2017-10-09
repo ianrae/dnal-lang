@@ -6,7 +6,7 @@ import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.DNALVisitor;
+import org.dnal.compiler.generate.DNALOutputGenerator;
 import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
@@ -91,7 +91,7 @@ public class DNALLoader {
         }
     }
     public void dumpAsDNAL() {
-        DNALVisitor smf = new DNALVisitor();
+        DNALOutputGenerator smf = new DNALOutputGenerator();
         Generator gen = clone.createGenerator();
         boolean b = gen.generate(smf);
         if (! b) {

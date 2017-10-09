@@ -1,12 +1,16 @@
 package org.dnal.compiler.generate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public abstract class ValueGeneratorAdaptor implements OutputGenerator {
+public abstract class ValueGeneratorVisitor implements OutputGenerator {
+    public List<String> outputL = new ArrayList<>();
 
 	@Override
 	public void setOptions(ConfigFileOptions configFileOptions) {
