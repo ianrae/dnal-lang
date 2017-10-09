@@ -7,7 +7,6 @@ import java.util.List;
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.DNALValueVisitor;
 import org.dnal.compiler.generate.JSONValueVisitor;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;

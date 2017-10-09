@@ -15,7 +15,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
 import org.junit.Test;
 
-public class DNALGeneratorTests extends SysTestBase {
+public class ValueGeneratorTests extends SysTestBase {
 	
 	public static class ValueRenderer {
 		
