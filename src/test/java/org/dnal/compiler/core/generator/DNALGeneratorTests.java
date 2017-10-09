@@ -70,10 +70,14 @@ public class DNALGeneratorTests extends BaseTest {
 	}
 
 	public static class DNALGenerator extends ValueGeneratorAdaptor {
+		private static class StringPair {
+			public String name;
+			public String typeName;
+		}
+		
 	    public List<String> outputL = new ArrayList<>();
-	    private String listName;
-	    private String listTypeName;
 	    private Stack<DNALGenerator> genStack = new Stack<>();
+	    private Stack<StringPair> nameStack = new Stack<>();
 		
 		@Override
 		public void value(String name, DValue dval, DValue parentVal) throws Exception {
@@ -126,16 +130,20 @@ public class DNALGeneratorTests extends BaseTest {
 
 		@Override
 		public void startStruct(String name, DValue dval) throws Exception {
-			listTypeName = TypeInfo.parserTypeOf(dval.getType().getName());
-			listName = name;
+			StringPair pair = new StringPair();
+			pair.name = name;
+			pair.typeName = TypeInfo.parserTypeOf(dval.getType().getName());
+			nameStack.push(pair);
 			DNALGenerator gen = new DNALGenerator();
 			genStack.push(gen);
 		}
 
 		@Override
 		public void startList(String name, DValue dval) throws Exception {
-			listTypeName = TypeInfo.parserTypeOf(dval.getType().getName());
-			listName = name;
+			StringPair pair = new StringPair();
+			pair.name = name;
+			pair.typeName = TypeInfo.parserTypeOf(dval.getType().getName());
+			nameStack.push(pair);
 			DNALGenerator gen = new DNALGenerator();
 			genStack.push(gen);
 		}
@@ -143,6 +151,7 @@ public class DNALGeneratorTests extends BaseTest {
 		@Override
 		public void endStruct(String name, DValue value) throws Exception {
 			DNALGenerator gen = genStack.pop();
+			StringPair pair = nameStack.pop();
 			StringBuilder sb = new StringBuilder();
 			int index = 0;
 			for(String s: gen.outputL) {
@@ -154,13 +163,14 @@ public class DNALGeneratorTests extends BaseTest {
 				index++;
 			}
 			
-			String str = String.format("let %s %s = {%s}", listName, listTypeName, sb.toString());
+			String str = String.format("let %s %s = {%s}", pair.name, pair.typeName, sb.toString());
 			outputL.add(str);
 		}
 
 		@Override
 		public void endList(String name, DValue value) throws Exception {
 			DNALGenerator gen = genStack.pop();
+			StringPair pair = nameStack.pop();
 			StringBuilder sb = new StringBuilder();
 			int index = 0;
 			for(String s: gen.outputL) {
@@ -172,8 +182,14 @@ public class DNALGeneratorTests extends BaseTest {
 				index++;
 			}
 			
-			String str = String.format("let %s %s = [%s]", listName, listTypeName, sb.toString());
-			outputL.add(str);
+			if (genStack.isEmpty()) {
+				String str = String.format("let %s %s = [%s]", pair.name, pair.typeName, sb.toString());
+				outputL.add(str);
+			} else {
+				String str = String.format("[%s]", sb.toString());
+				DNALGenerator parentgen = genStack.peek();
+				parentgen.outputL.add(str);
+			}
 		}
 	}
 	
@@ -195,15 +211,14 @@ public class DNALGeneratorTests extends BaseTest {
 
     @Test
     public void test1b() {
-    	//!!fix field order
         chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {name:'amy', age:33}|", 2);
     }
 
-//    @Test
-//    public void test2() {
-//        chkGen("let x list<int> = [44, 45]", "{'x':[44,45]}|");
-//        chkGen("type Z list<int> end let x list<Z> = [[44, 45],[50, 51]]",  "{'x':[[44,45],[50,51]]}|", 2);
-//    }
+    @Test
+    public void test2() {
+        chkGen("let x list<int> = [44, 45]", "let x list<int> = [44, 45]|");
+        chkGen("type Z list<int> end let x list<Z> = [[44, 45],[50, 51]]",  "let x list<Z> = [[44, 45], [50, 51]]|", 2);
+    }
 //    @Test
 //    public void test3() {
 //        chkGen("type Z struct { x int, y int } end let x Z = { 15, 20 }", "{'x':15,'y':20}|", 2);
