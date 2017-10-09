@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
@@ -70,7 +71,9 @@ public class DNALGeneratorTests extends BaseTest {
 
 	public static class DNALGenerator extends ValueGeneratorAdaptor {
 	    public List<String> outputL = new ArrayList<>();
-
+	    private String listName;
+	    private String listTypeName;
+	    private Stack<DNALGenerator> genStack = new Stack<>();
 		
 		@Override
 		public void value(String name, DValue dval, DValue parentVal) throws Exception {
@@ -106,9 +109,14 @@ public class DNALGeneratorTests extends BaseTest {
 			}
 			
 			if (s != null) {
-				String typeName = TypeInfo.parserTypeOf(dtype.getName());
-				String str = String.format("let %s %s = %s", name, typeName, s);
-				outputL.add(str);
+				if (parentVal == null) {
+					String typeName = TypeInfo.parserTypeOf(dtype.getName());
+					String str = String.format("let %s %s = %s", name, typeName, s);
+					outputL.add(str);
+				} else {
+					DNALGenerator gen = genStack.peek();
+					gen.outputL.add(s);
+				}
 			}
 			
 		}
@@ -119,6 +127,10 @@ public class DNALGeneratorTests extends BaseTest {
 
 		@Override
 		public void startList(String name, DValue value) throws Exception {
+			listTypeName = TypeInfo.parserTypeOf(value.getType().getName());
+			listName = name;
+			DNALGenerator gen = new DNALGenerator();
+			genStack.push(gen);
 		}
 
 		@Override
@@ -127,6 +139,20 @@ public class DNALGeneratorTests extends BaseTest {
 
 		@Override
 		public void endList(String name, DValue value) throws Exception {
+			DNALGenerator gen = genStack.pop();
+			StringBuilder sb = new StringBuilder();
+			int index = 0;
+			for(String s: gen.outputL) {
+				if (index > 0) {
+					sb.append(',');
+					sb.append(' ');
+				}
+				sb.append(s);
+				index++;
+			}
+			
+			String str = String.format("let %s %s = [%s]", listName, listTypeName, sb.toString());
+			outputL.add(str);
 		}
 
 	}
@@ -140,6 +166,7 @@ public class DNALGeneratorTests extends BaseTest {
 	    chkGen("let x number = 3.14",  "let x number = 3.14|");
 	    chkGen("let x string = 'abc def'",  "let x string = 'abc def'|");
 		chkGen("let x date = '2017'",  "let x date = 1483246800000|");
+		chkGen("let x list<int> = [44, 45]",  "let x list<int> = [44, 45]|");
 	}
     
 //    @Test
@@ -150,7 +177,6 @@ public class DNALGeneratorTests extends BaseTest {
 //	    chkGen("let x number = 3.14",  "{'x':3.14}|");
 //	    chkGen("let x string = 'abc def'",  "{'x':'abc def'}|");
 //		chkGen("let x date = '2017'",  "{'x':1483246800000}|");
-//		chkGen("let x list<int> = [44, 45]",  "{'x':[44,45]}|");
 //	}
 //    @Test
 //    public void test1a() {
