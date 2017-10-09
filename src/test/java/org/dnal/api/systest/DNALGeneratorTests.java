@@ -7,7 +7,8 @@ import java.util.List;
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.DataSetImpl;
 import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.DNALGenerator;
+import org.dnal.compiler.generate.DNALValueVisitor;
+import org.dnal.compiler.generate.JSONValueVisitor;
 import org.dnal.compiler.generate.ValueGeneratorVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -45,10 +46,21 @@ public class DNALGeneratorTests extends SysTestBase {
     	DValue dval = ds.getValue("x");
     	assertEquals(14, dval.asInt());
     	ValueRenderer renderer = new ValueRenderer();
-		DNALGenerator visitor = new DNALGenerator();
+		DNALValueVisitor visitor = new DNALValueVisitor();
     	String s = renderer.render(ds, "x", visitor);
     	assertEquals("let x Foo = 14", s);
     }
     
+    @Test
+    public void testJSON() {
+    	DataSet ds = load("type Foo int end let x Foo = 14", true);
+    	DValue dval = ds.getValue("x");
+    	assertEquals(14, dval.asInt());
+    	ValueRenderer renderer = new ValueRenderer();
+		JSONValueVisitor visitor = new JSONValueVisitor();
+    	String s = renderer.render(ds, "x", visitor);
+    	log(s);
+    	assertEquals("{x: 14}", s);
+    }
     
 }

@@ -6,14 +6,14 @@ import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
-public class DNALGenerator extends ValueGeneratorVisitor {
+public class DNALValueVisitor extends ValueGeneratorVisitor {
 	private static class StringPair {
 		public String name;
 		public String typeName;
 	}
 	
-    private Stack<DNALGenerator> genStack = new Stack<>();
-    private Stack<DNALGenerator.StringPair> nameStack = new Stack<>();
+    private Stack<DNALValueVisitor> genStack = new Stack<>();
+    private Stack<DNALValueVisitor.StringPair> nameStack = new Stack<>();
 	
 	@Override
 	public void value(String name, DValue dval, DValue parentVal) throws Exception {
@@ -54,11 +54,11 @@ public class DNALGenerator extends ValueGeneratorVisitor {
 				String str = String.format("let %s %s = %s", name, typeName, s);
 				outputL.add(str);
 			} else if (parentVal.getType().isStructShape()){
-				DNALGenerator gen = genStack.peek();
+				DNALValueVisitor gen = genStack.peek();
 				String str = String.format("%s:%s", name, s);
 				gen.outputL.add(str);
 			} else {
-				DNALGenerator gen = genStack.peek();
+				DNALValueVisitor gen = genStack.peek();
 				gen.outputL.add(s);
 			}
 		}
@@ -66,28 +66,28 @@ public class DNALGenerator extends ValueGeneratorVisitor {
 
 	@Override
 	public void startStruct(String name, DValue dval) throws Exception {
-		DNALGenerator.StringPair pair = new StringPair();
+		DNALValueVisitor.StringPair pair = new StringPair();
 		pair.name = name;
 		pair.typeName = TypeInfo.parserTypeOf(dval.getType().getName());
 		nameStack.push(pair);
-		DNALGenerator gen = new DNALGenerator();
+		DNALValueVisitor gen = new DNALValueVisitor();
 		genStack.push(gen);
 	}
 
 	@Override
 	public void startList(String name, DValue dval) throws Exception {
-		DNALGenerator.StringPair pair = new StringPair();
+		DNALValueVisitor.StringPair pair = new StringPair();
 		pair.name = name;
 		pair.typeName = TypeInfo.parserTypeOf(dval.getType().getName());
 		nameStack.push(pair);
-		DNALGenerator gen = new DNALGenerator();
+		DNALValueVisitor gen = new DNALValueVisitor();
 		genStack.push(gen);
 	}
 
 	@Override
 	public void endStruct(String name, DValue value) throws Exception {
-		DNALGenerator gen = genStack.pop();
-		DNALGenerator.StringPair pair = nameStack.pop();
+		DNALValueVisitor gen = genStack.pop();
+		DNALValueVisitor.StringPair pair = nameStack.pop();
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
 		for(String s: gen.outputL) {
@@ -104,15 +104,15 @@ public class DNALGenerator extends ValueGeneratorVisitor {
 			outputL.add(str);
 		} else {
 			String str = String.format("{%s}", sb.toString());
-			DNALGenerator parentgen = genStack.peek();
+			DNALValueVisitor parentgen = genStack.peek();
 			parentgen.outputL.add(str);
 		}
 	}
 
 	@Override
 	public void endList(String name, DValue value) throws Exception {
-		DNALGenerator gen = genStack.pop();
-		DNALGenerator.StringPair pair = nameStack.pop();
+		DNALValueVisitor gen = genStack.pop();
+		DNALValueVisitor.StringPair pair = nameStack.pop();
 		StringBuilder sb = new StringBuilder();
 		int index = 0;
 		for(String s: gen.outputL) {
@@ -129,7 +129,7 @@ public class DNALGenerator extends ValueGeneratorVisitor {
 			outputL.add(str);
 		} else {
 			String str = String.format("[%s]", sb.toString());
-			DNALGenerator parentgen = genStack.peek();
+			DNALValueVisitor parentgen = genStack.peek();
 			parentgen.outputL.add(str);
 		}
 	}
