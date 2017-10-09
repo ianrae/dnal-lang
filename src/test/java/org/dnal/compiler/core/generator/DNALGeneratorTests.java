@@ -12,6 +12,7 @@ import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -77,12 +78,13 @@ public class DNALGeneratorTests extends BaseTest {
 				return;
 			}
 			String s = null;
-			switch(dval.getType().getShape()) {
+			DType dtype = dval.getType();
+			switch(dtype.getShape()) {
 			case BOOLEAN:
 				s = Boolean.valueOf(dval.asBoolean()).toString();
 				break;
 			case DATE:
-				s = dval.asDate().toString();
+				s = Long.valueOf(dval.asDate().getTime()).toString();
 				break;
 			case ENUM:
 				s = dval.toString();
@@ -97,14 +99,15 @@ public class DNALGeneratorTests extends BaseTest {
 				s = Double.valueOf(dval.asNumber()).toString();
 				break;
 			case STRING:
-				s = dval.asString();
+				s = String.format("'%s'", dval.asString());
 				break;
 			default:
 				break;
 			}
 			
 			if (s != null) {
-				String str = String.format("let %s %s = %s", name, dval.getType().getName(), s);
+				String typeName = TypeInfo.parserTypeOf(dtype.getName());
+				String str = String.format("let %s %s = %s", name, typeName, s);
 				outputL.add(str);
 			}
 			
@@ -132,8 +135,12 @@ public class DNALGeneratorTests extends BaseTest {
     @Test
 	public void test() {
 	    chkGen("type Foo boolean end let x Foo = false",  "let x Foo = false|", 2);
+	    chkGen("let x int = 44",  "let x int = 44|");
+	    chkGen("let x long = 555666",  "let x long = 555666|");
+	    chkGen("let x number = 3.14",  "let x number = 3.14|");
+	    chkGen("let x string = 'abc def'",  "let x string = 'abc def'|");
+		chkGen("let x date = '2017'",  "let x date = 1483246800000|");
 	}
-	
     
 //    @Test
 //	public void test1() {
@@ -186,12 +193,8 @@ public class DNALGeneratorTests extends BaseTest {
 		String output = flatten(visitor.outputL);
 		log("output: " + output);
 		
-		String expectedJSON = fix(expectedOutput);
-		assertEquals(expectedJSON, output);
+		assertEquals(expectedOutput, output);
 	}
-    private String fix(String jsonstr) {
-        return jsonstr.replace("'", "\"");
-    }
 
 	private ASTToDNALGenerator parseAndGenDVals(String input, int expectedSize) {
 		log("doing: " + input);
