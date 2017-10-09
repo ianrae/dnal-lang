@@ -120,6 +120,27 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 //          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));
             visitor.value(valueName, dval, parentVal);
         }
-
     }
+    
+    /**
+     * Output a single dval
+     * @param visitor
+     * @param dval
+     * @return
+     */
+    public boolean generate(OutputGenerator visitor, String varName, DValue dval) {
+        boolean b = false;
+        try {
+            b = doGenerateSingle(visitor, varName, dval);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public boolean doGenerateSingle(OutputGenerator visitor, String varName, DValue dval) throws Exception {
+    	doval(visitor, 0, varName, dval, null);
+        return areNoErrors();
+    }
+    
 }

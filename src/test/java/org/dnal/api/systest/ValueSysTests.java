@@ -1,8 +1,5 @@
 package org.dnal.api.systest;
 
-import static org.junit.Assert.assertEquals;
-
-import org.dnal.core.DValue;
 import org.junit.Test;
 
 public class ValueSysTests extends SysTestBase {
