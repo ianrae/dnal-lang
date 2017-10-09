@@ -9,7 +9,7 @@ import org.dnal.api.DataSet;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.OuputGenerator;
+import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.impoter.DefaultImportLoader;
 import org.dnal.compiler.impoter.ImportLoader;
 import org.dnal.compiler.impoter.MockImportLoader;
@@ -68,7 +68,7 @@ public class CompilerImpl implements DNALCompiler {
         return compile(path, null);
     }
     @Override
-    public DataSet compile(String path, OuputGenerator visitor) {
+    public DataSet compile(String path, OutputGenerator visitor) {
         getContext();
         context.perf.startTimer("compile");
         SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
@@ -84,7 +84,7 @@ public class CompilerImpl implements DNALCompiler {
         return compileString(input, null);
     }
     @Override
-    public DataSet compileString(String input, OuputGenerator visitor) {
+    public DataSet compileString(String input, OutputGenerator visitor) {
         getContext();
         context.perf.startTimer("compile-string");
         SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());
@@ -111,7 +111,7 @@ public class CompilerImpl implements DNALCompiler {
 	}
 
 	@Override
-	public DataSet compile(InputStream stream, OuputGenerator visitor) {
+	public DataSet compile(InputStream stream, OutputGenerator visitor) {
         getContext();
         context.perf.startTimer("compile");
         SourceCompiler inner = new SourceCompiler(world, registry, crf, et, getContext());

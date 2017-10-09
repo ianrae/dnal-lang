@@ -9,7 +9,7 @@ import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.codegen.java.JavaCodeGen;
 import org.dnal.compiler.dnalgenerate.RuleFactory;
-import org.dnal.compiler.generate.OuputGenerator;
+import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
@@ -29,7 +29,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		private ConfigFileLoader configLoader;
 		private boolean wasSuccessful = true;
 		private boolean debug = false;
-		private Map<String,OuputGenerator> generatorMap = new HashMap<>();
+		private Map<String,OutputGenerator> generatorMap = new HashMap<>();
 		private ConfigFileOptions configFileOptions;
 		
 		public Application(ConfigFileLoader configLoader) {
@@ -37,7 +37,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 			Log.useSLFLogging = false;
 		}
 		
-		public void registerGenerator(String outputType, OuputGenerator visitor) {
+		public void registerGenerator(String outputType, OutputGenerator visitor) {
 		    generatorMap.put(outputType, visitor);
 		}
 		
@@ -77,7 +77,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 			registerGenerator("json", new JSONGenerator());
 			
 		    String outputType = cmd.outputType;
-		    OuputGenerator visitor = generatorMap.get(outputType);
+		    OutputGenerator visitor = generatorMap.get(outputType);
 		    if (visitor == null) {
                 log(String.format("no generator for outputType '%s'", outputType));
                 return;
@@ -86,7 +86,7 @@ import org.dnal.dnalc.cmdline.VersionCommand;
 		    visitor.setOptions(configFileOptions);
 			doIt(cmd.srcPath, visitor, cmd.customRulePackages, cmd.perfSummaryEnabled);
 		}
-        private void doIt(String srcPath, OuputGenerator visitor, List<String> customRulePackages, boolean perfSummaryEnabled) {
+        private void doIt(String srcPath, OutputGenerator visitor, List<String> customRulePackages, boolean perfSummaryEnabled) {
             DNALCompiler compiler = new CompilerImpl();
 //            compiler.getCompilerOptions().useMockImportLoader(true); //!!
             addCustomRules(compiler, customRulePackages);

@@ -1,9 +1,10 @@
-package org.dnal.compiler.core;
+package org.dnal.compiler.core.generator;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.json.JSONGenerator;
