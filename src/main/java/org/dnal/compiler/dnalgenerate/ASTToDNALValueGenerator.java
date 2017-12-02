@@ -232,6 +232,38 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
             }
             break;
+            case LIST:
+            {
+            	String refVarName = null;
+            	if (assignExp.value instanceof IdentExp) {
+            		IdentExp tmp = (IdentExp) assignExp.value;
+            		refVarName = tmp.name();
+            	} else if (assignExp.value instanceof StructMemberAssignExp) {
+            		StructMemberAssignExp tmp = (StructMemberAssignExp) assignExp.value;
+//            		refVarName = tmp.value.strValue();
+            		if (tmp.value instanceof ListAssignExp) {
+                    	String typeName = assignExp.type.name();
+                    	if (packageHelper.findRegisteredType(typeName) instanceof DListType) {
+                    		DListType listType = (DListType) packageHelper.findRegisteredType(typeName);
+                    		resultVal = buildListValue((ListAssignExp)tmp.value, listType.getName());
+                    	}            			
+            		}
+            	} else {
+                    FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
+                    if (referencedValue == null) {
+                        this.addError2s("cannot resolve reference to '%s'", refVarName, "");
+                        return null;
+                    } else {
+                    	DValue dd = world.findTopLevelValue(refVarName);
+                    	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
+                            this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
+                            return null;
+                    	}
+                    	resultVal = dd;
+                    }
+            	}
+            }
+            break;
             
             //				case LIST:
             //					break;

@@ -2,6 +2,8 @@ package org.dnal.core.map;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.impl.DataSetImpl;
@@ -98,7 +100,30 @@ public class MapTests extends SysTestBase {
 		Integer n1 = mapDVal.asMap().get("x").asInt();
 		assertEquals(33, n1.intValue());
 		Integer n2 = mapDVal.asMap().get("y").asInt();
-		assertEquals(33, n1.intValue());
+		assertEquals(34, n2.intValue());
+	}
+	@Test
+	public void testValueParseBoolean() {
+		DValue mapDVal = compileSingleMapValue("type SizeMap map<boolean> end let z SizeMap = { x:false, y:true }", "z");
+		Boolean n1 = mapDVal.asMap().get("x").asBoolean();
+		assertEquals(false, n1.booleanValue());
+		Boolean n2 = mapDVal.asMap().get("y").asBoolean();
+		assertEquals(true, n2.booleanValue());
+	}
+	@Test
+	public void testValueParseString() {
+		DValue mapDVal = compileSingleMapValue("type SizeMap map<string> end let z SizeMap = { x:'abc' }", "z");
+		String s = mapDVal.asMap().get("x").asString();
+		assertEquals("abc", s);
+	}
+	@Test
+	public void testValueParseList() {
+		String src1 = "type NameList list<string> end ";
+		DValue mapDVal = compileSingleMapValue(src1 + "type SizeMap map<NameList> end let z SizeMap = { x:['abc','def'] }", "z");
+		List<DValue> list = mapDVal.asMap().get("x").asList();
+		assertEquals(2, list.size());
+		assertEquals("abc", list.get(0).asString());
+		assertEquals("def", list.get(1).asString());
 	}
 
 	//---
@@ -107,5 +132,15 @@ public class MapTests extends SysTestBase {
 		DataSet ds = this.dataSetLoaded;
 		assertEquals(0, ds.size());
 		return ds;
+	}
+	
+	private DValue compileSingleMapValue(String source, String varName) {
+		this.load(source, true);
+		DataSet ds = dataSetLoaded;
+		Transaction trans = ds.createTransaction();
+		
+		assertEquals(1, ds.size());
+		DValue mapDVal = ds.getValue(varName);
+		return mapDVal;
 	}
 }
