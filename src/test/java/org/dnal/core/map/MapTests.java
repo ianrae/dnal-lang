@@ -30,7 +30,6 @@ public class MapTests extends SysTestBase {
 		assertEquals(1, ds.size());
 	}
 	
-	
 	@Test
 	public void test() {
 		DataSet ds = createEmptyDataSet();
@@ -44,6 +43,31 @@ public class MapTests extends SysTestBase {
 		DType elType = dsimpl.getInternals().getRegistry().getType(BuiltInTypes.INTEGER_SHAPE);
 		DMapType mapType = new DMapType(Shape.MAP, "SizeMap", null, elType);
 		dsimpl.getInternals().getRegistry().add("SizeMap", mapType);
+		
+		MapBuilder mapBuilder = trans.createMapBuilder("SizeMap");
+		mapBuilder.addElement("key1", dval);
+		mapBuilder.addElement("key2", builder.buildFrom(34));
+		DValue mapDVal = mapBuilder.finish();
+		
+		trans.add("z", mapDVal);
+		boolean b = trans.commit();
+		assertEquals(true, b);
+		assertEquals(1, ds.size());
+
+		Integer n1 = mapDVal.asMap().get("key1").asInt();
+		assertEquals(33, n1.intValue());
+		Integer n2 = mapDVal.asMap().get("key2").asInt();
+		assertEquals(33, n1.intValue());
+	}
+	
+	@Test
+	public void test2() {
+		this.load("type SizeMap map<int> end", true);
+		DataSet ds = dataSetLoaded;
+		Transaction trans = ds.createTransaction();
+		
+		IntBuilder builder = trans.createIntBuilder();
+		DValue dval = builder.buildFrom(33);
 		
 		MapBuilder mapBuilder = trans.createMapBuilder("SizeMap");
 		mapBuilder.addElement("key1", dval);

@@ -15,6 +15,7 @@ import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.ListAssignExp;
 import org.dnal.compiler.parser.ast.LongExp;
+import org.dnal.compiler.parser.ast.MapAssignExp;
 import org.dnal.compiler.parser.ast.NumberExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.ast.StructAssignExp;
@@ -137,6 +138,7 @@ public class VarParser {
 				});
 	}
 
+	
 	public static final Parser.Reference<Exp> structmemberRef = Parser.newReference();
 	public static Parser<StructAssignExp> structvalueassign() {
 		return Parsers.between(term("{"), 
@@ -269,9 +271,14 @@ public class VarParser {
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
 		new IdentExp(String.format("list<%s>", elementType.name())));
 	}
+	public static Parser<IdentExp> mapangle() {
+		return Parsers.sequence(term("map"), term("<"), VarParser.ident(), term(">"),
+				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
+		new IdentExp(String.format("map<%s>", elementType.name())));
+	}
 	
 	public static Parser<IdentExp> typeOrListType() {
-		return Parsers.or(listangle(), ident());
+		return Parsers.or(listangle(), mapangle(), ident());
 	}
 	
 	//let x list<string> = [ ]
