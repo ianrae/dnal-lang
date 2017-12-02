@@ -16,7 +16,7 @@ import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public class SimpleFormatOutputGenerator implements OuputGenerator {
+public class SimpleFormatOutputGenerator implements OutputGenerator {
     private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     
     public List<String> outputL = new ArrayList<>();

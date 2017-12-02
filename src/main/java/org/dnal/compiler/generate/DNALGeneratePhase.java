@@ -25,7 +25,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         this.world = world;
     }
     
-    public boolean generate(OuputGenerator visitor) {
+    public boolean generate(OutputGenerator visitor) {
         boolean b = false;
         try {
             b = doGenerate(visitor);
@@ -35,7 +35,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         return b;
     }
 
-    public boolean doGenerate(OuputGenerator visitor) throws Exception {
+    public boolean doGenerate(OutputGenerator visitor) throws Exception {
         List<DType> orderedTypeList = registry.getOrderedList();
 
         for(DType dtype: orderedTypeList) {
@@ -83,11 +83,11 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
         return areNoErrors();
     }
-    private void doList(OuputGenerator visitor, DListType listType)  throws Exception {
+    private void doList(OutputGenerator visitor, DListType listType)  throws Exception {
         visitor.startListType(listType.getName(), listType);
     }
 
-    private void doval(OuputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
+    private void doval(OutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
 
         if (dval == null) {
             //optional field
@@ -98,7 +98,8 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
             DStructHelper helper = new DStructHelper(dval);
 
             int index = 0;
-            for(String fieldName : helper.getFieldNames()) {
+            DStructType structType = (DStructType) dval.getType();
+            for(String fieldName : structType.orderedList()) {
                 DValue inner = helper.getField(fieldName);
                 doval(visitor, indent+1, fieldName, inner, dval); //!recursion!
                 index++;
@@ -119,6 +120,27 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 //          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));
             visitor.value(valueName, dval, parentVal);
         }
-
     }
+    
+    /**
+     * Output a single dval
+     * @param visitor
+     * @param dval
+     * @return
+     */
+    public boolean generate(OutputGenerator visitor, String varName, DValue dval) {
+        boolean b = false;
+        try {
+            b = doGenerateSingle(visitor, varName, dval);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return b;
+    }
+
+    public boolean doGenerateSingle(OutputGenerator visitor, String varName, DValue dval) throws Exception {
+    	doval(visitor, 0, varName, dval, null);
+        return areNoErrors();
+    }
+    
 }

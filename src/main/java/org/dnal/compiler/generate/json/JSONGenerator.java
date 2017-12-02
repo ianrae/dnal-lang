@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dnal.compiler.generate.OuputGenerator;
+import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -18,7 +18,7 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JSONGenerator implements OuputGenerator {
+public class JSONGenerator implements OutputGenerator {
     ObjectMapper mapper = new ObjectMapper();
     public List<String> outputL = new ArrayList<>();
     private Stack<String> shapeStack = new Stack<>();

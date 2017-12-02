@@ -123,7 +123,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 IntBuilder builder = factory.createIntegerBuilder(dtype);
                 IntegerExp tmp = (IntegerExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val); 
+                }
             }
             break;
             case LONG:
@@ -145,7 +147,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 NumberBuilder builder = factory.createNumberBuilder(dtype);
                 NumberExp tmp = (NumberExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val);
+                }
             }
             break;
             case DATE:
@@ -160,14 +164,18 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 BooleanBuilder builder = factory.createBooleanBuilder(dtype);
                 BooleanExp tmp = (BooleanExp) resolveRHS(assignExp);
-                resultVal = builder.buildFrom(tmp.val);
+                if (tmp != null) {
+                	resultVal = builder.buildFrom(tmp.val);
+                }
             }
             break;
             case STRING:
             {
                 StringBuilder builder = factory.createStringBuilder(dtype);
                 StringExp tmp = (StringExp) resolveRHS(assignExp);
-                resultVal = builder.buildFromString(tmp.val); 
+                if (tmp != null) {
+                	resultVal = builder.buildFromString(tmp.val);
+                }
             }
             break;
             case ENUM:
@@ -191,6 +199,31 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 resultVal = builder.buildFromString(tmp.name()); 
             }
             break;
+            case STRUCT:
+            {
+            	String refVarName = null;
+            	if (assignExp.value instanceof IdentExp) {
+            		IdentExp tmp = (IdentExp) assignExp.value;
+            		refVarName = tmp.name();
+            	} else if (assignExp.value instanceof StructMemberAssignExp) {
+            		StructMemberAssignExp tmp = (StructMemberAssignExp) assignExp.value;
+            		refVarName = tmp.value.strValue();
+            	}
+                FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
+                if (referencedValue == null) {
+                    this.addError2s("cannot resolve reference to '%s'", refVarName, "");
+                    return null;
+                } else {
+                	DValue dd = world.findTopLevelValue(refVarName);
+                	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
+                        this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
+                        return null;
+                	}
+                	resultVal = dd;
+                }
+            }
+            break;
+            
             //				case LIST:
             //					break;
 
@@ -374,6 +407,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         } else if (typeExp.value instanceof IdentExp) {
             IdentExp tmp = (IdentExp) typeExp.value;
             FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
+            if (referencedValue == null) {
+                this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                return null;
+            }
             return resolveRHS(referencedValue); //recursion
         } else if (typeExp.value instanceof StructMemberAssignExp) {
             StructMemberAssignExp tmp = (StructMemberAssignExp) typeExp.value;
