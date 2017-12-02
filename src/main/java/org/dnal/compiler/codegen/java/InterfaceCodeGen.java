@@ -2,8 +2,10 @@ package org.dnal.compiler.codegen.java;
 
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
+import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
@@ -75,4 +77,19 @@ public class InterfaceCodeGen extends CodeGenBase {
             Log.log(s);
         }
     }
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }

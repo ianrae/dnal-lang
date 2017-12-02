@@ -5,10 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -22,7 +22,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
     public List<String> outputL = new ArrayList<>();
     private int inList; //0 means no
     private int inStruct; //0 means no
-//    private Stack<String> shapeStack = new Stack<>();
+    private int inMap; //0 means no
     
     @Override
     public void startStructType(String name, DStructType dtype) {
@@ -96,8 +96,10 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
             return "";
         } else if (parentVal.getType().isStructShape()) {
             return "S";
-        } else if (parentVal.getType().isShape(Shape.LIST)) {
+        } else if (parentVal.getType().isListShape()) {
             return "L";
+        } else if (parentVal.getType().isMapShape()) {
+            return "M";
         } else {
             return "";
         }
@@ -113,7 +115,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
         if (shape.equals("L")) {
             String strValue = DValToString(dval);
             s = String.format("%s%s", space, strValue);
-        } else if (shape.equals("S")) {
+        } else if (shape.equals("S") || shape.equals("M")) {
             String strValue = DValToString(dval);
             s = String.format("%sv%s:%s", space, name, strValue);
         } else {
@@ -189,5 +191,24 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
     }
 	@Override
 	public void setOptions(ConfigFileOptions configFileOptions) {
+	}
+
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+        String elType = getTypeName(type.getElementType());
+        String baseTypeName = (type.getBaseType() == null) ? String.format("map<%s>", elType) : type.getBaseType().getName();
+        String s = String.format("type:%s:%s", name, baseTypeName);
+        outputL.add(s);
+	}
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+        String s = String.format("value:%s:%s {", name, getTypeName(value.getType()));
+        outputL.add(s);
+        inMap++;
+	}
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+        outputL.add("]");
+        inMap--;
 	}
 }

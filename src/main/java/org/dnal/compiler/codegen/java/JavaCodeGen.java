@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
+import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
@@ -80,5 +82,23 @@ public class JavaCodeGen extends CodeGenBase {
         for(OutputGenerator visitor: list) {
             visitor.setOptions(configFileOptions);
         }
+	}
+
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

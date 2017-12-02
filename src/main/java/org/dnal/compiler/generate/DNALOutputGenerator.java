@@ -211,4 +211,9 @@ public class DNALOutputGenerator implements OutputGenerator {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 }
