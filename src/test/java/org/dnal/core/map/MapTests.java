@@ -85,6 +85,8 @@ public class MapTests extends SysTestBase {
 		assertEquals(33, n1.intValue());
 	}
 	
+	//maps are limited. key is string. all values must be same type.
+	//perhaps later support map<any>
 	@Test
 	public void testValueParse() {
 		this.load("type SizeMap map<int> end let z SizeMap = { x:33, y:34 }", true);
@@ -97,7 +99,6 @@ public class MapTests extends SysTestBase {
 		assertEquals(33, n1.intValue());
 		Integer n2 = mapDVal.asMap().get("y").asInt();
 		assertEquals(33, n1.intValue());
-		
 	}
 
 	//---

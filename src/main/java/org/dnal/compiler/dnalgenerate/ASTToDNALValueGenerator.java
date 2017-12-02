@@ -590,64 +590,47 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         int index = 0;
 
         for(Exp exp: structExp.list) {
-        	if (exp instanceof StructMemberAssignExp) {
-        		StructMemberAssignExp smae = (StructMemberAssignExp) exp;
-        		String key = smae.var.name();
-        		String value = smae.value.strValue();
-        		
-        		IntBuilder elbuilder = factory.createIntegerBuilder(dtype.getElementType());
-        		DValue dvalinner= elbuilder.buildFromString(value);
-        		builder.addElement(key, dvalinner);
-        	} else {
-        		addError2s("invalid map element: %s: %s", new Integer(index).toString(), exp.strValue());
-        	}
-        	
-//            if (index >= pairList.size()) {
-//                addError2s("missing field: %s: %s", new Integer(index).toString(), exp.strValue());
-//            } else {
-//                String fieldName = pairList.get(index).name;
+                String fieldName = null;
 //                String fieldType = TypeInfo.parserTypeOf(pairList.get(index).type.getName());
-//
-//                ViaExp via = null;
-//                boolean isNull = false;
-//                if (exp instanceof ViaExp) {
+
+                ViaExp via = null;
+                boolean isNull = false;
+                if (exp instanceof ViaExp) {
 //                    via = (ViaExp) exp;
 //                    viaHelper.adjustTypeIfNeeded((ViaExp)exp, dtype, fieldName);
-//                } else if (exp instanceof ListAssignExp) {
+            		addError2s("invalid map element: %s: %s", new Integer(index).toString(), "via not allowed");
+                } else if (exp instanceof ListAssignExp) {
 //                    viaHelper.adjustListTypeIfNeeded((ListAssignExp)exp, dtype, fieldName);
-//                } else if (exp instanceof IdentExp) {
-//                    isNull = exp.strValue().equals("null");
-//                } else if (exp instanceof StructMemberAssignExp) {
-//                    StructMemberAssignExp smae = (StructMemberAssignExp) exp;
-//                    if (smae.value.strValue().equals("null")) {
-//                        isNull = true;
-//                    }
-//                }
-//
-//                if (isNull) {
-//                    if (dtype.fieldIsOptional(fieldName)) {
-//                        DValue member = null;
-//                        builder.addField(fieldName, member);
-//                    } else {
-////                        addError2s("can't assign null unless field is optional: %s%s", fieldName, "");
-//                    }
-//                } else {
-//                    FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
-//                            new IdentExp(fieldType), 
-//                            exp);
-//                    DValue member = this.buildValue(tmp);
-//                    
-//                    if (via != null && via.extraViaExp != null) {
+                	addError2s("invalid map element: %s: %s", new Integer(index).toString(), "list not allowed");
+                } else if (exp instanceof IdentExp) {
+                    isNull = exp.strValue().equals("null");
+                } else if (exp instanceof StructMemberAssignExp) {
+                    StructMemberAssignExp smae = (StructMemberAssignExp) exp;
+                    if (smae.value.strValue().equals("null")) {
+                        isNull = true;
+                    }
+            		fieldName = smae.var.name();
+                }
+
+                if (isNull) {
+                	addError2s("invalid map element: %s: %s", new Integer(index).toString(), "null not allowed");
+                } else {
+                	String elTypeName = TypeInfo.parserTypeOf(dtype.getElementType().getName());
+                    FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
+                            new IdentExp(elTypeName), 
+                            exp);
+                    DValue member = this.buildValue(tmp);
+                    
+                    if (via != null && via.extraViaExp != null) {
 //                        DStructHelper h3 = new DStructHelper(member);
 //                        DValue j3 = h3.getField(via.extraViaExp.fieldExp.name());
 //                        builder.addField(fieldName, j3);
-//                    } else {
-//                        builder.addField(fieldName, member);
-//                    }
-//                }
-//                //if is StructMemberAssignExp then use name to find struct member
-//                //				FullAssignmentExp fullExp = null; //new FullAssignmentExp(varname, typename, val);
-//            }
+                    } else {
+                        builder.addElement(fieldName, member);
+                    }
+                }
+                //if is StructMemberAssignExp then use name to find struct member
+                //				FullAssignmentExp fullExp = null; //new FullAssignmentExp(varname, typename, val);
             index++;
         }
 
