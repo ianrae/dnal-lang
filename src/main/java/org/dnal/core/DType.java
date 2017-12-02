@@ -29,6 +29,7 @@ public class DType {
 		switch(shape) {
 		case LIST:
 		case STRUCT:
+		case MAP:
 			return false;
 		default:
 			return true;
@@ -49,6 +50,9 @@ public class DType {
 	}
     public boolean isListShape() {
         return shape == Shape.LIST;
+    }
+    public boolean isMapShape() {
+        return shape == Shape.MAP;
     }
 
 	public Shape getShape() {

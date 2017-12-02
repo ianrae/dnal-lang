@@ -5,7 +5,7 @@ import java.util.List;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XEnumValueBuilder;
+import org.dnal.core.xbuilder.XEnumValueBuilder;
 
 
 public class EnumBuilder extends Builder {

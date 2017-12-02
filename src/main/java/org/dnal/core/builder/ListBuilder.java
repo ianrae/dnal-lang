@@ -5,7 +5,7 @@ import java.util.List;
 import org.dnal.core.DListType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
 
 
 public class ListBuilder extends Builder {

@@ -1,4 +1,4 @@
-package org.dnal.core.oldbuilder;
+package org.dnal.core.xbuilder;
 
 import java.util.Date;
 

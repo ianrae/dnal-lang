@@ -1,14 +1,14 @@
-package org.dnal.core.oldbuilder;
+package org.dnal.core.xbuilder;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 
-public class XNumberValueBuilder extends XDValueBuilder {
-    public XNumberValueBuilder(DType type) {
-        if (!type.isShape(Shape.NUMBER)) {
-            addWrongTypeError("expecting number");
+public class XLongValueBuilder extends XDValueBuilder {
+    public XLongValueBuilder(DType type) {
+        if (!type.isShape(Shape.LONG)) {
+            addWrongTypeError("expecting long");
             return;
         }
         this.type = type;
@@ -20,15 +20,15 @@ public class XNumberValueBuilder extends XDValueBuilder {
             return;
         }
 
-        Double nval = null;
+        Long nval = null;
         try {
-            nval = Double.parseDouble(input);
+            nval = Long.parseLong(input);
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
-            addParsingError(String.format("'%s' is not an number", input));
+            addParsingError(String.format("'%s' is not an integer", input));
         }
     }
-    public void buildFrom(Double lval) {
+    public void buildFrom(Long lval) {
         if (lval == null) {
             addNoDataError("no data");
             return;

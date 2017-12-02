@@ -6,7 +6,7 @@ import java.util.List;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XDateValueBuilder;
+import org.dnal.core.xbuilder.XDateValueBuilder;
 
 
 public class DateBuilder extends Builder {

@@ -13,7 +13,7 @@ import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.nrule.virtual.VirtualString;
 import org.dnal.core.nrule.virtual.VirtualStringMember;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

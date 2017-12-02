@@ -10,11 +10,11 @@ import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.TypePair;
-import org.dnal.core.oldbuilder.XBuilderFactory;
-import org.dnal.core.oldbuilder.XDValueBuilder;
-import org.dnal.core.oldbuilder.XDateValueBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XBuilderFactory;
+import org.dnal.core.xbuilder.XDValueBuilder;
+import org.dnal.core.xbuilder.XDateValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 
 public class StructBuilder extends Builder {
 	private DStructType structType;

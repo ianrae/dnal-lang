@@ -7,8 +7,8 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.OrderedMap;
 import org.dnal.core.Shape;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
 import org.dnal.core.repository.World;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 
 public class PersonHelper extends BaseDValTest {
 	

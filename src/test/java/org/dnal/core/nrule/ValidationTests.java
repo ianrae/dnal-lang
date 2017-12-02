@@ -22,8 +22,8 @@ import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.nrule.virtual.VirtualInt;
 import org.dnal.core.nrule.virtual.VirtualList;
 import org.dnal.core.nrule.virtual.VirtualString;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class ValidationTests extends BaseDValTest {

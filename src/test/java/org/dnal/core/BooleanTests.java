@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.dnal.core.fluent.type.TypeBuilder;
-import org.dnal.core.oldbuilder.XBooleanValueBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XBooleanValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class BooleanTests extends BaseDValTest {

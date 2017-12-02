@@ -5,7 +5,7 @@ import java.util.List;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XBooleanValueBuilder;
+import org.dnal.core.xbuilder.XBooleanValueBuilder;
 
 public class BooleanBuilder extends Builder {
     private XBooleanValueBuilder builder;

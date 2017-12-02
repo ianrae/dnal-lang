@@ -11,9 +11,9 @@ import org.dnal.compiler.parser.ast.FullEnumTypeExp;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.fluent.type.TypeBuilder.Inner;
-import org.dnal.core.oldbuilder.XEnumValueBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XEnumValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class EnumTests extends BaseDValTest {
