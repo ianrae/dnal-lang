@@ -1,8 +1,10 @@
 package org.dnal.compiler.generate;
 
 import java.util.Stack;
+import java.util.StringJoiner;
 
 import org.dnal.compiler.parser.error.TypeInfo;
+import org.dnal.core.DMapType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
@@ -129,6 +131,35 @@ public class DNALValueVisitor extends ValueGeneratorVisitor {
 			outputL.add(str);
 		} else {
 			String str = String.format("[%s]", sb.toString());
+			DNALValueVisitor parentgen = genStack.peek();
+			parentgen.outputL.add(str);
+		}
+	}
+
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+		DNALValueVisitor.StringPair pair = new StringPair();
+		pair.name = name;
+		pair.typeName = TypeInfo.parserTypeOf(value.getType().getName());
+		nameStack.push(pair);
+		DNALValueVisitor gen = new DNALValueVisitor();
+		genStack.push(gen);
+	}
+
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		DNALValueVisitor gen = genStack.pop();
+		DNALValueVisitor.StringPair pair = nameStack.pop();
+		StringJoiner joiner = new StringJoiner(", ");
+		for(String s: gen.outputL) {
+			joiner.add(s);
+		}
+		
+		if (genStack.isEmpty()) {
+			String str = String.format("let %s %s = [%s]", pair.name, pair.typeName, joiner.toString());
+			outputL.add(str);
+		} else {
+			String str = String.format("[%s]", joiner.toString());
 			DNALValueVisitor parentgen = genStack.peek();
 			parentgen.outputL.add(str);
 		}
