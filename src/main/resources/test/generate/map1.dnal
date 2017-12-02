@@ -1,0 +1,6 @@
+type X map<int> 
+ end
+
+let x X = {  x:33, y:34 }
+  
+

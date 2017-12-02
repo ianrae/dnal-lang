@@ -57,7 +57,7 @@ public class JSONValueGeneratorTests extends BaseTest {
     }
     @Test
     public void test5() {
-        String s = "{x:33, y:34}|";
+        String s = "{z: {x:33, y:34}}|";
         String src = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
         chkGen(src, s, 2);
     }

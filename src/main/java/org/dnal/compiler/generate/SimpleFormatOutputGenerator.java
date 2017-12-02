@@ -12,7 +12,6 @@ import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
@@ -107,7 +106,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
     @Override
     public void value(String name, DValue dval, DValue parentVal) {
         String s;
-        String space = genIndent(inList + inStruct);
+        String space = genIndent(inList + inStruct + inMap);
         
 //        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
         String shape = getShapeCode(parentVal);
@@ -208,7 +207,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
 	}
 	@Override
 	public void endMap(String name, DValue value) throws Exception {
-        outputL.add("]");
+        outputL.add("}");
         inMap--;
 	}
 }
