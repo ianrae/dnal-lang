@@ -84,7 +84,7 @@ public class MapTests extends SysTestBase {
 		Integer n1 = mapDVal.asMap().get("key1").asInt();
 		assertEquals(33, n1.intValue());
 		Integer n2 = mapDVal.asMap().get("key2").asInt();
-		assertEquals(33, n1.intValue());
+		assertEquals(34, n2.intValue());
 	}
 	
 	//maps are limited. key is string. all values must be same type.
@@ -124,6 +124,15 @@ public class MapTests extends SysTestBase {
 		assertEquals(2, list.size());
 		assertEquals("abc", list.get(0).asString());
 		assertEquals("def", list.get(1).asString());
+	}
+	@Test
+	public void testValueParseStruct() {
+		String src1 = "type Person struct { x string, y string } end ";
+		DValue mapDVal = compileSingleMapValue(src1 + "type SizeMap map<Person> end let z SizeMap = { x:{ 'aa', 'bb' } }", "z");
+		
+		DValue x = mapDVal.asMap().get("x");
+		assertEquals("aa", x.asStruct().getField("x").asString());
+		assertEquals("bb", x.asStruct().getField("y").asString());
 	}
 
 	//---

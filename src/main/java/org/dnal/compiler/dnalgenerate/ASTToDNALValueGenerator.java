@@ -38,7 +38,6 @@ import org.dnal.core.NewErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.TypePair;
 import org.dnal.core.builder.BooleanBuilder;
-import org.dnal.core.builder.Builder;
 import org.dnal.core.builder.BuilderFactory;
 import org.dnal.core.builder.DateBuilder;
 import org.dnal.core.builder.EnumBuilder;
@@ -92,7 +91,6 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             return dval;
         }
     }
-    
     
     private DValue buildValue(FullAssignmentExp assignExp) {
         String varName = assignExp.var.name();
@@ -232,42 +230,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
             }
             break;
-            case LIST:
-            {
-            	String refVarName = null;
-            	if (assignExp.value instanceof IdentExp) {
-            		IdentExp tmp = (IdentExp) assignExp.value;
-            		refVarName = tmp.name();
-            	} else if (assignExp.value instanceof StructMemberAssignExp) {
-            		StructMemberAssignExp tmp = (StructMemberAssignExp) assignExp.value;
-//            		refVarName = tmp.value.strValue();
-            		if (tmp.value instanceof ListAssignExp) {
-                    	String typeName = assignExp.type.name();
-                    	if (packageHelper.findRegisteredType(typeName) instanceof DListType) {
-                    		DListType listType = (DListType) packageHelper.findRegisteredType(typeName);
-                    		resultVal = buildListValue((ListAssignExp)tmp.value, listType.getName());
-                    	}            			
-            		}
-            	} else {
-                    FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
-                    if (referencedValue == null) {
-                        this.addError2s("cannot resolve reference to '%s'", refVarName, "");
-                        return null;
-                    } else {
-                    	DValue dd = world.findTopLevelValue(refVarName);
-                    	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
-                            this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
-                            return null;
-                    	}
-                    	resultVal = dd;
-                    }
-            	}
-            }
-            break;
             
-            //				case LIST:
-            //					break;
-
             default:
                 addError2s("var '%s' - unknown shape '%s'", varName, shape);
                 break;
@@ -651,7 +614,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                     FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
                             new IdentExp(elTypeName), 
                             exp);
-                    DValue member = this.buildValue(tmp);
+                    DValue member = this.buildMapElementValue(tmp);
                     
                     if (via != null && via.extraViaExp != null) {
 //                        DStructHelper h3 = new DStructHelper(member);
@@ -682,6 +645,28 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         //all maps should be proxy
         dval = maybeGenProxy(dval);
         return dval;
-    }    
+    }
+
+	private DValue buildMapElementValue(FullAssignmentExp tmp) {
+		if (tmp.value instanceof StructMemberAssignExp) {
+			StructMemberAssignExp smae = (StructMemberAssignExp) tmp.value;
+			String typeName = tmp.type.name();
+    		if (smae.value instanceof ListAssignExp) {
+            	if (packageHelper.findRegisteredType(typeName) instanceof DListType) {
+            		DListType listType = (DListType) packageHelper.findRegisteredType(typeName);
+            		return buildListValue((ListAssignExp)smae.value, listType.getName());
+            	}            			
+    		} else if (smae.value instanceof StructAssignExp) {
+            	if (packageHelper.findRegisteredType(typeName) instanceof DStructType) {
+                	if (packageHelper.findRegisteredType(typeName) instanceof DMapType) {
+                		return buildMapValue((StructAssignExp)smae.value, typeName);
+                	} else {
+                		return buildStructValue((StructAssignExp)smae.value, typeName);
+                	}
+            	}            			
+    		} 
+		}
+		return buildValue(tmp);
+	}    
     
 }
