@@ -156,10 +156,10 @@ public class DNALValueVisitor extends ValueGeneratorVisitor {
 		}
 		
 		if (genStack.isEmpty()) {
-			String str = String.format("let %s %s = [%s]", pair.name, pair.typeName, joiner.toString());
+			String str = String.format("let %s %s = {%s}", pair.name, pair.typeName, joiner.toString());
 			outputL.add(str);
 		} else {
-			String str = String.format("[%s]", joiner.toString());
+			String str = String.format("{%s}", joiner.toString());
 			DNALValueVisitor parentgen = genStack.peek();
 			parentgen.outputL.add(str);
 		}
