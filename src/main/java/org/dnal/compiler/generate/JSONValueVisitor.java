@@ -3,6 +3,7 @@ package org.dnal.compiler.generate;
 import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
+import org.dnal.core.DMapType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
@@ -50,7 +51,7 @@ public class JSONValueVisitor extends ValueGeneratorVisitor {
 			if (parentVal == null) {
 				String str = String.format("{%s: %s}", name, s);
 				outputL.add(str);
-			} else if (parentVal.getType().isStructShape()){
+			} else if (parentVal.getType().isStructShape() || parentVal.getType().isMapShape()){
 				JSONValueVisitor gen = genStack.peek();
 				String str = String.format("%s:%s", name, s);
 				gen.outputL.add(str);
@@ -126,6 +127,41 @@ public class JSONValueVisitor extends ValueGeneratorVisitor {
 			outputL.add(str);
 		} else {
 			String str = String.format("[%s]", sb.toString());
+			JSONValueVisitor parentgen = genStack.peek();
+			parentgen.outputL.add(str);
+		}
+	}
+
+	@Override
+	public void startMap(String name, DValue dval) throws Exception {
+		JSONValueVisitor.StringPair pair = new StringPair();
+		pair.name = name;
+		pair.typeName = TypeInfo.parserTypeOf(dval.getType().getName());
+		nameStack.push(pair);
+		JSONValueVisitor gen = new JSONValueVisitor();
+		genStack.push(gen);
+	}
+
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		JSONValueVisitor gen = genStack.pop();
+		JSONValueVisitor.StringPair pair = nameStack.pop();
+		StringBuilder sb = new StringBuilder();
+		int index = 0;
+		for(String s: gen.outputL) {
+			if (index > 0) {
+				sb.append(',');
+				sb.append(' ');
+			}
+			sb.append(s);
+			index++;
+		}
+		
+		if (genStack.isEmpty()) {
+			String str = String.format("{%s: {%s}}", pair.name, sb.toString());
+			outputL.add(str);
+		} else {
+			String str = String.format("{%s}", sb.toString());
 			JSONValueVisitor parentgen = genStack.peek();
 			parentgen.outputL.add(str);
 		}

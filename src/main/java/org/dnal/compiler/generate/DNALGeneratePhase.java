@@ -1,11 +1,13 @@
 package org.dnal.compiler.generate;
 
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -61,6 +63,9 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
             } else if (dtype instanceof DListType) {
                 DListType listType = (DListType) dtype;
                 doList(visitor, listType);
+            } else if (dtype instanceof DMapType) {
+            	DMapType mapType = (DMapType) dtype;
+                doMap(visitor, mapType);
             } else {
                 visitor.startType(dtype.getName(), dtype);
             }
@@ -83,9 +88,13 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
         return areNoErrors();
     }
-    private void doList(OutputGenerator visitor, DListType listType)  throws Exception {
+
+	private void doList(OutputGenerator visitor, DListType listType) throws Exception {
         visitor.startListType(listType.getName(), listType);
     }
+    private void doMap(OutputGenerator visitor, DMapType mapType) throws Exception {
+        visitor.startMapType(mapType.getName(), mapType);
+	}
 
     private void doval(OutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
 
@@ -105,7 +114,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
                 index++;
             }
             visitor.endStruct(valueName, dval);
-        } else if (dval.getType().isShape(Shape.LIST)) {
+        } else if (dval.getType().isListShape()) {
             visitor.startList(valueName, dval);
             List<DValue> elementL = dval.asList();
 
@@ -115,6 +124,17 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
                 index++;
             }
             visitor.endList(valueName, dval);
+        } else if (dval.getType().isMapShape()) {
+            visitor.startMap(valueName, dval);
+            Map<String,DValue> map = dval.asMap();
+
+            int index = 0;
+            for(String key: map.keySet()) {
+            	DValue el = map.get(key);            	
+                doval(visitor, indent+1, key, el, dval); //!recursion!
+                index++;
+            }
+            visitor.endMap(valueName, dval);
         } else {
 //          String shape = this.doc.getShape(valueExp.type);
 //          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));

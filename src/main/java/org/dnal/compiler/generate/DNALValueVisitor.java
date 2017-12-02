@@ -4,7 +4,6 @@ import java.util.Stack;
 import java.util.StringJoiner;
 
 import org.dnal.compiler.parser.error.TypeInfo;
-import org.dnal.core.DMapType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
@@ -55,7 +54,7 @@ public class DNALValueVisitor extends ValueGeneratorVisitor {
 				String typeName = TypeInfo.parserTypeOf(dtype.getName());
 				String str = String.format("let %s %s = %s", name, typeName, s);
 				outputL.add(str);
-			} else if (parentVal.getType().isStructShape()){
+			} else if (parentVal.getType().isStructShape() || parentVal.getType().isMapShape()){
 				DNALValueVisitor gen = genStack.peek();
 				String str = String.format("%s:%s", name, s);
 				gen.outputL.add(str);

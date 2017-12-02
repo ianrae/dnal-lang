@@ -59,7 +59,7 @@ public class DNALValueGeneratorTests extends BaseTest {
     @Test
     public void test5() {
         String s = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
-        chkGen(s, "let z SizeMap = [33, 34]|", 2);
+        chkGen(s, "let z SizeMap = {x:33, y:34}|", 2);
     }
     
     

@@ -55,6 +55,12 @@ public class JSONValueGeneratorTests extends BaseTest {
 //        String s = "{'x':{'a':100,'b':101},'y':20}|";
 //        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
     }
+    @Test
+    public void test5() {
+        String s = "{'x':33,'y':34}|";
+        String src = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
+        chkGen(src, s, 2);
+    }
 
     //------------------
 	private void chkGen(String input, String expectedOutput) {
