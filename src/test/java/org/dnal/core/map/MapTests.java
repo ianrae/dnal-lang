@@ -61,7 +61,7 @@ public class MapTests extends SysTestBase {
 	}
 	
 	@Test
-	public void test2() {
+	public void testTypeParse() {
 		this.load("type SizeMap map<int> end", true);
 		DataSet ds = dataSetLoaded;
 		Transaction trans = ds.createTransaction();
@@ -83,15 +83,26 @@ public class MapTests extends SysTestBase {
 		assertEquals(33, n1.intValue());
 		Integer n2 = mapDVal.asMap().get("key2").asInt();
 		assertEquals(33, n1.intValue());
+	}
+	
+	@Test
+	public void testValueParse() {
+		this.load("type SizeMap map<int> end let z SizeMap = { x:33, y:34 }", true);
+		DataSet ds = dataSetLoaded;
+		Transaction trans = ds.createTransaction();
+		
+		assertEquals(1, ds.size());
+		DValue mapDVal = ds.getValue("z");
+		Integer n1 = mapDVal.asMap().get("x").asInt();
+		assertEquals(33, n1.intValue());
+		Integer n2 = mapDVal.asMap().get("y").asInt();
+		assertEquals(33, n1.intValue());
 		
 	}
 
 	//---
 	private DataSet createEmptyDataSet() {
 		this.load("", true);
-//		this.load("type SizeMap map<int> { } end", true);
-//		this.load("let x int = 45", true);
-		
 		DataSet ds = this.dataSetLoaded;
 		assertEquals(0, ds.size());
 		return ds;

@@ -26,6 +26,7 @@ import org.dnal.compiler.parser.ast.ViaExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -37,12 +38,14 @@ import org.dnal.core.NewErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.TypePair;
 import org.dnal.core.builder.BooleanBuilder;
+import org.dnal.core.builder.Builder;
 import org.dnal.core.builder.BuilderFactory;
 import org.dnal.core.builder.DateBuilder;
 import org.dnal.core.builder.EnumBuilder;
 import org.dnal.core.builder.IntBuilder;
 import org.dnal.core.builder.ListBuilder;
 import org.dnal.core.builder.LongBuilder;
+import org.dnal.core.builder.MapBuilder;
 import org.dnal.core.builder.NumberBuilder;
 import org.dnal.core.builder.StringBuilder;
 import org.dnal.core.builder.StructBuilder;
@@ -59,6 +62,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     private ViaHelper viaHelper;
     private StructBuilder currentStructBuilder;
     private boolean useProxyDVals = false;
+	private MapBuilder currentMapBuilder;
 
     public ASTToDNALValueGenerator(World world, CompilerContext context, DNALDocument doc, DTypeRegistry registry, PackageHelper packageHelper) {
         super(doc, context.et);
@@ -107,7 +111,12 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
 
 
         if (assignExp.value instanceof StructAssignExp) {
-            return buildStructValue((StructAssignExp)assignExp.value, assignExp.type.name());
+        	String typeName = assignExp.type.name();
+        	if (packageHelper.findRegisteredType(typeName) instanceof DMapType) {
+        		return buildMapValue((StructAssignExp)assignExp.value, typeName);
+        	} else {
+        		return buildStructValue((StructAssignExp)assignExp.value, typeName);
+        	}
         } else if (assignExp.value instanceof ListAssignExp) {
             return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name());
         } else if (assignExp.value instanceof ViaExp) {
@@ -572,4 +581,92 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         dval = maybeGenProxy(dval);
         return dval;
     }
+    
+    private DValue buildMapValue(StructAssignExp structExp, String typeName) {
+        DMapType dtype = (DMapType) packageHelper.findRegisteredType(typeName);
+        MapBuilder builder = factory.createMapBuilder(dtype);
+        this.currentMapBuilder = builder;
+
+        int index = 0;
+
+        for(Exp exp: structExp.list) {
+        	if (exp instanceof StructMemberAssignExp) {
+        		StructMemberAssignExp smae = (StructMemberAssignExp) exp;
+        		String key = smae.var.name();
+        		String value = smae.value.strValue();
+        		
+        		IntBuilder elbuilder = factory.createIntegerBuilder(dtype.getElementType());
+        		DValue dvalinner= elbuilder.buildFromString(value);
+        		builder.addElement(key, dvalinner);
+        	} else {
+        		addError2s("invalid map element: %s: %s", new Integer(index).toString(), exp.strValue());
+        	}
+        	
+//            if (index >= pairList.size()) {
+//                addError2s("missing field: %s: %s", new Integer(index).toString(), exp.strValue());
+//            } else {
+//                String fieldName = pairList.get(index).name;
+//                String fieldType = TypeInfo.parserTypeOf(pairList.get(index).type.getName());
+//
+//                ViaExp via = null;
+//                boolean isNull = false;
+//                if (exp instanceof ViaExp) {
+//                    via = (ViaExp) exp;
+//                    viaHelper.adjustTypeIfNeeded((ViaExp)exp, dtype, fieldName);
+//                } else if (exp instanceof ListAssignExp) {
+//                    viaHelper.adjustListTypeIfNeeded((ListAssignExp)exp, dtype, fieldName);
+//                } else if (exp instanceof IdentExp) {
+//                    isNull = exp.strValue().equals("null");
+//                } else if (exp instanceof StructMemberAssignExp) {
+//                    StructMemberAssignExp smae = (StructMemberAssignExp) exp;
+//                    if (smae.value.strValue().equals("null")) {
+//                        isNull = true;
+//                    }
+//                }
+//
+//                if (isNull) {
+//                    if (dtype.fieldIsOptional(fieldName)) {
+//                        DValue member = null;
+//                        builder.addField(fieldName, member);
+//                    } else {
+////                        addError2s("can't assign null unless field is optional: %s%s", fieldName, "");
+//                    }
+//                } else {
+//                    FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
+//                            new IdentExp(fieldType), 
+//                            exp);
+//                    DValue member = this.buildValue(tmp);
+//                    
+//                    if (via != null && via.extraViaExp != null) {
+//                        DStructHelper h3 = new DStructHelper(member);
+//                        DValue j3 = h3.getField(via.extraViaExp.fieldExp.name());
+//                        builder.addField(fieldName, j3);
+//                    } else {
+//                        builder.addField(fieldName, member);
+//                    }
+//                }
+//                //if is StructMemberAssignExp then use name to find struct member
+//                //				FullAssignmentExp fullExp = null; //new FullAssignmentExp(varname, typename, val);
+//            }
+            index++;
+        }
+
+        DValue dval = builder.finish();
+        if (dval == null) {
+            //propogate
+            for(NewErrorMessage err: builder.getValidationErrors()) {
+                String errType = err.getErrorType().name();
+                addError2s("validation error: %s: %s", errType, err.getMessage());
+            }
+
+            addError2s("var '%s' - struct value builder failed %s", typeName, "unknown reason");
+        }
+
+        this.currentMapBuilder = null; //reset
+        
+        //all maps should be proxy
+        dval = maybeGenProxy(dval);
+        return dval;
+    }    
+    
 }
