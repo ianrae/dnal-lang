@@ -537,8 +537,12 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             if (index >= pairList.size()) {
                 addError2s("missing field: %s: %s", new Integer(index).toString(), exp.strValue());
             } else {
-                String fieldName = pairList.get(index).name;
-                String fieldType = TypeInfo.parserTypeOf(pairList.get(index).type.getName());
+                String fieldName = calcFieldName(index, pairList, exp); 
+                String fieldType = caclFieldType(fieldName, dtype, pairList); 
+                if (fieldType == null) {
+                	//error already logger
+                	continue;
+                }
 
                 ViaExp via = null;
                 boolean isNull = false;
@@ -601,7 +605,24 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         return dval;
     }
     
-    private DValue buildMapValue(StructAssignExp structExp, String typeName) {
+    private String caclFieldType(String fieldName, DStructType dtype, List<TypePair> pairList) {
+    	DType inner = dtype.getFields().get(fieldName);
+    	if (inner == null) {
+            addError2s("struct '%s' - does not contain field '%s'", dtype.getName(), fieldName);
+            return null;
+    	} else {
+    	}
+	}
+
+	private String calcFieldName(int index, List<TypePair> pairList, Exp exp) {
+    	if (exp instanceof StructMemberAssignExp) {
+    		StructMemberAssignExp smae = (StructMemberAssignExp) exp;
+    		return smae.var.name();
+    	}
+        return pairList.get(index).name;
+	}
+
+	private DValue buildMapValue(StructAssignExp structExp, String typeName) {
         DMapType dtype = (DMapType) packageHelper.findRegisteredType(typeName);
         MapBuilder builder = factory.createMapBuilder(dtype);
         this.currentMapBuilder = builder;
