@@ -606,12 +606,16 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     }
     
     private String caclFieldType(String fieldName, DStructType dtype, List<TypePair> pairList) {
-    	DType inner = dtype.getFields().get(fieldName);
-    	if (inner == null) {
-            addError2s("struct '%s' - does not contain field '%s'", dtype.getName(), fieldName);
-            return null;
-    	} else {
+    	List<TypePair> allFields = dtype.getAllFields();
+    	for(TypePair pair: allFields) {
+    		if (pair.name.equals(fieldName)) {
+    			String fieldType = pair.type.getName();
+    			return TypeInfo.parserTypeOf(fieldType);
+    		}
     	}
+    	
+    	addError2s("struct '%s' - does not contain field '%s'", dtype.getName(), fieldName);
+    	return null;
 	}
 
 	private String calcFieldName(int index, List<TypePair> pairList, Exp exp) {
