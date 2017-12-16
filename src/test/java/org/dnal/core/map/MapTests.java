@@ -144,6 +144,17 @@ public class MapTests extends SysTestBase {
 		assertEquals("aa", x.asStruct().getField("x").asString());
 		assertEquals("bb", x.asStruct().getField("y").asString());
 	}
+	@Test
+	public void testStructFieldNameDot() {
+		String src1 = "type Person struct { x string, y string } end ";
+		src1 += "let joe Person = { 'com.x':'aa', y:'bb' } ";
+		DValue x = compileMapValue(src1, "joe", 1);
+		
+		assertEquals("aa", x.asStruct().getField("x").asString());
+		assertEquals("bb", x.asStruct().getField("y").asString());
+		assertEquals(2,3); //this test should fail!!
+		//!!also ensure {  y:'bb', x:'aa' } works
+	}
 
 	//---
 	private DataSet createEmptyDataSet() {

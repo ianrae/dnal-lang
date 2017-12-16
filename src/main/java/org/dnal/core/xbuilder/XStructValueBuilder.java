@@ -36,6 +36,8 @@ public class XStructValueBuilder extends XDValueBuilder {
 		if (fieldName == null || fieldName.isEmpty()) {
 			addNoDataError("null or empty fieldname");
 			return;
+		} else if (fieldName.contains(".")) {
+			addNoDataError("struct field names cannot contain '.'");
 		}
 		
 		boolean isOptional = structType.fieldIsOptional(fieldName);
