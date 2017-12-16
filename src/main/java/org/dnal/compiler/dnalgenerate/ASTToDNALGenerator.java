@@ -468,7 +468,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doListInner(innerTypeName, elType); //recursion!
+			eltype = doMapInner(innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {

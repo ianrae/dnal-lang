@@ -1,9 +1,5 @@
 package org.dnal.core;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class DMapType extends DType {
     private OrderedMap orderedMap;
     private DType elementType;
