@@ -137,7 +137,8 @@ public class MapTests extends SysTestBase {
 	@Test
 	public void testValueParseStructAny() {
 		String src1 = "type Person struct { x string, y string } end ";
-		DValue mapDVal = compileSingleMapValue(src1 + "type SizeMap map<any> end let z SizeMap = { x:{ 'aa', 'bb' } }", "z");
+		src1 += "let joe Person = { x:'aa', y:'bb' } ";
+		DValue mapDVal = compileMapValue(src1 + "type SizeMap map<any> end let z SizeMap = { x:joe }", "z", 2);
 		
 		DValue x = mapDVal.asMap().get("x");
 		assertEquals("aa", x.asStruct().getField("x").asString());
@@ -153,11 +154,14 @@ public class MapTests extends SysTestBase {
 	}
 	
 	private DValue compileSingleMapValue(String source, String varName) {
+		return compileMapValue(source, varName, 1);
+	}
+	private DValue compileMapValue(String source, String varName, int expected) {
 		this.load(source, true);
 		DataSet ds = dataSetLoaded;
 		Transaction trans = ds.createTransaction();
 		
-		assertEquals(1, ds.size());
+		assertEquals(expected, ds.size());
 		DValue mapDVal = ds.getValue(varName);
 		return mapDVal;
 	}

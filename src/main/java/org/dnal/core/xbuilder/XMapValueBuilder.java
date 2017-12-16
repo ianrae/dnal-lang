@@ -36,7 +36,7 @@ public class XMapValueBuilder extends XDValueBuilder {
 		}
 		
 		DType target = mapType.getElementType();
-		if (! target.isAssignmentCompatible(dval.getType())) {
+		if (! target.isAnyShape() && ! target.isAssignmentCompatible(dval.getType())) {
 			this.addWrongTypeError(String.format("field %s", fieldName)); //!!
 		}
 		

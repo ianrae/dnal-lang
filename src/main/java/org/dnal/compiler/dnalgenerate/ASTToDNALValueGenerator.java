@@ -230,6 +230,30 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
             }
             break;
+            case ANY:
+            {
+            	String refVarName = null;
+            	if (assignExp.value instanceof IdentExp) {
+            		IdentExp tmp = (IdentExp) assignExp.value;
+            		refVarName = tmp.name();
+            	} else if (assignExp.value instanceof StructMemberAssignExp) {
+            		StructMemberAssignExp tmp = (StructMemberAssignExp) assignExp.value;
+            		refVarName = tmp.value.strValue();
+            	}
+                FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
+                if (referencedValue == null) {
+                    this.addError2s("cannot resolve reference to '%s'", refVarName, "");
+                    return null;
+                } else {
+                	DValue dd = world.findTopLevelValue(refVarName);
+//                	if (dd != null) {
+//                        this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
+//                        return null;
+//                	}
+                	resultVal = dd;
+                }
+            }
+            break;
             
             default:
                 addError2s("var '%s' - unknown shape '%s'", varName, shape);
