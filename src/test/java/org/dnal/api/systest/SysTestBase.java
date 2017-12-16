@@ -76,7 +76,7 @@ public class SysTestBase {
     protected List<NewErrorMessage> errors;
     protected DTypeRegistry registry;
     protected World world;
-    protected  static final int NUM_INTERNAL_TYPES = 7;
+    protected  static final int NUM_INTERNAL_TYPES = 8;
     protected boolean loadFile = false;
     
     protected  DataSet load(String source, boolean pass) {

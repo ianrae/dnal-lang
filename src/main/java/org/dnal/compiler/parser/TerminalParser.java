@@ -19,7 +19,7 @@ public class TerminalParser {
 			"=")
 		.words(DNALLexer.IDENTIFIER)
 		.keywords("let", "type", "inview", "outview", "end", "struct", "map", "enum", "list", "or", "and", "false", "true", 
-		        "rule", "package", "import", "isa", "via", "optional", "null", "unique")
+		        "rule", "package", "import", "isa", "via", "optional", "null", "unique", "any")
 		.build();
 	
 

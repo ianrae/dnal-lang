@@ -31,7 +31,7 @@ public class DValTests extends BaseDValTest {
 		DTypeRegistryBuilder regBuilder = new DTypeRegistryBuilder();
 		regBuilder.init(world);
 		DTypeRegistry myRegistry = regBuilder.getRegistry();
-		int numBuiltIns = 7;
+		int numBuiltIns = 8;
 		assertEquals(numBuiltIns, myRegistry.size());
 
 		assertEquals(numBuiltIns, myRegistry.getAll().size());

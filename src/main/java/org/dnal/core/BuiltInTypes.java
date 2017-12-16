@@ -7,5 +7,6 @@ public enum BuiltInTypes {
 	STRING_SHAPE,
 	BOOLEAN_SHAPE,
 	DATE_SHAPE,
-	ENUM_SHAPE
+	ENUM_SHAPE,
+	ANY_SHAPE
 }

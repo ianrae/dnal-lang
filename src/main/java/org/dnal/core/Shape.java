@@ -10,5 +10,6 @@ public enum Shape {
 	LIST,
 	MAP,
 	STRUCT,
-	ENUM
+	ENUM,
+	ANY
 }
