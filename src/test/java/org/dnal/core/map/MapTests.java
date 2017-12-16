@@ -138,9 +138,9 @@ public class MapTests extends SysTestBase {
 	public void testValueParseStructAny() {
 		String src1 = "type Person struct { x string, y string } end ";
 		src1 += "let joe Person = { x:'aa', y:'bb' } ";
-		DValue mapDVal = compileMapValue(src1 + "type SizeMap map<any> end let z SizeMap = { x:joe }", "z", 2);
+		DValue mapDVal = compileMapValue(src1 + "type SizeMap map<any> end let z SizeMap = { 'com.x':joe }", "z", 2);
 		
-		DValue x = mapDVal.asMap().get("x");
+		DValue x = mapDVal.asMap().get("com.x");
 		assertEquals("aa", x.asStruct().getField("x").asString());
 		assertEquals("bb", x.asStruct().getField("y").asString());
 	}

@@ -156,50 +156,47 @@ public class VarParser {
 					}
 				});
 	}
-
+	
+	public static Parser<Exp> identOrString() {
+		return Parsers.or(
+		        ident(),
+		        stringvalueassign());
+	}
+	public static IdentExp asIdentExp(Exp exp) {
+		if (exp instanceof StringExp) {
+			StringExp sexp = (StringExp) exp;
+			return new IdentExp(sexp.val);
+		} else {
+			return (IdentExp) exp;
+		}
+	}
     public static Parser<Exp> struct_someNumberValueAssign() {
-        return Parsers.sequence(ident(), term(":"), VarParser.someNumberValueassign(),
-                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+        return Parsers.sequence(identOrString(), term(":"), VarParser.someNumberValueassign(),
+                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
     }
-//	public static Parser<Exp> struct_negintegervalueassign() {
-//		return Parsers.sequence(ident(), term(":"), VarParser.negintegervalueassign(),
-//				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
-//	}
-//	public static Parser<Exp> struct_integervalueassign() {
-//		return Parsers.sequence(ident(), term(":"), VarParser.integervalueassign(),
-//				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
-//	}
-//    public static Parser<Exp> struct_negnumbervalueassign() {
-//        return Parsers.sequence(ident(), term(":"), VarParser.negnumbervalueassign(),
-//                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
-//    }
-//    public static Parser<Exp> struct_numbervalueassign() {
-//        return Parsers.sequence(ident(), term(":"), VarParser.numbervalueassign(),
-//                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
-//    }
 	public static Parser<Exp> struct_stringvalueassign() {
-		return Parsers.sequence(ident(), term(":"), VarParser.stringvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+		return Parsers.sequence(identOrString(), term(":"), VarParser.stringvalueassign(),
+				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_booleanvalueassign() {
-		return Parsers.sequence(ident(), term(":"), VarParser.booleanvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+		return Parsers.sequence(identOrString(), term(":"), VarParser.booleanvalueassign(),
+				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_varname() {
-		return Parsers.sequence(ident(), term(":"), ident(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+		return Parsers.sequence(identOrString(), term(":"), ident(),
+				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
 	}
     public static Parser<Exp> struct_null() {
-        return Parsers.sequence(ident(), term(":"), termNull(),
-                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+        return Parsers.sequence(identOrString(), term(":"), termNull(),
+                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
     }
 	public static Parser<Exp> struct_listvalueassign() {
-		return Parsers.sequence(ident(), term(":"), VarParser.listvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+		return Parsers.sequence(identOrString(), term(":"), VarParser.listvalueassign(),
+				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_structvalueassign() {
-		return Parsers.sequence(ident(), term(":"), VarParser.structvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp((IdentExp)exp1, exp2));
+		return Parsers.sequence(identOrString(), term(":"), VarParser.structvalueassign(),
+				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
 	}
 
 	public static Parser<Exp> valueassigninstruct() {
