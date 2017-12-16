@@ -184,6 +184,13 @@ public class TypeInfo {
         return s;
     }
     
+    public static boolean isListAny(String typename) {
+    	return "list<any>".equals(typename);
+    }
+    public static boolean isMapAny(String typename) {
+    	return "map<any>".equals(typename);
+    }
+    
     public static Shape stringToShape(String shapeName) {
         Shape s = null;
         switch(shapeName) {

@@ -144,7 +144,7 @@ public class TypeParser extends ParserBase {
 	
 	public static final Parser.Reference<IdentExp> listangleRef = Parser.newReference();
 	public static Parser<IdentExp> listangleinner() {
-		return Parsers.or(listangleRef.lazy(), VarParser.ident());
+		return Parsers.or(listangleRef.lazy(), VarParser.ident(), any());
 	}
 	public static Parser<IdentExp> listangle() {
 		return Parsers.sequence(term("list"), term("<"), listangleinner(), term(">"),

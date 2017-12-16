@@ -28,16 +28,16 @@ public class XListValueBuilder extends XDValueBuilder {
 		//do nothing
 	}
 	public void addValue(DValue dval) {
-	    if (dval == null) {
-	        addNoDataError();
-	        return;
-	    } else if (! elementType.isAssignmentCompatible(dval.getType())) {
+		if (dval == null) {
+			addNoDataError();
+			return;
+		} else if (!elementType.isAnyShape() && ! elementType.isAssignmentCompatible(dval.getType())) {
 			addWrongTypeError("expecting int (tc)");
 			return;
 		}
 		list.add(dval);
 	}
-	
+
 
 	@Override
 	protected void onFinish() {

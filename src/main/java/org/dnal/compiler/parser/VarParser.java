@@ -264,14 +264,18 @@ public class VarParser {
 	}
 	
 	public static Parser<IdentExp> listangle() {
-		return Parsers.sequence(term("list"), term("<"), VarParser.ident(), term(">"),
+		return Parsers.sequence(term("list"), term("<"), Parsers.or(any(), VarParser.ident()), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
 		new IdentExp(String.format("list<%s>", elementType.name())));
 	}
 	public static Parser<IdentExp> mapangle() {
-		return Parsers.sequence(term("map"), term("<"), VarParser.ident(), term(">"),
+		return Parsers.sequence(term("map"), term("<"), Parsers.or(any(), VarParser.ident()), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
 		new IdentExp(String.format("map<%s>", elementType.name())));
+	}
+	
+	public static Parser<IdentExp> any() {
+		return term("any").<IdentExp>retn(new IdentExp("any"));
 	}
 	
 	public static Parser<IdentExp> typeOrListType() {

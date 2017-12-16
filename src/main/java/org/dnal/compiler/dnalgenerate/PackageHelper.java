@@ -1,5 +1,7 @@
 package org.dnal.compiler.dnalgenerate;
 
+import org.dnal.compiler.parser.error.TypeInfo;
+import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.util.NameUtils;
@@ -30,6 +32,11 @@ public class PackageHelper  {
         return NameUtils.completeName(packageName, name);
     }
     public DType findRegisteredType(String typeName) {
+    	if (TypeInfo.isMapAny(typeName)) {
+    		return registry.getType(BuiltInTypes.MAP_ANY_SHAPE);
+    	} else if (TypeInfo.isListAny(typeName)) {
+    		return registry.getType(BuiltInTypes.LIST_ANY_SHAPE);
+    	}
         String completeName = buildCompleteName(typeName);
         DType dtype = registry.getType(completeName);
         if (dtype != null) {

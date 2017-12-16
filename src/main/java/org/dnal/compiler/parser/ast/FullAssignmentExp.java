@@ -20,8 +20,24 @@ public class FullAssignmentExp implements Exp {
         }
         return false;
     }   
+	public boolean isMapVar() {
+        if (type.val.startsWith("map<")) {
+            return true;
+        }
+        return false;
+    }   
 	public IdentExp getListSubType() {
         String target = "list<";
+        String s = type.val.substring(target.length());
+        if (s.endsWith(">")) {
+            return new IdentExp(s.substring(0, s.length() - 1));
+        } else {
+//            addError2s("var%s: malformed type '%s.", "", type.val);
+            return null;
+        }
+    }   	
+	public IdentExp getMapSubType() {
+        String target = "map<";
         String s = type.val.substring(target.length());
         if (s.endsWith(">")) {
             return new IdentExp(s.substring(0, s.length() - 1));

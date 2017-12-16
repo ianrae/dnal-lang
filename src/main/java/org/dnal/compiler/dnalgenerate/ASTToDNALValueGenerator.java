@@ -110,7 +110,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
 
         if (assignExp.value instanceof StructAssignExp) {
         	String typeName = assignExp.type.name();
-        	if (packageHelper.findRegisteredType(typeName) instanceof DMapType) {
+        	if (TypeInfo.isMapAny(typeName) || packageHelper.findRegisteredType(typeName) instanceof DMapType) {
         		return buildMapValue((StructAssignExp)assignExp.value, typeName);
         	} else {
         		return buildStructValue((StructAssignExp)assignExp.value, typeName);
