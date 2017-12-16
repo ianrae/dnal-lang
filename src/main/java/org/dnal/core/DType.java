@@ -54,6 +54,9 @@ public class DType {
     public boolean isMapShape() {
         return shape == Shape.MAP;
     }
+    public boolean isAnyShape() {
+        return shape == Shape.ANY;
+    }
 
 	public Shape getShape() {
 		return shape;

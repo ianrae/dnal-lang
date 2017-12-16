@@ -159,10 +159,15 @@ public class TypeParser extends ParserBase {
 				 IdentExp elementType, List<RuleExp> rules) -> 
 		new FullListTypeExp(varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());
 	}
+	
+	
+	public static Parser<IdentExp> any() {
+		return term("any").<IdentExp>retn(new IdentExp("any"));
+	}
 
 	public static final Parser.Reference<IdentExp> mapangleRef = Parser.newReference();
 	public static Parser<IdentExp> mapangleinner() {
-		return Parsers.or(mapangleRef.lazy(), VarParser.ident());
+		return Parsers.or(mapangleRef.lazy(), VarParser.ident(), any());
 	}
 	public static Parser<IdentExp> mapangle() {
 		return Parsers.sequence(term("map"), term("<"), mapangleinner(), term(">"),

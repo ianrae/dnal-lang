@@ -134,6 +134,15 @@ public class MapTests extends SysTestBase {
 		assertEquals("aa", x.asStruct().getField("x").asString());
 		assertEquals("bb", x.asStruct().getField("y").asString());
 	}
+	@Test
+	public void testValueParseStructAny() {
+		String src1 = "type Person struct { x string, y string } end ";
+		DValue mapDVal = compileSingleMapValue(src1 + "type SizeMap map<any> end let z SizeMap = { x:{ 'aa', 'bb' } }", "z");
+		
+		DValue x = mapDVal.asMap().get("x");
+		assertEquals("aa", x.asStruct().getField("x").asString());
+		assertEquals("bb", x.asStruct().getField("y").asString());
+	}
 
 	//---
 	private DataSet createEmptyDataSet() {
