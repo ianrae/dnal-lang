@@ -75,6 +75,9 @@ public class IsaRule extends NRuleBase {
         
         DStructHelper helper = new DStructHelper(dval);
         DValue inner = helper.getField(rule.fieldName);
+        if (inner == null) { //when isa is an optional field and not set
+        	return true;
+        }
         System.out.println("xxx " + inner.asString());
         
         return checkOne(inner, ctx);
