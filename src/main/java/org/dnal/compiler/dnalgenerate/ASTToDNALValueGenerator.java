@@ -331,6 +331,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         fieldType = TypeInfo.parserTypeOf(fieldType);
 
         int index = 0;
+        getET().setCurrentListIndex(index);
         FullTypeExp fullType = doc.findType(typeName);
         if (fullType == null) {
             for(Exp exp: listExp.list) {
@@ -367,6 +368,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
 
                 index++;
+                getET().setCurrentListIndex(index);
             }
         } else {
             FullListTypeExp fste = (FullListTypeExp) fullType;
@@ -382,6 +384,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 index++;
             }
         }
+        getET().setCurrentListIndex(-1);
 
         DValue dval = builder.finish();
         if (dval == null) {

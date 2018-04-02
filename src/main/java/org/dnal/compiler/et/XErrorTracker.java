@@ -17,6 +17,7 @@ public class XErrorTracker {
     private String currentFieldName;
     private String currentVarName;
     private String currentActualValue;
+    private int currentListIndex = -1;
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
@@ -124,6 +125,9 @@ public class XErrorTracker {
         if (this.currentActualValue != null) {
         	err.setActualValue(currentActualValue);
         }
+        if (this.currentListIndex >= 0) {
+        	err.setListIndex(this.currentListIndex);
+        }
         
         this.errL.add(err);
         logIfEnabled(err);
@@ -142,6 +146,9 @@ public class XErrorTracker {
 	}
 	public void setCurrentActualValue(String currentActualValue) {
 		this.currentActualValue = currentActualValue;
+	}
+	public void setCurrentListIndex(int index) {
+		this.currentListIndex = index;
 	}
 	public void propogateErrors(List<NewErrorMessage> errorList) {
 		for(NewErrorMessage err: errorList) {

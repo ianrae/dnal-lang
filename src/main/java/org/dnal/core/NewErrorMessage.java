@@ -17,6 +17,7 @@ public class NewErrorMessage {
 	private String varName;
 	private String message;
 	private String actualValue; //validation errors only
+	private int listIndex;
 	
 	public NewErrorMessage() {
 		errorType = Type.IO_ERROR;
@@ -79,6 +80,14 @@ public class NewErrorMessage {
 
 	public void setActualValue(String actualValue) {
 		this.actualValue = actualValue;
+	}
+
+	public int getListIndex() {
+		return listIndex;
+	}
+
+	public void setListIndex(int listIndex) {
+		this.listIndex = listIndex;
 	}
 
 }
