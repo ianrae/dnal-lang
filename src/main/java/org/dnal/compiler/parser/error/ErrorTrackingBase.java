@@ -28,6 +28,9 @@ public class ErrorTrackingBase {
     public void popScope() {
         et.popScope();
     }
+    public ErrorInfo getErrorInfo() {
+    	return et.peekErrorInfo();
+    }
 	
 	protected boolean areNoErrors() {
 	    return et.getErrL().size() == 0;
@@ -62,28 +65,6 @@ public class ErrorTrackingBase {
 		NewErrorMessage err = new NewErrorMessage();
 		err.setMessage(String.format(fmt, s, s2));
 		addErrorObj(err);
-		return err;
-	}
-	protected NewErrorMessage addError2s(ErrorInfo info, String fmt, String s, String s2) {
-		NewErrorMessage err = new NewErrorMessage();
-		err.setMessage(String.format(fmt, s, s2));
-		addErrorObj(err);
-		
-		if (info.getCurrentActualValue() != null) {
-			err.setActualValue(info.getCurrentActualValue());
-		}
-		if (info.getCurrentFieldName() != null) {
-			err.setFieldName(info.getCurrentFieldName());
-		}
-		if (info.getCurrentListIndex() >= 0) {
-			err.setListIndex(info.getCurrentListIndex());
-		}
-		if (info.getCurrentTypeName() != null) {
-			err.setTypeName(info.getCurrentTypeName());
-		}
-		if (info.getCurrentVarName() != null) {
-			err.setVarName(info.getCurrentVarName());
-		}
 		return err;
 	}
     protected void addError3s(String fmt, String s, String s2, String s3) {

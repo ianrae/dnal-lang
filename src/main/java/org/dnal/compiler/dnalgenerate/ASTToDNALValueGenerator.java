@@ -23,7 +23,6 @@ import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.ast.StructAssignExp;
 import org.dnal.compiler.parser.ast.StructMemberAssignExp;
 import org.dnal.compiler.parser.ast.ViaExp;
-import org.dnal.compiler.parser.error.ErrorInfo;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
@@ -78,10 +77,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
 
     //error if returns null
     public DValue buildTopLevelValue(FullAssignmentExp assignExp) {
-    	ErrorInfo errinfo = new ErrorInfo();
-    	errinfo.setCurrentTypeName(assignExp.type.name());
-    	errinfo.setCurrentVarName(assignExp.var.name());
-        DValue dval = buildValue(assignExp, errinfo);
+    	getErrorInfo().setCurrentTypeName(assignExp.type.name());
+    	getErrorInfo().setCurrentVarName(assignExp.var.name());
+        DValue dval = buildValue(assignExp);
         
         //top-level objects should be proxies
         dval = maybeGenProxy(dval);
@@ -96,15 +94,15 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         }
     }
     
-    private DValue buildValue(FullAssignmentExp assignExp, ErrorInfo errinfo) {
+    private DValue buildValue(FullAssignmentExp assignExp) {
         String varName = assignExp.var.name();
 
         Log.debugLog("value: " + varName);
         if (assignExp.isListVar()) {
             if (assignExp.value instanceof ListAssignExp) {
-                return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name(), errinfo);
+                return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name());
             } else if (assignExp.value instanceof ViaExp) {
-                return buildViaListValue(assignExp, (ViaExp) assignExp.value, assignExp.type.name(), errinfo);
+                return buildViaListValue(assignExp, (ViaExp) assignExp.value, assignExp.type.name());
             } else {
                 this.addError2s("let %s does not contain list %s", assignExp.var.name(), "");
                 return null; //??
@@ -115,15 +113,15 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         if (assignExp.value instanceof StructAssignExp) {
         	String typeName = assignExp.type.name();
         	if (TypeInfo.isMapAny(typeName) || packageHelper.findRegisteredType(typeName) instanceof DMapType) {
-        		return buildMapValue((StructAssignExp)assignExp.value, typeName, errinfo);
+        		return buildMapValue((StructAssignExp)assignExp.value, typeName);
         	} else {
-        		return buildStructValue((StructAssignExp)assignExp.value, typeName, errinfo);
+        		return buildStructValue((StructAssignExp)assignExp.value, typeName);
         	}
         } else if (assignExp.value instanceof ListAssignExp) {
-            return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name(), errinfo);
+            return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name());
         } else if (assignExp.value instanceof ViaExp) {
             ViaExp via = (ViaExp) assignExp.value;
-            return handleVia(assignExp, via, errinfo);
+            return handleVia(assignExp, via);
         } else {
             DValue resultVal = null;
 
@@ -133,7 +131,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             case INT:
             {
                 IntBuilder builder = factory.createIntegerBuilder(dtype);
-                IntegerExp tmp = (IntegerExp) resolveRHS(assignExp, errinfo);
+                IntegerExp tmp = (IntegerExp) resolveRHS(assignExp);
                 if (tmp != null) {
                 	resultVal = builder.buildFrom(tmp.val); 
                 }
@@ -142,7 +140,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             case LONG:
             {
                 LongBuilder builder = factory.createLongBuilder(dtype);
-                Exp tmp = resolveRHS(assignExp, errinfo);
+                Exp tmp = resolveRHS(assignExp);
                 Long nVal = 0L;
                 if (tmp instanceof LongExp) {
                     nVal = ((LongExp) tmp).val;
@@ -157,7 +155,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             case NUMBER:
             {
                 NumberBuilder builder = factory.createNumberBuilder(dtype);
-                NumberExp tmp = (NumberExp) resolveRHS(assignExp, errinfo);
+                NumberExp tmp = (NumberExp) resolveRHS(assignExp);
                 if (tmp != null) {
                 	resultVal = builder.buildFrom(tmp.val);
                 }
@@ -165,7 +163,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             break;
             case DATE:
             {
-                resultVal = handleDate(assignExp, dtype, errinfo);
+                resultVal = handleDate(assignExp, dtype);
                 if (resultVal == null) {
                     this.addError2s("var '%s': date value not number or string %s", assignExp.var.name(), "");
                 }
@@ -174,7 +172,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             case BOOLEAN:
             {
                 BooleanBuilder builder = factory.createBooleanBuilder(dtype);
-                BooleanExp tmp = (BooleanExp) resolveRHS(assignExp, errinfo);
+                BooleanExp tmp = (BooleanExp) resolveRHS(assignExp);
                 if (tmp != null) {
                 	resultVal = builder.buildFrom(tmp.val);
                 }
@@ -183,7 +181,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             case STRING:
             {
                 StringBuilder builder = factory.createStringBuilder(dtype);
-                StringExp tmp = (StringExp) resolveRHS(assignExp, errinfo);
+                StringExp tmp = (StringExp) resolveRHS(assignExp);
                 if (tmp != null) {
                 	resultVal = builder.buildFromString(tmp.val);
                 }
@@ -268,9 +266,9 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         }
     }
 
-    private DValue handleDate(FullAssignmentExp assignExp, DType dtype, ErrorInfo errinfo) {
+    private DValue handleDate(FullAssignmentExp assignExp, DType dtype) {
         DateBuilder builder = factory.createDateBuilder(dtype);
-        Exp tmp = resolveRHS(assignExp, errinfo);
+        Exp tmp = resolveRHS(assignExp);
         if (tmp instanceof LongExp) {
             LongExp longExp = (LongExp) tmp;
             Date dt = new Date(longExp.val);
@@ -293,8 +291,8 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             return null;
         }
     }
-    private DValue buildViaListValue(FullAssignmentExp assignExp, ViaExp viaExp, String typeName, ErrorInfo errinfo) {
-        List<DValue> list = findViaMatches(assignExp, viaExp, errinfo);
+    private DValue buildViaListValue(FullAssignmentExp assignExp, ViaExp viaExp, String typeName) {
+        List<DValue> list = findViaMatches(assignExp, viaExp);
         if (list == null) {
             addError2s("Dcan't resolve via: %s: %s", viaExp.fieldExp.val, viaExp.valueExp.strValue());
             return null;
@@ -328,14 +326,14 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
 
         return dval;
     }
-    private DValue buildListValue(ListAssignExp listExp, String typeName, ErrorInfo errinfo) {
+    private DValue buildListValue(ListAssignExp listExp, String typeName) {
         DListType dtype = (DListType) packageHelper.findRegisteredType(typeName);
         ListBuilder builder = factory.createListBuilder(dtype);
         String fieldType = dtype.getElementType().getName();
         fieldType = TypeInfo.parserTypeOf(fieldType);
 
         int index = 0;
-        errinfo.setCurrentListIndex(index);
+        getErrorInfo().setCurrentListIndex(index);
         FullTypeExp fullType = doc.findType(typeName);
         if (fullType == null) {
             for(Exp exp: listExp.list) {
@@ -343,8 +341,8 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 if (exp instanceof ViaExp) {
                     ViaExp via = (ViaExp) exp;
                     viaHelper.adjustTypeIfNeeded(via, dtype);
-                    FullAssignmentExp tmp = createFAE(String.format("list[%d]", index), fieldType, exp, errinfo);
-                    DValue element = this.buildValue(tmp, errinfo);
+                    FullAssignmentExp tmp = createFAE(String.format("list[%d]", index), fieldType, exp);
+                    DValue element = this.buildValue(tmp);
                     if (element != null) {
                         if (element.getType() == null) { 
                             //hack!
@@ -364,15 +362,15 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                         }
                     }
                 } else {
-                    FullAssignmentExp tmp = createFAE(String.format("list[%d]", index), fieldType, exp, errinfo);
-                    DValue element = this.buildValue(tmp, errinfo);
+                    FullAssignmentExp tmp = createFAE(String.format("list[%d]", index), fieldType, exp);
+                    DValue element = this.buildValue(tmp);
                     if (element != null) {
                         builder.addElement(maybeGenProxy(element));
                     }
                 }
 
                 index++;
-                errinfo.setCurrentListIndex(index);
+                getErrorInfo().setCurrentListIndex(index);
             }
         } else {
             FullListTypeExp fste = (FullListTypeExp) fullType;
@@ -382,13 +380,13 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             }
 
             for(Exp exp: listExp.list) {
-                FullAssignmentExp tmp = createFAE("listel?", xfieldType, exp, errinfo);
-                DValue element = this.buildValue(tmp, errinfo);
+                FullAssignmentExp tmp = createFAE("listel?", xfieldType, exp);
+                DValue element = this.buildValue(tmp);
                 builder.addElement(maybeGenProxy(element));
                 index++;
             }
         }
-        errinfo.setCurrentListIndex(-1);
+        getErrorInfo().setCurrentListIndex(-1);
 
         DValue dval = builder.finish();
         if (dval == null) {
@@ -404,7 +402,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         return dval;
     }
 
-    private FullAssignmentExp createFAE(String varName, String typeName, Exp exp, ErrorInfo errinfo) {
+    private FullAssignmentExp createFAE(String varName, String typeName, Exp exp) {
         FullAssignmentExp assignExp = new FullAssignmentExp(new IdentExp(varName),
                 new IdentExp(typeName), 
                 exp);
@@ -413,12 +411,12 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             IdentExp tmp = (IdentExp) exp;
             FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
             assignExp.type = referencedValue.type;
-            assignExp.value = resolveRHS(referencedValue, errinfo);
+            assignExp.value = resolveRHS(referencedValue);
         }
         return assignExp;
     }
 
-    private Exp resolveRHS(FullAssignmentExp typeExp, ErrorInfo errinfo) {
+    private Exp resolveRHS(FullAssignmentExp typeExp) {
         if (typeExp == null) {
             this.addError2s("no type in resolveRHS", "", "");
             return null;
@@ -443,29 +441,29 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             IdentExp tmp = (IdentExp) typeExp.value;
             FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
             if (referencedValue == null) {
-                NewErrorMessage errz = addError2s(errinfo, "cannot resolve reference to '%s'", tmp.name(), "");
+                NewErrorMessage errz = addError2s("cannot resolve reference to '%s'", tmp.name(), "");
                 errz.setFieldName(typeExp.var.name());
                 errz.setActualValue(typeExp.value.strValue());
                 return null;
             }
-            return resolveRHS(referencedValue, errinfo); //recursion
+            return resolveRHS(referencedValue); //recursion
         } else if (typeExp.value instanceof StructMemberAssignExp) {
             StructMemberAssignExp tmp = (StructMemberAssignExp) typeExp.value;
             FullAssignmentExp fake = new FullAssignmentExp(tmp.var, new IdentExp("?fakeType"), tmp.value);
-            return resolveRHS(fake, errinfo);
+            return resolveRHS(fake);
         } else if (typeExp.value instanceof StructAssignExp) {
             StructAssignExp tmp = (StructAssignExp) typeExp.value;
             return tmp;
         } else if (typeExp.value instanceof ViaExp) {
             ViaExp via = (ViaExp) typeExp.value;
             FullAssignmentExp fake = new FullAssignmentExp(via.fieldExp, new IdentExp("?fakeType"), via.valueExp);
-            return resolveRHS(fake, errinfo);
+            return resolveRHS(fake);
         } else {
             return null;
         }
     }
 
-    private DValue handleVia(FullAssignmentExp assignExp, ViaExp via, ErrorInfo errinfo) {
+    private DValue handleVia(FullAssignmentExp assignExp, ViaExp via) {
         if (via.valueExp instanceof IdentExp) {
             if (currentStructBuilder != null) {
                 //!!the via field must be before the via.  fix later!!
@@ -476,7 +474,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             }
         }
 
-        List<DValue> list = findViaMatches(assignExp, via, errinfo);
+        List<DValue> list = findViaMatches(assignExp, via);
         if (list == null || list.size() == 0) {
             String ss = (via.valueExp == null) ? "" : via.valueExp.strValue();
             addError2s("Acan't resolve via: %s: %s", via.fieldExp.val, ss);
@@ -495,7 +493,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         }
     }
 
-    private List<DValue> findViaMatches(FullAssignmentExp assignExp, ViaExp via, ErrorInfo errinfo) {
+    private List<DValue> findViaMatches(FullAssignmentExp assignExp, ViaExp via) {
         DType tmp = packageHelper.findRegisteredType(via.typeExp.name());
         DStructType dtype = null;
         if (tmp instanceof DStructType) {
@@ -512,7 +510,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         
         if (inner.isShape(Shape.ENUM)) {
         } else {
-            via.valueExp = resolveRHS(assignExp, errinfo);
+            via.valueExp = resolveRHS(assignExp);
         }
         List<DValue> list = viaFinder.findMatches(via);
         return list;
@@ -527,7 +525,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         }
     }
 
-    private DValue buildStructValue(StructAssignExp structExp, String typeName, ErrorInfo errinfo) {
+    private DValue buildStructValue(StructAssignExp structExp, String typeName) {
         DStructType dtype = (DStructType) packageHelper.findRegisteredType(typeName);
         StructBuilder builder = factory.createStructBuilder(dtype);
         this.currentStructBuilder = builder;
@@ -547,7 +545,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 addError2s("missing field: %s: %s", new Integer(index).toString(), exp.strValue());
             } else {
                 String fieldName = calcFieldName(index, pairList, exp); 
-                errinfo.setCurrentFieldName(fieldName);
+                getErrorInfo().setCurrentFieldName(fieldName);
                 String fieldType = caclFieldType(fieldName, dtype, pairList); 
                 if (fieldType == null) {
                 	//error already logger
@@ -581,7 +579,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                     FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
                             new IdentExp(fieldType), 
                             exp);
-                    DValue member = this.buildValue(tmp, errinfo);
+                    DValue member = this.buildValue(tmp);
                     
                     if (via != null && via.extraViaExp != null) {
                         DStructHelper h3 = new DStructHelper(member);
@@ -636,7 +634,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         return pairList.get(index).name;
 	}
 
-	private DValue buildMapValue(StructAssignExp structExp, String typeName, ErrorInfo errinfo) {
+	private DValue buildMapValue(StructAssignExp structExp, String typeName) {
         DMapType dtype = (DMapType) packageHelper.findRegisteredType(typeName);
         MapBuilder builder = factory.createMapBuilder(dtype);
         this.currentMapBuilder = builder;
@@ -673,7 +671,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                     FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
                             new IdentExp(elTypeName), 
                             exp);
-                    DValue member = this.buildMapElementValue(tmp, errinfo);
+                    DValue member = this.buildMapElementValue(tmp);
                     
                     if (via != null && via.extraViaExp != null) {
 //                        DStructHelper h3 = new DStructHelper(member);
@@ -706,26 +704,26 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         return dval;
     }
 
-	private DValue buildMapElementValue(FullAssignmentExp tmp, ErrorInfo errinfo) {
+	private DValue buildMapElementValue(FullAssignmentExp tmp) {
 		if (tmp.value instanceof StructMemberAssignExp) {
 			StructMemberAssignExp smae = (StructMemberAssignExp) tmp.value;
 			String typeName = tmp.type.name();
     		if (smae.value instanceof ListAssignExp) {
             	if (packageHelper.findRegisteredType(typeName) instanceof DListType) {
             		DListType listType = (DListType) packageHelper.findRegisteredType(typeName);
-            		return buildListValue((ListAssignExp)smae.value, listType.getName(), errinfo);
+            		return buildListValue((ListAssignExp)smae.value, listType.getName());
             	}            			
     		} else if (smae.value instanceof StructAssignExp) {
             	if (packageHelper.findRegisteredType(typeName) instanceof DStructType) {
                 	if (packageHelper.findRegisteredType(typeName) instanceof DMapType) {
-                		return buildMapValue((StructAssignExp)smae.value, typeName, errinfo);
+                		return buildMapValue((StructAssignExp)smae.value, typeName);
                 	} else {
-                		return buildStructValue((StructAssignExp)smae.value, typeName, errinfo);
+                		return buildStructValue((StructAssignExp)smae.value, typeName);
                 	}
             	}            			
     		} 
 		}
-		return buildValue(tmp, errinfo);
+		return buildValue(tmp);
 	}    
     
 }

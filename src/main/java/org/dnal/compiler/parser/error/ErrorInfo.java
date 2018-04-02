@@ -6,6 +6,7 @@ public class ErrorInfo {
     private String currentVarName;
     private String currentActualValue;
     private int currentListIndex = -1;
+    
 	public String getCurrentTypeName() {
 		return currentTypeName;
 	}

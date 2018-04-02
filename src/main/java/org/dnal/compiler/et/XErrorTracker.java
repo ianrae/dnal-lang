@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.error.ErrorInfo;
 import org.dnal.compiler.parser.error.ErrorScope;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
@@ -12,18 +13,33 @@ import org.dnal.core.logger.Log;
 public class XErrorTracker {
     protected List<NewErrorMessage> errL = new ArrayList<>();
     protected Stack<ErrorScope> scopeStack = new Stack<>();
+    protected Stack<ErrorInfo> errinfoStack = new Stack<>();
     public static boolean logErrors = false;
-    private String currentTypeName;
-    private String currentFieldName;
-    private String currentVarName;
-    private String currentActualValue;
-    private int currentListIndex = -1;
+//    private String currentTypeName;
+//    private String currentFieldName;
+//    private String currentVarName;
+//    private String currentActualValue;
+//    private int currentListIndex = -1;
+    
+    public XErrorTracker() {
+    	ErrorInfo errinfo = new ErrorInfo();
+    	errinfoStack.push(errinfo);
+    }
 
     public void pushScope(ErrorScope scope) {
         scopeStack.push(scope);
     }
     public void popScope() {
         scopeStack.pop();
+    }
+    public void pushErrorInfo(ErrorInfo errinfo) {
+    	errinfoStack.push(errinfo);
+    }
+    public void popErrorInfo() {
+    	errinfoStack.pop();
+    }
+    public ErrorInfo peekErrorInfo() {
+    	return errinfoStack.peek();
     }
     
     public void clear() {
@@ -113,21 +129,25 @@ public class XErrorTracker {
             err.setSrcFile(scope.getSrcFile());
         }
         
-        if (this.currentTypeName != null) {
-        	err.setTypeName(currentTypeName);
+        if (! errinfoStack.isEmpty()) {
+        	ErrorInfo errinfo = errinfoStack.peek();
+            if (errinfo.getCurrentTypeName() != null) {
+            	err.setTypeName(errinfo.getCurrentTypeName());
+            }
+            if (errinfo.getCurrentFieldName() != null) {
+            	err.setFieldName(errinfo.getCurrentFieldName());
+            }
+            if (errinfo.getCurrentVarName() != null) {
+            	err.setVarName(errinfo.getCurrentVarName());
+            }
+            if (errinfo.getCurrentActualValue() != null) {
+            	err.setActualValue(errinfo.getCurrentActualValue());
+            }
+            if (errinfo.getCurrentListIndex() >= 0) {
+            	err.setListIndex(errinfo.getCurrentListIndex());
+            }
         }
-        if (this.currentFieldName != null) {
-        	err.setFieldName(currentFieldName);
-        }
-        if (this.currentVarName != null) {
-        	err.setVarName(currentVarName);
-        }
-        if (this.currentActualValue != null) {
-        	err.setActualValue(currentActualValue);
-        }
-        if (this.currentListIndex >= 0) {
-        	err.setListIndex(this.currentListIndex);
-        }
+        
         
         this.errL.add(err);
         logIfEnabled(err);
@@ -136,19 +156,24 @@ public class XErrorTracker {
         return errL;
     }
 	public void setCurrentTypeName(String currentTypeName) {
-		this.currentTypeName = currentTypeName;
+    	ErrorInfo errinfo = errinfoStack.peek();
+		errinfo.setCurrentTypeName(currentTypeName);
 	}
 	public void setCurrentFieldName(String currentFieldName) {
-		this.currentFieldName = currentFieldName;
+    	ErrorInfo errinfo = errinfoStack.peek();
+		errinfo.setCurrentFieldName(currentFieldName);
 	}
 	public void setCurrentVarName(String currentVarName) {
-		this.currentVarName = currentVarName;
+    	ErrorInfo errinfo = errinfoStack.peek();
+		errinfo.setCurrentVarName(currentVarName);
 	}
 	public void setCurrentActualValue(String currentActualValue) {
-		this.currentActualValue = currentActualValue;
+    	ErrorInfo errinfo = errinfoStack.peek();
+		errinfo.setCurrentActualValue(currentActualValue);
 	}
 	public void setCurrentListIndex(int index) {
-		this.currentListIndex = index;
+    	ErrorInfo errinfo = errinfoStack.peek();
+		errinfo.setCurrentListIndex(index);
 	}
 	public void propogateErrors(List<NewErrorMessage> errorList) {
 		for(NewErrorMessage err: errorList) {
