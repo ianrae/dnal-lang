@@ -438,7 +438,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             if (referencedValue == null) {
                 NewErrorMessage errz = addError2s("cannot resolve reference to '%s'", tmp.name(), "");
                 errz.setFieldName(typeExp.var.name());
-                errz.setActualValue(typeExp.var.val);
+                errz.setActualValue(typeExp.value.strValue());
                 return null;
             }
             return resolveRHS(referencedValue); //recursion
