@@ -3,6 +3,7 @@ package org.dnal.core.nrule;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DValue;
 import org.dnal.core.ErrorType;
+import org.dnal.core.nrule.virtual.StructMember;
 import org.dnal.core.nrule.virtual.VirtualDataItem;
 
 public abstract class NRuleBase implements NRule {
@@ -43,6 +44,12 @@ public abstract class NRuleBase implements NRule {
         if (arg instanceof VirtualDataItem) {
             VirtualDataItem vs = (VirtualDataItem) arg;
             vs.resolve(dval, ctx);
+            if (vs instanceof StructMember) {
+            	StructMember smemb = (StructMember) vs;
+            	if (smemb.getFieldName() != null) {
+            		ctx.setCurrentFieldName(smemb.getFieldName());
+            	}
+            }
         }
     }
     

@@ -100,6 +100,7 @@ public class SimpleNRuleRunner  {
 			}
 			//ctx.setCurrentFieldName(null);
 		}
+		ctx.setCurrentFieldName(null);
 		evalScalar(dval, ctx);
 		setCompositeScore(dval);
 		stack.pop();
