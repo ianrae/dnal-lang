@@ -28,6 +28,10 @@ public class VirtualNumber implements VirtualDataItem, Comparable<Double> {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asNumber();
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+		return true;
+	}
     
     @Override
     public Shape getTargetShape() {

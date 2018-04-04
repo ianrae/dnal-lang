@@ -33,6 +33,10 @@ public class VirtualLong implements VirtualDataItem, Comparable<Long> {
             val = dval.asLong();
         }
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+		return true;
+	}
 
     @Override
     public Shape getTargetShape() {

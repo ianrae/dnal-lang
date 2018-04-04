@@ -52,6 +52,14 @@ public abstract class NRuleBase implements NRule {
             }
         }
     }
+    protected boolean containsValue(Object arg, DValue dval) {
+        if (arg instanceof VirtualDataItem) {
+            VirtualDataItem vs = (VirtualDataItem) arg;
+            return vs.containsValue(dval);
+        } else {
+        	return true;
+        }
+    }
     
     protected void setActualValue(Object val1, NRuleContext ctx) {
 		if (val1 != null) {

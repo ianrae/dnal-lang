@@ -30,6 +30,10 @@ public class VirtualDate implements VirtualDataItem, Comparable<Date> {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asDate();
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+		return true;
+	}
 
     @Override
     public Shape getTargetShape() {

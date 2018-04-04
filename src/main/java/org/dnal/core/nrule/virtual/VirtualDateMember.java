@@ -12,13 +12,21 @@ public class VirtualDateMember extends VirtualDate implements StructMember {
     public void resolve(DValue dval, NRuleContext ctx) {
         DStructHelper helper = new DStructHelper(dval);
         DValue tmp = helper.getField(fieldName);
-        super.resolve(tmp, ctx);
+        if (tmp != null) {
+        	super.resolve(tmp, ctx);
+        }
     }
     
     @Override
     public void setFieldName(String fieldName) {
         this.fieldName = fieldName;
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+        DStructHelper helper = new DStructHelper(dval);
+        DValue tmp = helper.getField(fieldName);
+        return (tmp != null);
+	}
 
     @Override
     public String getFieldName() {
