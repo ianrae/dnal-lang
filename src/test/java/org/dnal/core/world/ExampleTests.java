@@ -154,7 +154,7 @@ public class ExampleTests extends BaseWorldTest {
         log("json..");
         Generator gen = dataSet.createGenerator();
         JSONGenerator visitor = new JSONGenerator();
-        boolean b = gen.generate(visitor);
+        gen.generate(visitor);
 //        for(String s: visitor.outputL) {
 //            log(s);
 //        }
