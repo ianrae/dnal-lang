@@ -21,6 +21,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
+import org.dnal.core.TypePair;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
 import org.junit.Test;
@@ -32,16 +33,36 @@ public class NewGeneratorTests extends BaseTest {
 		public boolean generateTypes = false;
 		public boolean generateValues = false;
 		
-		public void structType(DStructType dtype) {
+		public void structType(DStructType dtype, String typeName, String parentTypeName) {
 			if (!generateTypes) {
 				return;
 			}
+			String rulesStr = getRuleStr(dtype);
+			if (! StringUtils.isEmpty(rulesStr)) {
+				rulesStr = String.format(" %s", rulesStr);
+			}
+			String body = getStructMembers(dtype);
+			String s = String.format("type %s %s {%s}%s end", typeName, parentTypeName, body, rulesStr);
+			outputL.add(s);
 		}
-		public void enumType(DStructType enumType) {
+		private String getStructMembers(DStructType dtype) {
+			StringJoiner joiner = new StringJoiner(", ");
+            for(TypePair pair: dtype.getAllFields()) {
+            	String field = pair.name;
+            	String fieldTypeName = TypeInfo.parserTypeOf(pair.type.getName());
+            	String s = String.format("%s %s", field, fieldTypeName);
+                joiner.add(s); 
+            }
+
+            return joiner.toString();
+		}
+
+
+
+		public void enumType(DStructType enumType, String typeName) {
 			if (!generateTypes) {
 				return;
 			}
-			String typeName = TypeInfo.parserTypeOf(enumType.getName());
 			String parentName = "enum";
 			String rulesStr = getRuleStr(enumType);
 			if (! StringUtils.isEmpty(rulesStr)) {
@@ -59,12 +80,10 @@ public class NewGeneratorTests extends BaseTest {
 
             return joiner.toString();
 		}
-		public void listType(DListType listType) {
+		public void listType(DListType listType, String typeName, String elementName) {
 			if (!generateTypes) {
 				return;
 			}
-			String typeName = TypeInfo.parserTypeOf(listType.getName());
-			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
 			String rulesStr = getRuleStr(listType);
 			if (! StringUtils.isEmpty(rulesStr)) {
 				rulesStr = String.format(" %s", rulesStr);
@@ -79,12 +98,10 @@ public class NewGeneratorTests extends BaseTest {
 			// TODO Auto-generated method stub
 			
 		}
-		public void scalarType(DType dtype) {
+		public void scalarType(DType dtype, String typeName, String parentName) {
 			if (!generateTypes) {
 				return;
 			}
-			String typeName = TypeInfo.parserTypeOf(dtype.getName());
-			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
 			String rulesStr = getRuleStr(dtype);
 			if (! StringUtils.isEmpty(rulesStr)) {
 				rulesStr = String.format(" %s", rulesStr);
@@ -101,12 +118,11 @@ public class NewGeneratorTests extends BaseTest {
 
             return joiner.toString();
 		}
-		public void topLevelValue(String varName, DValue dval) {
+		public void topLevelValue(String varName, DValue dval, String typeName) {
 			if (!generateValues) {
 				return;
 			}
 			
-			String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
 			String valueStr = getValueStr(dval);
 			String s = String.format("let %s %s = %s", varName, typeName, valueStr);
 			
@@ -225,45 +241,34 @@ public class NewGeneratorTests extends BaseTest {
 	            
 	            if (dtype.isStructShape()) {
 	                DStructType fste = (DStructType) dtype;
-	                visitor.structType(fste);
-//	                visitor.startStructType(dtype.getName(), fste);
-//	                //!!fix to be ordered
-//	                for(String fieldName: fste.orderedList()) {
-//	                    DType field = fste.getFields().get(fieldName);
-//	                    visitor.structMember(fieldName, field);
-//	                }
+	    			String typeName = TypeInfo.parserTypeOf(fste.getName());
+	    			String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
+	                visitor.structType(fste, typeName, parentName);
 	            } else if (dtype.isShape(Shape.ENUM)) {  
 	                DStructType structType = (DStructType) dtype;
-	                visitor.enumType(structType);
-//	                visitor.startEnumType(dtype.getName(), structType);
-//	                for(String key: structType.orderedList()) {
-//	                    DType elType = structType.getFields().get(key);
-//	                    visitor.enumMember(key, elType);
-//	                }
+	    			String typeName = TypeInfo.parserTypeOf(structType.getName());
+	                visitor.enumType(structType, typeName);
 	            } else if (dtype instanceof DListType) {
 	                DListType listType = (DListType) dtype;
-	                visitor.listType(listType);
+	    			String typeName = TypeInfo.parserTypeOf(listType.getName());
+	    			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
+	                visitor.listType(listType, typeName, elementName);
 	            } else if (dtype instanceof DMapType) {
 	            	DMapType mapType = (DMapType) dtype;
 	                visitor.mapType(mapType);
 	            } else {
-	                visitor.scalarType(dtype);
+	    			String typeName = TypeInfo.parserTypeOf(dtype.getName());
+	    			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
+	                visitor.scalarType(dtype, typeName, parentName);
 	            }
-
-//	            int index = 0;
-//	            for(NRule rule: dtype.getRawRules()) {
-//	                String ruleText = rule.getRuleText();
-//	                visitor.rule(index++, ruleText, rule); //fix later!! need ruleText
-//	            }
-
-//	            visitor.endType(dtype.getName(), dtype);
 	        }
 
 	        List<String> orderedValueList = world.getOrderedList();
 	        for(String valueName: orderedValueList) {
 	            DValue dval = world.findTopLevelValue(valueName);
 //	            doval(visitor, 0, valueName, dval, null);
-	            visitor.topLevelValue(valueName, dval);
+				String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
+	            visitor.topLevelValue(valueName, dval, typeName);
 	        }
 
 
@@ -405,7 +410,7 @@ public class NewGeneratorTests extends BaseTest {
     }
     @Test
     public void testTypeStruct() {
-    	chkTypeGen("type Foo struct { name string, age int } end",  "type Foo struct { name string, age int } end|", 2);
+    	chkTypeGen("type Foo struct { name string, age int } end",  "type Foo struct {name string, age int} end|", 1);
     }
     
     //------------------
