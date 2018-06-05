@@ -37,6 +37,10 @@ public class JSONGenerator extends ValueGeneratorVisitor {
     }
     @Override
     public void value(String name, DValue dval, DValue parentVal) throws Exception {
+    	if (dval == null) {
+    		return;
+    	}
+    	
         String shape = getCurrentShape();
         Map<String,Object> mmm = new HashMap<>();
 
