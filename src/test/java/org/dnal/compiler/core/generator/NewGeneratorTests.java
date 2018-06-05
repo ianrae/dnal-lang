@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -50,7 +51,9 @@ public class NewGeneratorTests extends BaseTest {
             for(TypePair pair: dtype.getAllFields()) {
             	String field = pair.name;
             	String fieldTypeName = TypeInfo.parserTypeOf(pair.type.getName());
-            	String s = String.format("%s %s", field, fieldTypeName);
+            	String optional = (dtype.fieldIsOptional(field)) ? " optional": "";
+            	String unique = (dtype.fieldIsUnique(field)) ? " unique": "";
+            	String s = String.format("%s %s%s%s", field, fieldTypeName, optional, unique);
                 joiner.add(s); 
             }
 
@@ -113,6 +116,9 @@ public class NewGeneratorTests extends BaseTest {
 			StringJoiner joiner = new StringJoiner(" ");
             for(NRule rule: dtype.getRawRules()) {
                 String ruleText = rule.getRuleText();
+                if (rule instanceof UniqueRule) {
+                	ruleText= String.format("unique %s", ruleText); 
+                }
                 joiner.add(ruleText); 
             }
 
@@ -410,7 +416,8 @@ public class NewGeneratorTests extends BaseTest {
     }
     @Test
     public void testTypeStruct() {
-    	chkTypeGen("type Foo struct { name string, age int } end",  "type Foo struct {name string, age int} end|", 1);
+//    	chkTypeGen("type Foo struct { name string optional, age int} end",  "type Foo struct {name string optional, age int} end|", 1);
+    	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} unique age end|", 1);
     }
     
     //------------------
