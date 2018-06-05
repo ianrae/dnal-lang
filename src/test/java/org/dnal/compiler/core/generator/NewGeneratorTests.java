@@ -45,9 +45,9 @@ public class NewGeneratorTests extends BaseTest {
 			// TODO Auto-generated method stub
 			
 		}
-		public void typeLevelValue(String varName, DValue dval) {
+		public void topLevelValue(String varName, DValue dval) {
 			
-			String typeName = dval.getType().getName();
+			String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
 			String valueStr = getValueStr(dval);
 			String s = String.format("let %s %s = %s", varName, typeName, valueStr);
 			
@@ -63,6 +63,22 @@ public class NewGeneratorTests extends BaseTest {
 				switch (dval.getType().getShape()) {
 					case BOOLEAN:
 						s = Boolean.valueOf(dval.asBoolean()).toString();
+						break;
+					case DATE:
+						s = Long.valueOf(dval.asDate().getTime()).toString(); //??use sdf formatter??
+						break;
+					case INTEGER:
+						s = Integer.valueOf(dval.asInt()).toString();
+						break;
+					case LONG:
+						s = Long.valueOf(dval.asLong()).toString();
+						break;
+					case NUMBER:
+						s = Double.valueOf(dval.asNumber()).toString();
+						break;
+					case STRING:
+						//add code to use either ' or "!!
+						s = String.format("'%s'", dval.asString());
 						break;
 					default:
 						break;
@@ -140,7 +156,7 @@ public class NewGeneratorTests extends BaseTest {
 	        for(String valueName: orderedValueList) {
 	            DValue dval = world.findTopLevelValue(valueName);
 //	            doval(visitor, 0, valueName, dval, null);
-	            visitor.typeLevelValue(valueName, dval);
+	            visitor.topLevelValue(valueName, dval);
 	        }
 
 
@@ -199,11 +215,12 @@ public class NewGeneratorTests extends BaseTest {
 	@Test
 	public void test() {
 	    chkGen("type Foo boolean end let x Foo = false",  "let x Foo = false|", 2);
-//	    chkGen("let x int = 44",  "let x int = 44|");
-//	    chkGen("let x long = 555666",  "let x long = 555666|");
-//	    chkGen("let x number = 3.14",  "let x number = 3.14|");
-//	    chkGen("let x string = 'abc def'",  "let x string = 'abc def'|");
-//		chkGen("let x date = '2017'",  "let x date = 1483246800000|");
+	    chkGen("let x boolean = true",  "let x boolean = true|");
+	    chkGen("let x int = 44",  "let x int = 44|");
+	    chkGen("let x long = 555666",  "let x long = 555666|");
+	    chkGen("let x number = 3.14",  "let x number = 3.14|");
+	    chkGen("let x string = 'abc def'",  "let x string = 'abc def'|");
+		chkGen("let x date = '2017'",  "let x date = 1483246800000|");
 //		chkGen("let x list<int> = [44, 45]",  "let x list<int> = [44, 45]|");
 	}
     
