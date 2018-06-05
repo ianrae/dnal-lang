@@ -41,13 +41,36 @@ public class NewGeneratorTests extends BaseTest {
 			if (!generateTypes) {
 				return;
 			}
+			String typeName = TypeInfo.parserTypeOf(enumType.getName());
+			String parentName = "enum";
+			String rulesStr = getRuleStr(enumType);
+			if (! StringUtils.isEmpty(rulesStr)) {
+				rulesStr = String.format(" %s", rulesStr);
+			}
+			String body = getEnumMembers(enumType);
+			String s = String.format("type %s %s {%s}%s end", typeName, parentName, body, rulesStr);
+			outputL.add(s);
+		}
+		private String getEnumMembers(DStructType enumType) {
+			StringJoiner joiner = new StringJoiner(", ");
+            for(String field: enumType.orderedList()) {
+                joiner.add(field); 
+            }
+
+            return joiner.toString();
 		}
 		public void listType(DListType listType) {
 			if (!generateTypes) {
 				return;
 			}
-			// TODO Auto-generated method stub
-			
+			String typeName = TypeInfo.parserTypeOf(listType.getName());
+			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
+			String rulesStr = getRuleStr(listType);
+			if (! StringUtils.isEmpty(rulesStr)) {
+				rulesStr = String.format(" %s", rulesStr);
+			}
+			String s = String.format("type %s list<%s>%s end", typeName, elementName, rulesStr);
+			outputL.add(s);
 		}
 		public void mapType(DMapType mapType) {
 			if (!generateTypes) {
@@ -64,9 +87,9 @@ public class NewGeneratorTests extends BaseTest {
 			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
 			String rulesStr = getRuleStr(dtype);
 			if (! StringUtils.isEmpty(rulesStr)) {
-				rulesStr = String.format(" %s ", rulesStr);
+				rulesStr = String.format(" %s", rulesStr);
 			}
-			String s = String.format("type %s %s%send", typeName, parentName, rulesStr);
+			String s = String.format("type %s %s%s end", typeName, parentName, rulesStr);
 			outputL.add(s);
 		}
 		private String getRuleStr(DType dtype) {
@@ -295,7 +318,6 @@ public class NewGeneratorTests extends BaseTest {
 	}	
 	
 	
-	
 	@Test
 	public void test() {
 	    chkGen("type Foo boolean end let x Foo = false",  "let x Foo = false|", 2);
@@ -373,6 +395,18 @@ public class NewGeneratorTests extends BaseTest {
 	    //type Foo int >= 5 end let x Foo = 14
 	    chkTypeGen("type Foo int >= 100 end",  "type Foo int >= 100 end|", 1);
 	}
+	@Test
+	public void testTypeList() {
+		chkTypeGen("type X list<int> end",  "type X list<int> end|", 1);
+	}
+    @Test
+    public void testTypeEnum() {
+    	chkTypeGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "type Foo enum {RED, BLUE} end|", 2);
+    }
+    @Test
+    public void testTypeStruct() {
+    	chkTypeGen("type Foo struct { name string, age int } end",  "type Foo struct { name string, age int } end|", 2);
+    }
     
     //------------------
 	private void chkGen(String input, String expectedOutput) {
