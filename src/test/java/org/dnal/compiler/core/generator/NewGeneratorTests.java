@@ -91,8 +91,37 @@ public class NewGeneratorTests extends BaseTest {
 			} else if (dtype.isListShape()) {
 				DListType listType = (DListType) dtype;
 				s = doList(dval, listType);
-			} 
+			} else if (dtype.isStructShape()) {
+				DStructType structType = (DStructType) dtype;
+				s = doStruct(dval, structType);
+			} else if (dtype.isMapShape()) {
+				DMapType mapType = (DMapType) dtype;
+				s = doMap(dval, mapType);
+			}
 			return s;
+		}
+		private String doMap(DValue dval, DMapType mapType) {
+			StringJoiner joiner = new StringJoiner(", ");
+			//!!should fields be in alpha order?
+			for(String fieldName: dval.asMap().keySet()) {
+				DValue inner = dval.asMap().get(fieldName);
+				String s = getValueStr(inner);
+				String fieldStr = String.format("%s:%s", fieldName, s);
+				joiner.add(fieldStr);
+			}
+			return String.format("{%s}", joiner.toString());
+		}
+		private String doStruct(DValue dval, DStructType structType) {
+			StringJoiner joiner = new StringJoiner(", ");
+			//!!should fields be in alpha order?
+			for(String fieldName: dval.asStruct().getFieldNames()) {
+				DValue inner = dval.asStruct().getField(fieldName);
+				String s = getValueStr(inner);
+				String fieldStr = String.format("%s:%s", fieldName, s);
+				joiner.add(fieldStr);
+				
+			}
+			return String.format("{%s}", joiner.toString());
 		}
 		private String doEnum(DValue dval, DType dtype) {
 			DStructType enumType = (DStructType) dtype;
@@ -252,6 +281,35 @@ public class NewGeneratorTests extends BaseTest {
     @Test
     public void test1a() {
         chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "let x Foo = RED|", 2);
+    }
+    
+    @Test
+    public void test1b() {
+        chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {age:33, name:'amy'}|", 2);
+    }
+    @Test
+    public void test2() {
+        chkGen("let x list<int> = [44, 45]", "let x list<int> = [44, 45]|");
+        chkGen("type Z list<int> end let x list<Z> = [[44, 45],[50, 51]]",  "let x list<Z> = [[44, 45], [50, 51]]|", 2);
+    }
+    @Test
+    public void test3() {
+        chkGen("type Z struct { x int, y int } end let x Z = { 15, 20 }", "let x Z = {x:15, y:20}|", 2);
+        String s = "let x Z = {x:{a:100, b:101}, y:20}|";
+        chkGen("type Inner struct { a int, b int } end type Z struct { x Inner, y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
+    }
+    @Test
+    public void test4() {
+        String s = "let x Z = {x:[15, 16], y:20}|";
+        chkGen("type L list<int> end type Z struct { x L, y int } end let x Z = { [15,16], 20 }", s, 3);
+//        String s = "{'x':{'a':100,'b':101},'y':20}|";
+//        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
+    }
+
+    @Test
+    public void test5() {
+        String s = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
+        chkGen(s, "let z SizeMap = {x:33, y:34}|", 2);
     }
     
     
