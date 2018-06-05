@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
@@ -19,6 +20,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
+import org.dnal.core.TypePair;
 import org.dnal.core.repository.World;
 import org.junit.Test;
 
@@ -59,7 +61,8 @@ public class NewGeneratorTests extends BaseTest {
 			}
 			
 			String s = null;
-			if (dval.getType().isScalarShape()) {
+			DType dtype = dval.getType();
+			if (dtype.isScalarShape()) {
 				switch (dval.getType().getShape()) {
 					case BOOLEAN:
 						s = Boolean.valueOf(dval.asBoolean()).toString();
@@ -80,11 +83,29 @@ public class NewGeneratorTests extends BaseTest {
 						//add code to use either ' or "!!
 						s = String.format("'%s'", dval.asString());
 						break;
+					case ENUM:
+						s = doEnum(dval, dtype);
 					default:
 						break;
 				}
-			}
+			} else if (dtype.isListShape()) {
+				DListType listType = (DListType) dtype;
+				s = doList(dval, listType);
+			} 
 			return s;
+		}
+		private String doEnum(DValue dval, DType dtype) {
+			DStructType enumType = (DStructType) dtype;
+			return dval.asString();
+		}
+		private String doList(DValue dval, DListType listType) {
+			StringJoiner joiner = new StringJoiner(", ");
+			for(DValue inner: dval.asList()) {
+				String s = getValueStr(inner);
+				joiner.add(s);
+				
+			}
+			return String.format("[%s]", joiner.toString());
 		}
 	}
 	
@@ -221,8 +242,17 @@ public class NewGeneratorTests extends BaseTest {
 	    chkGen("let x number = 3.14",  "let x number = 3.14|");
 	    chkGen("let x string = 'abc def'",  "let x string = 'abc def'|");
 		chkGen("let x date = '2017'",  "let x date = 1483246800000|");
-//		chkGen("let x list<int> = [44, 45]",  "let x list<int> = [44, 45]|");
 	}
+	@Test
+	public void testList() {
+		chkGen("let x list<int> = [44, 45]",  "let x list<int> = [44, 45]|");
+		chkGen("let x list<int> = []",  "let x list<int> = []|");
+	}
+	
+    @Test
+    public void test1a() {
+        chkGen("type Foo enum { RED, BLUE } end let x Foo = RED",  "let x Foo = RED|", 2);
+    }
     
     
     //------------------
