@@ -64,9 +64,6 @@ public class ReflectionBeanLoader implements BeanLoader<Object> {
 	}
 	private DStructType getTypeName(String typeNameParam) {
 		DStructType dtype = trans.getStructType(typeNameParam);
-		if (dtype == null) {
-			dtype = trans.getViewType(typeNameParam);
-		}
 		return dtype;
 	}
 

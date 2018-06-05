@@ -8,7 +8,6 @@ import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.DateBuilder;
@@ -35,7 +34,6 @@ public interface Transaction {
     DType getType(String typeName);
     DListType getListType(String typeName);
     DStructType getStructType(String typeName);
-    DViewType getViewType(String viewName);
     DMapType getMapType(String typeName);
     
     StructBuilder createStructBuilder(DStructType structType);

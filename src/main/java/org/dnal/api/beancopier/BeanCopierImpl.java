@@ -8,9 +8,6 @@ import java.util.Map;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.bean.BeanMethodCache;
-import org.dnal.api.view.ViewLoader;
-import org.dnal.core.DStructType;
-import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
@@ -87,12 +84,13 @@ public class BeanCopierImpl implements BeanCopier {
 
 		bctx.pctC.start();
 		DataSet ds = bctx.loader.getDataSet();
-		ViewLoader viewLoader = new ViewLoader(ds);
-		DValue dval = viewLoader.load(dvalSource, (DStructType) ds.getType(destTypeName));
-		if (dval == null) {
-			Log.log("BeanCopier: viewLoader failed ");
-			return false;
-		}
+//		ViewLoader viewLoader = new ViewLoader(ds);
+//		DValue dval = viewLoader.load(dvalSource, (DStructType) ds.getType(destTypeName));
+//		if (dval == null) {
+//			Log.log("BeanCopier: viewLoader failed ");
+//			return false;
+//		}
+		DValue dval = null; //!!
 		bctx.pctC.end();
 
 		//now convert dval into x

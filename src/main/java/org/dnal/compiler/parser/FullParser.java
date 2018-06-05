@@ -14,7 +14,7 @@ public class FullParser {
 		        VarParser.assignment00(), TypeParser.typestruct01(),
 				TypeParser.typeenum01(), TypeParser.type01(), TypeParser.typelist01(), 
 				TypeParser.typemap01(),
-				RuleDeclParser.customRuleDecl(), ViewParser.view03());
+				RuleDeclParser.customRuleDecl());
 //				followedBy(TerminalParser.token(";").optional());
 	}
 	public static Exp parse02(String input){

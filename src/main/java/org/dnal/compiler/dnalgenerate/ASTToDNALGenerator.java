@@ -1,10 +1,7 @@
 package org.dnal.compiler.dnalgenerate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.dnal.api.impl.CompilerContext;
@@ -25,10 +22,6 @@ import org.dnal.compiler.parser.ast.ImportExp;
 import org.dnal.compiler.parser.ast.RuleDeclExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
-import org.dnal.compiler.parser.ast.ViewDirection;
-import org.dnal.compiler.parser.ast.ViewExp;
-import org.dnal.compiler.parser.ast.ViewFormatExp;
-import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.BuiltInTypes;
@@ -38,11 +31,9 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 import org.dnal.core.Shape;
 import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.fluent.type.TypeBuilder.Inner;
-import org.dnal.core.fluent.type.ViewBuilder;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
@@ -100,17 +91,6 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			}
 		}
 		context.perf.endTimer("ast-to-dval:values");
-
-		context.perf.startTimer("ast-to-dval:views");
-		for(Exp exp: doc.getViews()) {
-			try {
-				visitView(exp);
-			} catch (Exception e) {
-				e.printStackTrace();
-				this.addError2s("ASTView '%s': %s", exp.strValue(), e.getMessage());
-			}
-		}
-		context.perf.endTimer("ast-to-dval:views");
 
 		return areNoErrors();
 	}
@@ -508,86 +488,6 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 	}
 
-
-	//    @Override
-	public void visitView(Exp exp) {
-		ViewExp viewExp = (ViewExp) exp;
-		String typeName = viewExp.viewName.val;
-		ViewBuilder tb = new ViewBuilder(registry, world);
-		tb.setPackageName(packageHelper.getPackageName());
-//		DType baseType = null; //no base type for views
-
-		Inner inner = tb.start(viewExp.viewName.name());
-		boolean isOutbound = viewExp.direction.equals(ViewDirection.OUTBOUND);
-
-		for(ViewMemberExp membExp : viewExp.memberL) {
-//			log(" vm " + membExp.strValue());
-			
-			if (! isOutbound) {
-				//remove duplicates
-				if (tb.fieldNameExists(membExp.right.strValue())) {
-					continue;
-				}
-			}
-
-			switch(TypeInfo.typeOf(membExp.rightType)) {
-			case INT:
-				inner = inner.integer(membExp.right.strValue());
-				break;
-			case LONG:
-				inner = inner.longInteger(membExp.right.strValue());
-				break;
-			case NUMBER:
-				inner = inner.number(membExp.right.strValue());
-				break;
-			case DATE:
-				inner = inner.date(membExp.right.strValue());
-				break;
-			case BOOLEAN:
-				inner = inner.bool(membExp.right.strValue());
-				break;
-			case STRING:
-				inner = inner.string(membExp.right.strValue());
-				break;
-
-			default:
-			{
-				DType eltype = packageHelper.findRegisteredType(membExp.rightType.name());
-				String fieldName = membExp.right.name();
-				if (eltype != null) {
-					inner.other(fieldName, eltype);
-				} else {
-					addError2s("view type '%s' - unknown %s", viewExp.viewName.name(), membExp.rightType.name());
-				}
-			}
-			break;
-			}
-		}
-		
-		Map<String,String> namingMap = new HashMap<>();
-		for(ViewMemberExp membExp : viewExp.memberL) {
-			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
-				namingMap.put(membExp.right.val, membExp.getFullLeft());
-			} else {
-				namingMap.put(membExp.left.val, membExp.right.val);
-			}
-		}		
-		
-		Map<String,ViewFormatExp> fnMap = new HashMap<>();
-		for(ViewMemberExp membExp : viewExp.memberL) {
-			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
-				fnMap.put(membExp.right.val, membExp.vfe);
-			} else {
-				fnMap.put(membExp.left.val, membExp.vfe);
-			}
-		}		
-
-		inner.endView(viewExp.typeName.val, namingMap, fnMap, viewExp.direction);
-		DViewType structType = tb.getViewType();
-		packageHelper.addPackage(structType);
-
-		Log.debugLog("view " + typeName);
-	}
 
 	private void log(String s) {
 		Log.log(s);

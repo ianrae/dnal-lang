@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 
 
 public interface DataSet {
@@ -19,5 +18,4 @@ public interface DataSet {
     int size();
     List<String> getAllNames();
     DType getType(String typeName);
-    DViewType getViewType(String viewName);
 }

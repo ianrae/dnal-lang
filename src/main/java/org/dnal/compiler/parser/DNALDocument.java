@@ -10,7 +10,6 @@ import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.ImportExp;
 import org.dnal.compiler.parser.ast.PackageExp;
 import org.dnal.compiler.parser.ast.RuleDeclExp;
-import org.dnal.compiler.parser.ast.ViewExp;
 
 public class DNALDocument {
 	private List<Exp> statementList;
@@ -55,15 +54,6 @@ public class DNALDocument {
 			}
 		}
 		return typeL;
-	}
-	public List<ViewExp> getViews() {
-		List<ViewExp> viewL = new ArrayList<>();
-		for (Exp exp : statementList) {
-			if (exp instanceof ViewExp) {
-				viewL.add((ViewExp) exp);
-			}
-		}
-		return viewL;
 	}
 	public List<FullAssignmentExp> getValues() {
 		List<FullAssignmentExp> valueL = new ArrayList<>();
