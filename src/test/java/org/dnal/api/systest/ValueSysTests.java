@@ -11,7 +11,7 @@ public class ValueSysTests extends SysTestBase {
     
     @Test
     public void testT201() {
-        chkFail("let x int = 5 let y int = zzz", 1, "cannot resolve reference to 'zzz'");
+        chkFail("let x int = 5 let y int = zzz", 2, "cannot resolve reference to 'zzz'");
     }
     
     @Test

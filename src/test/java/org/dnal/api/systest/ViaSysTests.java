@@ -188,7 +188,7 @@ public class ViaSysTests extends SysTestBase {
     public void test514fail4() {
         String src = buildBothMulti();
         src = src.replace("[ via personCode code ]", "[ via personCode xxxcode ]"); //invalid field name
-        chkFail(src, 5, "Acan't resolve via: personCode");
+        chkFail(src, 6, "Acan't resolve via: personCode");
     }
     
 

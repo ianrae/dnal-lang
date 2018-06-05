@@ -26,6 +26,18 @@ public class LongTests extends BaseDValTest {
 		assertEquals(1400L, nval2.longValue());
 		assertTrue(val.getType()== type);
 	}
+	@Test
+	public void testLongNeg() {
+		DType type = registry.getType(BuiltInTypes.LONG_SHAPE);
+		Long nval = -1400L;
+
+		DValue val = new DValueImpl(type, nval);
+		assertEquals(type, val.getType());
+
+		Long nval2 = (Long) val.getObject();
+		assertEquals(-1400L, nval2.longValue());
+		assertTrue(val.getType()== type);
+	}
 
 	@Test
 	public void testBuilder() {
