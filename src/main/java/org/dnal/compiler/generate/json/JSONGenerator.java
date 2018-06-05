@@ -6,15 +6,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.generate.ValueGeneratorVisitor;
-import org.dnal.core.DListType;
-import org.dnal.core.DMapType;
-import org.dnal.core.DStructType;
-import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
-import org.dnal.core.nrule.NRule;
 import org.dnal.core.util.TextFileWriter;
 import org.dnal.dnalc.ConfigFileOptions;
 

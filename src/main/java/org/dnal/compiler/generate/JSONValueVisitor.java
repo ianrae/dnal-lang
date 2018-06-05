@@ -52,6 +52,7 @@ public class JSONValueVisitor extends ValueGeneratorVisitor {
 				String str = String.format("{%s: %s}", name, s);
 				outputL.add(str);
 			} else if (parentVal.getType().isStructShape() || parentVal.getType().isMapShape()){
+			} else if (parentVal.getType().isStructShape()){
 				JSONValueVisitor gen = genStack.peek();
 				String str = String.format("%s:%s", name, s);
 				gen.outputL.add(str);

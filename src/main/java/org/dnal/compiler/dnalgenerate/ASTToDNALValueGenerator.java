@@ -257,6 +257,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             }
             break;
             
+            
+            //				case LIST:
+            //					break;
+
             default:
                 addError2s("var '%s' - unknown shape '%s'", varName, shape);
                 break;
@@ -444,6 +448,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 NewErrorMessage errz = addError2s("cannot resolve reference to '%s'", tmp.name(), "");
                 errz.setFieldName(typeExp.var.name());
                 errz.setActualValue(typeExp.value.strValue());
+                this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
                 return null;
             }
             return resolveRHS(referencedValue); //recursion

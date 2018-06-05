@@ -88,7 +88,6 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
         return areNoErrors();
     }
-
 	private void doList(OutputGenerator visitor, DListType listType) throws Exception {
         visitor.startListType(listType.getName(), listType);
     }

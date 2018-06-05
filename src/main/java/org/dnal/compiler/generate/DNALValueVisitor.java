@@ -55,6 +55,7 @@ public class DNALValueVisitor extends ValueGeneratorVisitor {
 				String str = String.format("let %s %s = %s", name, typeName, s);
 				outputL.add(str);
 			} else if (parentVal.getType().isStructShape() || parentVal.getType().isMapShape()){
+			} else if (parentVal.getType().isStructShape()){
 				DNALValueVisitor gen = genStack.peek();
 				String str = String.format("%s:%s", name, s);
 				gen.outputL.add(str);

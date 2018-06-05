@@ -62,8 +62,6 @@ public class DNALValueGeneratorTests extends BaseTest {
         chkGen(s, "let z SizeMap = {x:33, y:34}|", 2);
     }
     
-    
-    
     //------------------
 	private void chkGen(String input, String expectedOutput) {
 		chkGen(input, expectedOutput, 1);
