@@ -12,6 +12,7 @@ import org.dnal.compiler.parser.ast.EnumMemberExp;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullEnumTypeExp;
 import org.dnal.compiler.parser.ast.FullListTypeExp;
+import org.dnal.compiler.parser.ast.FullMapTypeExp;
 import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
@@ -143,7 +144,7 @@ public class TypeParser extends ParserBase {
 	
 	public static final Parser.Reference<IdentExp> listangleRef = Parser.newReference();
 	public static Parser<IdentExp> listangleinner() {
-		return Parsers.or(listangleRef.lazy(), VarParser.ident());
+		return Parsers.or(listangleRef.lazy(), VarParser.ident(), any());
 	}
 	public static Parser<IdentExp> listangle() {
 		return Parsers.sequence(term("list"), term("<"), listangleinner(), term(">"),
@@ -157,6 +158,29 @@ public class TypeParser extends ParserBase {
 				(Token tok, IdentExp varName, 
 				 IdentExp elementType, List<RuleExp> rules) -> 
 		new FullListTypeExp(varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());
+	}
+	
+	
+	public static Parser<IdentExp> any() {
+		return term("any").<IdentExp>retn(new IdentExp("any"));
+	}
+
+	public static final Parser.Reference<IdentExp> mapangleRef = Parser.newReference();
+	public static Parser<IdentExp> mapangleinner() {
+		return Parsers.or(mapangleRef.lazy(), VarParser.ident(), any());
+	}
+	public static Parser<IdentExp> mapangle() {
+		return Parsers.sequence(term("map"), term("<"), mapangleinner(), term(">"),
+				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
+		new IdentExp(String.format("map<%s>", elementType.name())));
+	}
+
+	public static Parser<FullMapTypeExp> typemap01() {
+		return Parsers.sequence(term("type"), VarParser.ident(), 
+				mapangle(), RuleParser.ruleMany(),
+				(Token tok, IdentExp varName, 
+				 IdentExp elementType, List<RuleExp> rules) -> 
+		new FullMapTypeExp(varName, new IdentExp("map"), elementType, rules)).followedBy(VarParser.doEnd());
 	}
 	
 }

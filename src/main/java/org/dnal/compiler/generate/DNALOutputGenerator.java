@@ -9,6 +9,7 @@ import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -72,6 +73,14 @@ public class DNALOutputGenerator implements OutputGenerator {
         outputL.add(s);
         haveSeenFirstRule = false;
     }
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+        String elType = getTypeName(type.getElementType());
+        String baseTypeName = (type.getBaseType() == null) ? String.format("map<%s>", elType) : type.getBaseType().getName();
+        String s = String.format("type %s %s", name, baseTypeName);
+        outputL.add(s);
+        haveSeenFirstRule = false;
+	}
 
 
     @Override
@@ -195,5 +204,16 @@ public class DNALOutputGenerator implements OutputGenerator {
     }
 	@Override
 	public void setOptions(ConfigFileOptions configFileOptions) {
+	}
+	
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+		// TODO Auto-generated method stub
+		
 	}
 }

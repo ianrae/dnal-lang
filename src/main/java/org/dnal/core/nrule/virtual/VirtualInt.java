@@ -28,6 +28,10 @@ public class VirtualInt implements VirtualDataItem, Comparable<Integer> {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asInt();
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+		return true;
+	}
     
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -15,6 +16,7 @@ import org.dnal.core.builder.EnumBuilder;
 import org.dnal.core.builder.IntBuilder;
 import org.dnal.core.builder.ListBuilder;
 import org.dnal.core.builder.LongBuilder;
+import org.dnal.core.builder.MapBuilder;
 import org.dnal.core.builder.NumberBuilder;
 import org.dnal.core.builder.StringBuilder;
 import org.dnal.core.builder.StructBuilder;
@@ -34,9 +36,13 @@ public interface Transaction {
     DListType getListType(String typeName);
     DStructType getStructType(String typeName);
     DViewType getViewType(String viewName);
+    DMapType getMapType(String typeName);
     
     StructBuilder createStructBuilder(DStructType structType);
     StructBuilder createStructBuilder(String typeName);
+    
+    MapBuilder createMapBuilder(DMapType mapType);
+    MapBuilder createMapBuilder(String typeName);
     
     IntBuilder createIntBuilder();
     IntBuilder createIntBuilder(String typeName);

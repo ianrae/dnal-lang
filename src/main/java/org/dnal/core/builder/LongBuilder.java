@@ -5,7 +5,7 @@ import java.util.List;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XLongValueBuilder;
+import org.dnal.core.xbuilder.XLongValueBuilder;
 
 public class LongBuilder extends Builder {
     private XLongValueBuilder builder;

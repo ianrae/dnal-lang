@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.dnal.core.fluent.type.TypeBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XLongValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XLongValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class LongTests extends BaseDValTest {
@@ -24,6 +24,18 @@ public class LongTests extends BaseDValTest {
 
 		Long nval2 = (Long) val.getObject();
 		assertEquals(1400L, nval2.longValue());
+		assertTrue(val.getType()== type);
+	}
+	@Test
+	public void testLongNeg() {
+		DType type = registry.getType(BuiltInTypes.LONG_SHAPE);
+		Long nval = -1400L;
+
+		DValue val = new DValueImpl(type, nval);
+		assertEquals(type, val.getType());
+
+		Long nval2 = (Long) val.getObject();
+		assertEquals(-1400L, nval2.longValue());
 		assertTrue(val.getType()== type);
 	}
 

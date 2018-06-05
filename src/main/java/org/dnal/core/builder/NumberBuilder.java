@@ -5,7 +5,7 @@ import java.util.List;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.core.oldbuilder.XNumberValueBuilder;
+import org.dnal.core.xbuilder.XNumberValueBuilder;
 
 public class NumberBuilder extends Builder {
     private XNumberValueBuilder builder;

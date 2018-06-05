@@ -8,7 +8,8 @@ public enum Shape {
 	STRING,
 	DATE,
 	LIST,
-	//		MAP,
+	MAP,
 	STRUCT,
-	ENUM
+	ENUM,
+	ANY
 }

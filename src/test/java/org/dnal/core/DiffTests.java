@@ -9,7 +9,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 import org.dnal.core.compare.DValueComparer;
-import org.dnal.core.oldbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
 import org.junit.Test;
 
 public class DiffTests extends BaseDValTest {

@@ -13,6 +13,10 @@ public class VirtualList implements VirtualDataItem {
     public void resolve(DValue dval, NRuleContext ctx) {
         val = dval.asList();
     }
+	@Override
+	public boolean containsValue(DValue dval) {
+		return true;
+	}
 
     @Override
     public Shape getTargetShape() {

@@ -13,6 +13,7 @@ public class FullParser {
 		return Parsers.or(PackageParser.packageDecl(), PackageParser.importDecl(), 
 		        VarParser.assignment00(), TypeParser.typestruct01(),
 				TypeParser.typeenum01(), TypeParser.type01(), TypeParser.typelist01(), 
+				TypeParser.typemap01(),
 				RuleDeclParser.customRuleDecl(), ViewParser.view03());
 //				followedBy(TerminalParser.token(";").optional());
 	}
@@ -20,6 +21,7 @@ public class FullParser {
 		VarParser.listmemberRef.set(VarParser.valueassign());		
 		VarParser.structmemberRef.set(VarParser.valueassignstruct00());
 		TypeParser.listangleRef.set(TypeParser.listangle());
+		TypeParser.mapangleRef.set(TypeParser.mapangle());
 		return FullParser.allStatements().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(input);
 	}
 	public static FullAssignmentExp parse01(String input){
@@ -30,6 +32,7 @@ public class FullParser {
 		VarParser.listmemberRef.set(VarParser.valueassign());		
 		VarParser.structmemberRef.set(VarParser.valueassignstruct00());
 		TypeParser.listangleRef.set(TypeParser.listangle());
+		TypeParser.mapangleRef.set(TypeParser.mapangle());
 		return FullParser.allStatements().many().from(TerminalParser.tokenizer, TerminalParser.ignored.skipMany()).parse(input);
 	}
 }

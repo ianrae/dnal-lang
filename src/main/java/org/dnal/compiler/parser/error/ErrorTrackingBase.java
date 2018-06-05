@@ -28,6 +28,9 @@ public class ErrorTrackingBase {
     public void popScope() {
         et.popScope();
     }
+    public ErrorInfo getErrorInfo() {
+    	return et.peekErrorInfo();
+    }
 	
 	protected boolean areNoErrors() {
 	    return et.getErrL().size() == 0;
@@ -58,10 +61,11 @@ public class ErrorTrackingBase {
 		err.setMessage(String.format(fmt, s, s2, exp.strValue()));
         addErrorObj(err);
 	}
-	protected void addError2s(String fmt, String s, String s2) {
+	protected NewErrorMessage addError2s(String fmt, String s, String s2) {
 		NewErrorMessage err = new NewErrorMessage();
 		err.setMessage(String.format(fmt, s, s2));
 		addErrorObj(err);
+		return err;
 	}
     protected void addError3s(String fmt, String s, String s2, String s3) {
 		NewErrorMessage err = new NewErrorMessage();

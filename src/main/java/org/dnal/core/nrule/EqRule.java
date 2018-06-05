@@ -17,8 +17,13 @@ public class EqRule<T,U> extends NRuleBase {
 	}
 	@Override
 	protected boolean onEval(DValue dval, NRuleContext ctx) {
+	    //val1 or val2 may be null due to optional
+	    if (! containsValue(val1, dval) || ! containsValue(val2, dval)) {
+	    	return true;
+	    }
 	    resolveArg(val1, dval, ctx);
 	    resolveArg(val2, dval, ctx);
+	    
 	    setActualValue(val1, ctx);
 	    
 		boolean b = false;

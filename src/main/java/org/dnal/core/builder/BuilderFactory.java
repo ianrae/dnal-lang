@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -36,6 +37,19 @@ public class BuilderFactory {
     public StructBuilder createStructBuilder(String typeName) {
         DStructType structType = getStructType(typeName);
         StructBuilder builder = new StructBuilder(structType, valErrorList);
+        return builder;
+    }
+    public DMapType getMapType(String typeName) {
+        DMapType mapType = (DMapType) registry.getType(typeName);
+        return mapType;
+    }
+    public MapBuilder createMapBuilder(DMapType structType) {
+        MapBuilder builder = new MapBuilder(structType, valErrorList);
+        return builder;
+    }
+    public MapBuilder createMapBuilder(String typeName) {
+        DMapType structType = getMapType(typeName);
+        MapBuilder builder = new MapBuilder(structType, valErrorList);
         return builder;
     }
     

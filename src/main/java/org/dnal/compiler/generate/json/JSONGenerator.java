@@ -6,19 +6,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dnal.compiler.generate.OutputGenerator;
-import org.dnal.core.DListType;
-import org.dnal.core.DStructType;
-import org.dnal.core.DType;
+import org.dnal.compiler.generate.ValueGeneratorVisitor;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
-import org.dnal.core.nrule.NRule;
 import org.dnal.core.util.TextFileWriter;
 import org.dnal.dnalc.ConfigFileOptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JSONGenerator implements OutputGenerator {
+public class JSONGenerator extends ValueGeneratorVisitor {
     ObjectMapper mapper = new ObjectMapper();
     public List<String> outputL = new ArrayList<>();
     private Stack<String> shapeStack = new Stack<>();
@@ -29,44 +25,23 @@ public class JSONGenerator implements OutputGenerator {
     protected ConfigFileOptions options;
 
 
-	@Override
-    public void startStructType(String name, DStructType dtype) throws Exception {
-    }
-    @Override
-    public void startEnumType(String name, DStructType dtype) throws Exception {
-    }
-    @Override
-    public void startType(String name, DType dtype) throws Exception {
-    }
-    @Override
-    public void startListType(String name, DListType type) throws Exception {
-    }
-    @Override
-    public void endType(String name, DType type) throws Exception {
-    }
-    @Override
-    public void structMember(String name, DType type) throws Exception {
-    }
-    @Override
-    public void rule(int index, String ruleText, NRule rule) throws Exception {
-    }
-    @Override
-    public void enumMember(String name, DType memberType) throws Exception {
-    }
-
     private String getCurrentShape() {
         String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
         return shape;
     }
     @Override
     public void value(String name, DValue dval, DValue parentVal) throws Exception {
+    	if (dval == null) {
+    		return;
+    	}
+    	
         String shape = getCurrentShape();
         Map<String,Object> mmm = new HashMap<>();
 
         if (shape.equals("L")) {
             listStack.peek().add(dval.getObject());
             return;
-        } else if (shape.equals("S")) {
+        } else if (shape.equals("S") || shape.equals("M")) {
             mapStack.peek().put(name, dval.getObject());
             return;
         } else {
@@ -98,7 +73,7 @@ public class JSONGenerator implements OutputGenerator {
                 top.add(L);
                 return;
             }
-        } else if (shape.equals("S")) {
+        } else if (shape.equals("S") || shape.equals("M")) {
             if (mapStack.size() > 0) {
                 Map<String,Object> top = mapStack.peek();
                 top.put(name, L);
@@ -137,7 +112,7 @@ public class JSONGenerator implements OutputGenerator {
                 top.add(mmm);
                 return;
             }
-        } else if (shape.equals("S")) {
+        } else if (shape.equals("S") || shape.equals("M")) {
             if (mapStack.size() > 0) {
                 Map<String,Object> top = mapStack.peek();
                 top.put(name, mmm);
@@ -180,5 +155,43 @@ public class JSONGenerator implements OutputGenerator {
 	@Override
 	public void setOptions(ConfigFileOptions configFileOptions) {
 		this.options = configFileOptions;
+	}
+	
+	@Override
+	public void startMap(String name, DValue value) throws Exception {
+        Map<String,Object> mmm = new HashMap<>();
+        mapStack.push(mmm);
+        shapeStack.push("M");
+	}
+	
+	@Override
+	public void endMap(String name, DValue value) throws Exception {
+        shapeStack.pop();
+        String shape = getCurrentShape();
+        
+        Map<String,Object> mmm = mapStack.pop();
+        if (shape.equals("L")) {
+            if (mapStack.size() >= 0) {
+                List<Object> top = listStack.peek();
+                top.add(mmm);
+                return;
+            }
+        } else if (shape.equals("S") || shape.equals("M")) {
+            if (mapStack.size() > 0) {
+                Map<String,Object> top = mapStack.peek();
+                top.put(name, mmm);
+                return;
+            }
+        } else {
+            if (mapStack.size() > 0) {
+                throw new RuntimeException("Error in endMap!");
+            }
+        }
+        
+        Map<String,Object> mmmx = new HashMap<>();
+        mmmx.put(name, mmm);
+        String json = "";
+        json = mapper.writeValueAsString(mmm);
+        outputL.add(json);
 	}
 }

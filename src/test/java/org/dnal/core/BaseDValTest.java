@@ -9,16 +9,16 @@ import org.dnal.core.fluent.type.TypeBuilder.Inner;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.nrule.ValidationScorer;
-import org.dnal.core.oldbuilder.XBooleanValueBuilder;
-import org.dnal.core.oldbuilder.XDValueBuilder;
-import org.dnal.core.oldbuilder.XDateValueBuilder;
-import org.dnal.core.oldbuilder.XEnumValueBuilder;
-import org.dnal.core.oldbuilder.XIntegerValueBuilder;
-import org.dnal.core.oldbuilder.XLongValueBuilder;
-import org.dnal.core.oldbuilder.XNumberValueBuilder;
-import org.dnal.core.oldbuilder.XStringValueBuilder;
 import org.dnal.core.repository.MockRepositoryFactory;
 import org.dnal.core.repository.World;
+import org.dnal.core.xbuilder.XBooleanValueBuilder;
+import org.dnal.core.xbuilder.XDValueBuilder;
+import org.dnal.core.xbuilder.XDateValueBuilder;
+import org.dnal.core.xbuilder.XEnumValueBuilder;
+import org.dnal.core.xbuilder.XIntegerValueBuilder;
+import org.dnal.core.xbuilder.XLongValueBuilder;
+import org.dnal.core.xbuilder.XNumberValueBuilder;
+import org.dnal.core.xbuilder.XStringValueBuilder;
 import org.junit.Before;
 
 public class BaseDValTest {

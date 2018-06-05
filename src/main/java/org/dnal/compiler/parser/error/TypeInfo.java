@@ -21,7 +21,9 @@ public class TypeInfo {
 		STRING,
 		LIST,
 		STRUCT,
+		MAP,
 		ENUM,
+		ANY,
 		
 		UNKNOWN_TYPE
 	}
@@ -39,13 +41,15 @@ public class TypeInfo {
 		case "string": return Type.STRING;
 		case "list": return Type.LIST;
 		case "struct": return Type.STRUCT;
+		case "map": return Type.MAP;
 		case "enum": return Type.ENUM;
+		case "any": return Type.ANY;
 		default: return Type.UNKNOWN_TYPE;
 		}
 	}
 
 	public static boolean isPrimitiveType(IdentExp ident) {
-		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "list", "struct", "enum" };
+		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "list", "struct", "map", "enum", "any" };
 		List<String> list = Arrays.asList(ar);
 
 		return (list.contains(ident.val));
@@ -96,6 +100,10 @@ public class TypeInfo {
                 baseTypeName = "enum";
             } else if (dtype.isStructShape()) {
                 baseTypeName = "struct";
+            } else if (dtype.isMapShape()) {
+            	baseTypeName = "map";
+            } else if (dtype.isAnyShape()) {
+            	baseTypeName = "any";
             }
         } else {
             DType baseType = dtype.getBaseType();
@@ -163,11 +171,24 @@ public class TypeInfo {
         case STRUCT:
             s = "struct";
             break;
+        case MAP:
+        	s = "map";
+        	break;
+        case ANY:
+        	s = "any";
+        	break;
         default:
             break;
         }
         
         return s;
+    }
+    
+    public static boolean isListAny(String typename) {
+    	return "list<any>".equals(typename);
+    }
+    public static boolean isMapAny(String typename) {
+    	return "map<any>".equals(typename);
     }
     
     public static Shape stringToShape(String shapeName) {
@@ -199,6 +220,12 @@ public class TypeInfo {
             break;
         case "struct":
             s = Shape.STRUCT;
+            break;
+        case "map":
+            s = Shape.MAP;
+            break;
+        case "any":
+            s = Shape.ANY;
             break;
         default:
             break;
@@ -232,6 +259,7 @@ public class TypeInfo {
 //!!        addTD("list", BuiltInTypes.LIST_SHAPE, true);
 //        addTD("struct", BuiltInTypes.STRUCT_SHAPE, true, false);
         addTD("enum", BuiltInTypes.ENUM_SHAPE, true, true);
+        addTD("any", BuiltInTypes.ANY_SHAPE, true, true);
         
     }
     private static void addTD(String dnalName, BuiltInTypes bitType,

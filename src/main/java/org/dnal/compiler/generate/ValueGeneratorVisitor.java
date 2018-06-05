@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.nrule.NRule;
@@ -31,6 +32,10 @@ public abstract class ValueGeneratorVisitor implements OutputGenerator {
 	@Override
 	public void startListType(String name, DListType type) throws Exception {
 	}
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+	}
+
 
 	@Override
 	public void structMember(String name, DType type) throws Exception {

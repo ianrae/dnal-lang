@@ -15,6 +15,7 @@ import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -28,6 +29,7 @@ import org.dnal.core.builder.EnumBuilder;
 import org.dnal.core.builder.IntBuilder;
 import org.dnal.core.builder.ListBuilder;
 import org.dnal.core.builder.LongBuilder;
+import org.dnal.core.builder.MapBuilder;
 import org.dnal.core.builder.NumberBuilder;
 import org.dnal.core.builder.StringBuilder;
 import org.dnal.core.builder.StructBuilder;
@@ -153,6 +155,11 @@ public class TransactionImpl implements Transaction {
     	DViewType viewType = (DViewType) registry.getViewType(viewName);
         return viewType;
     }
+    @Override
+    public DMapType getMapType(String typeName) {
+    	DMapType viewType = (DMapType) registry.getType(typeName);
+        return viewType;
+    }
 
     @Override
     public StructBuilder createStructBuilder(DStructType structType) {
@@ -161,6 +168,15 @@ public class TransactionImpl implements Transaction {
     @Override
     public StructBuilder createStructBuilder(String typeName) {
         return factory.createStructBuilder(typeName);
+    }
+
+    @Override
+    public MapBuilder createMapBuilder(DMapType mapType) {
+        return factory.createMapBuilder(mapType);
+    }
+    @Override
+    public MapBuilder createMapBuilder(String typeName) {
+        return factory.createMapBuilder(typeName);
     }
 
     @Override

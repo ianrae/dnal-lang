@@ -7,12 +7,12 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
-import org.dnal.core.oldbuilder.XIntegerValueBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XNumberValueBuilder;
-import org.dnal.core.oldbuilder.XStringValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
 import org.dnal.core.repository.MockRepositoryFactory;
+import org.dnal.core.xbuilder.XIntegerValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XNumberValueBuilder;
+import org.dnal.core.xbuilder.XStringValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class DValTests extends BaseDValTest {
@@ -31,7 +31,7 @@ public class DValTests extends BaseDValTest {
 		DTypeRegistryBuilder regBuilder = new DTypeRegistryBuilder();
 		regBuilder.init(world);
 		DTypeRegistry myRegistry = regBuilder.getRegistry();
-		int numBuiltIns = 7;
+		int numBuiltIns = 10;
 		assertEquals(numBuiltIns, myRegistry.size());
 
 		assertEquals(numBuiltIns, myRegistry.getAll().size());

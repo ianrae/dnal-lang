@@ -1,0 +1,6 @@
+type:X:map<int>
+endtype
+value:x:X {
+ vx:33
+ vy:34
+}

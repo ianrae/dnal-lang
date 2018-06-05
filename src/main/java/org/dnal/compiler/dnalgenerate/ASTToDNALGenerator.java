@@ -17,6 +17,7 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullAssignmentExp;
 import org.dnal.compiler.parser.ast.FullEnumTypeExp;
 import org.dnal.compiler.parser.ast.FullListTypeExp;
+import org.dnal.compiler.parser.ast.FullMapTypeExp;
 import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.FullTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
@@ -32,6 +33,7 @@ import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
+import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -177,6 +179,8 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			buildEnumType((FullEnumTypeExp)exp);
 		} else if (typeExp instanceof FullListTypeExp) {
 			buildListType((FullListTypeExp)exp);
+		} else if (typeExp instanceof FullMapTypeExp) {
+			buildMapType((FullMapTypeExp)exp);
 		} else {
 			DType baseDType;
 			DType dtype = null;
@@ -422,18 +426,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
 		
-		DType dtype = doInner(typeName, elType);
+		DType dtype = doListInner(typeName, elType);
 		this.addValidationRules(exp, dtype);
 	}
-
-	private DType doInner(String typeName, String elType) {
+	private DType doListInner(String typeName, String elType) {
 		DType eltype = null;
 		String target = "list<";
 		if (elType.startsWith(target)) {
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doInner(innerTypeName, elType); //recursion!
+			eltype = doListInner(innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {
@@ -450,6 +453,42 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		registerType(typeName, dtype);
 		return dtype;
 	}
+	
+	private void buildMapType(FullMapTypeExp exp) {
+		String typeName = exp.var.name();
+		String elType = exp.getListElementType();
+		
+		DType dtype = doMapInner(typeName, elType);
+		this.addValidationRules(exp, dtype);
+	}
+	private DType doMapInner(String typeName, String elType) {
+		DType eltype = null;
+		String target = "map<";
+		if (elType.startsWith(target)) {
+			elType = StringUtils.substringAfter(elType, target);
+			elType = elType.substring(0, elType.length() - 1);
+			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
+			eltype = doMapInner(innerTypeName, elType); //recursion!
+		} else {
+			IdentExp elexp = new IdentExp(elType);
+			if (TypeInfo.isPrimitiveType(elexp)) {
+				elType = TypeInfo.toShapeType(elType);
+			}
+			eltype = packageHelper.findRegisteredType(elType);
+		}
+		
+		if (eltype == null) {
+			this.addError2s("type '%s': unknown map element type '%s'", typeName, elType);
+		}
+
+		DMapType dtype = new DMapType(Shape.MAP, typeName, null, eltype);
+		registerType(typeName, dtype);
+		return dtype;
+	}
+
+	
+
+	
 
 	private void processImports() {
 		//        context.errL = errL;

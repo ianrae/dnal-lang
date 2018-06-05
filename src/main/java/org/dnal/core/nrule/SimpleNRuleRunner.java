@@ -98,8 +98,9 @@ public class SimpleNRuleRunner  {
 			} else {
 			    innerEvaluate(inner, ctx);
 			}
-			ctx.setCurrentFieldName(null);
+			//ctx.setCurrentFieldName(null);
 		}
+		ctx.setCurrentFieldName(null);
 		evalScalar(dval, ctx);
 		setCompositeScore(dval);
 		stack.pop();

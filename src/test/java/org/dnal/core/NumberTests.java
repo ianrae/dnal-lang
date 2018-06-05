@@ -15,8 +15,8 @@ import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 import org.dnal.core.fluent.type.TypeBuilder;
-import org.dnal.core.oldbuilder.XListValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XListValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class NumberTests extends BaseDValTest {

@@ -16,7 +16,7 @@ import org.dnal.compiler.parser.ast.StructAssignExp;
 
 public class ValueErrorChecker extends ErrorCheckerBase {
 	private List<FullAssignmentExp> typeL;
-	
+
 	private static final String NAME = "value";
 
 	public ValueErrorChecker(DNALDocument doc, XErrorTracker et) {
@@ -37,25 +37,28 @@ public class ValueErrorChecker extends ErrorCheckerBase {
 		seenTypes.add(ident.strValue());
 
 		ident = valueExp.type;
-		  if (valueExp.isListVar()) {
-	            IdentExp listElementType = valueExp.getListSubType();
-                checkType(listElementType, NAME, valueExp.var.strValue());
-	        } else {
-	            checkType(ident, NAME, valueExp.var.strValue());
-	        }
+		if (valueExp.isListVar()) {
+			IdentExp elementType = valueExp.getListSubType();
+			checkType(elementType, NAME, valueExp.var.strValue());
+		} else if (valueExp.isMapVar()) {
+			IdentExp elementType = valueExp.getMapSubType();
+			checkType(elementType, NAME, valueExp.var.strValue());
+		} else {
+			checkType(ident, NAME, valueExp.var.strValue());
+		}
 		checkAssignedValue(ident, valueExp.value, valueExp.var);
 	}
-	
+
 
 	private void checkAssignedValue(IdentExp ident, Exp value, IdentExp variable) {
 		if (doc.isTypeShape(ident, "int")) {
 			if (!checkValueExp(value instanceof IntegerExp, value)) {
 				addError2s("value '%s': can't assign '%s'. integer expected", variable.strValue(), value.strValue());
 			}
-        } else if (doc.isTypeShape(ident, "number")) {
-            if (!checkValueExp(value instanceof NumberExp, value)) {
-                addError2s("value '%s': can't assign '%s'. number expected", variable.strValue(), value.strValue());
-            }
+		} else if (doc.isTypeShape(ident, "number")) {
+			if (!checkValueExp(value instanceof NumberExp, value)) {
+				addError2s("value '%s': can't assign '%s'. number expected", variable.strValue(), value.strValue());
+			}
 		} else if (doc.isTypeShape(ident, "boolean")) {
 			if (!checkValueExp(value instanceof BooleanExp, value)) {
 				addError2s("value '%s': can't assign '%s'. 'false' or 'true' expected", variable.strValue(), value.strValue());
@@ -76,10 +79,10 @@ public class ValueErrorChecker extends ErrorCheckerBase {
 		}
 	}
 
-    private boolean checkValueExp(boolean isMatchingExplicitValue, Exp ident) {
-        if (isMatchingExplicitValue || ident instanceof IdentExp) {
-            return true;
-        }
-        return false;
-    }
+	private boolean checkValueExp(boolean isMatchingExplicitValue, Exp ident) {
+		if (isMatchingExplicitValue || ident instanceof IdentExp) {
+			return true;
+		}
+		return false;
+	}
 }

@@ -12,7 +12,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.compare.DStructComparer;
 import org.dnal.core.fluent.type.TypeBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class DiffPartialTests extends BaseDValTest {

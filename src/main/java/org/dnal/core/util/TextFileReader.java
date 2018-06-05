@@ -3,6 +3,9 @@ package org.dnal.core.util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,13 +44,19 @@ public class TextFileReader {
     @SuppressWarnings("PMD.AvoidPrintStackTrace")
     public List<String> readFile(final String path) {
         try {
-            return doReadFile(path);
+        	Reader reader = new FileReader(path);
+            return doReadFile(reader);
         } catch (final IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    public List<String> ReadFileStream(InputStream istr) throws IOException {
+    	Reader reader = new InputStreamReader(istr);
+    	return doReadFile(reader);
+    }
+    
     /**
      *
      * @param path
@@ -55,10 +64,10 @@ public class TextFileReader {
      * @throws IOException
      * @throws Exception
      */
-    private List<String> doReadFile(final String path) throws IOException {
+    private List<String> doReadFile(Reader inReader) throws IOException {
         final List<String> linesL = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+        try (BufferedReader reader = new BufferedReader(inReader)) {
             final StringBuilder builder = new StringBuilder();
             String line = reader.readLine();
 
@@ -71,4 +80,5 @@ public class TextFileReader {
         }
         return linesL;
     }
+    
 }

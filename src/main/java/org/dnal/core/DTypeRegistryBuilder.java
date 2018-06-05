@@ -36,6 +36,19 @@ public class DTypeRegistryBuilder {
 		name = BuiltInTypes.ENUM_SHAPE.name();
 		type = new DType(Shape.ENUM, name, null);
 		registerType(name, type);
+
+		name = BuiltInTypes.ANY_SHAPE.name();
+		type = new DType(Shape.ANY, name, null);
+		DType anyType = type;
+		registerType(name, type);
+		
+		name = BuiltInTypes.LIST_ANY_SHAPE.name();
+		type = new DListType(Shape.LIST, name, null, anyType);
+		registerType(name, type);
+		
+		name = BuiltInTypes.MAP_ANY_SHAPE.name();
+		type = new DMapType(Shape.MAP, name, null, anyType);
+		registerType(name, type);
 	}
 	
     private void registerType(String typeName, DType dtype) {

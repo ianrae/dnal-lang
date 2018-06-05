@@ -26,8 +26,12 @@ public class DrawingTests extends BaseWorldTest {
     
     @Test
     public void test1() {
-        NRuleRunnerImpl.ruleCounter = 0;
+        XErrorTracker.logErrors = true;
+        Log.debugLogging = true;
+    	
+        NRuleRunnerImpl.ruleCounter = 0;       
         DataSet dataSet = load("drawing1.dnal");
+
         assertEquals(3, dataSet.size());
         
         Transaction trans = dataSet.createTransaction();

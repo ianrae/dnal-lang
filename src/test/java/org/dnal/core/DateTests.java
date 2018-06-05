@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import org.dnal.core.oldbuilder.XDateValueBuilder;
-import org.dnal.core.oldbuilder.XStructValueBuilder;
+import org.dnal.core.xbuilder.XDateValueBuilder;
+import org.dnal.core.xbuilder.XStructValueBuilder;
 import org.junit.Test;
 
 public class DateTests extends BaseDValTest {

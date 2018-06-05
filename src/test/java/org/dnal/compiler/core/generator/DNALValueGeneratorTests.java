@@ -56,6 +56,12 @@ public class DNALValueGeneratorTests extends BaseTest {
 //        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
     }
 
+    @Test
+    public void test5() {
+        String s = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
+        chkGen(s, "let z SizeMap = {x:33, y:34}|", 2);
+    }
+    
     //------------------
 	private void chkGen(String input, String expectedOutput) {
 		chkGen(input, expectedOutput, 1);
