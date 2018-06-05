@@ -20,7 +20,6 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
-import org.dnal.core.TypePair;
 import org.dnal.core.repository.World;
 import org.junit.Test;
 
@@ -305,12 +304,32 @@ public class NewGeneratorTests extends BaseTest {
 //        String s = "{'x':{'a':100,'b':101},'y':20}|";
 //        chkGen("type Inner struct { a int b int } end type Z struct { x Inner y int } end let x Z = { { 100, 101 }, 20 }", s, 3);
     }
+    
+	@Test
+	public void testListAny() {
+		String src1 = "type Person struct { x string, y string } end ";
+		src1 += "let joe Person = { 'aa', 'bb' } ";
+		src1 += "type AnyList list<any> end ";
+		src1 += "let people AnyList = [ joe, joe ] ";
+        String s = "let joe Person = {x:'aa', y:'bb'}|let people AnyList = [{x:'aa', y:'bb'}, {x:'aa', y:'bb'}]|";
+        chkGen(src1, s, 4);
+	}    
 
     @Test
     public void test5() {
         String s = "type SizeMap map<int> end let z SizeMap = { x:33, y:34 }";
         chkGen(s, "let z SizeMap = {x:33, y:34}|", 2);
     }
+    
+	@Test
+	public void testValueParseStructAny() {
+		String src1 = "type Person struct { x string, y string } end ";
+		src1 += "let joe Person = { x:'aa', y:'bb' } ";
+		src1 += "type SizeMap map<any> end let z SizeMap = { 'com.x':joe }";
+		
+        String s = "let joe Person = {x:'aa', y:'bb'}|let z SizeMap = {com.x:{x:'aa', y:'bb'}}|";
+        chkGen(src1, s, 4);
+	}
     
     
     //------------------
