@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import org.apache.commons.lang.StringUtils;
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.et.XErrorTracker;
@@ -20,6 +21,7 @@ import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.Shape;
+import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
 import org.junit.Test;
 
@@ -27,26 +29,59 @@ public class NewGeneratorTests extends BaseTest {
 	
 	public static class NewOutputGenerator {
 	    public List<String> outputL = new ArrayList<>();
-		
+		public boolean generateTypes = false;
+		public boolean generateValues = false;
 		
 		public void structType(DStructType dtype) {
+			if (!generateTypes) {
+				return;
+			}
 		}
 		public void enumType(DStructType enumType) {
-			
+			if (!generateTypes) {
+				return;
+			}
 		}
 		public void listType(DListType listType) {
+			if (!generateTypes) {
+				return;
+			}
 			// TODO Auto-generated method stub
 			
 		}
 		public void mapType(DMapType mapType) {
+			if (!generateTypes) {
+				return;
+			}
 			// TODO Auto-generated method stub
 			
 		}
 		public void scalarType(DType dtype) {
-			// TODO Auto-generated method stub
-			
+			if (!generateTypes) {
+				return;
+			}
+			String typeName = TypeInfo.parserTypeOf(dtype.getName());
+			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
+			String rulesStr = getRuleStr(dtype);
+			if (! StringUtils.isEmpty(rulesStr)) {
+				rulesStr = String.format(" %s ", rulesStr);
+			}
+			String s = String.format("type %s %s%send", typeName, parentName, rulesStr);
+			outputL.add(s);
+		}
+		private String getRuleStr(DType dtype) {
+			StringJoiner joiner = new StringJoiner(" ");
+            for(NRule rule: dtype.getRawRules()) {
+                String ruleText = rule.getRuleText();
+                joiner.add(ruleText); 
+            }
+
+            return joiner.toString();
 		}
 		public void topLevelValue(String varName, DValue dval) {
+			if (!generateValues) {
+				return;
+			}
 			
 			String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
 			String valueStr = getValueStr(dval);
@@ -331,19 +366,34 @@ public class NewGeneratorTests extends BaseTest {
         chkGen(src1, s, 4);
 	}
     
+	//---- types
+	@Test
+	public void testTypes() {
+	    chkTypeGen("type Foo boolean end let x Foo = false",  "type Foo boolean end|", 2);
+	    //type Foo int >= 5 end let x Foo = 14
+	    chkTypeGen("type Foo int >= 100 end",  "type Foo int >= 100 end|", 1);
+	}
     
     //------------------
 	private void chkGen(String input, String expectedOutput) {
 		chkGen(input, expectedOutput, 1);
 	}
-	
 	private void chkGen(String input, String expectedOutput, int expectedSize) {
-		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
+		doChkGen(input, expectedOutput, expectedSize, false, true);
+	}
+	private void chkTypeGen(String input, String expectedOutput, int expectedSize) {
+		doChkGen(input, expectedOutput, expectedSize, true, false);
+	}	
+	
+	private void doChkGen(String input, String expectedOutput, int expectedSize, boolean genTypes, boolean genValues) {
+		parseAndGenDVals(input, expectedSize);
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
 		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world);
 		NewOutputGenerator visitor = new NewOutputGenerator();
+		visitor.generateTypes = genTypes;
+		visitor.generateValues = genValues;
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
