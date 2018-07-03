@@ -2,10 +2,6 @@ package org.dnal.api.systest;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-
 import org.dnal.api.DNALCompiler;
 import org.dnal.core.DValue;
 import org.junit.Test;
