@@ -25,5 +25,6 @@ public interface DNALCompiler {
     DataSet compileString(String input);
     DataSet compileString(String input, OutputGenerator visitor);
     List<NewErrorMessage> getErrors();
+    String formatError(NewErrorMessage err);
 
 }
