@@ -21,7 +21,7 @@ public class ViaFinder extends ErrorTrackingBase {
     private World world;
     private DTypeRegistry registry;
 
-    public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et) {
+	public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et) {
         super(et);
         this.world = world;
         this.registry = registry;

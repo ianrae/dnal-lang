@@ -14,6 +14,7 @@ public interface DataSet {
     <T> T getAsBean(String varName, Class<T> clazz);
     Generator createGenerator();
 
+    DataSet cloneDataSet();
     DataSet cloneEmptyDataSet();
     int size();
     List<String> getAllNames();

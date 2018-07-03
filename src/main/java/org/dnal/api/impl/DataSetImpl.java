@@ -93,6 +93,32 @@ public class DataSetImpl implements DataSet {
         return clone;
     }
     
+    /**
+     * Return a new data set with same types as this data set,
+     * and all its values. Note the new dataset has direct references
+     * to the dvals of this data set, so we are assuming that
+     * dvals are immutable.
+     * 
+     * @return
+     */
+    @Override
+    public DataSetImpl cloneDataSet() {
+        World newWorld = new World();
+        newWorld.setRepositoryFactory(world.getRepositoryFactory());
+        
+        for(String typeName: registry.getAll()) {
+            DType type = registry.getType(typeName);
+            newWorld.typeRegistered(type);
+        }
+        for(String varName: world.getValueMap().keySet()) {
+        	DValue dval = world.getValueMap().get(varName);
+        	newWorld.addTopLevelValue(varName, dval);
+        }
+        
+        DataSetImpl clone = new DataSetImpl(registry, newWorld, context);
+        return clone;
+    }
+    
     @Override
     public int size() {
         return world.getValueMap().size();
