@@ -8,7 +8,8 @@ public class RangeExp extends ExpBase implements ValueExp {
 //		this.from = from.val;
 //		this.to = to.val;
 //	}
-    public RangeExp(Exp from, Exp to) {
+    public RangeExp(int pos, Exp from, Exp to) {
+    	this.pos = pos;
         if (from instanceof IntegerExp) {
             IntegerExp iexp = (IntegerExp) from;
             this.from = iexp.val;

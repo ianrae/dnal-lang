@@ -4,7 +4,8 @@ public class StructMemberAssignExp extends ExpBase {
 	public IdentExp var;
 	public Exp value;
 
-	public StructMemberAssignExp(IdentExp varname, Exp value) {
+	public StructMemberAssignExp(int pos, IdentExp varname, Exp value) {
+		this.pos = pos;
 		this.var = varname;
 		this.value = value;
 	}

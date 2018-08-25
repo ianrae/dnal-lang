@@ -24,7 +24,7 @@ public class ViaHelper {
                     IsaRule rule = findIsaRuleForField(dtype, fieldName);
                     if (rule != null) {
                         via.typeExp = new IdentExp(rule.getViaFieldTypeName());
-                        via.extraViaExp = new ViaExp(rule.getViaFieldTypeName(), rule.getViaFieldName(), null);
+                        via.extraViaExp = new ViaExp(0, rule.getViaFieldTypeName(), rule.getViaFieldName(), null);
                     } else {
                         via.typeExp = new IdentExp(inner.getCompleteName());
                     }
@@ -82,7 +82,7 @@ public class ViaHelper {
         if (inner.isShape(Shape.LIST)) {
             ListAssignExp lae = (ListAssignExp) exp;
             Exp elExp = lae.list.get(0); //!!range check later
-            ViaExp viaExp = new ViaExp(rule.getViaFieldTypeName(), rule.getViaFieldName(), elExp);
+            ViaExp viaExp = new ViaExp(0, rule.getViaFieldTypeName(), rule.getViaFieldName(), elExp);
             return viaExp;
         }
         return null;

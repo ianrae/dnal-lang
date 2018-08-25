@@ -7,6 +7,7 @@ import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
 import org.codehaus.jparsec.functors.Tuple4;
+import org.codehaus.jparsec.functors.Tuple5;
 import org.dnal.compiler.parser.ast.BasicExp;
 import org.dnal.compiler.parser.ast.BooleanExp;
 import org.dnal.compiler.parser.ast.Exp;
@@ -38,9 +39,9 @@ public class VarParser {
 //				});
 //	}
 	
-	public static Exp numberBuilder(Token negSign, String input) {
+	public static Exp numberBuilder(int pos, Token negSign, String input) {
 	    if (input != null && input.contains(".")) {
-	        NumberExp exp = new NumberExp(Double.parseDouble(input));
+	        NumberExp exp = new NumberExp(pos, Double.parseDouble(input));
 	        if (negSign != null) {
 	            exp.val = -1.0 * exp.val;
 	        }
@@ -49,13 +50,13 @@ public class VarParser {
 	        Long lvalue = Long.parseLong(input);
 	        Integer ivalue = lvalue.intValue();
 	        if (ivalue.longValue() == lvalue.longValue()) {
-	            IntegerExp exp = new IntegerExp(lvalue.intValue());
+	            IntegerExp exp = new IntegerExp(pos, lvalue.intValue());
 	            if (negSign != null) {
 	                exp.val = -1 * exp.val;
 	            }
 	            return exp;
 	        } else {
-                LongExp exp = new LongExp(lvalue);
+                LongExp exp = new LongExp(pos, lvalue);
                 if (negSign != null) {
                     exp.val = -1 * exp.val;
                 }
@@ -73,7 +74,7 @@ public class VarParser {
 //    }    
     
     public static Parser<Exp> someNumberValueassign() {
-        return Parsers.sequence(optionalNegSign(), TerminalParser.numberSyntacticParser, (Token tok, String s) -> numberBuilder(tok, s));
+        return Parsers.sequence(Parsers.INDEX, optionalNegSign(), TerminalParser.numberSyntacticParser, (Integer pos, Token tok, String s) -> numberBuilder(pos, tok, s));
     }
 	
 //	public static Parser<IntegerExp> integervalueassign() {
@@ -171,32 +172,32 @@ public class VarParser {
 		}
 	}
     public static Parser<Exp> struct_someNumberValueAssign() {
-        return Parsers.sequence(identOrString(), term(":"), VarParser.someNumberValueassign(),
-                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+        return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), VarParser.someNumberValueassign(),
+                (Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
     }
 	public static Parser<Exp> struct_stringvalueassign() {
-		return Parsers.sequence(identOrString(), term(":"), VarParser.stringvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+		return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), VarParser.stringvalueassign(),
+				(Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_booleanvalueassign() {
-		return Parsers.sequence(identOrString(), term(":"), VarParser.booleanvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+		return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), VarParser.booleanvalueassign(),
+				(Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_varname() {
-		return Parsers.sequence(identOrString(), term(":"), ident(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+		return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), ident(),
+				(Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
 	}
     public static Parser<Exp> struct_null() {
-        return Parsers.sequence(identOrString(), term(":"), termNull(),
-                (Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+        return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), termNull(),
+                (Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
     }
 	public static Parser<Exp> struct_listvalueassign() {
-		return Parsers.sequence(identOrString(), term(":"), VarParser.listvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+		return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), VarParser.listvalueassign(),
+				(Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
 	}
 	public static Parser<Exp> struct_structvalueassign() {
-		return Parsers.sequence(identOrString(), term(":"), VarParser.structvalueassign(),
-				(Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(asIdentExp(exp1), exp2));
+		return Parsers.sequence(Parsers.INDEX, identOrString(), term(":"), VarParser.structvalueassign(),
+				(Integer pos, Exp exp1, Token tok, Exp exp2) -> new StructMemberAssignExp(pos, asIdentExp(exp1), exp2));
 	}
 
 	public static Parser<Exp> valueassigninstruct() {
@@ -237,17 +238,17 @@ public class VarParser {
 	}
 	
     public static Parser<ViaExp> viaDecl() {
-        return Parsers.sequence(VarParser.ident().optional(), term("via"), VarParser.ident(), zvalueassign(),
-                (IdentExp exp, Token tok, IdentExp field, Exp val)
-                -> new ViaExp(exp, field, val));
+        return Parsers.sequence(Parsers.INDEX, VarParser.ident().optional(), term("via"), VarParser.ident(), zvalueassign(),
+                (Integer pos, IdentExp exp, Token tok, IdentExp field, Exp val)
+                -> new ViaExp(pos, exp, field, val));
     }    
     
     
 	
 
 	public static Parser<Exp> assignmentUnused() {
-		return Parsers.sequence(term("let"), TerminalParser.identSyntacticParser,
-				(Token tok, String arg0) -> new IdentExp(arg0));
+		return Parsers.sequence(Parsers.INDEX, term("let"), TerminalParser.identSyntacticParser,
+				(Integer pos, Token tok, String arg0) -> new IdentExp(pos, arg0));
 	}
 	public static Parser<IdentExp> ident() {
 		return Parsers.or(TerminalParser.identSyntacticParser).
@@ -266,12 +267,12 @@ public class VarParser {
 	public static Parser<IdentExp> listangle() {
 		return Parsers.sequence(term("list"), term("<"), Parsers.or(any(), VarParser.ident()), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
-		new IdentExp(String.format("list<%s>", elementType.name())));
+		new IdentExp(tok1.index(), String.format("list<%s>", elementType.name())));
 	}
 	public static Parser<IdentExp> mapangle() {
 		return Parsers.sequence(term("map"), term("<"), Parsers.or(any(), VarParser.ident()), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
-		new IdentExp(String.format("map<%s>", elementType.name())));
+		new IdentExp(tok1.index(), String.format("map<%s>", elementType.name())));
 	}
 	
 	public static Parser<IdentExp> any() {
@@ -287,13 +288,13 @@ public class VarParser {
 	
 	//let x int = 5
 	public static Parser<Exp> assignment000() {
-		return Parsers.or(term("let")).next(Parsers.tuple(ident(), typeOrListType(), VarParser.eqassign(), valueassign()))
-				.map(new org.codehaus.jparsec.functors.Map<Tuple4<IdentExp, IdentExp, Exp, Exp>, FullAssignmentExp>() {
+		return Parsers.or(term("let")).next(Parsers.tuple(Parsers.INDEX, ident(), typeOrListType(), VarParser.eqassign(), valueassign()))
+				.map(new org.codehaus.jparsec.functors.Map<Tuple5<Integer, IdentExp, IdentExp, Exp, Exp>, FullAssignmentExp>() {
 					@Override
-					public FullAssignmentExp map(Tuple4<IdentExp, IdentExp, Exp, Exp> arg0) {
+					public FullAssignmentExp map(Tuple5<Integer, IdentExp, IdentExp, Exp, Exp> arg0) {
 						Exp dd = arg0.d;
 
-						return new FullAssignmentExp(0, arg0.a, arg0.b, dd);
+						return new FullAssignmentExp(arg0.a, arg0.b, arg0.c, dd);
 					}
 				});
 	}

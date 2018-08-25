@@ -88,7 +88,7 @@ public class IsaRule extends NRuleBase {
         String fieldName = getViaFieldName();
         
         String value = dval.asString();
-        ViaExp via = new ViaExp(typeName, fieldName, new StringExp(value));
+        ViaExp via = new ViaExp(0, typeName, fieldName, new StringExp(value));
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
         List<DValue> list = finder.findMatches(via);
         if (list == null) {

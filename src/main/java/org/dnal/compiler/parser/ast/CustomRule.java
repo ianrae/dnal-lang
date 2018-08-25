@@ -10,7 +10,8 @@ public class CustomRule extends RuleExp {
 	public boolean polarity;
 	public Exp hackExtra;
 
-	public CustomRule(RuleWithFieldExp ruleExp,  List<List<Exp>> args, String not) {
+	public CustomRule(int pos, RuleWithFieldExp ruleExp,  List<List<Exp>> args, String not) {
+		this.pos = pos;
 		this.ruleName = ruleExp.ruleName;
 		this.fieldName = ruleExp.fieldName;
 		this.polarity = (not == null);
@@ -27,7 +28,8 @@ public class CustomRule extends RuleExp {
 			argL = list;
 		}
 	}
-    public CustomRule(String ruleName,  List<List<Exp>> args, String not) {
+    public CustomRule(int pos, String ruleName,  List<List<Exp>> args, String not) {
+    	this.pos = pos;
         this.ruleName = ruleName;
         this.polarity = (not == null);
         
@@ -48,7 +50,8 @@ public class CustomRule extends RuleExp {
         this.polarity = (not == null);
 		argL.add(range);
 	}
-    public CustomRule(RuleWithFieldExp ruleExp, RangeExp range, String not) {
+    public CustomRule(int pos, RuleWithFieldExp ruleExp, RangeExp range, String not) {
+    	this.pos = pos;
         this.ruleName = ruleExp.ruleName;
         this.fieldName = ruleExp.fieldName;
         this.polarity = (not == null);

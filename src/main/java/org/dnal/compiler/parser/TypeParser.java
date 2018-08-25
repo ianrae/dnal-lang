@@ -151,7 +151,7 @@ public class TypeParser extends ParserBase {
 	public static Parser<IdentExp> listangle() {
 		return Parsers.sequence(term("list"), term("<"), listangleinner(), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
-		new IdentExp(String.format("list<%s>", elementType.name())));
+		new IdentExp(tok1.index(), String.format("list<%s>", elementType.name())));
 	}
 
 	public static Parser<FullListTypeExp> typelist01() {
@@ -174,7 +174,7 @@ public class TypeParser extends ParserBase {
 	public static Parser<IdentExp> mapangle() {
 		return Parsers.sequence(term("map"), term("<"), mapangleinner(), term(">"),
 				(Token tok1, Token tok2, IdentExp elementType, Token tok3) -> 
-		new IdentExp(String.format("map<%s>", elementType.name())));
+		new IdentExp(tok1.index(), String.format("map<%s>", elementType.name())));
 	}
 
 	public static Parser<FullMapTypeExp> typemap01() {

@@ -4,7 +4,8 @@ public class ComparisonAndRuleExp extends RuleExp {
 	public ComparisonRuleExp exp1;
 	public ComparisonRuleExp exp2;
 
-	public ComparisonAndRuleExp(ComparisonRuleExp exp1, ComparisonRuleExp exp2) {
+	public ComparisonAndRuleExp(int pos, ComparisonRuleExp exp1, ComparisonRuleExp exp2) {
+		this.pos = pos;
 		this.exp1 = exp1;
 		this.exp2 = exp2;
 	}
