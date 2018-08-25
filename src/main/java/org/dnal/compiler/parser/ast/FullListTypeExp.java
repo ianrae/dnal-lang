@@ -5,8 +5,8 @@ import java.util.List;
 public class FullListTypeExp extends FullTypeExp {
 	public IdentExp elementType; //list<int>
 
-	public FullListTypeExp(IdentExp varname, IdentExp typename, IdentExp elementType, List<RuleExp> ruleList) {
-		super(varname, typename, ruleList);
+	public FullListTypeExp(int pos, IdentExp varname, IdentExp typename, IdentExp elementType, List<RuleExp> ruleList) {
+		super(pos, varname, typename, ruleList);
 		this.elementType = elementType;
 	}
 	public String strValue() {

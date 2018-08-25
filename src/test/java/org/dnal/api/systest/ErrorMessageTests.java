@@ -17,6 +17,26 @@ public class ErrorMessageTests extends SysTestBase {
 	public void testValFail() {
 		chkRulesFail("> 20, < 100", "compare-gt: > 20");
 	}	
+	
+	@Test
+	public void testSyntaxFail() {
+//		String source =  "type User struct {\n firstName xstring\n, lastName string optional\n } firstName.len() <= 4 end";
+		String source =  "type User struct {\n firstName string\n, lastName string optional\n }\b $$ firstName.len() <= 4 end";
+		chkFail(source, 1, "isa or end expected, EOF encountered", 4);
+	}
+	
+	@Test
+	public void testSyntaxFail2() {
+//		String source =  "type User struct {\n firstName xstring\n, lastName string optional\n } firstName.len() <= 4 end";
+		String source =  "type \nUser $$ struct {\n firstName string\n, lastName string optional\n }\b firstName.len() <= 4 end";
+		chkFail(source, 1, "isa or end expected, struct encountered", 2);
+	}
+	
+	@Test
+	public void testASTFail() {
+		String source =  "type User struct {\n firstName xstring\n, lastName string optional\n } firstName.len() <= 4 end";
+		chkFail(source, 1, "struct type 'User' - unknown xstring", 4);
+	}
 
 	//---
 	@Before
@@ -33,7 +53,7 @@ public class ErrorMessageTests extends SysTestBase {
 		assertEquals(14, dval.asInt());
 	}
 	private void chkRulesFail(String rules, String errMsg) {
-		String source = String.format("type Foo int %s end let x Foo = 14", rules);
+		String source = String.format("type Foo \nint %s \nend\n let x Foo = 14", rules);
 		chkFail(source, 1, errMsg);
 //		logErrors();
 	}	

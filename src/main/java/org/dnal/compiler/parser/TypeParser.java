@@ -7,6 +7,7 @@ import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
 import org.codehaus.jparsec.functors.Tuple4;
+import org.codehaus.jparsec.functors.Tuple5;
 import org.dnal.compiler.parser.ast.EnumExp;
 import org.dnal.compiler.parser.ast.EnumMemberExp;
 import org.dnal.compiler.parser.ast.Exp;
@@ -26,11 +27,11 @@ public class TypeParser extends ParserBase {
 
 	//type x int > 0 end
 	public static Parser<FullTypeExp> type01() {
-		return Parsers.or(term("type")).next(Parsers.tuple(VarParser.ident(), VarParser.ident(), RuleParser.ruleMany(), VarParser.doEnd()))
-				.map(new org.codehaus.jparsec.functors.Map<Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp>, FullTypeExp>() {
+		return Parsers.or(term("type")).next(Parsers.tuple(Parsers.INDEX, VarParser.ident(), VarParser.ident(), RuleParser.ruleMany(), VarParser.doEnd()))
+				.map(new org.codehaus.jparsec.functors.Map<Tuple5<Integer, IdentExp, IdentExp, List<RuleExp>, Exp>, FullTypeExp>() {
 					@Override
-					public FullTypeExp map(Tuple4<IdentExp, IdentExp, List<RuleExp>, Exp> arg0) {
-						return new FullTypeExp(arg0.a, arg0.b, arg0.c);
+					public FullTypeExp map(Tuple5<Integer, IdentExp, IdentExp, List<RuleExp>, Exp> arg0) {
+						return new FullTypeExp(arg0.a, arg0.b, arg0.c, arg0.d);
 					}
 				});
 	}
@@ -50,8 +51,9 @@ public class TypeParser extends ParserBase {
     }
     
 	public static Parser<StructMemberExp> structMembers00() {
-		return Parsers.sequence(VarParser.ident(), Parsers.or(VarParser.ident(), listangle()), optionalOptionalArg(), optionalUniqueArg(),
-				(IdentExp varName, IdentExp varType, Token opt, Token unique) -> new StructMemberExp(varName, varType, opt, unique));
+		//Parsers.sequence(Parsers.INDEX, fooParser, Parsers.INDEX, LocationAnnotated::new);
+		return Parsers.sequence(Parsers.INDEX, VarParser.ident(), Parsers.or(VarParser.ident(), listangle()), optionalOptionalArg(), optionalUniqueArg(),
+				(Integer pos, IdentExp varName, IdentExp varType, Token opt, Token unique) -> new StructMemberExp(pos, varName, varType, opt, unique));
 	}
 	
 	public static Parser<List<StructMemberExp>> structMembersMany() {
@@ -88,7 +90,7 @@ public class TypeParser extends ParserBase {
 	public static Parser<FullStructTypeExp> typestruct01() {
 		return Parsers.sequence(term("type"), VarParser.ident(), doStruct(), structMembers(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, StructExp structMembers, List<RuleExp> rules) -> 
-		new FullStructTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
+		new FullStructTypeExp(tok.index(), varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
 	
 	//-----enum---
@@ -139,7 +141,7 @@ public class TypeParser extends ParserBase {
 	public static Parser<FullEnumTypeExp> typeenum01() {
 		return Parsers.sequence(term("type"), VarParser.ident(), doEnum(), enumMembers(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, IdentExp struct, EnumExp structMembers, List<RuleExp> rules) -> 
-		new FullEnumTypeExp(varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
+		new FullEnumTypeExp(tok.index(), varName, struct, structMembers, rules)).followedBy(VarParser.doEnd());
 	}
 	
 	public static final Parser.Reference<IdentExp> listangleRef = Parser.newReference();
@@ -157,7 +159,7 @@ public class TypeParser extends ParserBase {
 				listangle(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, 
 				 IdentExp elementType, List<RuleExp> rules) -> 
-		new FullListTypeExp(varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());
+		new FullListTypeExp(tok.index(), varName, new IdentExp("list"), elementType, rules)).followedBy(VarParser.doEnd());
 	}
 	
 	
@@ -180,7 +182,7 @@ public class TypeParser extends ParserBase {
 				mapangle(), RuleParser.ruleMany(),
 				(Token tok, IdentExp varName, 
 				 IdentExp elementType, List<RuleExp> rules) -> 
-		new FullMapTypeExp(varName, new IdentExp("map"), elementType, rules)).followedBy(VarParser.doEnd());
+		new FullMapTypeExp(tok.index(), varName, new IdentExp("map"), elementType, rules)).followedBy(VarParser.doEnd());
 	}
 	
 }

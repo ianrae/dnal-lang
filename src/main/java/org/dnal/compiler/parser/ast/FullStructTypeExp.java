@@ -5,8 +5,8 @@ import java.util.List;
 public class FullStructTypeExp extends FullTypeExp {
 	public StructExp members;
 
-	public FullStructTypeExp(IdentExp varname, IdentExp typename, StructExp members, List<RuleExp> ruleList) {
-		super(varname, typename, ruleList);
+	public FullStructTypeExp(int pos, IdentExp varname, IdentExp typename, StructExp members, List<RuleExp> ruleList) {
+		super(pos, varname, typename, ruleList);
 		this.members = members;
 	}
 	public String strValue() {

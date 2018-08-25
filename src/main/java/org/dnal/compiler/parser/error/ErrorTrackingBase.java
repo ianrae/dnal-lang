@@ -62,8 +62,12 @@ public class ErrorTrackingBase {
         addErrorObj(err);
 	}
 	protected NewErrorMessage addError2s(String fmt, String s, String s2) {
+		return addError2s(0, fmt, s, s2);
+	}
+	protected NewErrorMessage addError2s(int pos, String fmt, String s, String s2) {
 		NewErrorMessage err = new NewErrorMessage();
 		err.setMessage(String.format(fmt, s, s2));
+		err.setLineNum(pos); //!!
 		addErrorObj(err);
 		return err;
 	}

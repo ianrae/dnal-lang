@@ -362,7 +362,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		//        IdentExp elementType = membExp.getListSubType();
 		IdentExp elementType = new IdentExp(membExp.type.name());
 		List<RuleExp> ruleList = new ArrayList<>();
-		FullListTypeExp listExp = new FullListTypeExp(varname, typename, elementType, ruleList);
+		FullListTypeExp listExp = new FullListTypeExp(0, varname, typename, elementType, ruleList);
 		visitType(listExp);
 
 		DType eltype = packageHelper.findRegisteredType(typename.name());
