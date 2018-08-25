@@ -6,7 +6,6 @@ import java.util.List;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
-import org.codehaus.jparsec.functors.Tuple4;
 import org.codehaus.jparsec.functors.Tuple5;
 import org.dnal.compiler.parser.ast.EnumExp;
 import org.dnal.compiler.parser.ast.EnumMemberExp;

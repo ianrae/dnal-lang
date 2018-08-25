@@ -6,7 +6,6 @@ import java.util.List;
 import org.codehaus.jparsec.Parser;
 import org.codehaus.jparsec.Parsers;
 import org.codehaus.jparsec.Token;
-import org.codehaus.jparsec.functors.Tuple4;
 import org.codehaus.jparsec.functors.Tuple5;
 import org.dnal.compiler.parser.ast.BasicExp;
 import org.dnal.compiler.parser.ast.BooleanExp;
@@ -16,7 +15,6 @@ import org.dnal.compiler.parser.ast.IdentExp;
 import org.dnal.compiler.parser.ast.IntegerExp;
 import org.dnal.compiler.parser.ast.ListAssignExp;
 import org.dnal.compiler.parser.ast.LongExp;
-import org.dnal.compiler.parser.ast.MapAssignExp;
 import org.dnal.compiler.parser.ast.NumberExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.ast.StructAssignExp;
@@ -292,7 +290,7 @@ public class VarParser {
 				.map(new org.codehaus.jparsec.functors.Map<Tuple5<Integer, IdentExp, IdentExp, Exp, Exp>, FullAssignmentExp>() {
 					@Override
 					public FullAssignmentExp map(Tuple5<Integer, IdentExp, IdentExp, Exp, Exp> arg0) {
-						Exp dd = arg0.d;
+						Exp dd = arg0.e;
 
 						return new FullAssignmentExp(arg0.a, arg0.b, arg0.c, dd);
 					}
