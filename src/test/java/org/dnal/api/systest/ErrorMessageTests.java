@@ -35,7 +35,7 @@ public class ErrorMessageTests extends SysTestBase {
 	@Test
 	public void testASTFail() {
 		String source =  "type User struct {\n firstName xstring\n, lastName string optional\n } firstName.len() <= 4 end";
-		chkFail(source, 1, "struct type 'User' - unknown xstring", 4);
+		chkFail(source, 1, "struct type 'User' - unknown xstring", 2);
 	}
 
 	//---

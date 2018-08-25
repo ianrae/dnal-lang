@@ -88,7 +88,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 				visitValue(exp);
 			} catch (Exception e) {
 				e.printStackTrace();
-				this.addError2s("ASTvalue '%s': %s", exp.strValue(), e.getMessage());
+				this.addError2s(exp, "ASTvalue '%s': %s", exp.strValue(), e.getMessage());
 			}
 		}
 		context.perf.endTimer("ast-to-dval:values");
@@ -133,7 +133,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		DType eltype = registry.getType(elType);
 		if (eltype == null) {
-			this.addError2s("let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
+			this.addError2s(typeExp, "let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
 		}
 
 		String typeName = typeExp.type.name();
@@ -209,7 +209,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 						dtype = new DType(baseDType.getShape(), typeName, baseDType);
 						registerType(typeName, dtype);
 					} else {
-						addError2s("type '%s' - unknown %s", typeName, typeExp.type.name());
+						addError2s(typeExp, "type '%s' - unknown %s", typeName, typeExp.type.name());
 					}
 					break;
 			}
@@ -228,7 +228,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		for(Exp exp: adjustedRuleList) {
 			NRule vrule = converter.convert(type, exp, context);
 			if (vrule == null) {
-				this.addError2s("type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
+				this.addError2s(typeExp, "type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
 			} else {
 				this.log(vrule.getName());
 				type.getRawRules().add(vrule);
@@ -284,11 +284,11 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		if (! typeExp.type.name().equals("struct")) {
 			DType baseType = packageHelper.findRegisteredType(typeExp.type.name());
 			if (baseType == null) {
-				this.addError("unknown struct base type", typeExp);
+				this.addError(typeExp, "unknown struct base type", typeExp);
 			} else if (baseType instanceof DStructType) {
 				tb.setBaseType((DStructType) baseType);
 			} else {
-				this.addError("struct base type '%s' is not a struct type", typeExp);
+				this.addError(typeExp, "struct base type '%s' is not a struct type", typeExp);
 			}
 		}
 
@@ -325,7 +325,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 			default:
 				if (! buildKnownType(inner, membExp)) {
-					addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+					addError2s(membExp, "struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
 				}
 				break;
 			}
@@ -391,7 +391,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 				break;
 
 			default:
-				addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+				addError2s(typeExp, "struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
 				break;
 			}
 		}
@@ -406,17 +406,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
 		
-		DType dtype = doListInner(typeName, elType);
+		DType dtype = doListInner(exp, typeName, elType);
 		this.addValidationRules(exp, dtype);
 	}
-	private DType doListInner(String typeName, String elType) {
+	private DType doListInner(FullListTypeExp exp, String typeName, String elType) {
 		DType eltype = null;
 		String target = "list<";
 		if (elType.startsWith(target)) {
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doListInner(innerTypeName, elType); //recursion!
+			eltype = doListInner(exp, innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {
@@ -426,7 +426,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		}
 		
 		if (eltype == null) {
-			this.addError2s("type '%s': unknown list element type '%s'", typeName, elType);
+			this.addError2s(exp, "type '%s': unknown list element type '%s'", typeName, elType);
 		}
 
 		DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
@@ -438,17 +438,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
 		
-		DType dtype = doMapInner(typeName, elType);
+		DType dtype = doMapInner(exp, typeName, elType);
 		this.addValidationRules(exp, dtype);
 	}
-	private DType doMapInner(String typeName, String elType) {
+	private DType doMapInner(FullMapTypeExp exp, String typeName, String elType) {
 		DType eltype = null;
 		String target = "map<";
 		if (elType.startsWith(target)) {
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doMapInner(innerTypeName, elType); //recursion!
+			eltype = doMapInner(exp, innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {
@@ -482,7 +482,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 				context.loader.importPackage(exp.val, context);
 			} catch (Exception e) {
-				this.addError2s("import '%s': %s", exp.strValue(), e.getMessage());
+				this.addError2s(exp, "import '%s': %s", exp.strValue(), e.getMessage());
 			}
 		}
 

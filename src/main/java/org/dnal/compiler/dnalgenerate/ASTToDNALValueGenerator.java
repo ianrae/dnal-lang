@@ -105,7 +105,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             } else if (assignExp.value instanceof ViaExp) {
                 return buildViaListValue(assignExp, (ViaExp) assignExp.value, assignExp.type.name());
             } else {
-                this.addError2s("let %s does not contain list %s", assignExp.var.name(), "");
+                this.addError2s(assignExp, "let %s does not contain list %s", assignExp.var.name(), "");
                 return null; //??
             }
         }
@@ -148,7 +148,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 } else if (tmp instanceof IntegerExp) {
                     nVal = Long.valueOf(((IntegerExp)tmp).val.longValue());
                 } else {
-                    this.addError2s("var '%s': long var not a long or int %s", assignExp.var.name(), "");
+                    this.addError2s(assignExp, "var '%s': long var not a long or int %s", assignExp.var.name(), "");
                 }
                 resultVal = builder.buildFrom(nVal); 
             }
@@ -166,7 +166,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             {
                 resultVal = handleDate(assignExp, dtype);
                 if (resultVal == null) {
-                    this.addError2s("var '%s': date value not number or string %s", assignExp.var.name(), "");
+                    this.addError2s(assignExp, "var '%s': date value not number or string %s", assignExp.var.name(), "");
                 }
             }
             break;
@@ -201,7 +201,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
 
                 if (! found) {
-                    this.addError2s("enum %s does not contain %s", fullType.var.name(), tmp.name());
+                    this.addError2s(assignExp, "enum %s does not contain %s", fullType.var.name(), tmp.name());
                     return null;
                 }
 
@@ -221,12 +221,12 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             	}
                 FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
                 if (referencedValue == null) {
-                    this.addError2s("cannot resolve reference to '%s'", refVarName, "");
+                    this.addError2s(assignExp, "cannot resolve reference to '%s'", refVarName, "");
                     return null;
                 } else {
                 	DValue dd = world.findTopLevelValue(refVarName);
                 	if (dd != null && ! dd.getType().getName().equals(assignExp.type.val)) {
-                        this.addError2s("%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
+                        this.addError2s(assignExp, "%s: cannot assign a value of type '%s'", assignExp.var.val, dd.getType().getName());
                         return null;
                 	}
                 	resultVal = dd;
@@ -245,7 +245,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             	}
                 FullAssignmentExp referencedValue = this.doc.findValue(refVarName);
                 if (referencedValue == null) {
-                    this.addError2s("cannot resolve reference to '%s'", refVarName, "");
+                    this.addError2s(assignExp, "cannot resolve reference to '%s'", refVarName, "");
                     return null;
                 } else {
                 	DValue dd = world.findTopLevelValue(refVarName);
@@ -263,7 +263,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //					break;
 
             default:
-                addError2s("var '%s' - unknown shape '%s'", varName, shape);
+                addError2s(assignExp, "var '%s' - unknown shape '%s'", varName, shape);
                 break;
             }
 
@@ -286,20 +286,20 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             StringExp strExp = (StringExp) tmp;
             Date dt = DateFormatParser.parse(strExp.val);
             if (dt == null) {
-                this.addError2s("var '%s': unsupported date value '%s'", assignExp.var.name(), strExp.val);
+                this.addError2s(assignExp, "var '%s': unsupported date value '%s'", assignExp.var.name(), strExp.val);
                 return null;
             } else {
                 return builder.buildFrom(dt);
             }
         } else {
-            this.addError2s("var '%s': date value not number or string %s", assignExp.var.name(), "");
+            this.addError2s(assignExp, "var '%s': date value not number or string %s", assignExp.var.name(), "");
             return null;
         }
     }
     private DValue buildViaListValue(FullAssignmentExp assignExp, ViaExp viaExp, String typeName) {
         List<DValue> list = findViaMatches(assignExp, viaExp);
         if (list == null) {
-            addError2s("Dcan't resolve via: %s: %s", viaExp.fieldExp.val, viaExp.valueExp.strValue());
+            addError2s(assignExp, "Dcan't resolve via: %s: %s", viaExp.fieldExp.val, viaExp.valueExp.strValue());
             return null;
         }
 
@@ -323,10 +323,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //propogate
             for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
-                addError2s("validation error: %s: %s", errType, err.getMessage());
+                addError2s(assignExp, "validation error: %s: %s", errType, err.getMessage());
             }
 
-            addError2s("var '%s' - struct value builder failed %s", typeName, "unknown reason");
+            addError2s(assignExp, "var '%s' - struct value builder failed %s", typeName, "unknown reason");
         }
 
         return dval;
@@ -398,10 +398,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //propogate
             for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
-                addError2s("validation error: %s: %s", errType, err.getMessage());
+                addError2s(listExp, "validation error: %s: %s", errType, err.getMessage());
             }
 
-            addError2s("var '%s' - struct value builder failed %s", typeName, "unknown reason");
+            addError2s(listExp, "var '%s' - struct value builder failed %s", typeName, "unknown reason");
         }
 
         return dval;
@@ -446,10 +446,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             IdentExp tmp = (IdentExp) typeExp.value;
             FullAssignmentExp referencedValue = this.doc.findValue(tmp.name());
             if (referencedValue == null) {
-                NewErrorMessage errz = addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                NewErrorMessage errz = addError2s(typeExp, "cannot resolve reference to '%s'", tmp.name(), "");
                 errz.setFieldName(typeExp.var.name());
                 errz.setActualValue(typeExp.value.strValue());
-                this.addError2s("cannot resolve reference to '%s'", tmp.name(), "");
+                this.addError2s(typeExp, "cannot resolve reference to '%s'", tmp.name(), "");
                 return null;
             }
             return resolveRHS(referencedValue); //recursion
@@ -483,7 +483,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         List<DValue> list = findViaMatches(assignExp, via);
         if (list == null || list.size() == 0) {
             String ss = (via.valueExp == null) ? "" : via.valueExp.strValue();
-            addError2s("Acan't resolve via: %s: %s", via.fieldExp.val, ss);
+            addError2s(assignExp, "Acan't resolve via: %s: %s", via.fieldExp.val, ss);
             return null;
         } else if (list.size() > 1) {
             if (assignExp.var.val.startsWith("list[")) {
@@ -491,7 +491,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 return hack;
             }
             Integer n = list.size();
-            addError2s("B can't resolve via: %s: %s matches", via.fieldExp.val, n.toString());
+            addError2s(assignExp, "B can't resolve via: %s: %s matches", via.fieldExp.val, n.toString());
             return null;
         } else {
             DValue dval = list.get(0);
@@ -505,12 +505,12 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         if (tmp instanceof DStructType) {
             dtype = (DStructType) tmp;
         } else {
-            this.addError("not a struct type", assignExp);
+            this.addError(assignExp, "not a struct type", assignExp);
             return null;
         }
         DType inner = dtype.getFields().get(via.fieldExp.name());
         if (inner == null) {
-            this.addError("couldn't file field", assignExp);
+            this.addError(assignExp, "couldn't file field", assignExp);
             return null;
         }
         
@@ -548,11 +548,11 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //			String fieldName = sme.var.name();
             //			String fieldType = sme.type.name();
             if (index >= pairList.size()) {
-                addError2s("missing field: %s: %s", new Integer(index).toString(), exp.strValue());
+                addError2s(structExp, "missing field: %s: %s", new Integer(index).toString(), exp.strValue());
             } else {
                 String fieldName = calcFieldName(index, pairList, exp); 
                 getErrorInfo().setCurrentFieldName(fieldName);
-                String fieldType = caclFieldType(fieldName, dtype, pairList); 
+                String fieldType = caclFieldType(structExp, fieldName, dtype, pairList); 
                 if (fieldType == null) {
                 	//error already logger
                 	continue;
@@ -606,10 +606,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //propogate
             for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
-                addError2s("validation error: %s: %s", errType, err.getMessage());
+                addError2s(structExp, "validation error: %s: %s", errType, err.getMessage());
             }
 
-            addError2s("var '%s' - struct value builder failed %s", typeName, "unknown reason");
+            addError2s(structExp, "var '%s' - struct value builder failed %s", typeName, "unknown reason");
         }
 
         this.currentStructBuilder = null; //reset
@@ -619,7 +619,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         return dval;
     }
     
-    private String caclFieldType(String fieldName, DStructType dtype, List<TypePair> pairList) {
+    private String caclFieldType(StructAssignExp structExp, String fieldName, DStructType dtype, List<TypePair> pairList) {
     	List<TypePair> allFields = dtype.getAllFields();
     	for(TypePair pair: allFields) {
     		if (pair.name.equals(fieldName)) {
@@ -628,7 +628,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     		}
     	}
     	
-    	addError2s("struct '%s' - does not contain field '%s'", dtype.getName(), fieldName);
+    	addError2s(structExp, "struct '%s' - does not contain field '%s'", dtype.getName(), fieldName);
     	return null;
 	}
 
@@ -656,10 +656,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 if (exp instanceof ViaExp) {
 //                    via = (ViaExp) exp;
 //                    viaHelper.adjustTypeIfNeeded((ViaExp)exp, dtype, fieldName);
-            		addError2s("invalid map element: %s: %s", new Integer(index).toString(), "via not allowed");
+            		addError2s(structExp, "invalid map element: %s: %s", new Integer(index).toString(), "via not allowed");
                 } else if (exp instanceof ListAssignExp) {
 //                    viaHelper.adjustListTypeIfNeeded((ListAssignExp)exp, dtype, fieldName);
-                	addError2s("invalid map element: %s: %s", new Integer(index).toString(), "list not allowed");
+                	addError2s(structExp, "invalid map element: %s: %s", new Integer(index).toString(), "list not allowed");
                 } else if (exp instanceof IdentExp) {
                     isNull = exp.strValue().equals("null");
                 } else if (exp instanceof StructMemberAssignExp) {
@@ -671,7 +671,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 }
 
                 if (isNull) {
-                	addError2s("invalid map element: %s: %s", new Integer(index).toString(), "null not allowed");
+                	addError2s(structExp, "invalid map element: %s: %s", new Integer(index).toString(), "null not allowed");
                 } else {
                 	String elTypeName = TypeInfo.parserTypeOf(dtype.getElementType().getName());
                     FullAssignmentExp tmp = new FullAssignmentExp(0, new IdentExp(fieldName),
@@ -697,10 +697,10 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             //propogate
             for(NewErrorMessage err: builder.getValidationErrors()) {
                 String errType = err.getErrorType().name();
-                addError2s("validation error: %s: %s", errType, err.getMessage());
+                addError2s(structExp, "validation error: %s: %s", errType, err.getMessage());
             }
 
-            addError2s("var '%s' - struct value builder failed %s", typeName, "unknown reason");
+            addError2s(structExp, "var '%s' - struct value builder failed %s", typeName, "unknown reason");
         }
 
         this.currentMapBuilder = null; //reset
