@@ -1,7 +1,7 @@
 package org.dnal.compiler.parser.ast;
 
 
-public class ViaExp implements Exp {
+public class ViaExp extends ExpBase {
     
     public IdentExp typeExp;
     public IdentExp fieldExp;

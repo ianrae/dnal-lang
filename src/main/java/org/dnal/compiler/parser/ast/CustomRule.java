@@ -3,8 +3,6 @@ package org.dnal.compiler.parser.ast;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jparsec.Token;
-
 public class CustomRule extends RuleExp {
 	public String ruleName;
 	public String fieldName; //can be null
@@ -57,6 +55,7 @@ public class CustomRule extends RuleExp {
         argL.add(range);
     }
 	
+	@Override
 	public String strValue() {
 		String ss = String.format("%s(", ruleName);
 		int i = 0;

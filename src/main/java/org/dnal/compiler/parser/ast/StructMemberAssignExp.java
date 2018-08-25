@@ -1,6 +1,6 @@
 package org.dnal.compiler.parser.ast;
 
-public class StructMemberAssignExp implements Exp {
+public class StructMemberAssignExp extends ExpBase {
 	public IdentExp var;
 	public Exp value;
 
@@ -8,6 +8,7 @@ public class StructMemberAssignExp implements Exp {
 		this.var = varname;
 		this.value = value;
 	}
+	@Override
 	public String strValue() {
 		return var.val;
 	}

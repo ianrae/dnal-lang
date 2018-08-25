@@ -2,8 +2,7 @@ package org.dnal.compiler.parser.ast;
 
 import org.codehaus.jparsec.Token;
 
-public class StructMemberExp implements Exp {
-	public int pos;
+public class StructMemberExp extends ExpBase {
 	public IdentExp var;
 	public IdentExp type;
 	public boolean optional;
@@ -16,6 +15,7 @@ public class StructMemberExp implements Exp {
 		this.optional = (opt != null);
 		this.isUnique = (unique != null);
 	}
+	@Override
 	public String strValue() {
 		return var.val;
 	}

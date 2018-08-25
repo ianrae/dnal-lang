@@ -2,8 +2,7 @@ package org.dnal.compiler.parser.ast;
 
 import java.util.List;
 
-public class FullTypeExp implements Exp {
-	public int pos;
+public class FullTypeExp extends ExpBase {
 	public IdentExp var;
 	public IdentExp type;
 	public List<RuleExp> ruleList;
@@ -14,6 +13,7 @@ public class FullTypeExp implements Exp {
 		this.type = typename;
 		this.ruleList = ruleList;
 	}
+	@Override
 	public String strValue() {
 		return var.val;
 	}

@@ -8,6 +8,7 @@ public class ComparisonOrRuleExp extends RuleExp {
 		this.exp1 = exp1;
 		this.exp2 = exp2;
 	}
+	@Override
 	public String strValue() {
 		return String.format("%s or %s", exp1.strValue(), exp2.strValue());
 	}

@@ -9,6 +9,7 @@ public class FullStructTypeExp extends FullTypeExp {
 		super(pos, varname, typename, ruleList);
 		this.members = members;
 	}
+	@Override
 	public String strValue() {
 		return super.strValue();
 	}

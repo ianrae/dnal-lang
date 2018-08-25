@@ -1,15 +1,17 @@
 package org.dnal.compiler.parser.ast;
 
-public class FullAssignmentExp implements Exp {
+public class FullAssignmentExp extends ExpBase {
 	public IdentExp var;
 	public IdentExp type;
 	public Exp value;
 
-	public FullAssignmentExp(IdentExp varname, IdentExp typename, Exp val) {
+	public FullAssignmentExp(int pos, IdentExp varname, IdentExp typename, Exp val) {
+		this.pos = pos;
 		this.var = varname;
 		this.type = typename;
 		this.value = val;
 	}
+	@Override
 	public String strValue() {
 		return var.val;
 	}
@@ -45,5 +47,5 @@ public class FullAssignmentExp implements Exp {
 //            addError2s("var%s: malformed type '%s.", "", type.val);
             return null;
         }
-    }   	
+	}
 }

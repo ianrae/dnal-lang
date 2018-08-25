@@ -260,7 +260,7 @@ public class VarParser {
 	}
 	public static Parser<Exp> assignmentUnused0() {
 		return Parsers.sequence(term("let"), ident(), ident(),
-				(Token tok, IdentExp varName, IdentExp varType) -> new FullAssignmentExp(varName, varType, null));
+				(Token tok, IdentExp varName, IdentExp varType) -> new FullAssignmentExp(tok.index(), varName, varType, null));
 	}
 	
 	public static Parser<IdentExp> listangle() {
@@ -293,7 +293,7 @@ public class VarParser {
 					public FullAssignmentExp map(Tuple4<IdentExp, IdentExp, Exp, Exp> arg0) {
 						Exp dd = arg0.d;
 
-						return new FullAssignmentExp(arg0.a, arg0.b, dd);
+						return new FullAssignmentExp(0, arg0.a, arg0.b, dd);
 					}
 				});
 	}

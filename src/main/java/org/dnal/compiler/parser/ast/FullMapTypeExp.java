@@ -9,6 +9,7 @@ public class FullMapTypeExp extends FullTypeExp {
 		super(pos, varname, typename, ruleList);
 		this.elementType = elementType;
 	}
+	@Override
 	public String strValue() {
 		return super.strValue();
 	}

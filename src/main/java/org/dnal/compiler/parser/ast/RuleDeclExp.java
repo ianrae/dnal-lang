@@ -1,7 +1,7 @@
 package org.dnal.compiler.parser.ast;
 
 
-public class RuleDeclExp implements Exp {
+public class RuleDeclExp extends ExpBase {
     
     public String ruleName;
     public String ruleType;

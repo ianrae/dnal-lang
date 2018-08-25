@@ -407,7 +407,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     }
 
     private FullAssignmentExp createFAE(String varName, String typeName, Exp exp) {
-        FullAssignmentExp assignExp = new FullAssignmentExp(new IdentExp(varName),
+        FullAssignmentExp assignExp = new FullAssignmentExp(0, new IdentExp(varName),
                 new IdentExp(typeName), 
                 exp);
 
@@ -454,14 +454,14 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
             return resolveRHS(referencedValue); //recursion
         } else if (typeExp.value instanceof StructMemberAssignExp) {
             StructMemberAssignExp tmp = (StructMemberAssignExp) typeExp.value;
-            FullAssignmentExp fake = new FullAssignmentExp(tmp.var, new IdentExp("?fakeType"), tmp.value);
+            FullAssignmentExp fake = new FullAssignmentExp(0, tmp.var, new IdentExp("?fakeType"), tmp.value);
             return resolveRHS(fake);
         } else if (typeExp.value instanceof StructAssignExp) {
             StructAssignExp tmp = (StructAssignExp) typeExp.value;
             return tmp;
         } else if (typeExp.value instanceof ViaExp) {
             ViaExp via = (ViaExp) typeExp.value;
-            FullAssignmentExp fake = new FullAssignmentExp(via.fieldExp, new IdentExp("?fakeType"), via.valueExp);
+            FullAssignmentExp fake = new FullAssignmentExp(0, via.fieldExp, new IdentExp("?fakeType"), via.valueExp);
             return resolveRHS(fake);
         } else {
             return null;
@@ -581,7 +581,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
 //                        addError2s("can't assign null unless field is optional: %s%s", fieldName, "");
                     }
                 } else {
-                    FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
+                    FullAssignmentExp tmp = new FullAssignmentExp(0, new IdentExp(fieldName),
                             new IdentExp(fieldType), 
                             exp);
                     DValue member = this.buildValue(tmp);
@@ -673,7 +673,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                 	addError2s("invalid map element: %s: %s", new Integer(index).toString(), "null not allowed");
                 } else {
                 	String elTypeName = TypeInfo.parserTypeOf(dtype.getElementType().getName());
-                    FullAssignmentExp tmp = new FullAssignmentExp(new IdentExp(fieldName),
+                    FullAssignmentExp tmp = new FullAssignmentExp(0, new IdentExp(fieldName),
                             new IdentExp(elTypeName), 
                             exp);
                     DValue member = this.buildMapElementValue(tmp);

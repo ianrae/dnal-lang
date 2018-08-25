@@ -1,6 +1,6 @@
 package org.dnal.compiler.parser.ast;
 
-public class EnumMemberExp implements Exp {
+public class EnumMemberExp extends ExpBase {
 	public IdentExp var;
 	public IdentExp type;
 
@@ -8,6 +8,7 @@ public class EnumMemberExp implements Exp {
 		this.var = varname;
 		this.type = type;
 	}
+	@Override
 	public String strValue() {
 		return var.val;
 	}
