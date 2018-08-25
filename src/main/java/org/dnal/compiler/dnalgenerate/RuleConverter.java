@@ -20,6 +20,7 @@ import org.dnal.compiler.parser.ast.LongExp;
 import org.dnal.compiler.parser.ast.NumberExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -32,8 +33,8 @@ public class RuleConverter extends ErrorTrackingBase {
     private CustomRuleFactory crf;
     private List<RuleDeclaration> ruleDeclL;
     
-    public RuleConverter(CustomRuleFactory crf, List<RuleDeclaration> ruleDeclL, XErrorTracker et) {
-        super(et);
+    public RuleConverter(CustomRuleFactory crf, List<RuleDeclaration> ruleDeclL, XErrorTracker et, LineLocator locator) {
+        super(et, locator);
         this.crf = crf;
         this.ruleDeclL = ruleDeclL;
     }

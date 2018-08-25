@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
@@ -24,14 +25,14 @@ public class ValidationPhase extends ErrorTrackingBase {
 	private ValidationOptions validateOptions;
 	private List<DValue> futureValues;
 
-	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions) {
-		super(et);
+	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, LineLocator locator) {
+		super(et, locator);
 		this.world = world;
 		this.validateOptions = validateOptions;
 		futureValues = new ArrayList<>();
 	}
 	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
-		super(et);
+		super(et, null);
 		this.world = world;
 		this.validateOptions = validateOptions;
 		this.futureValues = futureValues;

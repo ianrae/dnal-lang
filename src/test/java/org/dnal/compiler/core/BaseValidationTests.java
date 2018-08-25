@@ -10,6 +10,7 @@ import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DType;
@@ -46,7 +47,8 @@ public class BaseValidationTests extends BaseTest {
         errL.addAll(dnalGenerator.getErrL());
         World world = getContext().world;
         getContext().validateOptions.validationMode = validationMode;
-        ValidationPhase validator = new ValidationPhase(world, getContext().et, getContext().validateOptions);
+        LineLocator lineLocator = null;
+        ValidationPhase validator = new ValidationPhase(world, getContext().et, getContext().validateOptions, lineLocator);
     
 //      DType type = dnalGenerator.getRegistry().getType("Foo");
 //      for(NRule rule: CustomRuleRegistry.getRuleRunners()) {

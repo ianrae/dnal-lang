@@ -23,6 +23,7 @@ import org.dnal.compiler.parser.ast.RuleDeclExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
@@ -49,8 +50,8 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	private int nextInnerSuffix = 1000;
 
 	public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
-			CustomRuleFactory crf, CompilerContext context) {
-		super(et);
+			CustomRuleFactory crf, CompilerContext context, LineLocator locator) {
+		super(et, locator);
 		this.world = world;
 		this.registry = registry;
 		this.crf = crf;
@@ -81,7 +82,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		context.perf.startTimer("ast-to-dval:values");
 		String packageName = packageHelper.getPackageName();
-		valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper);
+		valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper, this.getLineLocator());
 		for(Exp exp: doc.getValues()) {
 			try {
 				visitValue(exp);
@@ -220,7 +221,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	}
 
 	private void addValidationRules(FullTypeExp typeExp, DType type) {
-		RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET());
+		RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET(), this.getLineLocator());
 
 		List<RuleExp> adjustedRuleList = adjustRules(type, typeExp.ruleList);
 
@@ -248,7 +249,6 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		}        
 
 	}
-
 
 	private List<RuleExp> adjustRules(DType type, List<RuleExp> ruleList) {
 		RuleAdjuster adjuster = new RuleAdjuster();

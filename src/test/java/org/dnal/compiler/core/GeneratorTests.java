@@ -93,7 +93,7 @@ public class GeneratorTests extends BaseTest {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
 
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world);
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world, null);
 		SimpleFormatOutputGenerator visitor = new SimpleFormatOutputGenerator();
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);

@@ -10,14 +10,16 @@ import org.dnal.core.NewErrorMessage;
 public class ErrorTrackingBase {
 	protected DNALDocument doc;
     private XErrorTracker et;
+    private LineLocator lineLocator; //can be null
 //	protected ErrorScopeStack scopeStack;
 //	public static boolean logErrors = false;
 
-	public ErrorTrackingBase(XErrorTracker et) {
+	public ErrorTrackingBase(XErrorTracker et, LineLocator locator) {
 		this.et = et;
 		this.doc = null; //will be set later
+		this.lineLocator = locator;
 	}
-	public ErrorTrackingBase(DNALDocument doc, XErrorTracker et) {
+	public ErrorTrackingBase(DNALDocument doc, XErrorTracker et, LineLocator locator) {
 		this.et = et;
 		this.doc = doc;
 	}
@@ -84,5 +86,10 @@ public class ErrorTrackingBase {
         return et.getErrL();
     }
 
-
+    protected LineLocator getLineLocator() {
+		return lineLocator;
+	}
+	public void setLineLocator(LineLocator lineLocator) {
+		this.lineLocator = lineLocator;
+	}
 }

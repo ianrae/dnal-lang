@@ -17,6 +17,7 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.PackageExp;
 import org.dnal.compiler.parser.error.ErrorScope;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DTypeRegistry;
@@ -32,11 +33,10 @@ public class SourceCompiler extends ErrorTrackingBase {
     private CustomRuleFactory crf;
     private CompilerContext context;
     private ValidationPhase mostRecentValidator;
-
     
     public SourceCompiler(World world, DTypeRegistry registry, CustomRuleFactory crf, 
             XErrorTracker et, CompilerContext context) {
-        super(et);
+        super(et, null);
         this.crf = crf;
         this.world = world;
         this.registry = registry;
@@ -135,6 +135,9 @@ public class SourceCompiler extends ErrorTrackingBase {
         return f.exists();
     }
     private boolean parseIntoDVals(String input) {
+    	if (input != null) {
+    		this.setLineLocator(new LineLocator(input));
+    	}
         parseAndGenDVals(input);
         if (areSomeErrors()) {
             return false;
@@ -175,7 +178,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         PackageExp pkgExp = doc.getPackage();
         context.packageName = (pkgExp == null) ? null : pkgExp.val;
         ASTToDNALGenerator dnalGenerator = new ASTToDNALGenerator(world, registry, getET(), 
-                this.crf, context);
+                this.crf, context, getLineLocator());
         boolean b = dnalGenerator.generate(doc.getStatementList());
         context.perf.endTimer("ast-to-dnal");
         return (b) ? dnalGenerator : null;
@@ -183,7 +186,7 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean pass2(List<Exp> list) {
         context.perf.startTimer("check");
-        ParseErrorChecker errorChecker = new ParseErrorChecker(list, getET());
+        ParseErrorChecker errorChecker = new ParseErrorChecker(list, getET(), this.getLineLocator());
         boolean b = errorChecker.checkForErrors();
         context.perf.endTimer("check");
         if (! b) {
@@ -199,7 +202,7 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean validatePhase() {
         context.perf.startTimer("validate");
-        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions);
+        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions, getLineLocator());
         
         //save validator in case 'future' values need to be resolved
         mostRecentValidator = validator;
@@ -212,7 +215,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     }
     
     private boolean generator(OutputGenerator visitor) {
-        Generator generator = new GeneratorImpl(registry, world, context);
+        Generator generator = new GeneratorImpl(registry, world, context, getLineLocator());
         context.perf.startTimer("generate");
         boolean b = generator.generate(visitor);
         context.perf.endTimer("generate");

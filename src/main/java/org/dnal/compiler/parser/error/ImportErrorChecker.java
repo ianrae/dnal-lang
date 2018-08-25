@@ -9,8 +9,8 @@ import org.dnal.core.util.NameUtils;
 
 public class ImportErrorChecker extends ErrorCheckerBase {
 
-    public ImportErrorChecker(DNALDocument doc, XErrorTracker et) {
-        super(doc, et);
+    public ImportErrorChecker(DNALDocument doc, XErrorTracker et, LineLocator locator) {
+        super(doc, et, locator);
     }
 
     public void checkForErrors() {

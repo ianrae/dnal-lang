@@ -72,7 +72,7 @@ public class DataSetImpl implements DataSet {
 
     @Override
     public Generator createGenerator() {
-        Generator generator = new GeneratorImpl(registry, world, context);
+        Generator generator = new GeneratorImpl(registry, world, context, null);
         return generator;
     }
     
@@ -138,7 +138,7 @@ public class DataSetImpl implements DataSet {
     }
 	
 	public ViaFinder createViaFinder() {
-		ViaFinder finder = new ViaFinder(world, registry, context.et);
+		ViaFinder finder = new ViaFinder(world, registry, context.et, null);
 		return finder;
 	}
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.ast.ViaExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -21,8 +22,8 @@ public class ViaFinder extends ErrorTrackingBase {
     private World world;
     private DTypeRegistry registry;
 
-	public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et) {
-        super(et);
+	public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et, LineLocator locator) {
+        super(et, locator);
         this.world = world;
         this.registry = registry;
         // TODO Auto-generated constructor stub

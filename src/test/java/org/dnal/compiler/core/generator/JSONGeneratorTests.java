@@ -10,6 +10,7 @@ import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.json.JSONGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
 import org.junit.Test;
@@ -66,7 +67,8 @@ public class JSONGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world);
+        LineLocator lineLocator = new LineLocator(input);
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world, lineLocator);
 		JSONGenerator visitor = new JSONGenerator();
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);

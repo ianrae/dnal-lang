@@ -24,6 +24,7 @@ import org.dnal.compiler.parser.ast.StructAssignExp;
 import org.dnal.compiler.parser.ast.StructMemberAssignExp;
 import org.dnal.compiler.parser.ast.ViaExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
@@ -63,14 +64,14 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     private boolean useProxyDVals = false;
 	private MapBuilder currentMapBuilder;
 
-    public ASTToDNALValueGenerator(World world, CompilerContext context, DNALDocument doc, DTypeRegistry registry, PackageHelper packageHelper) {
-        super(doc, context.et);
+    public ASTToDNALValueGenerator(World world, CompilerContext context, DNALDocument doc, DTypeRegistry registry, PackageHelper packageHelper, LineLocator locator) {
+        super(doc, context.et, locator);
         this.world = world;
         this.registry = registry;
         this.valErrorList = new ArrayList<>();
         factory = new BuilderFactory(registry, valErrorList);
         this.packageHelper = packageHelper;
-        this.viaFinder = new ViaFinder(world, registry, context.et);
+        this.viaFinder = new ViaFinder(world, registry, context.et, locator);
         this.viaHelper = new ViaHelper();
         this.useProxyDVals = context.compilerOptions.isUseProxyDValues();
     }

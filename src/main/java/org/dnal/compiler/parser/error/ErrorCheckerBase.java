@@ -10,8 +10,8 @@ import org.dnal.compiler.parser.ast.IdentExp;
 public class ErrorCheckerBase extends ErrorTrackingBase {
 	protected List<String> seenTypes = new ArrayList<>();
 
-	public ErrorCheckerBase(DNALDocument doc, XErrorTracker et) {
-		super(doc, et);
+	public ErrorCheckerBase(DNALDocument doc, XErrorTracker et, LineLocator locator) {
+		super(doc, et, locator);
 	}
 
     protected void checkIdent(IdentExp identExp, String elName) {

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
@@ -21,8 +22,8 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
     private DTypeRegistry registry;
     private World world;
 
-    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world) {
-        super(et);
+    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
+        super(et, lineLocator);
         this.registry = registry;
         this.world = world;
     }

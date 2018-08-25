@@ -222,7 +222,7 @@ public class NewGeneratorTests extends BaseTest {
 	    private World world;
 
 	    public NewDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world) {
-	        super(et);
+	        super(et, null);
 	        this.registry = registry;
 	        this.world = world;
 	    }
