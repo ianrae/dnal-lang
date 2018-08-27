@@ -19,4 +19,5 @@ public interface DataSet {
     int size();
     List<String> getAllNames();
     DType getType(String typeName);
+    List<DType> getTypes(TypeFilter filter);
 }

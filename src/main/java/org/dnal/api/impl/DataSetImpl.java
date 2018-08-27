@@ -9,6 +9,7 @@ import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
+import org.dnal.api.TypeFilter;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -142,4 +143,21 @@ public class DataSetImpl implements DataSet {
 		return finder;
 	}
 
+	@Override
+	public List<DType> getTypes(TypeFilter filter) {
+		List<DType> list = new ArrayList<>();
+		switch(filter) {
+		case ALL:
+			list.addAll(registry.getOrderedList());
+			break;
+		case STRUCT:
+			for(DType type: registry.getOrderedList()) {
+				if (type.isStructShape()) {
+					list.add(type);
+				}
+			}
+			break;
+		}
+		return list;
+	}
 }
