@@ -39,6 +39,12 @@ public class TypeBuilder {
 			doAddField(fieldName, eltype);
 			return new InnerString(currentField, rules, fieldName); //not really correct!!
 		}
+		
+		public void resetForNextField() {
+			this.optional = false;
+			this.unique = false;
+		}
+		
 		public Inner optional() {
 		    this.optional = true;
 		    return this;
