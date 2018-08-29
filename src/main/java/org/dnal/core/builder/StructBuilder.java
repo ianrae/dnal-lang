@@ -42,7 +42,7 @@ public class StructBuilder extends Builder {
 	public void addField(String fieldName, String input) {
 		DType field = structType.getFields().get(fieldName);
 		if (field == null) {
-			builder.addParsingError("unknown field: " + fieldName);
+			builder.addParsingError("unknown field: " + fieldName, fieldName);
 		} else {
 			DValue dval = build(field, input);
 			builder.addField(fieldName, dval, false);
@@ -111,7 +111,7 @@ public class StructBuilder extends Builder {
 	public void addField(String fieldName, String[] ar) {
 		DType field = structType.getFields().get(fieldName);
 		if (field == null) {
-			builder.addParsingError("unknown field: " + fieldName);
+			builder.addParsingError("unknown field: " + fieldName, fieldName);
 		} else if (field instanceof DListType) {
 			DListType listType = (DListType) field;
 			XListValueBuilder lvb = new XListValueBuilder(listType);

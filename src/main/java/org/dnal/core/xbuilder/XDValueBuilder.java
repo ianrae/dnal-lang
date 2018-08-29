@@ -42,6 +42,9 @@ public abstract class XDValueBuilder {
 	public void addParsingError(String msg) {
 		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
 	}
+	public void addParsingError(String msg, String fieldName) {
+		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg).setFieldName(fieldName);
+	}
 	
     public NewErrorMessage addOldErrorMsgZ(ErrorType errType, String message) {
         NewErrorMessage err = new NewErrorMessage();
