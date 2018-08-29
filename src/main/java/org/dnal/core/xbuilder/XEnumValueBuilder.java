@@ -34,7 +34,7 @@ public class XEnumValueBuilder extends XDValueBuilder {
 		DStructType dtype = (DStructType) type;
 		String s = newDVal.asString();
 		if (! dtype.getFields().containsKey(s)) {
-			addParsingError(String.format("enum %s does not contain '%s'", type.getName(), s));
+			addParsingError(String.format("enum %s does not contain '%s'", type.getName(), s), s);
 		}
 	}
 }

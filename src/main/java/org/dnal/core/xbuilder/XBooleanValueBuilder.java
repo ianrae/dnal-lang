@@ -27,10 +27,10 @@ public class XBooleanValueBuilder extends XDValueBuilder {
 				bool = Boolean.parseBoolean(input);
 				this.newDVal = new DValueImpl(type, bool);
 			} else {
-				addParsingError(String.format("'%s' is not an boolean", input));
+				addParsingError(String.format("'%s' is not an boolean", input), input);
 			}
 		} catch (NumberFormatException e) {
-			addParsingError(String.format("'%s' is not an boolean", input));
+			addParsingError(String.format("'%s' is not an boolean", input), input);
 		}
 	}
 	public void buildFrom(Boolean bool) {

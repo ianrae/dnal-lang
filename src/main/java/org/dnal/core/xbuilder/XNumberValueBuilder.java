@@ -24,7 +24,7 @@ public class XNumberValueBuilder extends XDValueBuilder {
             nval = Double.parseDouble(input);
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
-            addParsingError(String.format("'%s' is not an number", input));
+            addParsingError(String.format("'%s' is not an number", input), input);
         }
     }
     public void buildFrom(Double lval) {

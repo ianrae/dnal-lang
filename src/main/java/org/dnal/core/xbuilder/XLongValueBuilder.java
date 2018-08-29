@@ -24,7 +24,7 @@ public class XLongValueBuilder extends XDValueBuilder {
             nval = Long.parseLong(input);
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
-            addParsingError(String.format("'%s' is not an integer", input));
+            addParsingError(String.format("'%s' is not a long", input), input);
         }
     }
     public void buildFrom(Long lval) {

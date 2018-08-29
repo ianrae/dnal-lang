@@ -39,11 +39,14 @@ public abstract class XDValueBuilder {
 	    this.valErrorList.add(err);
 	}
 
-	public void addParsingError(String msg) {
-		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+	public void addParsingError(String msg, String inputText) {
+		NewErrorMessage nem = addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+		nem.setActualValue(inputText);
 	}
-	public void addParsingError(String msg, String fieldName) {
-		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg).setFieldName(fieldName);
+	public void addParsingError(String msg, String inputText, String fieldName) {
+		NewErrorMessage nem = addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+		nem.setFieldName(fieldName);
+		nem.setActualValue(inputText);
 	}
 	
     public NewErrorMessage addOldErrorMsgZ(ErrorType errType, String message) {

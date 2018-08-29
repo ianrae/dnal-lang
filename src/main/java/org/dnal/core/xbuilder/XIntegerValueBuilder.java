@@ -24,7 +24,7 @@ public class XIntegerValueBuilder extends XDValueBuilder {
 			nval = Integer.parseInt(input);
 			this.newDVal = new DValueImpl(type, nval);
 		} catch (NumberFormatException e) {
-			addParsingError(String.format("'%s' is not an integer", input));
+			addParsingError(String.format("'%s' is not an integer", input), input);
 		}
 	}
 	public void buildFrom(Integer lval) {
