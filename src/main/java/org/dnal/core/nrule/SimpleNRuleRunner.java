@@ -95,6 +95,7 @@ public class SimpleNRuleRunner  {
 			        	ctx.addError(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
 			        	DValueImpl dvalimpl = (DValueImpl) dval;
 			        	dvalimpl.changeValidState(ValidationState.INVALID);
+			        	scorer.score(dval);
 			        }
 			    }
 			} else {

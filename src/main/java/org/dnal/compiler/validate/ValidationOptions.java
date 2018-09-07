@@ -21,6 +21,9 @@ public class ValidationOptions {
 	public Map<String,Object> passThroughMap = new HashMap<>();
 	
 	public boolean isModeSet(int mode) {
+		if (mode == VALIDATEMODE_NONE && validationMode == 0) {
+			return true;
+		}
     	int mask = validationMode & mode;
     	return (mask != 0);
 	}
