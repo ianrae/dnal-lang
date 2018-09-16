@@ -8,6 +8,7 @@ import java.util.Map;
 import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
+import org.dnal.api.GeneratorEx;
 import org.dnal.api.Transaction;
 import org.dnal.api.TypeFilter;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
@@ -74,6 +75,11 @@ public class DataSetImpl implements DataSet {
     @Override
     public Generator createGenerator() {
         Generator generator = new GeneratorImpl(registry, world, context, null);
+        return generator;
+    }
+    @Override
+    public GeneratorEx createGeneratorEx() {
+        GeneratorEx generator = new GeneratorImplEx(registry, world, context, null);
         return generator;
     }
     

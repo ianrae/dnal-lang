@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
@@ -17,14 +18,16 @@ import org.dnal.core.repository.World;
 public class NewDNALGeneratePhase extends ErrorTrackingBase {
 	    private DTypeRegistry registry;
 	    private World world;
+	    private LineLocator lineLocator;
 
-	    public NewDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world) {
+	    public NewDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
 	        super(et, null);
 	        this.registry = registry;
 	        this.world = world;
+	        this.lineLocator = lineLocator;
 	    }
 	    
-	    public boolean generate(NewOutputGeneratorImpl visitor, OutputOptions outputOptions) {
+	    public boolean generate(OutputGeneratorEx visitor, OutputOptions outputOptions) {
 	        boolean b = false;
 	        try {
 	            b = doGenerate(visitor, outputOptions);
@@ -34,7 +37,7 @@ public class NewDNALGeneratePhase extends ErrorTrackingBase {
 	        return b;
 	    }
 
-	    public boolean doGenerate(NewOutputGeneratorImpl visitor, OutputOptions outputOptions) throws Exception {
+	    public boolean doGenerate(OutputGeneratorEx visitor, OutputOptions outputOptions) throws Exception {
 	        List<DType> orderedTypeList = registry.getOrderedList();
 
 	        boolean doTypes = outputOptions.equals(OutputOptions.ALL) || outputOptions.equals(outputOptions.TYPES_ONLY);

@@ -124,7 +124,7 @@ public class NewGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world);
+		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world, null);
 		NewOutputGeneratorImpl visitor = new NewOutputGeneratorImpl();
 		visitor.generateTypes = genTypes;
 		visitor.generateValues = genValues;

@@ -13,6 +13,7 @@ public interface DataSet {
     DValue getValue(String varName);
     <T> T getAsBean(String varName, Class<T> clazz);
     Generator createGenerator();
+    GeneratorEx createGeneratorEx();
 
     DataSet cloneDataSet();
     DataSet cloneEmptyDataSet();
