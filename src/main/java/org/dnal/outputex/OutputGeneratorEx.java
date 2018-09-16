@@ -18,14 +18,15 @@ public interface OutputGeneratorEx {
 
 	void scalarType(DType dtype, String typeName, String parentName);
 
-	void startStructValue(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index);
-	void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx);
+	//and values
+	void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index);
+	void endStruct(DValue dval, DStructType structType, GeneratorContext genctx);
 
-	void startListValue(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index);
-	void endListValue(DValue dval, DListType listType, GeneratorContext genctx);
+	void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index);
+	void endList(DValue dval, DListType listType, GeneratorContext genctx);
 	
-	void startMapValue(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx, int index);
-	void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx);
+	void startMap(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx, int index);
+	void endMap(DValue dval, DMapType mapType, GeneratorContext genctx);
 	
 	void listElementValue(DValue dval, GeneratorContext genctx, int index);
 	void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index);

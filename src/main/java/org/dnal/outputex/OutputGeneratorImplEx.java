@@ -131,56 +131,15 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 				default:
 					break;
 			}
-		} else if (dtype.isListShape()) {
-			DListType listType = (DListType) dtype;
-			s = doList(dval, listType);
-		} else if (dtype.isStructShape()) {
-			DStructType structType = (DStructType) dtype;
-			s = doStruct(dval, structType);
-		} else if (dtype.isMapShape()) {
-			DMapType mapType = (DMapType) dtype;
-			s = doMap(dval, mapType);
 		}
 		return s;
 	}
-	private String doMap(DValue dval, DMapType mapType) {
-		StringJoiner joiner = new StringJoiner(", ");
-		//!!should fields be in alpha order?
-		for(String fieldName: dval.asMap().keySet()) {
-			DValue inner = dval.asMap().get(fieldName);
-			String s = getValueStr(inner);
-			String fieldStr = String.format("%s:%s", fieldName, s);
-			joiner.add(fieldStr);
-		}
-		return String.format("{%s}", joiner.toString());
-	}
-	private String doStruct(DValue dval, DStructType structType) {
-		StringJoiner joiner = new StringJoiner(", ");
-		//!!should fields be in alpha order?
-		for(String fieldName: dval.asStruct().getFieldNames()) {
-			DValue inner = dval.asStruct().getField(fieldName);
-			String s = getValueStr(inner);
-			String fieldStr = String.format("%s:%s", fieldName, s);
-			joiner.add(fieldStr);
-			
-		}
-		return String.format("{%s}", joiner.toString());
-	}
 	private String doEnum(DValue dval, DType dtype) {
-		DStructType enumType = (DStructType) dtype;
 		return dval.asString();
 	}
-	private String doList(DValue dval, DListType listType) {
-		StringJoiner joiner = new StringJoiner(", ");
-		for(DValue inner: dval.asList()) {
-			String s = getValueStr(inner);
-			joiner.add(s);
-			
-		}
-		return String.format("[%s]", joiner.toString());
-	}
+	
 	@Override
-	public void startStructValue(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+	public void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
 		if (varName != null) {
 			String s = String.format("let %s %s = {", varName, structType.getName());
 			outputL.add(s);
@@ -196,11 +155,11 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		}
 	}
 	@Override
-	public void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx) {
+	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
 		appendCurrentList("}");
 	}
 	@Override
-	public void startListValue(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+	public void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		String typeName = listType.getName();
 		
 		if (varName != null) {
@@ -224,7 +183,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	
 	@Override
-	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
+	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
 		appendCurrentList("]");
 	}
 	@Override
@@ -255,7 +214,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		outputL.add(s);
 	}
 	@Override
-	public void startMapValue(String varName, String fieldName,  DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
+	public void startMap(String varName, String fieldName,  DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		if (varName != null) {
 			String s = String.format("let %s %s = {", varName, mapType.getName());
 			outputL.add(s);
@@ -271,7 +230,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		}
 	}
 	@Override
-	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
+	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
 		appendCurrentList("}");
 	}
 	@Override

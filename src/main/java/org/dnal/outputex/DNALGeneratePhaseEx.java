@@ -93,7 +93,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.scalarValue(varName, dval, genctx);
 	        } else if (dval.getType().isStructShape()) {
 	        	DStructType structType = (DStructType) dval.getType();
-	        	visitor.startStructValue(varName, name, dval, structType, genctx, indexParam);
+	        	visitor.startStruct(varName, name, dval, structType, genctx, indexParam);
 	        	
 	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
 	            DStructHelper helper = new DStructHelper(dval);
@@ -105,10 +105,10 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endStructValue(dval, structType, genctx);
+	            visitor.endStruct(dval, structType, genctx);
 	        } else if (dval.getType().isListShape()) {
 	        	DListType listType = (DListType) dval.getType();
-	            visitor.startListValue(varName, name, dval, listType, genctx, indexParam);
+	            visitor.startList(varName, name, dval, listType, genctx, indexParam);
 	        	genctx.pushShapeCode(GeneratorContext.LIST);
 	            List<DValue> elementL = dval.asList();
 
@@ -118,10 +118,10 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endListValue(dval, listType, genctx);
+	            visitor.endList(dval, listType, genctx);
 	        } else if (dval.getType().isMapShape()) {
 	        	DMapType mapType = (DMapType) dval.getType();
-	            visitor.startMapValue(varName, name, dval, mapType, genctx, indexParam);
+	            visitor.startMap(varName, name, dval, mapType, genctx, indexParam);
 	            genctx.pushShapeCode(GeneratorContext.MAP);
 	            Map<String,DValue> map = dval.asMap();
 
@@ -132,7 +132,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endMapValue(dval, mapType, genctx);
+	            visitor.endMap(dval, mapType, genctx);
 	        } else {
 	        	if (genctx.isEquals(GeneratorContext.STRUCT)) {
 	        		visitor.structMemberValue(name, dval, genctx, indexParam);

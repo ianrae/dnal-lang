@@ -241,36 +241,36 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 //	}
 
 	@Override
-	public void startStructValue(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+	public void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
       String s = String.format("value:%s:%s {", varName, getTypeName(dval.getType()));
       outputL.add(s);
 	}
 
 	@Override
-	public void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx) {
+	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
 		outputL.add("}");
 	}
 
 	@Override
-	public void startListValue(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+	public void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
+	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void startMapValue(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
+	public void startMap(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
+	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
 		// TODO Auto-generated method stub
 		
 	}
