@@ -10,6 +10,7 @@ import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.nrule.StandardRuleFactory;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistryBuilder;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.logger.Log;
@@ -36,7 +37,8 @@ public class BaseTest {
         CompilerContext context = new CompilerContext("", 0, new MockImportLoader(), dir, new CompilerOptions());
         context.et = new XErrorTracker();
         aContext = context;
-        ASTToDNALGenerator dnalGenerator = new ASTToDNALGenerator(world, regBuilder.getRegistry(), context.et, crf, context);
+        LineLocator lineLocator = null;
+        ASTToDNALGenerator dnalGenerator = new ASTToDNALGenerator(world, regBuilder.getRegistry(), context.et, crf, context, lineLocator);
         return dnalGenerator;
     }    
     

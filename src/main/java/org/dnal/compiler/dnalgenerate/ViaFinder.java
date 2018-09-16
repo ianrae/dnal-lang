@@ -8,6 +8,7 @@ import java.util.Map;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.ast.ViaExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -21,8 +22,8 @@ public class ViaFinder extends ErrorTrackingBase {
     private World world;
     private DTypeRegistry registry;
 
-    public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et) {
-        super(et);
+	public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et, LineLocator locator) {
+        super(et, locator);
         this.world = world;
         this.registry = registry;
         // TODO Auto-generated constructor stub
@@ -31,7 +32,7 @@ public class ViaFinder extends ErrorTrackingBase {
     public List<DValue> findMatches(ViaExp via) {
         DType dtype = registry.getType(via.typeExp.name());
         if (dtype == null) {
-            addError2s("via '%s' - unknown type '%s'", via.fieldExp.name(), via.typeExp.name());
+            addError2s(via, "via '%s' - unknown type '%s'", via.fieldExp.name(), via.typeExp.name());
             return null;
         }
 
@@ -104,7 +105,7 @@ public class ViaFinder extends ErrorTrackingBase {
 
     private boolean isMatch(DValue dval, ViaExp via) {
         if (via == null || via.valueExp == null) {
-            addError2s("via '%s' - null", via.fieldExp.name(), "");
+            addError2s(via, "via '%s' - null", via.fieldExp.name(), "");
             return false;
         }
 
@@ -112,7 +113,7 @@ public class ViaFinder extends ErrorTrackingBase {
         DStructHelper helper = new DStructHelper(dval);
         DValue tmp = helper.getField(via.fieldExp.name());
         if (tmp == null) {
-            addError2s("via '%s' - unknown match", via.fieldExp.name(), "");
+            addError2s(via, "via '%s' - unknown match", via.fieldExp.name(), "");
             return false;
         }
 

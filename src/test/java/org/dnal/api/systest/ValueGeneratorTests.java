@@ -23,7 +23,7 @@ public class ValueGeneratorTests extends SysTestBase {
 			DataSetImpl dsimpl = (DataSetImpl) ds;
 			World world = dsimpl.getInternals().getWorld();
 	        DTypeRegistry registry = dsimpl.getCompilerContext().registry;
-			DNALGeneratePhase phase = new DNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world);
+			DNALGeneratePhase phase = new DNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world, null);
 			DValue dval = ds.getValue(varName);
 			boolean b = phase.generate(visitor, varName, dval);
 			assertEquals(true, b);

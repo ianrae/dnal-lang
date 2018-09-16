@@ -13,6 +13,7 @@ public abstract class XDValueBuilder {
 	protected boolean finished;
 	protected DValue newDVal;
 	protected DType type;
+	public String fieldName; //for logging errors only. can be null
 	
 	public abstract void buildFromString(String input);
 
@@ -39,15 +40,21 @@ public abstract class XDValueBuilder {
 	    this.valErrorList.add(err);
 	}
 
-	public void addParsingError(String msg) {
-		addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+	public void addParsingError(String msg, String inputText) {
+		NewErrorMessage nem = addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+		nem.setActualValue(inputText);
+	}
+	public void addParsingError(String msg, String inputText, String fieldName) {
+		NewErrorMessage nem = addOldErrorMsgZ(ErrorType.PARSINGERROR, msg);
+		nem.setFieldName(fieldName);
+		nem.setActualValue(inputText);
 	}
 	
     public NewErrorMessage addOldErrorMsgZ(ErrorType errType, String message) {
         NewErrorMessage err = new NewErrorMessage();
         err.setErrorType(NewErrorMessage.Type.IO_ERROR); //!!
         err.setErrorName(errType.name());
-        err.setFieldName("?");
+        err.setFieldName((fieldName == null) ? "?" : fieldName);
         err.setMessage(message);
         err.setSrcFile("?");
         err.setTypeName("?");

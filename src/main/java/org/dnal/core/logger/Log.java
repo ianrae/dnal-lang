@@ -20,8 +20,9 @@ public class Log {
 		}
 	}
 	
-	public static void debugLog(String s) {
+	public static void debugLog(String fmt, Object... args) {
 		if (debugLogging) {
+			String s = String.format(fmt, args);
 			log(s);
 		}
 	}

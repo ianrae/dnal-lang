@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
@@ -24,14 +25,14 @@ public class ValidationPhase extends ErrorTrackingBase {
 	private ValidationOptions validateOptions;
 	private List<DValue> futureValues;
 
-	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions) {
-		super(et);
+	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, LineLocator locator) {
+		super(et, locator);
 		this.world = world;
 		this.validateOptions = validateOptions;
 		futureValues = new ArrayList<>();
 	}
 	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
-		super(et);
+		super(et, null);
 		this.world = world;
 		this.validateOptions = validateOptions;
 		this.futureValues = futureValues;
@@ -47,7 +48,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 		Map<DType,Repository> repoMap = world.getRepoMap();
 		for(DType type : repoMap.keySet()) {
 			Repository repo = repoMap.get(type);
-			Log.debugLog(String.format("repo %s: %d", type.getName(), repo.size()));
+			Log.debugLog("repo %s: %d", type.getName(), repo.size());
 			for(DValue dval : repo.getAll()) {
 			    //because of y=x and the type of y might be shape but type of x is circle, then
 			    //we can't control the order in which x and y are validated.

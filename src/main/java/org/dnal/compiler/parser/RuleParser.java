@@ -40,8 +40,8 @@ public class RuleParser extends ParserBase {
 	}
 	
 	public static Parser<RuleWithFieldExp> ruleName01() {
-	    return Parsers.sequence(VarParser.ident(), term("."), VarParser.ident(), 
-	            (IdentExp field, Token tok, IdentExp rule) -> new RuleWithFieldExp(rule, field));
+	    return Parsers.sequence(Parsers.INDEX, VarParser.ident(), term("."), VarParser.ident(), 
+	            (Integer pos, IdentExp field, Token tok, IdentExp rule) -> new RuleWithFieldExp(pos, rule, field));
 	}
     @SuppressWarnings("unchecked")
     public static Parser<RuleWithFieldExp> ruleName02() {
@@ -49,7 +49,7 @@ public class RuleParser extends ParserBase {
                 .map(new org.codehaus.jparsec.functors.Map<IdentExp, RuleWithFieldExp>() {
                     @Override
                     public RuleWithFieldExp map(IdentExp arg0) {
-                        return new RuleWithFieldExp(arg0, null);
+                        return new RuleWithFieldExp(0, arg0, null);
                     }
                 });    
        }
@@ -59,7 +59,7 @@ public class RuleParser extends ParserBase {
 	
 	public static Parser<CustomRule> ruleFn1() {
 		return Parsers.sequence(not(), ruleName(), term("("), ruleOperand().many().sepBy(term(",")), term(")"), 
-				(Token notToken, RuleWithFieldExp exp1, Token tok, List<List<Exp>> arg, Token tok2) -> new CustomRule(exp1, arg, (notToken == null) ? null : notToken.toString()));
+				(Token notToken, RuleWithFieldExp exp1, Token tok, List<List<Exp>> arg, Token tok2) -> new CustomRule(tok.index(), exp1, arg, (notToken == null) ? null : notToken.toString()));
 	}
 	
 	public static Parser<CustomRule> ruleFn() {
@@ -87,20 +87,20 @@ public class RuleParser extends ParserBase {
     }
 	    //handles 15..20
 	public static Parser<RangeExp> ruleRange() {
-		return Parsers.sequence(intWithDotArg().followedBy(term(".")), intArg(), 
-				(Exp exp1, Exp exp2) -> new RangeExp(exp1, exp2));
+		return Parsers.sequence(Parsers.INDEX, intWithDotArg().followedBy(term(".")), intArg(), 
+				(Integer pos, Exp exp1, Exp exp2) -> new RangeExp(pos, exp1, exp2));
 	}
 	
 	//handles 15 .. 20
     public static Parser<RangeExp> ruleSpaceRange() {
-        return Parsers.sequence(intArg(), term(".."), intArg(), 
-                (Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(exp1, exp2));
+        return Parsers.sequence(Parsers.INDEX, intArg(), term(".."), intArg(), 
+                (Integer pos, Exp exp1, Token dotdot, Exp exp2) -> new RangeExp(pos, exp1, exp2));
     }
 	
 	
 	public static Parser<CustomRule> ruleCustom02() {
 		return Parsers.sequence(not(), ruleName(), term("("), Parsers.or(ruleRange(), ruleSpaceRange()), term(")"), 
-				(Token notToken, RuleWithFieldExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(exp1, range, (notToken == null) ? null : notToken.toString()));
+				(Token notToken, RuleWithFieldExp exp1, Token tok, RangeExp range, Token tok2) -> new CustomRule(tok.index(), exp1, range, (notToken == null) ? null : notToken.toString()));
 	}
 	
 	public static Parser<Exp> ruleOperand1() {
@@ -109,10 +109,10 @@ public class RuleParser extends ParserBase {
 	
 	//isa
     public static Parser<IsaRuleExp> isaDecl() {
-        return Parsers.sequence(VarParser.ident().optional(), term("isa"), 
+        return Parsers.sequence(Parsers.INDEX, VarParser.ident().optional(), term("isa"), 
                 VarParser.ident().many().sepBy(term(".")), 
-                (IdentExp exp, Token tok, List<List<IdentExp>> arg)
-                -> new IsaRuleExp(exp, arg));
+                (Integer pos, IdentExp exp, Token tok, List<List<IdentExp>> arg)
+                -> new IsaRuleExp(pos, exp, arg));
     }    
 	
 	
@@ -128,12 +128,12 @@ public class RuleParser extends ParserBase {
 				(Exp optArg, Token optok, Exp numExp) -> new ComparisonRuleExp(optArg, optok.toString(), numExp));
 	}
 	public static Parser<RuleExp> ruleOr() {
-		return Parsers.sequence(rule0(), term("or"), rule0(), 
-				(Exp exp1, Token ortok, Exp exp2) -> new ComparisonOrRuleExp((ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
+		return Parsers.sequence(Parsers.INDEX, rule0(), term("or"), rule0(), 
+				(Integer pos, Exp exp1, Token ortok, Exp exp2) -> new ComparisonOrRuleExp(pos, (ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
 	}
 	public static Parser<RuleExp> ruleAnd() {
-		return Parsers.sequence(rule0(), term("and"), rule0(), 
-				(Exp exp1, Token ortok, Exp exp2) -> new ComparisonAndRuleExp((ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
+		return Parsers.sequence(Parsers.INDEX, rule0(), term("and"), rule0(), 
+				(Integer pos, Exp exp1, Token ortok, Exp exp2) -> new ComparisonAndRuleExp(pos, (ComparisonRuleExp)exp1, (ComparisonRuleExp)exp2));
 	}
 	
 	public static Parser<RuleExp> ruleExpr() {

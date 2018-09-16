@@ -5,10 +5,11 @@ import java.util.List;
 public class FullMapTypeExp extends FullTypeExp {
 	public IdentExp elementType; //map<int>
 
-	public FullMapTypeExp(IdentExp varname, IdentExp typename, IdentExp elementType, List<RuleExp> ruleList) {
-		super(varname, typename, ruleList);
+	public FullMapTypeExp(int pos, IdentExp varname, IdentExp typename, IdentExp elementType, List<RuleExp> ruleList) {
+		super(pos, varname, typename, ruleList);
 		this.elementType = elementType;
 	}
+	@Override
 	public String strValue() {
 		return super.strValue();
 	}

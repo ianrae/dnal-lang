@@ -1,7 +1,6 @@
 package org.dnal.core.xbuilder;
 
 import org.dnal.core.DType;
-import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 
@@ -28,10 +27,10 @@ public class XBooleanValueBuilder extends XDValueBuilder {
 				bool = Boolean.parseBoolean(input);
 				this.newDVal = new DValueImpl(type, bool);
 			} else {
-				addParsingError(String.format("'%s' is not an boolean", input));
+				addParsingError(String.format("'%s' is not an boolean", input), input);
 			}
 		} catch (NumberFormatException e) {
-			addParsingError(String.format("'%s' is not an boolean", input));
+			addParsingError(String.format("'%s' is not an boolean", input), input);
 		}
 	}
 	public void buildFrom(Boolean bool) {

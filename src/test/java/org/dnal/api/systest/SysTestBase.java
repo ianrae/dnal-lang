@@ -43,6 +43,9 @@ public class SysTestBase {
         chkTypes(expectedTypes, expectedVals);
     }    
     protected void chkFail(String source, int expectedErrors, String errMsg) {
+    	chkFail(source, expectedErrors, errMsg, -1);
+    }
+    protected void chkFail(String source, int expectedErrors, String errMsg, int lineNum) {
         load(source, false);
         assertEquals(expectedErrors, errors.size());
         boolean found = false;
@@ -50,6 +53,9 @@ public class SysTestBase {
         	//log(err.getMessage());
             if (err.getMessage().contains(errMsg)) {
                 found = true;
+                if (lineNum >= 0) {
+                	assertEquals(lineNum, err.getLineNum());
+                }
             }
         }
         assertEquals(true, found);

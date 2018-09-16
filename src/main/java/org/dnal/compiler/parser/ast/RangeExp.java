@@ -1,6 +1,6 @@
 package org.dnal.compiler.parser.ast;
 
-public class RangeExp implements ValueExp {
+public class RangeExp extends ExpBase implements ValueExp {
 	public Integer from;
 	public Integer to;
 	
@@ -8,7 +8,8 @@ public class RangeExp implements ValueExp {
 //		this.from = from.val;
 //		this.to = to.val;
 //	}
-    public RangeExp(Exp from, Exp to) {
+    public RangeExp(int pos, Exp from, Exp to) {
+    	this.pos = pos;
         if (from instanceof IntegerExp) {
             IntegerExp iexp = (IntegerExp) from;
             this.from = iexp.val;
@@ -29,6 +30,7 @@ public class RangeExp implements ValueExp {
             throw new IllegalArgumentException(String.format("RangeExp: wrong type"));
         }
     }
+    @Override
 	public String strValue() {
 		return String.format("%d..%d", from, to);
 	}

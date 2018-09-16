@@ -93,6 +93,9 @@ public class SimpleNRuleRunner  {
 			    	boolean validateThis = ctx.getValidateOptions().isModeSet(ValidationOptions.VALIDATEMODE_EXISTENCE);
 			        if (validateThis && !structType.fieldIsOptional(fieldName)) {
 			        	ctx.addError(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
+			        	DValueImpl dvalimpl = (DValueImpl) dval;
+			        	dvalimpl.changeValidState(ValidationState.INVALID);
+			        	scorer.score(dval);
 			        }
 			    }
 			} else {

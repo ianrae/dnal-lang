@@ -10,6 +10,7 @@ import org.dnal.compiler.generate.DNALGeneratePhase;
 import org.dnal.compiler.generate.JSONValueVisitor;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
 import org.junit.Test;
@@ -72,7 +73,8 @@ public class JSONValueGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world);
+        LineLocator lineLocator = new LineLocator(input);
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world, lineLocator);
 		JSONValueVisitor visitor = new JSONValueVisitor();
 		boolean b = phase.generate(visitor);
 		assertEquals(true, b);

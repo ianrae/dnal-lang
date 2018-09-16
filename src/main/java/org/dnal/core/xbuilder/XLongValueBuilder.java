@@ -1,7 +1,6 @@
 package org.dnal.core.xbuilder;
 
 import org.dnal.core.DType;
-import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
 import org.dnal.core.Shape;
 
@@ -25,7 +24,7 @@ public class XLongValueBuilder extends XDValueBuilder {
             nval = Long.parseLong(input);
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
-            addParsingError(String.format("'%s' is not an integer", input));
+            addParsingError(String.format("'%s' is not a long", input), input);
         }
     }
     public void buildFrom(Long lval) {

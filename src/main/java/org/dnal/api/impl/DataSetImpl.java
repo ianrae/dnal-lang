@@ -9,11 +9,11 @@ import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
+import org.dnal.api.TypeFilter;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 import org.dnal.core.repository.World;
 
 public class DataSetImpl implements DataSet {
@@ -73,7 +73,7 @@ public class DataSetImpl implements DataSet {
 
     @Override
     public Generator createGenerator() {
-        Generator generator = new GeneratorImpl(registry, world, context);
+        Generator generator = new GeneratorImpl(registry, world, context, null);
         return generator;
     }
     
@@ -90,6 +90,32 @@ public class DataSetImpl implements DataSet {
             DType type = registry.getType(typeName);
             newWorld.typeRegistered(type);
         }
+        DataSetImpl clone = new DataSetImpl(registry, newWorld, context);
+        return clone;
+    }
+    
+    /**
+     * Return a new data set with same types as this data set,
+     * and all its values. Note the new dataset has direct references
+     * to the dvals of this data set, so we are assuming that
+     * dvals are immutable.
+     * 
+     * @return
+     */
+    @Override
+    public DataSetImpl cloneDataSet() {
+        World newWorld = new World();
+        newWorld.setRepositoryFactory(world.getRepositoryFactory());
+        
+        for(String typeName: registry.getAll()) {
+            DType type = registry.getType(typeName);
+            newWorld.typeRegistered(type);
+        }
+        for(String varName: world.getValueMap().keySet()) {
+        	DValue dval = world.getValueMap().get(varName);
+        	newWorld.addTopLevelValue(varName, dval);
+        }
+        
         DataSetImpl clone = new DataSetImpl(registry, newWorld, context);
         return clone;
     }
@@ -113,14 +139,25 @@ public class DataSetImpl implements DataSet {
     }
 	
 	public ViaFinder createViaFinder() {
-		ViaFinder finder = new ViaFinder(world, registry, context.et);
+		ViaFinder finder = new ViaFinder(world, registry, context.et, null);
 		return finder;
 	}
 
 	@Override
-	public DViewType getViewType(String viewName) {
-    	DViewType viewType = (DViewType) registry.getViewType(viewName);
-        return viewType;
+	public List<DType> getTypes(TypeFilter filter) {
+		List<DType> list = new ArrayList<>();
+		switch(filter) {
+		case ALL:
+			list.addAll(registry.getOrderedList());
+			break;
+		case STRUCT:
+			for(DType type: registry.getOrderedList()) {
+				if (type.isStructShape()) {
+					list.add(type);
+				}
+			}
+			break;
+		}
+		return list;
 	}
-
 }

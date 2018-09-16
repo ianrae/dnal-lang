@@ -27,7 +27,7 @@ public class XDateValueBuilder extends XDValueBuilder {
 		Date dt = null;
 		dt = dateParser.parse(input);
 		if (dt == null) {
-			this.addParsingError(String.format("Can't convert '%s' to date", input));
+			this.addParsingError(String.format("Can't convert '%s' to date", input), input);
 			return;
 		}
 		this.newDVal = new DValueImpl(type, dt);

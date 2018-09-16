@@ -7,7 +7,8 @@ public class IsaRuleExp extends RuleExp {
     public String fieldName;
     public String val;
     
-    public IsaRuleExp(IdentExp exp, List<List<IdentExp>> arg) {
+    public IsaRuleExp(int pos, IdentExp exp, List<List<IdentExp>> arg) {
+    	this.pos = pos;
         this.fieldName = (exp == null) ? null : exp.val;
         
         StringBuilder sb = new StringBuilder();

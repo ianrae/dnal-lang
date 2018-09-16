@@ -9,9 +9,6 @@ import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
-import org.dnal.api.impl.CompilerContext;
-import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
-import org.dnal.compiler.nrule.StandardRuleFactory;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.compiler.validate.ValidationPhase;
 import org.dnal.core.DListType;
@@ -20,7 +17,6 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.BooleanBuilder;
 import org.dnal.core.builder.BuilderFactory;
@@ -65,9 +61,6 @@ public class TransactionImpl implements Transaction {
     public void add(String name, DValue dval) {
         if (dval == null || name == null || name.isEmpty()) {
             throw new IllegalArgumentException("name or dval were null");
-        }
-        if (dval.getType() instanceof DViewType) {
-        	throw new IllegalArgumentException("view types cannot be added to a DataSet");
         }
         pendingL.add(new Pair<String, DValue>(name, dval));
     }
@@ -149,11 +142,6 @@ public class TransactionImpl implements Transaction {
     public DStructType getStructType(String typeName) {
         DStructType structType = (DStructType) registry.getType(typeName);
         return structType;
-    }
-    @Override
-    public DViewType getViewType(String viewName) {
-    	DViewType viewType = (DViewType) registry.getViewType(viewName);
-        return viewType;
     }
     @Override
     public DMapType getMapType(String typeName) {

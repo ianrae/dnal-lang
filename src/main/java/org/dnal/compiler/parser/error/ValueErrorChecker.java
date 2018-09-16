@@ -19,8 +19,8 @@ public class ValueErrorChecker extends ErrorCheckerBase {
 
 	private static final String NAME = "value";
 
-	public ValueErrorChecker(DNALDocument doc, XErrorTracker et) {
-		super(doc, et);
+	public ValueErrorChecker(DNALDocument doc, XErrorTracker et, LineLocator locator) {
+		super(doc, et, locator);
 		this.typeL = doc.getValues();
 	}
 

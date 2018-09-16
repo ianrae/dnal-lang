@@ -53,6 +53,7 @@ public class ComparisonRuleExp extends RuleExp {
             throw new IllegalArgumentException("unsupported Exp type");
         }
     }
+	@Override
 	public String strValue() {
 	    String s = null;
 	    if (val != null) {

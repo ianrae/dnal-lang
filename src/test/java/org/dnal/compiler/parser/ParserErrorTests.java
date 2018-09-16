@@ -12,6 +12,7 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullAssignmentExp;
 import org.dnal.compiler.parser.ast.FullStructTypeExp;
 import org.dnal.compiler.parser.ast.IdentExp;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.ParseErrorChecker;
 import org.junit.Test;
 
@@ -95,7 +96,8 @@ public class ParserErrorTests {
 		List<Exp> list = FullParser.fullParse(input);
 		CompilerContext context = new CompilerContext("", new Integer(0), null, "", new CompilerOptions());
 		context.et = new XErrorTracker();
-		ParseErrorChecker errorChecker = new ParseErrorChecker(list, context.et);
+        LineLocator lineLocator = new LineLocator(input);
+		ParseErrorChecker errorChecker = new ParseErrorChecker(list, context.et, lineLocator);
 		boolean b = errorChecker.checkForErrors();
 
 		context.et.dumpErrors();

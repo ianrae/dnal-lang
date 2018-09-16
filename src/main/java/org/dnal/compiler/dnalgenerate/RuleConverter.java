@@ -20,6 +20,7 @@ import org.dnal.compiler.parser.ast.LongExp;
 import org.dnal.compiler.parser.ast.NumberExp;
 import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
@@ -31,14 +32,16 @@ import org.dnal.core.nrule.OrRule;
 public class RuleConverter extends ErrorTrackingBase {
     private CustomRuleFactory crf;
     private List<RuleDeclaration> ruleDeclL;
+    private Exp currentExp; //for error location
     
-    public RuleConverter(CustomRuleFactory crf, List<RuleDeclaration> ruleDeclL, XErrorTracker et) {
-        super(et);
+    public RuleConverter(CustomRuleFactory crf, List<RuleDeclaration> ruleDeclL, XErrorTracker et, LineLocator locator) {
+        super(et, locator);
         this.crf = crf;
         this.ruleDeclL = ruleDeclL;
     }
 
 	public NRule convert(DType type, Exp exp, CompilerContext context) {
+		this.currentExp = exp;
 		if (exp instanceof ComparisonRuleExp) {
 			return doComparisonRule(type, (ComparisonRuleExp) exp);
 		} else if (exp instanceof ComparisonOrRuleExp) {
@@ -64,7 +67,7 @@ public class RuleConverter extends ErrorTrackingBase {
             }
 			
 			if (z == null) {
-                this.addError2s("type %s: unknown rule %s", type.getName(), exp.strValue());
+                this.addError2s(exp, "type %s: unknown rule %s", type.getName(), exp.strValue());
                 return null;
 			} else if (! checkForRuleDecl(type, rule)) {
 			    return null;
@@ -105,11 +108,11 @@ public class RuleConverter extends ErrorTrackingBase {
                         return true;
                     }
                 }
-                this.addError3s("type '%s' custom rule '%s' wrong type '%s'", type.getName(), rule.ruleName, type.getShape().name());
+                this.addError3s(currentExp, "type '%s' custom rule '%s' wrong type '%s'", type.getName(), rule.ruleName, type.getShape().name());
                 return false;
             }
         }
-        this.addError2s("type '%s' rule not declared: '%s'", type.getName(), rule.ruleName);
+        this.addError2s(currentExp, "type '%s' rule not declared: '%s'", type.getName(), rule.ruleName);
         return false;
     }
     private boolean checkStructForRuleDecl(DType type, CustomRule rule) {
@@ -149,7 +152,7 @@ public class RuleConverter extends ErrorTrackingBase {
             } else if (arg instanceof BooleanExp) {
                 passCount = checkCondition(elType.isShape(Shape.BOOLEAN), passCount);
             } else {
-                this.addError3s("type '%s' custom rule '%s' wrong type '%s'", listType.getName(), rule.ruleName, listType.getShape().name());
+                this.addError3s(currentExp, "type '%s' custom rule '%s' wrong type '%s'", listType.getName(), rule.ruleName, listType.getShape().name());
                 return false;
             }
         }
@@ -169,7 +172,7 @@ public class RuleConverter extends ErrorTrackingBase {
         DStructType structType = (DStructType) type;
         DType fieldType = structType.getFields().get(fieldName);
         if (fieldType == null) {
-            this.addError2s("type '%s' rule arg is not a known field: '%s'", type.getName(), fieldName);
+            this.addError2s(currentExp, "type '%s' rule arg is not a known field: '%s'", type.getName(), fieldName);
             return null;
         }
         
@@ -205,7 +208,7 @@ public class RuleConverter extends ErrorTrackingBase {
         if (type.isScalarShape()) {
             boolean isComparable = type.isNumericShape() || type.isShape(Shape.STRING) || type.isShape(Shape.DATE) || type.isShape(Shape.ENUM);
             if (! isComparable) {
-                this.addError2s("cannot use '%s' on type '%s'. not a comparable type", exp.strValue(), type.getName());
+                this.addError2s(exp, "cannot use '%s' on type '%s'. not a comparable type", exp.strValue(), type.getName());
                 return null;
             }
             return doScalarComparisonRule(type, exp);
@@ -227,7 +230,7 @@ public class RuleConverter extends ErrorTrackingBase {
 		        return builder.buildPseudoLenCompare(buildRuleName(exp), exp, false, null);
 		    } else {
 		        if (! builder.isCompatibleType(exp)) {
-	                this.addError2s("cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+	                this.addError2s(exp, "cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
 		            return null;
 		        }
 		        
@@ -242,7 +245,7 @@ public class RuleConverter extends ErrorTrackingBase {
                 return builder.buildPseudoLenEq(buildRuleName(exp), exp, false, null);
             } else {
                 if (! builder.isCompatibleType(exp)) {
-                    this.addError2s("eq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                    this.addError2s(exp, "eq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                     return null;
                 }
                 return builder.buildEq(buildRuleName(exp), exp, false);
@@ -284,7 +287,7 @@ public class RuleConverter extends ErrorTrackingBase {
             }        	
         	
             if (! builder.isCompatibleMemberType(exp)) {
-                this.addError2s("MEMBcannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                this.addError2s(exp, "MEMBcannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                 return null;
             }
             
@@ -299,7 +302,7 @@ public class RuleConverter extends ErrorTrackingBase {
         	
         	
             if (! builder.isCompatibleMemberType(exp)) {
-                this.addError2s("MEMBeq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
+                this.addError2s(exp, "MEMBeq. cannot use '%s' on type '%s'. not a compatible type", exp.strValue(), type.getName());
                 return null;
             }
             

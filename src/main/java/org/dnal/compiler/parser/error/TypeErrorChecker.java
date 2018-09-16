@@ -10,8 +10,8 @@ import org.dnal.compiler.parser.ast.IdentExp;
 public class TypeErrorChecker extends ErrorCheckerBase {
 	private List<FullTypeExp> typeL;
 
-	public TypeErrorChecker(DNALDocument doc, XErrorTracker et) {
-		super(doc, et);
+	public TypeErrorChecker(DNALDocument doc, XErrorTracker et, LineLocator locator) {
+		super(doc, et, locator);
 		this.typeL = doc.getTypes();
 	}
 

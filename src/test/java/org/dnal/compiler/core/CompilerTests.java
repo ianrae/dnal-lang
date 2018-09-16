@@ -27,7 +27,7 @@ public class CompilerTests {
 		}
 		public boolean pass2() {
 	        CompilerContext context = new CompilerContext("", new Integer(0), null, "", new CompilerOptions());
-			ParseErrorChecker errorChecker = new ParseErrorChecker(nodeL, context.et);
+			ParseErrorChecker errorChecker = new ParseErrorChecker(nodeL, context.et, null);
 			boolean b = errorChecker.checkForErrors();
 			return b;
 		}
@@ -69,7 +69,7 @@ public class CompilerTests {
 		List<Exp> list = FullParser.fullParse(input);
         CompilerContext context = new CompilerContext("", new Integer(0), null, "", new CompilerOptions());
         context.et = new XErrorTracker();
-		ParseErrorChecker errorChecker = new ParseErrorChecker(list, context.et);
+		ParseErrorChecker errorChecker = new ParseErrorChecker(list, context.et, null);
 		boolean b = errorChecker.checkForErrors();
 
 		context.et.dumpErrors();

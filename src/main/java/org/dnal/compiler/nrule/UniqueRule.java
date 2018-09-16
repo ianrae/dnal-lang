@@ -62,9 +62,9 @@ public class UniqueRule extends NRuleBase {
     	}
     	ctx.addToAlreadyRunMap(this);
     	
-        ViaFinder finder = new ViaFinder(context.world, context.registry, context.et);
+        ViaFinder finder = new ViaFinder(context.world, context.registry, context.et, null);
         boolean b = finder.calculateUnique(structType, fieldName);
-        Log.debugLog(String.format("UniqueRule executed %b", b));
+        Log.debugLog("UniqueRule executed %b", b);
     	
 		if (!b) {
 			String s = String.format("%s: %s", this.getName(), this.getRuleText());

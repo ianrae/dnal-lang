@@ -122,4 +122,12 @@ public class CompilerImpl implements DNALCompiler {
         return dataSet;
 	}
 
+	@Override
+	public String formatError(NewErrorMessage err) {
+		if (context == null || err == null) {
+			return null;
+		}
+		return context.et.errToString(err);
+	}
+
 }

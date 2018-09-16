@@ -42,9 +42,9 @@ public class StructBuilder extends Builder {
 	public void addField(String fieldName, String input) {
 		DType field = structType.getFields().get(fieldName);
 		if (field == null) {
-			builder.addParsingError("unknown field: " + fieldName);
+			builder.addParsingError("unknown field: " + fieldName, input, fieldName);
 		} else {
-			DValue dval = build(field, input);
+			DValue dval = build(fieldName, field, input);
 			builder.addField(fieldName, dval, false);
 		}
 	}
@@ -55,31 +55,31 @@ public class StructBuilder extends Builder {
 		return builder.getDValue();
 	}
 
-	private DValue build(DType field, String input) {
+	private DValue build(String fieldName, DType field, String input) {
 		DValue dval = null; 
 		
 		Shape shape = field.getShape();
 		switch(shape) {
 		case INTEGER:
-			dval = buildIntVal(field, input);
+			dval = buildIntVal(fieldName, field, input);
 			break;
 		case LONG:
-			dval = buildLongVal(field, input);
+			dval = buildLongVal(fieldName, field, input);
 			break;
 		case NUMBER:
-			dval = buildNumberVal(field, input);
+			dval = buildNumberVal(fieldName, field, input);
 			break;
 		case BOOLEAN:
-			dval = buildBooleanVal(field, input);
+			dval = buildBooleanVal(fieldName, field, input);
 			break;
 		case STRING:
-			dval = buildStringVal(field, input);
+			dval = buildStringVal(fieldName, field, input);
 			break;
 		case DATE:
-			dval = buildDateVal(field, input);
+			dval = buildDateVal(fieldName, field, input);
 			break;
 		case ENUM:
-			dval = buildEnumVal(field, input);
+			dval = buildEnumVal(fieldName, field, input);
 			break;
 		default:
 			NewErrorMessage nem = new NewErrorMessage();
@@ -111,13 +111,14 @@ public class StructBuilder extends Builder {
 	public void addField(String fieldName, String[] ar) {
 		DType field = structType.getFields().get(fieldName);
 		if (field == null) {
-			builder.addParsingError("unknown field: " + fieldName);
+			builder.addParsingError("unknown field: " + fieldName, "", fieldName);
 		} else if (field instanceof DListType) {
 			DListType listType = (DListType) field;
 			XListValueBuilder lvb = new XListValueBuilder(listType);
+			builder.fieldName = fieldName;
 			DType elType = listType.getElementType();
 			for(String input: ar) {
-				DValue dval = build(elType, input);
+				DValue dval = build(fieldName, elType, input);
 				lvb.addValue(dval);
 			}
 			if (!lvb.finish()) {
@@ -131,9 +132,10 @@ public class StructBuilder extends Builder {
 		}
 	}
 
-	protected DValue buildStringVal(DType field, String input) {
+	protected DValue buildStringVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.STRING_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -141,9 +143,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildEnumVal(DType field, String input) {
+	protected DValue buildEnumVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.STRING_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -151,9 +154,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildIntVal(DType field, String input) {
+	protected DValue buildIntVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.INTEGER_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -161,9 +165,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildLongVal(DType field, String input) {
+	protected DValue buildLongVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.INTEGER_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -171,9 +176,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildNumberVal(DType field, String input) {
+	protected DValue buildNumberVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.NUMBER_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());
@@ -181,9 +187,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildDateVal(DType field, String input) {
+	protected DValue buildDateVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.DATE_SHAPE);
 		XDateValueBuilder builder = (XDateValueBuilder) builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 //		builder.setDateFormat(dateFormat);
 		builder.buildFromString(input);
 		if (! builder.finish()) {
@@ -192,9 +199,10 @@ public class StructBuilder extends Builder {
 		}
 		return builder.getDValue();
 	}
-	protected DValue buildBooleanVal(DType field, String input) {
+	protected DValue buildBooleanVal(String fieldName, DType field, String input) {
 		DType type = field; //registry.getType(BuiltInTypes.BOOLEAN_SHAPE);
 		XDValueBuilder builder = builderFactory.createBuilderFor(type);
+		builder.fieldName = fieldName;
 		builder.buildFromString(input);
 		if (! builder.finish()) {
 			this.valErrorList.addAll(builder.getValidationErrors());

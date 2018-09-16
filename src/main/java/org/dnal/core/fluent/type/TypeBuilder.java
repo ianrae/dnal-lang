@@ -2,17 +2,13 @@ package org.dnal.core.fluent.type;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.dnal.compiler.parser.ast.ViewDirection;
-import org.dnal.compiler.parser.ast.ViewFormatExp;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DTypeRegistryBuilder;
-import org.dnal.core.DViewType;
 import org.dnal.core.OrderedMap;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.CompareRule;
@@ -43,6 +39,12 @@ public class TypeBuilder {
 			doAddField(fieldName, eltype);
 			return new InnerString(currentField, rules, fieldName); //not really correct!!
 		}
+		
+		public void resetForNextField() {
+			this.optional = false;
+			this.unique = false;
+		}
+		
 		public Inner optional() {
 		    this.optional = true;
 		    return this;
@@ -111,10 +113,6 @@ public class TypeBuilder {
 			generatedType = new DStructType(shape, typeName, baseType, fieldMap);
 			addRules(generatedType);
 			registerType(typeName, generatedType);
-		}
-		public void endView(String relatedTypeName, Map<String, String> namingMap, Map<String, ViewFormatExp> fnMap, ViewDirection direction) {
-			generatedViewType = new DViewType(typeName, baseType, fieldMap, namingMap, fnMap, relatedTypeName, direction);
-			registerView(typeName, generatedViewType);
 		}
 		
 		private void doAddField(String fieldName, DType eltype) {
@@ -272,7 +270,6 @@ public class TypeBuilder {
 	private OrderedMap fieldMap = new OrderedMap();
 	private String typeName;
 	private DStructType generatedType;
-	private DViewType generatedViewType;
 	private WorldListener world;
 	private boolean amBuildingEnum;
 	private DStructType baseType = null;
@@ -293,10 +290,6 @@ public class TypeBuilder {
         registry.add(completeName, dtype);
         world.typeRegistered(dtype);
     }
-    private void registerView(String typeName, DViewType dtype) {
-        String completeName = NameUtils.completeName(packageName, typeName);
-        registry.addView(completeName, dtype);
-    }
  
 	private void initRegistry() {
 		world = new World();
@@ -314,9 +307,6 @@ public class TypeBuilder {
 
 	public DStructType getType() {
 		return generatedType;
-	}
-	public DViewType getViewType() {
-		return generatedViewType;
 	}
 	
 	public void setAmBuildingEnum(boolean amBuildingEnum) {

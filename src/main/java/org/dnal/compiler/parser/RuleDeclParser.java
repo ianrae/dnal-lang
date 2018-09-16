@@ -15,8 +15,8 @@ public class RuleDeclParser extends ParserBase {
     }
     
     public static Parser<RuleDeclExp> customRuleDecl() {
-        return Parsers.sequence(custom(), VarParser.ident(), 
-                (IdentExp ruleNameExp, IdentExp ruleTypeExp) -> new RuleDeclExp(ruleNameExp, ruleTypeExp));
+        return Parsers.sequence(Parsers.INDEX, custom(), VarParser.ident(), 
+                (Integer pos, IdentExp ruleNameExp, IdentExp ruleTypeExp) -> new RuleDeclExp(pos, ruleNameExp, ruleTypeExp));
     }
     
 }

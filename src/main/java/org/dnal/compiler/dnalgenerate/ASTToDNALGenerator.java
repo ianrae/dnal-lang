@@ -1,10 +1,7 @@
 package org.dnal.compiler.dnalgenerate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 
 import org.apache.commons.lang.StringUtils;
 import org.dnal.api.impl.CompilerContext;
@@ -25,11 +22,8 @@ import org.dnal.compiler.parser.ast.ImportExp;
 import org.dnal.compiler.parser.ast.RuleDeclExp;
 import org.dnal.compiler.parser.ast.RuleExp;
 import org.dnal.compiler.parser.ast.StructMemberExp;
-import org.dnal.compiler.parser.ast.ViewDirection;
-import org.dnal.compiler.parser.ast.ViewExp;
-import org.dnal.compiler.parser.ast.ViewFormatExp;
-import org.dnal.compiler.parser.ast.ViewMemberExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
+import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.BuiltInTypes;
 import org.dnal.core.DListType;
@@ -38,11 +32,9 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.DViewType;
 import org.dnal.core.Shape;
 import org.dnal.core.fluent.type.TypeBuilder;
 import org.dnal.core.fluent.type.TypeBuilder.Inner;
-import org.dnal.core.fluent.type.ViewBuilder;
 import org.dnal.core.logger.Log;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
@@ -58,8 +50,8 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	private int nextInnerSuffix = 1000;
 
 	public ASTToDNALGenerator(World world, DTypeRegistry registry, XErrorTracker et, 
-			CustomRuleFactory crf, CompilerContext context) {
-		super(et);
+			CustomRuleFactory crf, CompilerContext context, LineLocator locator) {
+		super(et, locator);
 		this.world = world;
 		this.registry = registry;
 		this.crf = crf;
@@ -90,27 +82,16 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		context.perf.startTimer("ast-to-dval:values");
 		String packageName = packageHelper.getPackageName();
-		valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper);
+		valueGenerator = new ASTToDNALValueGenerator(world, context, doc, registry, packageHelper, this.getLineLocator());
 		for(Exp exp: doc.getValues()) {
 			try {
 				visitValue(exp);
 			} catch (Exception e) {
 				e.printStackTrace();
-				this.addError2s("ASTvalue '%s': %s", exp.strValue(), e.getMessage());
+				this.addError2s(exp, "ASTvalue '%s': %s", exp.strValue(), e.getMessage());
 			}
 		}
 		context.perf.endTimer("ast-to-dval:values");
-
-		context.perf.startTimer("ast-to-dval:views");
-		for(Exp exp: doc.getViews()) {
-			try {
-				visitView(exp);
-			} catch (Exception e) {
-				e.printStackTrace();
-				this.addError2s("ASTView '%s': %s", exp.strValue(), e.getMessage());
-			}
-		}
-		context.perf.endTimer("ast-to-dval:views");
 
 		return areNoErrors();
 	}
@@ -152,7 +133,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		DType eltype = registry.getType(elType);
 		if (eltype == null) {
-			this.addError2s("let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
+			this.addError2s(typeExp, "let '%s': unknown list element type '%s'", typeExp.var.name(), elType);
 		}
 
 		String typeName = typeExp.type.name();
@@ -172,7 +153,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		FullTypeExp typeExp = (FullTypeExp) exp;
 		String typeName = typeExp.var.name();
 
-		Log.debugLog("type " + typeName);
+		Log.debugLog("type %s", typeName);
 		if (typeExp instanceof FullStructTypeExp) {
 			buildStructType((FullStructTypeExp)exp);
 		} else if (typeExp instanceof FullEnumTypeExp) {
@@ -228,7 +209,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 						dtype = new DType(baseDType.getShape(), typeName, baseDType);
 						registerType(typeName, dtype);
 					} else {
-						addError2s("type '%s' - unknown %s", typeName, typeExp.type.name());
+						addError2s(typeExp, "type '%s' - unknown %s", typeName, typeExp.type.name());
 					}
 					break;
 			}
@@ -240,16 +221,16 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 	}
 
 	private void addValidationRules(FullTypeExp typeExp, DType type) {
-		RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET());
+		RuleConverter converter = new RuleConverter(crf, ruleDeclL, getET(), this.getLineLocator());
 
 		List<RuleExp> adjustedRuleList = adjustRules(type, typeExp.ruleList);
 
 		for(Exp exp: adjustedRuleList) {
 			NRule vrule = converter.convert(type, exp, context);
 			if (vrule == null) {
-				this.addError2s("type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
+				this.addError2s(typeExp, "type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
 			} else {
-				this.log(vrule.getName());
+//				this.log(vrule.getName());
 				type.getRawRules().add(vrule);
 			}
 		}
@@ -268,7 +249,6 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		}        
 
 	}
-
 
 	private List<RuleExp> adjustRules(DType type, List<RuleExp> ruleList) {
 		RuleAdjuster adjuster = new RuleAdjuster();
@@ -304,11 +284,11 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		if (! typeExp.type.name().equals("struct")) {
 			DType baseType = packageHelper.findRegisteredType(typeExp.type.name());
 			if (baseType == null) {
-				this.addError("unknown struct base type", typeExp);
+				this.addError(typeExp, "unknown struct base type", typeExp);
 			} else if (baseType instanceof DStructType) {
 				tb.setBaseType((DStructType) baseType);
 			} else {
-				this.addError("struct base type '%s' is not a struct type", typeExp);
+				this.addError(typeExp, "struct base type '%s' is not a struct type", typeExp);
 			}
 		}
 
@@ -316,6 +296,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		for(StructMemberExp membExp : typeExp.members.list) {
 //			log(" m " + membExp.strValue());
+			inner.resetForNextField();
 			if (membExp.optional) {
 				inner.optional();
 			}
@@ -345,7 +326,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 			default:
 				if (! buildKnownType(inner, membExp)) {
-					addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+					addError2s(membExp, "struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
 				}
 				break;
 			}
@@ -382,7 +363,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		//        IdentExp elementType = membExp.getListSubType();
 		IdentExp elementType = new IdentExp(membExp.type.name());
 		List<RuleExp> ruleList = new ArrayList<>();
-		FullListTypeExp listExp = new FullListTypeExp(varname, typename, elementType, ruleList);
+		FullListTypeExp listExp = new FullListTypeExp(0, varname, typename, elementType, ruleList);
 		visitType(listExp);
 
 		DType eltype = packageHelper.findRegisteredType(typename.name());
@@ -398,7 +379,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		Inner inner = tb.start(typeExp.var.name());
 
 		for(EnumMemberExp membExp : typeExp.members.list) {
-			log(" m " + membExp.strValue());
+//			log(" m " + membExp.strValue());
 			switch(TypeInfo.typeOf(membExp.type)) {
 			//				case INT:
 			//					inner = inner.integer(membExp.var.strValue());
@@ -411,7 +392,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 				break;
 
 			default:
-				addError2s("struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
+				addError2s(typeExp, "struct type '%s' - unknown %s", typeExp.var.name(), membExp.type.name());
 				break;
 			}
 		}
@@ -426,17 +407,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
 		
-		DType dtype = doListInner(typeName, elType);
+		DType dtype = doListInner(exp, typeName, elType);
 		this.addValidationRules(exp, dtype);
 	}
-	private DType doListInner(String typeName, String elType) {
+	private DType doListInner(FullListTypeExp exp, String typeName, String elType) {
 		DType eltype = null;
 		String target = "list<";
 		if (elType.startsWith(target)) {
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doListInner(innerTypeName, elType); //recursion!
+			eltype = doListInner(exp, innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {
@@ -446,7 +427,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		}
 		
 		if (eltype == null) {
-			this.addError2s("type '%s': unknown list element type '%s'", typeName, elType);
+			this.addError2s(exp, "type '%s': unknown list element type '%s'", typeName, elType);
 		}
 
 		DListType dtype = new DListType(Shape.LIST, typeName, null, eltype);
@@ -458,17 +439,17 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		String typeName = exp.var.name();
 		String elType = exp.getListElementType();
 		
-		DType dtype = doMapInner(typeName, elType);
+		DType dtype = doMapInner(exp, typeName, elType);
 		this.addValidationRules(exp, dtype);
 	}
-	private DType doMapInner(String typeName, String elType) {
+	private DType doMapInner(FullMapTypeExp exp, String typeName, String elType) {
 		DType eltype = null;
 		String target = "map<";
 		if (elType.startsWith(target)) {
 			elType = StringUtils.substringAfter(elType, target);
 			elType = elType.substring(0, elType.length() - 1);
 			String innerTypeName = String.format("%s%d", typeName, nextInnerSuffix++);
-			eltype = doMapInner(innerTypeName, elType); //recursion!
+			eltype = doMapInner(exp, innerTypeName, elType); //recursion!
 		} else {
 			IdentExp elexp = new IdentExp(elType);
 			if (TypeInfo.isPrimitiveType(elexp)) {
@@ -502,92 +483,12 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 				context.loader.importPackage(exp.val, context);
 			} catch (Exception e) {
-				this.addError2s("import '%s': %s", exp.strValue(), e.getMessage());
+				this.addError2s(exp, "import '%s': %s", exp.strValue(), e.getMessage());
 			}
 		}
 
 	}
 
-
-	//    @Override
-	public void visitView(Exp exp) {
-		ViewExp viewExp = (ViewExp) exp;
-		String typeName = viewExp.viewName.val;
-		ViewBuilder tb = new ViewBuilder(registry, world);
-		tb.setPackageName(packageHelper.getPackageName());
-//		DType baseType = null; //no base type for views
-
-		Inner inner = tb.start(viewExp.viewName.name());
-		boolean isOutbound = viewExp.direction.equals(ViewDirection.OUTBOUND);
-
-		for(ViewMemberExp membExp : viewExp.memberL) {
-//			log(" vm " + membExp.strValue());
-			
-			if (! isOutbound) {
-				//remove duplicates
-				if (tb.fieldNameExists(membExp.right.strValue())) {
-					continue;
-				}
-			}
-
-			switch(TypeInfo.typeOf(membExp.rightType)) {
-			case INT:
-				inner = inner.integer(membExp.right.strValue());
-				break;
-			case LONG:
-				inner = inner.longInteger(membExp.right.strValue());
-				break;
-			case NUMBER:
-				inner = inner.number(membExp.right.strValue());
-				break;
-			case DATE:
-				inner = inner.date(membExp.right.strValue());
-				break;
-			case BOOLEAN:
-				inner = inner.bool(membExp.right.strValue());
-				break;
-			case STRING:
-				inner = inner.string(membExp.right.strValue());
-				break;
-
-			default:
-			{
-				DType eltype = packageHelper.findRegisteredType(membExp.rightType.name());
-				String fieldName = membExp.right.name();
-				if (eltype != null) {
-					inner.other(fieldName, eltype);
-				} else {
-					addError2s("view type '%s' - unknown %s", viewExp.viewName.name(), membExp.rightType.name());
-				}
-			}
-			break;
-			}
-		}
-		
-		Map<String,String> namingMap = new HashMap<>();
-		for(ViewMemberExp membExp : viewExp.memberL) {
-			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
-				namingMap.put(membExp.right.val, membExp.getFullLeft());
-			} else {
-				namingMap.put(membExp.left.val, membExp.right.val);
-			}
-		}		
-		
-		Map<String,ViewFormatExp> fnMap = new HashMap<>();
-		for(ViewMemberExp membExp : viewExp.memberL) {
-			if (viewExp.direction.equals(ViewDirection.OUTBOUND)) {
-				fnMap.put(membExp.right.val, membExp.vfe);
-			} else {
-				fnMap.put(membExp.left.val, membExp.vfe);
-			}
-		}		
-
-		inner.endView(viewExp.typeName.val, namingMap, fnMap, viewExp.direction);
-		DViewType structType = tb.getViewType();
-		packageHelper.addPackage(structType);
-
-		Log.debugLog("view " + typeName);
-	}
 
 	private void log(String s) {
 		Log.log(s);
