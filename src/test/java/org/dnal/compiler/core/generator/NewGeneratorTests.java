@@ -29,11 +29,28 @@ import org.junit.Test;
 
 public class NewGeneratorTests extends BaseTest {
 	
-	public static class NewOutputGenerator {
+	public interface OutputGeneratorEx {
+
+		void structType(DStructType dtype, String typeName, String parentTypeName);
+
+		void enumType(DStructType enumType, String typeName);
+
+		void listType(DListType listType, String typeName, String elementName);
+
+		void mapType(DMapType mapType);
+
+		void scalarType(DType dtype, String typeName, String parentName);
+
+		void topLevelValue(String varName, DValue dval, String typeName);
+
+	}	
+	
+	public static class NewOutputGeneratorImpl implements OutputGeneratorEx {
 	    public List<String> outputL = new ArrayList<>();
 		public boolean generateTypes = false;
 		public boolean generateValues = false;
 		
+		@Override
 		public void structType(DStructType dtype, String typeName, String parentTypeName) {
 			if (!generateTypes) {
 				return;
@@ -62,6 +79,7 @@ public class NewGeneratorTests extends BaseTest {
 
 
 
+		@Override
 		public void enumType(DStructType enumType, String typeName) {
 			if (!generateTypes) {
 				return;
@@ -83,6 +101,7 @@ public class NewGeneratorTests extends BaseTest {
 
             return joiner.toString();
 		}
+		@Override
 		public void listType(DListType listType, String typeName, String elementName) {
 			if (!generateTypes) {
 				return;
@@ -94,6 +113,7 @@ public class NewGeneratorTests extends BaseTest {
 			String s = String.format("type %s list<%s>%s end", typeName, elementName, rulesStr);
 			outputL.add(s);
 		}
+		@Override
 		public void mapType(DMapType mapType) {
 			if (!generateTypes) {
 				return;
@@ -101,6 +121,7 @@ public class NewGeneratorTests extends BaseTest {
 			// TODO Auto-generated method stub
 			
 		}
+		@Override
 		public void scalarType(DType dtype, String typeName, String parentName) {
 			if (!generateTypes) {
 				return;
@@ -124,6 +145,7 @@ public class NewGeneratorTests extends BaseTest {
 
             return joiner.toString();
 		}
+		@Override
 		public void topLevelValue(String varName, DValue dval, String typeName) {
 			if (!generateValues) {
 				return;
@@ -217,6 +239,12 @@ public class NewGeneratorTests extends BaseTest {
 		}
 	}
 	
+	public static enum OutputOptions {
+		ALL,
+		TYPES_ONLY,
+		VALUES_ONLY
+	}
+	
 	public static class NewDNALGeneratePhase extends ErrorTrackingBase {
 	    private DTypeRegistry registry;
 	    private World world;
@@ -227,56 +255,61 @@ public class NewGeneratorTests extends BaseTest {
 	        this.world = world;
 	    }
 	    
-	    public boolean generate(NewOutputGenerator visitor) {
+	    public boolean generate(NewOutputGeneratorImpl visitor, OutputOptions outputOptions) {
 	        boolean b = false;
 	        try {
-	            b = doGenerate(visitor);
+	            b = doGenerate(visitor, outputOptions);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 	        return b;
 	    }
 
-	    public boolean doGenerate(NewOutputGenerator visitor) throws Exception {
+	    public boolean doGenerate(NewOutputGeneratorImpl visitor, OutputOptions outputOptions) throws Exception {
 	        List<DType> orderedTypeList = registry.getOrderedList();
 
-	        for(DType dtype: orderedTypeList) {
-	            if (TypeInfo.isBuiltIntype(dtype.getName())) {
-	                continue;
-	            }
-	            
-	            if (dtype.isStructShape()) {
-	                DStructType fste = (DStructType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(fste.getName());
-	    			String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
-	                visitor.structType(fste, typeName, parentName);
-	            } else if (dtype.isShape(Shape.ENUM)) {  
-	                DStructType structType = (DStructType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(structType.getName());
-	                visitor.enumType(structType, typeName);
-	            } else if (dtype instanceof DListType) {
-	                DListType listType = (DListType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(listType.getName());
-	    			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
-	                visitor.listType(listType, typeName, elementName);
-	            } else if (dtype instanceof DMapType) {
-	            	DMapType mapType = (DMapType) dtype;
-	                visitor.mapType(mapType);
-	            } else {
-	    			String typeName = TypeInfo.parserTypeOf(dtype.getName());
-	    			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
-	                visitor.scalarType(dtype, typeName, parentName);
-	            }
+	        boolean doTypes = outputOptions.equals(OutputOptions.ALL) || outputOptions.equals(outputOptions.TYPES_ONLY);
+	        if (doTypes) {
+	        	for(DType dtype: orderedTypeList) {
+	        		if (TypeInfo.isBuiltIntype(dtype.getName())) {
+	        			continue;
+	        		}
+	        		
+	        		if (dtype.isStructShape()) {
+	        			DStructType fste = (DStructType) dtype;
+	        			String typeName = TypeInfo.parserTypeOf(fste.getName());
+	        			String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
+	        			visitor.structType(fste, typeName, parentName);
+	        		} else if (dtype.isShape(Shape.ENUM)) {  
+	        			DStructType structType = (DStructType) dtype;
+	        			String typeName = TypeInfo.parserTypeOf(structType.getName());
+	        			visitor.enumType(structType, typeName);
+	        		} else if (dtype instanceof DListType) {
+	        			DListType listType = (DListType) dtype;
+	        			String typeName = TypeInfo.parserTypeOf(listType.getName());
+	        			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
+	        			visitor.listType(listType, typeName, elementName);
+	        		} else if (dtype instanceof DMapType) {
+	        			DMapType mapType = (DMapType) dtype;
+	        			visitor.mapType(mapType);
+	        		} else {
+	        			String typeName = TypeInfo.parserTypeOf(dtype.getName());
+	        			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
+	        			visitor.scalarType(dtype, typeName, parentName);
+	        		}
+	        	}
 	        }
 
-	        List<String> orderedValueList = world.getOrderedList();
-	        for(String valueName: orderedValueList) {
-	            DValue dval = world.findTopLevelValue(valueName);
+	        boolean doValues = outputOptions.equals(OutputOptions.ALL) || outputOptions.equals(outputOptions.VALUES_ONLY);
+	        if (doValues) {
+	        	List<String> orderedValueList = world.getOrderedList();
+	        	for(String valueName: orderedValueList) {
+	        		DValue dval = world.findTopLevelValue(valueName);
 //	            doval(visitor, 0, valueName, dval, null);
-				String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
-	            visitor.topLevelValue(valueName, dval, typeName);
+	        		String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
+	        		visitor.topLevelValue(valueName, dval, typeName);
+	        	}
 	        }
-
 
 	        return areNoErrors();
 	    }
@@ -437,10 +470,10 @@ public class NewGeneratorTests extends BaseTest {
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
 		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world);
-		NewOutputGenerator visitor = new NewOutputGenerator();
+		NewOutputGeneratorImpl visitor = new NewOutputGeneratorImpl();
 		visitor.generateTypes = genTypes;
 		visitor.generateValues = genValues;
-		boolean b = phase.generate(visitor);
+		boolean b = phase.generate(visitor, OutputOptions.ALL);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
 		log("output: " + output);
