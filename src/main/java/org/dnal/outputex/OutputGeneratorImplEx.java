@@ -17,14 +17,9 @@ import org.dnal.core.nrule.NRule;
 
 public class OutputGeneratorImplEx implements OutputGeneratorEx {
     public List<String> outputL = new ArrayList<>();
-	public boolean generateTypes = false;
-	public boolean generateValues = false;
 	
 	@Override
 	public void structType(DStructType dtype, String typeName, String parentTypeName) {
-		if (!generateTypes) {
-			return;
-		}
 		String rulesStr = getRuleStr(dtype);
 		if (! StringUtils.isEmpty(rulesStr)) {
 			rulesStr = String.format(" %s", rulesStr);
@@ -51,9 +46,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 
 	@Override
 	public void enumType(DStructType enumType, String typeName) {
-		if (!generateTypes) {
-			return;
-		}
 		String parentName = "enum";
 		String rulesStr = getRuleStr(enumType);
 		if (! StringUtils.isEmpty(rulesStr)) {
@@ -73,9 +65,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void listType(DListType listType, String typeName, String elementName) {
-		if (!generateTypes) {
-			return;
-		}
 		String rulesStr = getRuleStr(listType);
 		if (! StringUtils.isEmpty(rulesStr)) {
 			rulesStr = String.format(" %s", rulesStr);
@@ -85,17 +74,11 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void mapType(DMapType mapType) {
-		if (!generateTypes) {
-			return;
-		}
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
 	public void scalarType(DType dtype, String typeName, String parentName) {
-		if (!generateTypes) {
-			return;
-		}
 		String rulesStr = getRuleStr(dtype);
 		if (! StringUtils.isEmpty(rulesStr)) {
 			rulesStr = String.format(" %s", rulesStr);
@@ -198,10 +181,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void startStructValue(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
-		if (!generateValues) {
-			return;
-		}
-		
 		if (varName != null) {
 			String s = String.format("let %s %s = {", varName, structType.getName());
 			outputL.add(s);
@@ -218,17 +197,10 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx) {
-		if (!generateValues) {
-			return;
-		}
-		
 		appendCurrentList("}");
 	}
 	@Override
 	public void startListValue(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
-		if (!generateValues) {
-			return;
-		}
 		String typeName = listType.getName();
 		
 		if (varName != null) {
@@ -253,10 +225,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	
 	@Override
 	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
-		if (!generateValues) {
-			return;
-		}
-		
 		appendCurrentList("]");
 	}
 	@Override
@@ -288,10 +256,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void startMapValue(String varName, String fieldName,  DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
-		if (!generateValues) {
-			return;
-		}
-		
 		if (varName != null) {
 			String s = String.format("let %s %s = {", varName, mapType.getName());
 			outputL.add(s);

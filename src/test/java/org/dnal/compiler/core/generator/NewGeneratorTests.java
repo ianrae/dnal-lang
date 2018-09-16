@@ -127,9 +127,16 @@ public class NewGeneratorTests extends BaseTest {
         DTypeRegistry registry = getContext().registry;
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
 		OutputGeneratorImplEx visitor = new OutputGeneratorImplEx();
-		visitor.generateTypes = genTypes;
-		visitor.generateValues = genValues;
-		boolean b = phase.generate(visitor, OutputOptions.ALL);
+		
+		OutputOptions options = null;
+		if (genTypes && genValues) {
+			options = OutputOptions.ALL;
+		} else if (genTypes) {
+			options = OutputOptions.TYPES_ONLY;
+		} else if (genValues) {
+			options = OutputOptions.VALUES_ONLY;
+		}
+		boolean b = phase.generate(visitor, options);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
 		log("output: " + output);

@@ -30,9 +30,9 @@ public class GeneratorImplEx implements GeneratorEx {
     }
     
     @Override
-    public boolean generate(OutputGeneratorEx visitor) {
+    public boolean generate(OutputGeneratorEx visitor, OutputOptions options) {
         DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
-        boolean b = phase.generate(visitor, OutputOptions.ALL);
+        boolean b = phase.generate(visitor, options);
         if (! b) {
             return false;
         }
