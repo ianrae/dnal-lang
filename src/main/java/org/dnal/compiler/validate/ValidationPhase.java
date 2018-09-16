@@ -48,7 +48,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 		Map<DType,Repository> repoMap = world.getRepoMap();
 		for(DType type : repoMap.keySet()) {
 			Repository repo = repoMap.get(type);
-			Log.debugLog(String.format("repo %s: %d", type.getName(), repo.size()));
+			Log.debugLog("repo %s: %d", type.getName(), repo.size());
 			for(DValue dval : repo.getAll()) {
 			    //because of y=x and the type of y might be shape but type of x is circle, then
 			    //we can't control the order in which x and y are validated.

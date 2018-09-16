@@ -28,7 +28,7 @@ public class MockRepository implements Repository {
 
 	@Override
 	public void add(DValue dval) {
-		Log.debugLog(String.format("MR:add %s", dval.getType().getName()));
+		Log.debugLog("MR:add %s", dval.getType().getName());
 		list.add(dval);
 	}
 

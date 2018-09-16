@@ -98,7 +98,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
     private DValue buildValue(FullAssignmentExp assignExp) {
         String varName = assignExp.var.name();
 
-        Log.debugLog("value: " + varName);
+        Log.debugLog("value: %s", varName);
         if (assignExp.isListVar()) {
             if (assignExp.value instanceof ListAssignExp) {
                 return buildListValue((ListAssignExp)assignExp.value, assignExp.type.name());

@@ -153,7 +153,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		FullTypeExp typeExp = (FullTypeExp) exp;
 		String typeName = typeExp.var.name();
 
-		Log.debugLog("type " + typeName);
+		Log.debugLog("type %s", typeName);
 		if (typeExp instanceof FullStructTypeExp) {
 			buildStructType((FullStructTypeExp)exp);
 		} else if (typeExp instanceof FullEnumTypeExp) {
@@ -230,7 +230,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 			if (vrule == null) {
 				this.addError2s(typeExp, "type %s: unknown rule %s", typeExp.type.name(), exp.strValue());
 			} else {
-				this.log(vrule.getName());
+//				this.log(vrule.getName());
 				type.getRawRules().add(vrule);
 			}
 		}
@@ -379,7 +379,7 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 		Inner inner = tb.start(typeExp.var.name());
 
 		for(EnumMemberExp membExp : typeExp.members.list) {
-			log(" m " + membExp.strValue());
+//			log(" m " + membExp.strValue());
 			switch(TypeInfo.typeOf(membExp.type)) {
 			//				case INT:
 			//					inner = inner.integer(membExp.var.strValue());
