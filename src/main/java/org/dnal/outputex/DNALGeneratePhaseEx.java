@@ -93,7 +93,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.scalarValue(varName, dval, genctx);
 	        } else if (dval.getType().isStructShape()) {
 	        	DStructType structType = (DStructType) dval.getType();
-	        	visitor.startStructValue(varName, dval, structType, genctx);
+	        	visitor.startStructValue(varName, dval, structType, genctx, indexParam);
 	        	
 	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
 	            DStructHelper helper = new DStructHelper(dval);
@@ -108,7 +108,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.endStructValue(dval, structType, genctx);
 	        } else if (dval.getType().isListShape()) {
 	        	DListType listType = (DListType) dval.getType();
-	            visitor.startListValue(varName, dval, listType, genctx);
+	            visitor.startListValue(varName, dval, listType, genctx, indexParam);
 	        	genctx.pushShapeCode(GeneratorContext.LIST);
 	            List<DValue> elementL = dval.asList();
 
@@ -121,7 +121,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.endListValue(dval, listType, genctx);
 	        } else if (dval.getType().isMapShape()) {
 	        	DMapType mapType = (DMapType) dval.getType();
-	            visitor.startMapValue(varName, dval, mapType, genctx);
+	            visitor.startMapValue(varName, dval, mapType, genctx, indexParam);
 	            genctx.pushShapeCode(GeneratorContext.MAP);
 	            Map<String,DValue> map = dval.asMap();
 
@@ -134,11 +134,11 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            genctx.popShapeCode();
 	            visitor.endMapValue(dval, mapType, genctx);
 	        } else {
-	        	if (genctx.getCurrentShapeCode().equals(GeneratorContext.STRUCT)) {
+	        	if (genctx.isEquals(GeneratorContext.STRUCT)) {
 	        		visitor.structMemberValue(name, dval, genctx, indexParam);
-	        	} else if (genctx.getCurrentShapeCode().equals(GeneratorContext.LIST)) {
+	        	} else if (genctx.isEquals(GeneratorContext.LIST)) {
 	        		visitor.listElementValue(dval, genctx, indexParam);
-	        	} else if (genctx.getCurrentShapeCode().equals(GeneratorContext.MAP)) {
+	        	} else if (genctx.isEquals(GeneratorContext.MAP)) {
 	        		visitor.mapMemberValue(name, dval, genctx, indexParam);
 	        	} else {
 	        		visitor.scalarValue(varName, dval, genctx);

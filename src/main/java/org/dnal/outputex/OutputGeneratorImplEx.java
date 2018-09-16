@@ -197,7 +197,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		return String.format("[%s]", joiner.toString());
 	}
 	@Override
-	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx) {
+	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
 		if (!generateValues) {
 			return;
 		}
@@ -219,7 +219,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		appendCurrentList("}");
 	}
 	@Override
-	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx) {
+	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		if (!generateValues) {
 			return;
 		}
@@ -229,7 +229,8 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 			String s = String.format("let %s list<%s> = [", varName, typeName);
 			outputL.add(s);
 		} else {
-			String s = String.format("[");
+			String comma = (index == 0) ? "" : ", ";
+			String s = String.format("%s[", comma);
 			appendCurrentList(s);
 		}
 	}
@@ -275,7 +276,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		outputL.add(s);
 	}
 	@Override
-	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx) {
+	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}

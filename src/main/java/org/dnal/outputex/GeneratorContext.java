@@ -19,4 +19,8 @@ public class GeneratorContext {
         String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
         return shape;
     }
+    public boolean isEquals(String shapeCode) {
+    	String shape = getCurrentShapeCode();
+    	return shape.equals(shapeCode);
+    }
 }

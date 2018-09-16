@@ -241,7 +241,7 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 //	}
 
 	@Override
-	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx) {
+	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
       String s = String.format("value:%s:%s {", varName, getTypeName(dval.getType()));
       outputL.add(s);
 	}
@@ -252,7 +252,7 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 	}
 
 	@Override
-	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx) {
+	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -264,7 +264,7 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 	}
 
 	@Override
-	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx) {
+	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}
