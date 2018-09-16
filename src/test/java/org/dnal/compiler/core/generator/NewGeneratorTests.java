@@ -10,7 +10,7 @@ import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
-import org.dnal.outputex.NewDNALGeneratePhase;
+import org.dnal.outputex.DNALGeneratePhaseEx;
 import org.dnal.outputex.NewOutputGeneratorImpl;
 import org.dnal.outputex.OutputOptions;
 import org.junit.Test;
@@ -124,7 +124,7 @@ public class NewGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world, null);
+		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
 		NewOutputGeneratorImpl visitor = new NewOutputGeneratorImpl();
 		visitor.generateTypes = genTypes;
 		visitor.generateValues = genValues;

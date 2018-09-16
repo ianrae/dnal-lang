@@ -15,7 +15,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.TypePair;
 import org.dnal.core.nrule.NRule;
 
-public class NewOutputGeneratorImpl implements OutputGeneratorEx {
+public class OutputGeneratorImplEx implements OutputGeneratorEx {
     public List<String> outputL = new ArrayList<>();
 	public boolean generateTypes = false;
 	public boolean generateValues = false;

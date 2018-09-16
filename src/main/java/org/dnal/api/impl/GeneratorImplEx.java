@@ -3,15 +3,12 @@ package org.dnal.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.api.Generator;
 import org.dnal.api.GeneratorEx;
-import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
-import org.dnal.outputex.NewDNALGeneratePhase;
+import org.dnal.outputex.DNALGeneratePhaseEx;
 import org.dnal.outputex.OutputGeneratorEx;
 import org.dnal.outputex.OutputOptions;
 
@@ -22,9 +19,6 @@ public class GeneratorImplEx implements GeneratorEx {
     protected CompilerContext context;
     private LineLocator lineLocator;
     
-//    public Generator(DTypeRegistry registry, MyWorld world) {
-//        this(registry, world, null);
-//    }
     public GeneratorImplEx(DTypeRegistry registry, World world, CompilerContext context, LineLocator lineLocator) {
         this.registry = registry;
         this.world = world;
@@ -37,7 +31,7 @@ public class GeneratorImplEx implements GeneratorEx {
     
     @Override
     public boolean generate(OutputGeneratorEx visitor) {
-        NewDNALGeneratePhase phase = new NewDNALGeneratePhase(context.et, registry, world, lineLocator);
+        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
         boolean b = phase.generate(visitor, OutputOptions.ALL);
         if (! b) {
             return false;

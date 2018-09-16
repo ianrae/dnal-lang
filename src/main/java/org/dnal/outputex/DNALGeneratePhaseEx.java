@@ -15,12 +15,12 @@ import org.dnal.core.DValue;
 import org.dnal.core.Shape;
 import org.dnal.core.repository.World;
 
-public class NewDNALGeneratePhase extends ErrorTrackingBase {
+public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	    private DTypeRegistry registry;
 	    private World world;
 	    private LineLocator lineLocator;
 
-	    public NewDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
+	    public DNALGeneratePhaseEx(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
 	        super(et, null);
 	        this.registry = registry;
 	        this.world = world;
