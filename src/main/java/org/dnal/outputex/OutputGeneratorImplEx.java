@@ -203,7 +203,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		}
 		
 		if (varName != null) {
-			String s = String.format("let %s %s {", varName, structType.getName());
+			String s = String.format("let %s %s = {", varName, structType.getName());
 			outputL.add(s);
 		} else {
 			String s = String.format("zzzlet %s %s = {", varName, structType.getName());
@@ -216,7 +216,7 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 			return;
 		}
 		
-		outputL.add("}");
+		appendCurrentList("}");
 	}
 	@Override
 	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx) {
@@ -229,29 +229,35 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 			String s = String.format("let %s list<%s> = [", varName, typeName);
 			outputL.add(s);
 		} else {
-			String s = String.format("zzzlet %s list<%s> = [", varName, typeName);
-			outputL.add(s);
+			String s = String.format("[");
+			appendCurrentList(s);
 		}
 	}
+	
+	private void appendCurrentList(String str) {
+		String s = outputL.remove(outputL.size() - 1);
+		outputL.add(s + str);
+	}
+	
 	@Override
 	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
 		if (!generateValues) {
 			return;
 		}
 		
-		outputL.add("}");
+		appendCurrentList("]");
 	}
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
-		String comma = (index == 0) ? "" : ",";
+		String comma = (index == 0) ? "" : ", ";
 		String s = String.format("%s%s", comma, this.getValueStr(dval));
-		outputL.add(s);
-		
+		appendCurrentList(s);
 	}
 	@Override
 	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
-		
+		String comma = (index == 0) ? "" : ", ";
+		String s = String.format("%s%s:%s", comma, fieldName, this.getValueStr(dval));
+		appendCurrentList(s);
 	}
 	
 	private String buildTypeName(DValue dval) {

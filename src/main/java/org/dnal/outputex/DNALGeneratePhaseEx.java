@@ -101,7 +101,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            int index = 0;
 	            for(String fieldName : structType.orderedList()) {
 	                DValue inner = helper.getField(fieldName);
-	                doval(visitor, varName, inner, fieldName, genctx, index); //!recursion!
+	                doval(visitor, null, inner, fieldName, genctx, index); //!recursion!
 	                index++;
 	            }
 	            genctx.popShapeCode();
@@ -114,7 +114,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 
 	            int index = 0;
 	            for(DValue el: elementL) {
-	                doval(visitor, varName, el, "", genctx, index); //!recursion!
+	                doval(visitor, null, el, "", genctx, index); //!recursion!
 	                index++;
 	            }
 	            genctx.popShapeCode();
@@ -128,7 +128,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            int index = 0;
 	            for(String key: map.keySet()) {
 	            	DValue el = map.get(key);      
-	            	doval(visitor, varName, el, key, genctx, index);
+	            	doval(visitor, null, el, key, genctx, index);
 	                index++;
 	            }
 	            genctx.popShapeCode();
