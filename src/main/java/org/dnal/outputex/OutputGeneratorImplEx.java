@@ -229,10 +229,10 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		if (!generateValues) {
 			return;
 		}
-		String typeName = buildTypeName(listType.getElementType());
+		String typeName = listType.getName();
 		
 		if (varName != null) {
-			String s = String.format("let %s list<%s> = [", varName, typeName);
+			String s = String.format("let %s %s = [", varName, typeName);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -288,17 +288,32 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void startMapValue(String varName, String fieldName,  DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
+		if (!generateValues) {
+			return;
+		}
 		
+		if (varName != null) {
+			String s = String.format("let %s %s = {", varName, mapType.getName());
+			outputL.add(s);
+		} else {
+			String comma = (index == 0) ? "" : ", ";
+			if (fieldName == null) {
+				String s = String.format("%s{", comma);
+				appendCurrentList(s);
+			} else {
+				String s = String.format("%s%s:{", comma, fieldName);
+				appendCurrentList(s);
+			}
+		}
 	}
 	@Override
 	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-		
+		appendCurrentList("}");
 	}
 	@Override
 	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
-		
+		String comma = (index == 0) ? "" : ", ";
+		String s = String.format("%s%s:%s", comma, key, this.getValueStr(dval));
+		appendCurrentList(s);
 	}
 }
