@@ -101,7 +101,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            int index = 0;
 	            for(String fieldName : structType.orderedList()) {
 	                DValue inner = helper.getField(fieldName);
-	                doval(visitor, varName, dval, fieldName, genctx, index); //!recursion!
+	                doval(visitor, varName, inner, fieldName, genctx, index); //!recursion!
 	                index++;
 	            }
 	            genctx.popShapeCode();
@@ -109,12 +109,12 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        } else if (dval.getType().isListShape()) {
 	        	DListType listType = (DListType) dval.getType();
 	            visitor.startListValue(varName, dval, listType, genctx);
-	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
+	        	genctx.pushShapeCode(GeneratorContext.LIST);
 	            List<DValue> elementL = dval.asList();
 
 	            int index = 0;
 	            for(DValue el: elementL) {
-	                doval(visitor, varName, dval, "", genctx, index); //!recursion!
+	                doval(visitor, varName, el, "", genctx, index); //!recursion!
 	                index++;
 	            }
 	            genctx.popShapeCode();
@@ -128,13 +128,21 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            int index = 0;
 	            for(String key: map.keySet()) {
 	            	DValue el = map.get(key);      
-	            	doval(visitor, varName, dval, key, genctx, index);
+	            	doval(visitor, varName, el, key, genctx, index);
 	                index++;
 	            }
 	            genctx.popShapeCode();
 	            visitor.endMapValue(dval, mapType, genctx);
 	        } else {
-	        	visitor.scalarValue(varName, dval, genctx);
+	        	if (genctx.getCurrentShapeCode().equals(GeneratorContext.STRUCT)) {
+	        		visitor.structMemberValue(name, dval, genctx, indexParam);
+	        	} else if (genctx.getCurrentShapeCode().equals(GeneratorContext.LIST)) {
+	        		visitor.listElementValue(dval, genctx, indexParam);
+	        	} else if (genctx.getCurrentShapeCode().equals(GeneratorContext.MAP)) {
+	        		visitor.mapMemberValue(name, dval, genctx, indexParam);
+	        	} else {
+	        		visitor.scalarValue(varName, dval, genctx);
+	        	}
 	        }
 	    }
 	}

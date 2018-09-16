@@ -292,4 +292,10 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
+		// TODO Auto-generated method stub
+		
+	}
 }

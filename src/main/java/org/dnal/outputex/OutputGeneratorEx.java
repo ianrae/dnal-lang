@@ -29,5 +29,6 @@ public interface OutputGeneratorEx {
 	
 	void listElementValue(DValue dval, GeneratorContext genctx, int index);
 	void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index);
+	void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index);
 	void scalarValue(String varName, DValue dval, GeneratorContext genctx);
 }

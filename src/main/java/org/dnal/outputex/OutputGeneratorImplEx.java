@@ -223,12 +223,13 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		if (!generateValues) {
 			return;
 		}
+		String typeName = buildTypeName(listType.getElementType());
 		
 		if (varName != null) {
-			String s = String.format("let %s list<%s> = [", varName, listType.getElementType().getName());
+			String s = String.format("let %s list<%s> = [", varName, typeName);
 			outputL.add(s);
 		} else {
-			String s = String.format("zzzlet %s list<%s> = [", varName, listType.getElementType().getName());
+			String s = String.format("zzzlet %s list<%s> = [", varName, typeName);
 			outputL.add(s);
 		}
 	}
@@ -242,7 +243,9 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
+		String comma = (index == 0) ? "" : ",";
+		String s = String.format("%s%s", comma, this.getValueStr(dval));
+		outputL.add(s);
 		
 	}
 	@Override
@@ -250,10 +253,20 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private String buildTypeName(DValue dval) {
+		return buildTypeName(dval.getType());
+	}
+	private String buildTypeName(DType dtype) {
+		String typeName = TypeInfo.parserTypeOf(dtype.getName());
+		return typeName;
+	}
+	
 	@Override
 	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-		
+		String typeName = buildTypeName(dval);
+		String s = String.format("let %s %s = %s", varName, typeName, this.getValueStr(dval));
+		outputL.add(s);
 	}
 	@Override
 	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx) {
@@ -262,6 +275,11 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 	}
 	@Override
 	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
 		// TODO Auto-generated method stub
 		
 	}
