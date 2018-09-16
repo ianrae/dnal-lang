@@ -219,8 +219,8 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
         outputL.add(s);
         endType(dtype);
 	}
-	@Override
-	public void topLevelValue(String varName, DValue dval, String typeName) {
+//	@Override
+//	public void topLevelValue(String varName, DValue dval, String typeName) {
 //        String s;
 //        String space = genIndent(inList + inStruct + inMap);
 //        
@@ -238,5 +238,58 @@ public class SimpleFormatOutputGeneratorEx implements OutputGeneratorEx {
 //            s = String.format("%svalue:%s:%s:%s", space, name, getTypeName(dval.getType()), strValue);
 //        }
 //        outputL.add(s);
+//	}
+
+	@Override
+	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx) {
+      String s = String.format("value:%s:%s {", varName, getTypeName(dval.getType()));
+      outputL.add(s);
+	}
+
+	@Override
+	public void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx) {
+		outputL.add("}");
+	}
+
+	@Override
+	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -1,6 +1,7 @@
 package org.dnal.outputex;
 
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -8,6 +9,7 @@ import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
+import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
@@ -77,58 +79,62 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        	List<String> orderedValueList = world.getOrderedList();
 	        	for(String valueName: orderedValueList) {
 	        		DValue dval = world.findTopLevelValue(valueName);
-//	            doval(visitor, 0, valueName, dval, null);
-	        		String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
-	        		visitor.topLevelValue(valueName, dval, typeName);
+	        		doval(visitor, valueName, dval, null, new GeneratorContext(), 0);
 	        	}
 	        }
 
 	        return areNoErrors();
 	    }
 
-//	    private void doval(OutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
-//
-//	        if (dval == null) {
-//	            //optional field
-//	            visitor.value(valueName, null, parentVal);
-//	        } else if (dval.getType().isStructShape()) {
-//	            visitor.startStruct(valueName, dval);
-//	            
-//	            DStructHelper helper = new DStructHelper(dval);
-//
-//	            int index = 0;
-//	            DStructType structType = (DStructType) dval.getType();
-//	            for(String fieldName : structType.orderedList()) {
-//	                DValue inner = helper.getField(fieldName);
-//	                doval(visitor, indent+1, fieldName, inner, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endStruct(valueName, dval);
-//	        } else if (dval.getType().isListShape()) {
-//	            visitor.startList(valueName, dval);
-//	            List<DValue> elementL = dval.asList();
-//
-//	            int index = 0;
-//	            for(DValue el: elementL) {
-//	                doval(visitor, indent+1, "", el, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endList(valueName, dval);
-//	        } else if (dval.getType().isMapShape()) {
-//	            visitor.startMap(valueName, dval);
-//	            Map<String,DValue> map = dval.asMap();
-//
-//	            int index = 0;
-//	            for(String key: map.keySet()) {
-//	            	DValue el = map.get(key);            	
-//	                doval(visitor, indent+1, key, el, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endMap(valueName, dval);
-//	        } else {
-////	          String shape = this.doc.getShape(valueExp.type);
-////	          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));
-//	            visitor.value(valueName, dval, parentVal);
-//	        }
-//	    }
+	    private void doval(OutputGeneratorEx visitor, String varName, DValue dval, String name, GeneratorContext genctx, int indexParam) throws Exception {
+
+	        if (dval == null) {
+	            //optional field
+	            visitor.scalarValue(varName, dval, genctx);
+	        } else if (dval.getType().isStructShape()) {
+	        	DStructType structType = (DStructType) dval.getType();
+	        	visitor.startStructValue(varName, dval, structType, genctx);
+	        	
+	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
+	            DStructHelper helper = new DStructHelper(dval);
+
+	            int index = 0;
+	            for(String fieldName : structType.orderedList()) {
+	                DValue inner = helper.getField(fieldName);
+	                doval(visitor, varName, dval, fieldName, genctx, index); //!recursion!
+	                index++;
+	            }
+	            genctx.popShapeCode();
+	            visitor.endStructValue(dval, structType, genctx);
+	        } else if (dval.getType().isListShape()) {
+	        	DListType listType = (DListType) dval.getType();
+	            visitor.startListValue(varName, dval, listType, genctx);
+	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
+	            List<DValue> elementL = dval.asList();
+
+	            int index = 0;
+	            for(DValue el: elementL) {
+	                doval(visitor, varName, dval, "", genctx, index); //!recursion!
+	                index++;
+	            }
+	            genctx.popShapeCode();
+	            visitor.endListValue(dval, listType, genctx);
+	        } else if (dval.getType().isMapShape()) {
+	        	DMapType mapType = (DMapType) dval.getType();
+	            visitor.startMapValue(varName, dval, mapType, genctx);
+	            genctx.pushShapeCode(GeneratorContext.MAP);
+	            Map<String,DValue> map = dval.asMap();
+
+	            int index = 0;
+	            for(String key: map.keySet()) {
+	            	DValue el = map.get(key);      
+	            	doval(visitor, varName, dval, key, genctx, index);
+	                index++;
+	            }
+	            genctx.popShapeCode();
+	            visitor.endMapValue(dval, mapType, genctx);
+	        } else {
+	        	visitor.scalarValue(varName, dval, genctx);
+	        }
+	    }
 	}

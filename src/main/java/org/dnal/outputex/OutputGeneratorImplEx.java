@@ -115,17 +115,6 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 
         return joiner.toString();
 	}
-	@Override
-	public void topLevelValue(String varName, DValue dval, String typeName) {
-		if (!generateValues) {
-			return;
-		}
-		
-		String valueStr = getValueStr(dval);
-		String s = String.format("let %s %s = %s", varName, typeName, valueStr);
-		
-		outputL.add(s);
-	}
 	private String getValueStr(DValue dval) {
 		if (dval.getObject() == null) {
 			return "null";
@@ -206,5 +195,74 @@ public class OutputGeneratorImplEx implements OutputGeneratorEx {
 			
 		}
 		return String.format("[%s]", joiner.toString());
+	}
+	@Override
+	public void startStructValue(String varName, DValue dval, DStructType structType, GeneratorContext genctx) {
+		if (!generateValues) {
+			return;
+		}
+		
+		if (varName != null) {
+			String s = String.format("let %s %s {", varName, structType.getName());
+			outputL.add(s);
+		} else {
+			String s = String.format("zzzlet %s %s = {", varName, structType.getName());
+			outputL.add(s);
+		}
+	}
+	@Override
+	public void endStructValue(DValue dval, DStructType structType, GeneratorContext genctx) {
+		if (!generateValues) {
+			return;
+		}
+		
+		outputL.add("}");
+	}
+	@Override
+	public void startListValue(String varName, DValue dval, DListType listType, GeneratorContext genctx) {
+		if (!generateValues) {
+			return;
+		}
+		
+		if (varName != null) {
+			String s = String.format("let %s list<%s> = [", varName, listType.getElementType().getName());
+			outputL.add(s);
+		} else {
+			String s = String.format("zzzlet %s list<%s> = [", varName, listType.getElementType().getName());
+			outputL.add(s);
+		}
+	}
+	@Override
+	public void endListValue(DValue dval, DListType listType, GeneratorContext genctx) {
+		if (!generateValues) {
+			return;
+		}
+		
+		outputL.add("}");
+	}
+	@Override
+	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void startMapValue(String varName, DValue dval, DMapType mapType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void endMapValue(DValue dval, DMapType mapType, GeneratorContext genctx) {
+		// TODO Auto-generated method stub
+		
 	}
 }
