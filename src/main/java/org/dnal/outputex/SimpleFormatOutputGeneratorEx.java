@@ -3,6 +3,7 @@ package org.dnal.outputex;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.StringJoiner;
 
@@ -128,8 +129,12 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-
+		if (varName != null) {
+			String typeName = getTypeName(dval.getType());
+			String value = DValToString(dval);
+			String s = String.format("value:%s:%s:%s", varName, typeName, value);
+			outputL.add(s);
+		}
 	}
 
 	//--helpers--
@@ -159,6 +164,18 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 		}
 		return space;
 	}
+    private String DValToString(DValue dval) {
+        if (dval == null) {
+            return "null";
+        }
+        Object obj = dval.getObject();
+        if (obj instanceof Date) {
+            String s = df1.format(obj);
+            return s;
+        } else {
+            return obj.toString();
+        }
+    }
 
 
 }

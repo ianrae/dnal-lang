@@ -53,16 +53,15 @@ public class SimpleGeneratorTests extends BaseTest {
 
 	@Test
 	public void testVal() {
-		chkGen("type Foo boolean end let x Foo = true", "type:Foo:boolean|endtype|value:x:Foo:true|", 2);
-		chkGen("type Foo int end let x Foo = 54", 		"type:Foo:int|endtype|value:x:Foo:54|", 2);
-		chkGen("type Foo string end let x Foo = 'abc'", "type:Foo:string|endtype|value:x:Foo:abc|", 2);
+		chkValueGen("type Foo boolean end let x Foo = true", "value:x:Foo:true|", 2);
+		chkValueGen("type Foo int end let x Foo = 54", 		"value:x:Foo:54|", 2);
+		chkValueGen("type Foo string end let x Foo = 'abc'", "value:x:Foo:abc|", 2);
 	}
 
 	@Test
 	public void testStructVal() {
-		String s1 = "type:Foo:struct| x:int| y:int|endtype|";
 		String s2 = "value:x:Foo {| vx:10| vy:11|}|";
-		chkGen("type Foo struct { x int, y int } end let x Foo = { 10, 11 }", s1 + s2, 2);
+		chkGen("type Foo struct { x int, y int } end let x Foo = { 10, 11 }", s2, 2);
 	}
 	
     @Test
@@ -102,6 +101,18 @@ public class SimpleGeneratorTests extends BaseTest {
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, getContext().world, null);
 		SimpleFormatOutputGeneratorEx visitor = new SimpleFormatOutputGeneratorEx();
 		boolean b = phase.generateTypes(visitor);
+		assertEquals(true, b);
+		String output = flatten(visitor.outputL);
+		log("output: " + output);
+		assertEquals(expectedOutput, output);
+	}
+	private void chkValueGen(String input, String expectedOutput, int expectedSize) {
+		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
+
+        DTypeRegistry registry = getContext().registry;
+		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, getContext().world, null);
+		SimpleFormatOutputGeneratorEx visitor = new SimpleFormatOutputGeneratorEx();
+		boolean b = phase.generateValues(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
 		log("output: " + output);
