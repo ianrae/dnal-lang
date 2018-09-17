@@ -14,7 +14,7 @@ import org.dnal.core.DType;
 import org.dnal.core.TypePair;
 import org.dnal.core.nrule.NRule;
 
-public class TypeGeneratorImplEx implements TypeGeneratorEx {
+public class DNALTypeGeneratorEx implements TypeGeneratorEx {
     public List<String> outputL = new ArrayList<>();
 	
 	@Override

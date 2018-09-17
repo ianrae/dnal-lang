@@ -3,7 +3,6 @@ package org.dnal.outputex;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
@@ -118,14 +117,6 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 		String comma = (index == 0) ? "" : ", ";
 		String s = String.format("%s\"%s\":%s", comma, fieldName, this.getValueStr(dval));
 		appendCurrentList(s);
-	}
-	
-	private String buildTypeName(DValue dval) {
-		return buildTypeName(dval.getType());
-	}
-	private String buildTypeName(DType dtype) {
-		String typeName = TypeInfo.parserTypeOf(dtype.getName());
-		return typeName;
 	}
 	
 	@Override

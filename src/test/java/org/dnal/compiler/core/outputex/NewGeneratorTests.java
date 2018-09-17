@@ -11,8 +11,8 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
 import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.TypeGeneratorImplEx;
-import org.dnal.outputex.ValueGeneratorImplEx;
+import org.dnal.outputex.DNALTypeGeneratorEx;
+import org.dnal.outputex.DNALValueGeneratorEx;
 import org.junit.Test;
 
 public class NewGeneratorTests extends BaseTest {
@@ -132,14 +132,14 @@ public class NewGeneratorTests extends BaseTest {
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
 		
 		if (genTypes) {
-			TypeGeneratorImplEx visitor = new TypeGeneratorImplEx();
+			DNALTypeGeneratorEx visitor = new DNALTypeGeneratorEx();
 			boolean b = phase.generateTypes(visitor);
 			assertEquals(true, b);
 			String output = flatten(visitor.outputL);
 			log("output: " + output);
 			assertEquals(expectedOutput, output);
 		} else if (genValues) {
-			ValueGeneratorImplEx visitor = new ValueGeneratorImplEx();
+			DNALValueGeneratorEx visitor = new DNALValueGeneratorEx();
 			boolean b = phase.generateValues(visitor);
 			assertEquals(true, b);
 			String output = flatten(visitor.outputL);

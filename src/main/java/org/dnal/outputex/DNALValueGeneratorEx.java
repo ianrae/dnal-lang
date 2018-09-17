@@ -10,7 +10,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
-public class ValueGeneratorImplEx implements ValueGeneratorEx {
+public class DNALValueGeneratorEx implements ValueGeneratorEx {
     public List<String> outputL = new ArrayList<>();
 	
 	private String getValueStr(DValue dval) {
