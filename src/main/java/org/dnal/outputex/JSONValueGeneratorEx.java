@@ -56,7 +56,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	@Override
 	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("{%s: {", placement.name);
+			String s = String.format("{\"%s\": {", placement.name);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -64,7 +64,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:{", comma, placement.name);
+				String s = String.format("%s\"%s\":{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -80,7 +80,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	@Override
 	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("{%s: [", placement.name);
+			String s = String.format("{\"%s\": [", placement.name);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -88,7 +88,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s[", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:[", comma, placement.name);
+				String s = String.format("%s\"%s\":[", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -116,7 +116,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	@Override
 	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
 		String comma = (index == 0) ? "" : ", ";
-		String s = String.format("%s%s:%s", comma, fieldName, this.getValueStr(dval));
+		String s = String.format("%s\"%s\":%s", comma, fieldName, this.getValueStr(dval));
 		appendCurrentList(s);
 	}
 	
@@ -130,13 +130,13 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	
 	@Override
 	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
-		String s = String.format("{%s: %s}", varName, this.getValueStr(dval));
+		String s = String.format("{\"%s\": %s}", varName, this.getValueStr(dval));
 		outputL.add(s);
 	}
 	@Override
 	public void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("let %s %s = {", placement.name, mapType.getName());
+			String s = String.format("{\"%s\": {", placement.name);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -144,7 +144,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:{", comma, placement.name);
+				String s = String.format("%s\"%s\":{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -160,7 +160,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	@Override
 	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
 		String comma = (index == 0) ? "" : ", ";
-		String s = String.format("%s%s:%s", comma, key, this.getValueStr(dval));
+		String s = String.format("%s\"%s\":%s", comma, key, this.getValueStr(dval));
 		appendCurrentList(s);
 	}
 }
