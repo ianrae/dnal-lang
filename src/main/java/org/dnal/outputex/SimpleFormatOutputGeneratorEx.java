@@ -75,12 +75,16 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	// -- values --
 	@Override
 	public void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+		if (varName != null) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", varName, typeName);
+			outputL.add(s);
+		}
 	}
 
 	@Override
 	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-
+		outputL.add("}");
 	}
 
 	@Override
@@ -92,8 +96,7 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-
+		outputL.add("]");
 	}
 
 	@Override
@@ -105,8 +108,7 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
-		// TODO Auto-generated method stub
-
+		appendCurrentList("}");
 	}
 
 	@Override
@@ -117,8 +119,9 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
-
+		String value = DValToString(dval);
+		String s = String.format(" v%s:%s", fieldName, value);
+		outputL.add(s);
 	}
 
 	@Override
@@ -128,11 +131,19 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	}
 
 	@Override
-	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
+	public void scalarValue(String varName, String fieldName, DValue dval, GeneratorContext genctx) {
 		if (varName != null) {
 			String typeName = getTypeName(dval.getType());
 			String value = DValToString(dval);
 			String s = String.format("value:%s:%s:%s", varName, typeName, value);
+			outputL.add(s);
+		} else if (fieldName != null) {
+			String value = DValToString(dval);
+			String s = String.format(" v%s:%s", fieldName, value);
+			outputL.add(s);
+		} else  {
+			String value = DValToString(dval);
+			String s = String.format("%s", value);
 			outputL.add(s);
 		}
 	}
@@ -176,6 +187,10 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
             return obj.toString();
         }
     }
+	private void appendCurrentList(String str) {
+		String s = outputL.remove(outputL.size() - 1);
+		outputL.add(s + str);
+	}
 
 
 }
