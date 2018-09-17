@@ -9,8 +9,8 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
 import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.OutputGeneratorEx;
-import org.dnal.outputex.OutputOptions;
+import org.dnal.outputex.TypeGeneratorEx;
+import org.dnal.outputex.ValueGeneratorEx;
 
 public class GeneratorImplEx implements GeneratorEx {
     private List<NewErrorMessage> errL = new ArrayList<>();
@@ -30,18 +30,28 @@ public class GeneratorImplEx implements GeneratorEx {
     }
     
     @Override
-    public boolean generate(OutputGeneratorEx visitor, OutputOptions options) {
-        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
-        boolean b = phase.generate(visitor, options);
-        if (! b) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
     public List<NewErrorMessage> getErrors() {
         return errL;
     }
 
+	@Override
+	public boolean generateTypes(TypeGeneratorEx visitor) {
+        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
+        boolean b = phase.generateTypes(visitor);
+        if (! b) {
+            return false;
+        }
+        return true;
+	}
+
+	@Override
+	public boolean generateValues(ValueGeneratorEx visitor) {
+        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
+        boolean b = phase.generateValues(visitor);
+        if (! b) {
+            return false;
+        }
+        return true;
+	}
+	
 }

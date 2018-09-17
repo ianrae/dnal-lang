@@ -12,7 +12,6 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
 import org.dnal.outputex.DNALGeneratePhaseEx;
 import org.dnal.outputex.OutputGeneratorImplEx;
-import org.dnal.outputex.OutputOptions;
 import org.junit.Test;
 
 public class NewGeneratorTests extends BaseTest {
@@ -128,20 +127,21 @@ public class NewGeneratorTests extends BaseTest {
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
 		OutputGeneratorImplEx visitor = new OutputGeneratorImplEx();
 		
-		OutputOptions options = null;
-		if (genTypes && genValues) {
-			options = OutputOptions.ALL;
-		} else if (genTypes) {
-			options = OutputOptions.TYPES_ONLY;
+		if (genTypes) {
+			boolean b = phase.generateTypes(visitor);
+			assertEquals(true, b);
+			String output = flatten(visitor.outputL);
+			log("output: " + output);
+			assertEquals(expectedOutput, output);
 		} else if (genValues) {
-			options = OutputOptions.VALUES_ONLY;
+			boolean b = phase.generateValues(visitor);
+			assertEquals(true, b);
+			String output = flatten(visitor.outputL);
+			log("output: " + output);
+			assertEquals(expectedOutput, output);
+		} else {
+			assertEquals(1,2); //fail
 		}
-		boolean b = phase.generate(visitor, options);
-		assertEquals(true, b);
-		String output = flatten(visitor.outputL);
-		log("output: " + output);
-		
-		assertEquals(expectedOutput, output);
 	}
 
 	private ASTToDNALGenerator parseAndGenDVals(String input, int expectedSize) {

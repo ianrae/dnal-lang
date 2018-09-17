@@ -29,64 +29,73 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        this.lineLocator = lineLocator;
 	    }
 	    
-	    public boolean generate(OutputGeneratorEx visitor, OutputOptions outputOptions) {
+	    public boolean generateTypes(TypeGeneratorEx visitor) {
 	        boolean b = false;
 	        try {
-	            b = doGenerate(visitor, outputOptions);
+	            b = doGenerateTypes(visitor);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return b;
+	    }
+	    public boolean generateValues(ValueGeneratorEx visitor) {
+	        boolean b = false;
+	        try {
+	            b = doGenerateValues(visitor);
 	        } catch (Exception e) {
 	            e.printStackTrace();
 	        }
 	        return b;
 	    }
 
-	    public boolean doGenerate(OutputGeneratorEx visitor, OutputOptions outputOptions) throws Exception {
+	    private boolean doGenerateTypes(TypeGeneratorEx visitor) throws Exception {
 	        List<DType> orderedTypeList = registry.getOrderedList();
 
-	        boolean doTypes = outputOptions.equals(OutputOptions.ALL) || outputOptions.equals(outputOptions.TYPES_ONLY);
-	        if (doTypes) {
-	        	for(DType dtype: orderedTypeList) {
-	        		if (TypeInfo.isBuiltIntype(dtype.getName())) {
-	        			continue;
-	        		}
-	        		
-	        		if (dtype.isStructShape()) {
-	        			DStructType fste = (DStructType) dtype;
-	        			String typeName = TypeInfo.parserTypeOf(fste.getName());
-	        			String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
-	        			visitor.structType(fste, typeName, parentName);
-	        		} else if (dtype.isShape(Shape.ENUM)) {  
-	        			DStructType structType = (DStructType) dtype;
-	        			String typeName = TypeInfo.parserTypeOf(structType.getName());
-	        			visitor.enumType(structType, typeName);
-	        		} else if (dtype instanceof DListType) {
-	        			DListType listType = (DListType) dtype;
-	        			String typeName = TypeInfo.parserTypeOf(listType.getName());
-	        			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
-	        			visitor.listType(listType, typeName, elementName);
-	        		} else if (dtype instanceof DMapType) {
-	        			DMapType mapType = (DMapType) dtype;
-	        			visitor.mapType(mapType);
-	        		} else {
-	        			String typeName = TypeInfo.parserTypeOf(dtype.getName());
-	        			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
-	        			visitor.scalarType(dtype, typeName, parentName);
-	        		}
+	        for(DType dtype: orderedTypeList) {
+	        	if (TypeInfo.isBuiltIntype(dtype.getName())) {
+	        		continue;
 	        	}
-	        }
 
-	        boolean doValues = outputOptions.equals(OutputOptions.ALL) || outputOptions.equals(outputOptions.VALUES_ONLY);
-	        if (doValues) {
-	        	List<String> orderedValueList = world.getOrderedList();
-	        	for(String valueName: orderedValueList) {
-	        		DValue dval = world.findTopLevelValue(valueName);
-	        		doval(visitor, valueName, dval, null, new GeneratorContext(), 0);
+	        	if (dtype.isStructShape()) {
+	        		DStructType fste = (DStructType) dtype;
+	        		String typeName = TypeInfo.parserTypeOf(fste.getName());
+	        		String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
+	        		visitor.structType(fste, typeName, parentName);
+	        	} else if (dtype.isShape(Shape.ENUM)) {  
+	        		DStructType structType = (DStructType) dtype;
+	        		String typeName = TypeInfo.parserTypeOf(structType.getName());
+	        		visitor.enumType(structType, typeName);
+	        	} else if (dtype instanceof DListType) {
+	        		DListType listType = (DListType) dtype;
+	        		String typeName = TypeInfo.parserTypeOf(listType.getName());
+	        		String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
+	        		visitor.listType(listType, typeName, elementName);
+	        	} else if (dtype instanceof DMapType) {
+	        		DMapType mapType = (DMapType) dtype;
+	        		visitor.mapType(mapType);
+	        	} else {
+	        		String typeName = TypeInfo.parserTypeOf(dtype.getName());
+	        		String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
+	        		visitor.scalarType(dtype, typeName, parentName);
 	        	}
 	        }
 
 	        return areNoErrors();
 	    }
+	    
+	    private boolean doGenerateValues(ValueGeneratorEx visitor) throws Exception {
+	        List<DType> orderedTypeList = registry.getOrderedList();
 
-	    private void doval(OutputGeneratorEx visitor, String varName, DValue dval, String name, GeneratorContext genctx, int indexParam) throws Exception {
+	        List<String> orderedValueList = world.getOrderedList();
+	        for(String valueName: orderedValueList) {
+	        	DValue dval = world.findTopLevelValue(valueName);
+	        	doval(visitor, valueName, dval, null, new GeneratorContext(), 0);
+	        }
+
+	        return areNoErrors();
+	    }
+
+	    private void doval(ValueGeneratorEx visitor, String varName, DValue dval, String name, GeneratorContext genctx, int indexParam) throws Exception {
 
 	        if (dval == null) {
 	            //optional field

@@ -6,7 +6,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
-public interface OutputGeneratorEx {
+public interface TypeGeneratorEx {
 
 	void structType(DStructType dtype, String typeName, String parentTypeName);
 

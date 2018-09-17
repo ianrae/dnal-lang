@@ -3,12 +3,13 @@ package org.dnal.api;
 import java.util.List;
 
 import org.dnal.core.NewErrorMessage;
-import org.dnal.outputex.OutputGeneratorEx;
-import org.dnal.outputex.OutputOptions;
+import org.dnal.outputex.TypeGeneratorEx;
+import org.dnal.outputex.ValueGeneratorEx;
 
 public interface GeneratorEx {
     
-     boolean generate(OutputGeneratorEx visitor, OutputOptions options);
+     boolean generateTypes(TypeGeneratorEx visitor);
+     boolean generateValues(ValueGeneratorEx visitor);
      List<NewErrorMessage> getErrors();
 
 }
