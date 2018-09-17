@@ -3,7 +3,6 @@ package org.dnal.compiler.generate;
 import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
-import org.dnal.core.DMapType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
