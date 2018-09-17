@@ -206,6 +206,10 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 		String s = outputL.remove(outputL.size() - 1);
 		outputL.add(s + str);
 	}
+	@Override
+	public boolean finish() {
+		return true;
+	}
 
 
 }

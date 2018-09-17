@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.parser.ast.StringExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.compiler.parser.error.TypeInfo;
@@ -47,6 +48,15 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        }
 	        return b;
 	    }
+	    public boolean generateValue(ValueGeneratorEx visitor, DValue dval, String varName) {
+	        boolean b = false;
+	        try {
+	            b = doGenerateValue(visitor, dval, varName);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	        return b;
+	    }
 
 	    private boolean doGenerateTypes(TypeGeneratorEx visitor) throws Exception {
 	        List<DType> orderedTypeList = registry.getOrderedList();
@@ -81,6 +91,10 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        		visitor.scalarType(dtype, typeName, parentName);
 	        	}
 	        }
+	        
+	        if (! visitor.finish()) {
+	        	this.addError("type-visitor finish() failed", new StringExp(""));
+	        }
 
 	        return areNoErrors();
 	    }
@@ -90,6 +104,20 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        for(String valueName: orderedValueList) {
 	        	DValue dval = world.findTopLevelValue(valueName);
 	        	doval(visitor, valueName, dval, null, new GeneratorContext(), 0);
+	        }
+
+	        if (! visitor.finish()) {
+	        	this.addError("value-visitor finish() failed", new StringExp(""));
+	        }
+
+	        return areNoErrors();
+	    }
+	    
+	    private boolean doGenerateValue(ValueGeneratorEx visitor, DValue dval, String varName) throws Exception {
+        	doval(visitor, varName, dval, null, new GeneratorContext(), 0);
+
+	        if (! visitor.finish()) {
+	        	this.addError("value-visitor finish() failed", new StringExp(""));
 	        }
 
 	        return areNoErrors();

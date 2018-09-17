@@ -16,4 +16,6 @@ public interface TypeGeneratorEx {
 	void mapType(DMapType mapType, String typeName, String elementName);
 
 	void scalarType(DType dtype, String typeName, String parentName);
+	
+	boolean finish();
 }

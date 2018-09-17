@@ -154,4 +154,9 @@ public class DNALValueGeneratorEx implements ValueGeneratorEx {
 		String s = String.format("%s%s:%s", comma, key, this.getValueStr(dval));
 		appendCurrentList(s);
 	}
+	
+	@Override
+	public boolean finish() {
+		return true;
+	}
 }

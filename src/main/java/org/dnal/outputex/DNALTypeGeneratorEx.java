@@ -100,4 +100,8 @@ public class DNALTypeGeneratorEx implements TypeGeneratorEx {
 
         return joiner.toString();
 	}
+	@Override
+	public boolean finish() {
+		return true;
+	}
 }

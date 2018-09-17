@@ -35,4 +35,6 @@ public interface ValueGeneratorEx {
 	 * @param genctx
 	 */
 	void scalarValue(String varName, DValue dval, GeneratorContext genctx);
+	
+	boolean finish();
 }
