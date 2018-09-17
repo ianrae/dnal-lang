@@ -39,7 +39,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 					break;
 				case STRING:
 					//add code to use either ' or "!!
-					s = String.format("'%s'", dval.asString());
+					s = String.format("\"%s\"", dval.asString());
 					break;
 				case ENUM:
 					s = doEnum(dval, dtype);
@@ -50,13 +50,13 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 		return s;
 	}
 	private String doEnum(DValue dval, DType dtype) {
-		return dval.asString();
+		return String.format("\"%s\"", dval.asString());
 	}
 	
 	@Override
 	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("let %s %s = {", placement.name, structType.getName());
+			String s = String.format("{%s: {", placement.name);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -71,14 +71,12 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	}
 	@Override
 	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
-		appendCurrentList("}");
+		appendCurrentList("}}");
 	}
 	@Override
 	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
-		String typeName = listType.getName();
-		
 		if (placement.isTopLevelValue) {
-			String s = String.format("let %s %s = [", placement.name, typeName);
+			String s = String.format("{%s: [", placement.name);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -99,7 +97,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	
 	@Override
 	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
-		appendCurrentList("]");
+		appendCurrentList("]}");
 	}
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
