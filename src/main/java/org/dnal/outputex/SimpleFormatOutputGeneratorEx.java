@@ -90,8 +90,11 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	@Override
 	public void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx,
 			int index) {
-		// TODO Auto-generated method stub
-
+		if (varName != null) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s [", varName, typeName);
+			outputL.add(s);
+		}
 	}
 
 	@Override
@@ -113,8 +116,9 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
-
+		String value = DValToString(dval);
+		String s = String.format(" %s", value);
+		outputL.add(s);
 	}
 
 	@Override

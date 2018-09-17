@@ -76,16 +76,14 @@ public class SimpleGeneratorTests extends BaseTest {
     }
     @Test
     public void testStructValOptional2a() {
-        String s1 = "type:Foo:struct| x:int| y:int|endtype|";
         String s2 = "value:x:Foo {| vx:null| vy:11|}|";
-        chkGen("type Foo struct { x int optional, y int } end let x Foo = { x:null, y:11 }", s1 + s2, 2);
+        chkValueGen("type Foo struct { x int optional, y int } end let x Foo = { x:null, y:11 }", s2, 2);
     }
 	
 	@Test
 	public void testListVal() {
-		String s1 = "type:Foo:list<int>|endtype|";
 		String s2 = "value:x:Foo [| 10| 11|]|";
-		chkGen("type Foo list<int> end let x Foo = [ 10, 11]", s1 + s2, 2);
+		chkValueGen("type Foo list<int> end let x Foo = [ 10, 11]", s2, 2);
 	}
 
 	private void chkGen(String input, String expectedOutput) {
