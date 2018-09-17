@@ -101,7 +101,11 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 
 	        if (dval == null) {
 	            //optional field
-	            visitor.scalarValue(varName, name, dval, genctx);
+	        	if (genctx.isEquals(GeneratorContext.STRUCT)) {
+	        		visitor.structMemberValue(name, dval, genctx, indexParam);
+	        	} else {
+	        		visitor.scalarValue(varName, dval, genctx);
+	        	}
 	        } else if (dval.getType().isStructShape()) {
 	        	DStructType structType = (DStructType) dval.getType();
 	        	visitor.startStruct(varName, name, dval, structType, genctx, indexParam);
@@ -139,7 +143,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            int index = 0;
 	            for(String key: map.keySet()) {
 	            	DValue el = map.get(key);      
-	            	doval(visitor, null, el, key, genctx, index);
+	            	doval(visitor, null, el, key, genctx, index); //!recursion!
 	                index++;
 	            }
 	            genctx.popShapeCode();
@@ -152,7 +156,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        	} else if (genctx.isEquals(GeneratorContext.MAP)) {
 	        		visitor.mapMemberValue(name, dval, genctx, indexParam);
 	        	} else {
-	        		visitor.scalarValue(varName, name, dval, genctx);
+	        		visitor.scalarValue(varName, dval, genctx);
 	        	}
 	        }
 	    }

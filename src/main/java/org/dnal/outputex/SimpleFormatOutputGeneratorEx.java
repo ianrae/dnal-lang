@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.StringJoiner;
 
 import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.parser.error.TypeInfo;
@@ -105,13 +104,16 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	@Override
 	public void startMap(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx,
 			int index) {
-		// TODO Auto-generated method stub
-
+		if (varName != null) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", varName, typeName);
+			outputL.add(s);
+		}
 	}
 
 	@Override
 	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
-		appendCurrentList("}");
+		outputL.add("}");
 	}
 
 	@Override
@@ -130,24 +132,17 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	@Override
 	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
-		// TODO Auto-generated method stub
-
+		String value = DValToString(dval);
+		String s = String.format(" v%s:%s", key, value);
+		outputL.add(s);
 	}
 
 	@Override
-	public void scalarValue(String varName, String fieldName, DValue dval, GeneratorContext genctx) {
+	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
 		if (varName != null) {
 			String typeName = getTypeName(dval.getType());
 			String value = DValToString(dval);
 			String s = String.format("value:%s:%s:%s", varName, typeName, value);
-			outputL.add(s);
-		} else if (fieldName != null) {
-			String value = DValToString(dval);
-			String s = String.format(" v%s:%s", fieldName, value);
-			outputL.add(s);
-		} else  {
-			String value = DValToString(dval);
-			String s = String.format("%s", value);
 			outputL.add(s);
 		}
 	}

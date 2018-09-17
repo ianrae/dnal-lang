@@ -79,6 +79,11 @@ public class SimpleGeneratorTests extends BaseTest {
         String s2 = "value:x:Foo {| vx:null| vy:11|}|";
         chkValueGen("type Foo struct { x int optional, y int } end let x Foo = { x:null, y:11 }", s2, 2);
     }
+    @Test
+    public void testMapValue() {
+        String s2 = "value:x:Foo {| vx:10| vy:11|}|";
+        chkValueGen("type Foo map<int> end let x Foo = { x:10, y:11 }", s2, 2);
+    }
 	
 	@Test
 	public void testListVal() {

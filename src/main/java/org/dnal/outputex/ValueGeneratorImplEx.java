@@ -123,7 +123,7 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 	}
 	
 	@Override
-	public void scalarValue(String varName, String fieldName, DValue dval, GeneratorContext genctx) {
+	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
 		String typeName = buildTypeName(dval);
 		String s = String.format("let %s %s = %s", varName, typeName, this.getValueStr(dval));
 		outputL.add(s);
