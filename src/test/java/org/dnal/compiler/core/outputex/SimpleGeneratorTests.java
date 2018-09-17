@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
@@ -34,6 +32,11 @@ public class SimpleGeneratorTests extends BaseTest {
 	public void testStruct() {
 		chkGen("type Foo struct {  } end", "type:Foo:struct|endtype|");
 		chkGen("type Foo struct { x int, y string } end", "type:Foo:struct| x:int| y:string|endtype|");
+	}
+
+	@Test
+	public void testMap() {
+		chkGen("type Foo map<int> end", "type:Foo:map<int>|endtype|");
 	}
 
 	@Test
@@ -96,7 +99,6 @@ public class SimpleGeneratorTests extends BaseTest {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
 
         DTypeRegistry registry = getContext().registry;
-//		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world, null);
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, getContext().world, null);
 		SimpleFormatOutputGeneratorEx visitor = new SimpleFormatOutputGeneratorEx();
 		boolean b = phase.generateTypes(visitor);

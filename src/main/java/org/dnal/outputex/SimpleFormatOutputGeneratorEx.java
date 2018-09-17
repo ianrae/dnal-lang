@@ -3,40 +3,22 @@ package org.dnal.outputex;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.StringJoiner;
 
+import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.TypePair;
 import org.dnal.core.nrule.NRule;
 
 public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGeneratorEx {
 	private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
 	public List<String> outputL = new ArrayList<>();
-
-	private String getTypeName(DType dtype) {
-		String typeName = dtype.getName();
-		if (TypeInfo.isBuiltIntype(typeName)) {
-			typeName = TypeInfo.parserTypeOf(typeName);
-		} else {
-			typeName = dtype.getCompleteName();
-		}
-		return typeName;
-	}
-
-	private String genIndent(int amount) {
-		String space = "";
-		for(int i = 0; i < amount; i++) {
-			space += " ";
-		}
-		return space;
-	}
 
 	// -- types --
 	@Override
@@ -48,31 +30,45 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 			s = String.format(" %s:%s", fName, getTypeName(innerType));
 			outputL.add(s);
 		}
+		addRules(structType);
 		outputL.add("endtype");
 	}
 
 	@Override
 	public void enumType(DStructType enumType, String typeName) {
-		// TODO Auto-generated method stub
-
+		String s = String.format("type:%s:enum", typeName);
+		outputL.add(s);
+		for(String fName: enumType.orderedList()) {
+			DType innerType = enumType.getFields().get(fName);
+			s = String.format(" %s:%s", fName, getTypeName(innerType));
+			outputL.add(s);
+		}
+		addRules(enumType);
+		outputL.add("endtype");
 	}
 
 	@Override
 	public void listType(DListType listType, String typeName, String elementName) {
-		// TODO Auto-generated method stub
-
+		String s = String.format("type:%s:list<%s>", typeName, elementName);
+		outputL.add(s);
+		addRules(listType);
+		outputL.add("endtype");
 	}
 
 	@Override
 	public void mapType(DMapType mapType, String typeName, String elementName) {
-		// TODO Auto-generated method stub
-
+		String s = String.format("type:%s:map<%s>", typeName, elementName);
+		outputL.add(s);
+		addRules(mapType);
+		outputL.add("endtype");
 	}
 
 	@Override
 	public void scalarType(DType dtype, String typeName, String parentName) {
-		// TODO Auto-generated method stub
-
+		String s = String.format("type:%s:%s", typeName, parentName);
+		outputL.add(s);
+		addRules(dtype);
+		outputL.add("endtype");
 	}
 
 	// -- values --
@@ -134,6 +130,34 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
 		// TODO Auto-generated method stub
 
+	}
+
+	//--helpers--
+	private void addRules(DType dtype) {
+        for(NRule rule: dtype.getRawRules()) {
+            String ruleText = rule.getRuleText();
+            if (rule instanceof UniqueRule) {
+            	ruleText= String.format("unique %s", ruleText); 
+            }
+            outputL.add(" r: " + ruleText); 
+        }
+	}
+	private String getTypeName(DType dtype) {
+		String typeName = dtype.getName();
+		if (TypeInfo.isBuiltIntype(typeName)) {
+			typeName = TypeInfo.parserTypeOf(typeName);
+		} else {
+			typeName = dtype.getCompleteName();
+		}
+		return typeName;
+	}
+
+	private String genIndent(int amount) {
+		String space = "";
+		for(int i = 0; i < amount; i++) {
+			space += " ";
+		}
+		return space;
 	}
 
 
