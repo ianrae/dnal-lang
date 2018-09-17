@@ -78,6 +78,12 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 			String typeName = getTypeName(dval.getType());
 			String s = String.format("value:%s:%s {", placement.name, typeName);
 			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" {");
+			outputL.add(s);
+		} else {
+			String s = String.format(" v%s {", placement.name);
+			outputL.add(s);
 		}
 	}
 
@@ -92,6 +98,12 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 			String typeName = getTypeName(dval.getType());
 			String s = String.format("value:%s:%s [", placement.name, typeName);
 			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" [");
+			outputL.add(s);
+		} else {
+			String s = String.format(" v%s [", placement.name);
+			outputL.add(s);
 		}
 	}
 
@@ -105,6 +117,12 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 		if (placement.isTopLevelValue) {
 			String typeName = getTypeName(dval.getType());
 			String s = String.format("value:%s:%s {", placement.name, typeName);
+			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" {");
+			outputL.add(s);
+		} else {
+			String s = String.format(" v%s {", placement.name);
 			outputL.add(s);
 		}
 	}

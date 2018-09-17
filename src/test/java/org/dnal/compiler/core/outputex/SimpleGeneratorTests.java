@@ -79,6 +79,14 @@ public class SimpleGeneratorTests extends BaseTest {
         String s2 = "value:x:Foo {| vx:null| vy:11|}|";
         chkValueGen("type Foo struct { x int optional, y int } end let x Foo = { x:null, y:11 }", s2, 2);
     }
+    
+    @Test
+    public void testStructListMember() {
+        String s = "value:x:Z {| vx [| 15| 16|]| vy:20|}|";
+        chkValueGen("type L list<int> end type Z struct { x L, y int } end let x Z = { [15,16], 20 }", s, 3);
+    }
+    
+    
     @Test
     public void testMapValue() {
         String s2 = "value:x:Foo {| vx:10| vy:11|}|";
