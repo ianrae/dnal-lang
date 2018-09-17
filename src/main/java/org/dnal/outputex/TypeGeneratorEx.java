@@ -13,7 +13,7 @@ public interface TypeGeneratorEx {
 
 	void listType(DListType listType, String typeName, String elementName);
 
-	void mapType(DMapType mapType);
+	void mapType(DMapType mapType, String typeName, String elementName);
 
 	void scalarType(DType dtype, String typeName, String parentName);
 }

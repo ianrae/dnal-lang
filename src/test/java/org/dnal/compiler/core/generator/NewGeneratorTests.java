@@ -11,7 +11,7 @@ import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
 import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.OutputGeneratorImplEx;
+import org.dnal.outputex.TypeGeneratorImplEx;
 import org.dnal.outputex.ValueGeneratorImplEx;
 import org.junit.Test;
 
@@ -108,6 +108,10 @@ public class NewGeneratorTests extends BaseTest {
 //    	chkTypeGen("type Foo struct { name string optional, age int} end",  "type Foo struct {name string optional, age int} end|", 1);
     	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} unique age end|", 1);
     }
+    @Test
+    public void testTypeMap() {
+    	chkTypeGen("type SizeMap map<int> end",  "type SizeMap map<int> end|", 1);
+    }
     
     //------------------
 	private void chkGen(String input, String expectedOutput) {
@@ -128,7 +132,7 @@ public class NewGeneratorTests extends BaseTest {
 		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
 		
 		if (genTypes) {
-			OutputGeneratorImplEx visitor = new OutputGeneratorImplEx();
+			TypeGeneratorImplEx visitor = new TypeGeneratorImplEx();
 			boolean b = phase.generateTypes(visitor);
 			assertEquals(true, b);
 			String output = flatten(visitor.outputL);

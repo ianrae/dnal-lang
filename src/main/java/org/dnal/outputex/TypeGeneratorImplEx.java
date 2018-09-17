@@ -14,7 +14,7 @@ import org.dnal.core.DType;
 import org.dnal.core.TypePair;
 import org.dnal.core.nrule.NRule;
 
-public class OutputGeneratorImplEx implements TypeGeneratorEx {
+public class TypeGeneratorImplEx implements TypeGeneratorEx {
     public List<String> outputL = new ArrayList<>();
 	
 	@Override
@@ -70,9 +70,14 @@ public class OutputGeneratorImplEx implements TypeGeneratorEx {
 		outputL.add(s);
 	}
 	@Override
-	public void mapType(DMapType mapType) {
-		// TODO Auto-generated method stub
-		
+	public void mapType(DMapType mapType, String typeName, String elementName) {
+		String rulesStr = getRuleStr(mapType);
+		if (! StringUtils.isEmpty(rulesStr)) {
+			rulesStr = String.format(" %s", rulesStr);
+		}
+		//type SizeMap map<int> end
+		String s = String.format("type %s map<%s>%s end", typeName, elementName, rulesStr);
+		outputL.add(s);
 	}
 	@Override
 	public void scalarType(DType dtype, String typeName, String parentName) {
@@ -95,5 +100,4 @@ public class OutputGeneratorImplEx implements TypeGeneratorEx {
 
         return joiner.toString();
 	}
-	
 }

@@ -72,7 +72,9 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        		visitor.listType(listType, typeName, elementName);
 	        	} else if (dtype instanceof DMapType) {
 	        		DMapType mapType = (DMapType) dtype;
-	        		visitor.mapType(mapType);
+	        		String typeName = TypeInfo.parserTypeOf(mapType.getName());
+	        		String elementName = TypeInfo.parserTypeOf(mapType.getElementType().getName());
+	        		visitor.mapType(mapType, typeName, elementName);
 	        	} else {
 	        		String typeName = TypeInfo.parserTypeOf(dtype.getName());
 	        		String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());

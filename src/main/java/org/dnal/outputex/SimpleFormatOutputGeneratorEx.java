@@ -204,7 +204,7 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
         endType(listType);
 	}
 	@Override
-	public void mapType(DMapType mapType) {
+	public void mapType(DMapType mapType, String typeName, String elementName) {
         String baseTypeName = TypeInfo.getBaseTypeName(mapType, true);
         String completeName = mapType.getCompleteName();
         String s = String.format("type:%s:%s", completeName, baseTypeName);
