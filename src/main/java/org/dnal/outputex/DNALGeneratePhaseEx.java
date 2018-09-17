@@ -86,8 +86,6 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	    }
 	    
 	    private boolean doGenerateValues(ValueGeneratorEx visitor) throws Exception {
-	        List<DType> orderedTypeList = registry.getOrderedList();
-
 	        List<String> orderedValueList = world.getOrderedList();
 	        for(String valueName: orderedValueList) {
 	        	DValue dval = world.findTopLevelValue(valueName);
@@ -108,7 +106,8 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        	}
 	        } else if (dval.getType().isStructShape()) {
 	        	DStructType structType = (DStructType) dval.getType();
-	        	visitor.startStruct(varName, name, dval, structType, genctx, indexParam);
+	        	ValuePlacement placement = new ValuePlacement(varName, name);
+	        	visitor.startStruct(placement, dval, structType, genctx, indexParam);
 	        	
 	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
 	            DStructHelper helper = new DStructHelper(dval);
@@ -123,7 +122,8 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.endStruct(dval, structType, genctx);
 	        } else if (dval.getType().isListShape()) {
 	        	DListType listType = (DListType) dval.getType();
-	            visitor.startList(varName, name, dval, listType, genctx, indexParam);
+	        	ValuePlacement placement = new ValuePlacement(varName, name);
+	            visitor.startList(placement, dval, listType, genctx, indexParam);
 	        	genctx.pushShapeCode(GeneratorContext.LIST);
 	            List<DValue> elementL = dval.asList();
 
@@ -136,7 +136,8 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	            visitor.endList(dval, listType, genctx);
 	        } else if (dval.getType().isMapShape()) {
 	        	DMapType mapType = (DMapType) dval.getType();
-	            visitor.startMap(varName, name, dval, mapType, genctx, indexParam);
+	        	ValuePlacement placement = new ValuePlacement(varName, name);
+	            visitor.startMap(placement, dval, mapType, genctx, indexParam);
 	            genctx.pushShapeCode(GeneratorContext.MAP);
 	            Map<String,DValue> map = dval.asMap();
 

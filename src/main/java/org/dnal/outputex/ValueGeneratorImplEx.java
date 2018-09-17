@@ -54,17 +54,17 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 	}
 	
 	@Override
-	public void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
-		if (varName != null) {
-			String s = String.format("let %s %s = {", varName, structType.getName());
+	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
+			String s = String.format("let %s %s = {", placement.name, structType.getName());
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
-			if (fieldName == null) {
+			if (placement.name == null) {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:{", comma, fieldName);
+				String s = String.format("%s%s:{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -74,19 +74,19 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 		appendCurrentList("}");
 	}
 	@Override
-	public void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
 		String typeName = listType.getName();
 		
-		if (varName != null) {
-			String s = String.format("let %s %s = [", varName, typeName);
+		if (placement.isTopLevelValue) {
+			String s = String.format("let %s %s = [", placement.name, typeName);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
-			if (fieldName == null) {
+			if (placement.name == null) {
 				String s = String.format("%s[", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:[", comma, fieldName);
+				String s = String.format("%s%s:[", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -129,17 +129,17 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 		outputL.add(s);
 	}
 	@Override
-	public void startMap(String varName, String fieldName,  DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
-		if (varName != null) {
-			String s = String.format("let %s %s = {", varName, mapType.getName());
+	public void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
+			String s = String.format("let %s %s = {", placement.name, mapType.getName());
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
-			if (fieldName == null) {
+			if (placement.name == null) {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s%s:{", comma, fieldName);
+				String s = String.format("%s%s:{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}

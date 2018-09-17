@@ -73,10 +73,10 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 
 	// -- values --
 	@Override
-	public void startStruct(String varName, String fieldName, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
-		if (varName != null) {
+	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
 			String typeName = getTypeName(dval.getType());
-			String s = String.format("value:%s:%s {", varName, typeName);
+			String s = String.format("value:%s:%s {", placement.name, typeName);
 			outputL.add(s);
 		}
 	}
@@ -87,11 +87,10 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	}
 
 	@Override
-	public void startList(String varName, String fieldName, DValue dval, DListType listType, GeneratorContext genctx,
-			int index) {
-		if (varName != null) {
+	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
 			String typeName = getTypeName(dval.getType());
-			String s = String.format("value:%s:%s [", varName, typeName);
+			String s = String.format("value:%s:%s [", placement.name, typeName);
 			outputL.add(s);
 		}
 	}
@@ -102,11 +101,10 @@ public class SimpleFormatOutputGeneratorEx implements TypeGeneratorEx, ValueGene
 	}
 
 	@Override
-	public void startMap(String varName, String fieldName, DValue dval, DMapType mapType, GeneratorContext genctx,
-			int index) {
-		if (varName != null) {
+	public void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
 			String typeName = getTypeName(dval.getType());
-			String s = String.format("value:%s:%s {", varName, typeName);
+			String s = String.format("value:%s:%s {", placement.name, typeName);
 			outputL.add(s);
 		}
 	}
