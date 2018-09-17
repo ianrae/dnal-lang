@@ -70,7 +70,7 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 		}
 	}
 	@Override
-	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
+	public void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx) {
 		appendCurrentList("}");
 	}
 	@Override
@@ -98,7 +98,7 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 	}
 	
 	@Override
-	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
+	public void endList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx) {
 		appendCurrentList("]");
 	}
 	@Override
@@ -145,7 +145,7 @@ public class ValueGeneratorImplEx implements ValueGeneratorEx {
 		}
 	}
 	@Override
-	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
+	public void endMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx) {
 		appendCurrentList("}");
 	}
 	@Override

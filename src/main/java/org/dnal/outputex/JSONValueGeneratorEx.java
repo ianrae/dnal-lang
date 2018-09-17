@@ -70,8 +70,12 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 		}
 	}
 	@Override
-	public void endStruct(DValue dval, DStructType structType, GeneratorContext genctx) {
-		appendCurrentList("}}");
+	public void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx) {
+		if (placement.isTopLevelValue) {
+			appendCurrentList("}}");
+		} else {
+			appendCurrentList("}");
+		}
 	}
 	@Override
 	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
@@ -96,8 +100,12 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	}
 	
 	@Override
-	public void endList(DValue dval, DListType listType, GeneratorContext genctx) {
-		appendCurrentList("]}");
+	public void endList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx) {
+		if (placement.isTopLevelValue) {
+			appendCurrentList("]}");
+		} else {
+			appendCurrentList("]");
+		}
 	}
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
@@ -142,8 +150,12 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 		}
 	}
 	@Override
-	public void endMap(DValue dval, DMapType mapType, GeneratorContext genctx) {
-		appendCurrentList("}");
+	public void endMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx) {
+		if (placement.isTopLevelValue) {
+			appendCurrentList("}}");
+		} else {
+			appendCurrentList("}");
+		}
 	}
 	@Override
 	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {

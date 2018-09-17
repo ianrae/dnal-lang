@@ -119,7 +119,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endStruct(dval, structType, genctx);
+	            visitor.endStruct(placement, dval, structType, genctx);
 	        } else if (dval.getType().isListShape()) {
 	        	DListType listType = (DListType) dval.getType();
 	        	ValuePlacement placement = new ValuePlacement(varName, name);
@@ -133,7 +133,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endList(dval, listType, genctx);
+	            visitor.endList(placement, dval, listType, genctx);
 	        } else if (dval.getType().isMapShape()) {
 	        	DMapType mapType = (DMapType) dval.getType();
 	        	ValuePlacement placement = new ValuePlacement(varName, name);
@@ -148,7 +148,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	                index++;
 	            }
 	            genctx.popShapeCode();
-	            visitor.endMap(dval, mapType, genctx);
+	            visitor.endMap(placement, dval, mapType, genctx);
 	        } else {
 	        	if (genctx.isEquals(GeneratorContext.STRUCT)) {
 	        		visitor.structMemberValue(name, dval, genctx, indexParam);

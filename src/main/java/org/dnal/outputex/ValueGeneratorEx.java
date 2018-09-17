@@ -8,13 +8,13 @@ import org.dnal.core.DValue;
 public interface ValueGeneratorEx {
 
 	void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index);
-	void endStruct(DValue dval, DStructType structType, GeneratorContext genctx);
+	void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx);
 
 	void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index);
-	void endList(DValue dval, DListType listType, GeneratorContext genctx);
+	void endList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx);
 	
 	void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index);
-	void endMap(DValue dval, DMapType mapType, GeneratorContext genctx);
+	void endMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx);
 	
 	void listElementValue(DValue dval, GeneratorContext genctx, int index);
 	
