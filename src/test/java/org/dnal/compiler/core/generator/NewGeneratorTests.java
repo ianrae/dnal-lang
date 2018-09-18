@@ -1,4 +1,4 @@
-package org.dnal.compiler.core.outputex;
+package org.dnal.compiler.core.generator;
 
 import static org.junit.Assert.assertEquals;
 
