@@ -135,7 +135,7 @@ public class ExampleTests extends BaseWorldTest {
         chkInt(val, 1, "size", 101);
         
         log("json..");
-        Generator gen = dataSet.createGeneratorEx();
+        Generator gen = dataSet.createGenerator();
         JSONValueGenerator visitor = new JSONValueGenerator();
         boolean b = gen.generateValues(visitor);
         for(String s: visitor.outputL) {
@@ -150,7 +150,7 @@ public class ExampleTests extends BaseWorldTest {
         DataSet dataSet = load("exampleBig.dnal");
         
         log("json..");
-        Generator gen = dataSet.createGeneratorEx();
+        Generator gen = dataSet.createGenerator();
         JSONValueGenerator visitor = new JSONValueGenerator();
         boolean b = gen.generateValues(visitor);
 //        for(String s: visitor.outputL) {

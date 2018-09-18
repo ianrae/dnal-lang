@@ -72,7 +72,7 @@ public class DataSetImpl implements DataSet {
     }
 
     @Override
-    public Generator createGeneratorEx() {
+    public Generator createGenerator() {
         Generator generator = new GeneratorImpl(registry, world, context, null);
         return generator;
     }

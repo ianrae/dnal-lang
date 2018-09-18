@@ -82,7 +82,7 @@ public class DNALLoader {
     	}
     	
         SimpleFormatOutputGenerator smf = new SimpleFormatOutputGenerator();
-        Generator gen = clone.createGeneratorEx();
+        Generator gen = clone.createGenerator();
         boolean b = gen.generateTypes(smf);
         if (! b) {
             return;
@@ -101,7 +101,7 @@ public class DNALLoader {
     }
     public void dumpAsDNAL() {
         DNALTypeGenerator smf = new DNALTypeGenerator();
-        Generator gen = clone.createGeneratorEx();
+        Generator gen = clone.createGenerator();
         boolean b = gen.generateTypes(smf);
         if (! b) {
             return;
