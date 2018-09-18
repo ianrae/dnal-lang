@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.generate.DNALGeneratePhaseEx;
+import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.SimpleFormatOutputGeneratorEx;
 import org.junit.Test;
 
 public class SimpleGeneratorTests extends BaseTest {

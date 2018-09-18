@@ -1,4 +1,4 @@
-package org.dnal.outputex;
+package org.dnal.compiler.generate;
 
 /**
  * if isTopLevelValue is true then the value is a top-level value. eg let x Foo = ...

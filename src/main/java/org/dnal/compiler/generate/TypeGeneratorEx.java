@@ -1,4 +1,4 @@
-package org.dnal.outputex;
+package org.dnal.compiler.generate;
 
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;

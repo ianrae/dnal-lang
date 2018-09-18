@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.api.GeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhaseEx;
+import org.dnal.compiler.generate.TypeGeneratorEx;
+import org.dnal.compiler.generate.ValueGeneratorEx;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
-import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.TypeGeneratorEx;
-import org.dnal.outputex.ValueGeneratorEx;
 
 public class GeneratorImplEx implements GeneratorEx {
     private List<NewErrorMessage> errL = new ArrayList<>();

@@ -7,14 +7,14 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.generate.DNALGeneratePhaseEx;
+import org.dnal.compiler.generate.JSONValueGeneratorEx;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
-import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.JSONValueGeneratorEx;
 import org.junit.Test;
 
 public class SingleValueJSONTests extends BaseTest {

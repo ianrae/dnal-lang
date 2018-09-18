@@ -2,10 +2,10 @@ package org.dnal.api;
 
 import java.util.List;
 
+import org.dnal.compiler.generate.TypeGeneratorEx;
+import org.dnal.compiler.generate.ValueGeneratorEx;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
-import org.dnal.outputex.TypeGeneratorEx;
-import org.dnal.outputex.ValueGeneratorEx;
 
 public interface GeneratorEx {
     

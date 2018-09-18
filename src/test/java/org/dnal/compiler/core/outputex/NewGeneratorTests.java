@@ -6,13 +6,13 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
+import org.dnal.compiler.generate.DNALGeneratePhaseEx;
+import org.dnal.compiler.generate.DNALTypeGeneratorEx;
+import org.dnal.compiler.generate.DNALValueGeneratorEx;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.repository.World;
-import org.dnal.outputex.DNALGeneratePhaseEx;
-import org.dnal.outputex.DNALTypeGeneratorEx;
-import org.dnal.outputex.DNALValueGeneratorEx;
 import org.junit.Test;
 
 public class NewGeneratorTests extends BaseTest {

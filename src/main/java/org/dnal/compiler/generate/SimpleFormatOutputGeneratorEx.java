@@ -1,4 +1,4 @@
-package org.dnal.outputex;
+package org.dnal.compiler.generate;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

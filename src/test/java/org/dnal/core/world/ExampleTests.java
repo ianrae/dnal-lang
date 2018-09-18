@@ -8,9 +8,11 @@ import java.util.List;
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
+import org.dnal.api.GeneratorEx;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.json.JSONGenerator;
+import org.dnal.compiler.generate.JSONValueGeneratorEx;
+import org.dnal.compiler.generate.old.JSONGenerator;
 import org.dnal.compiler.impoter.MockImportLoader;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.core.DStructHelper;
@@ -137,9 +139,9 @@ public class ExampleTests extends BaseWorldTest {
         chkInt(val, 1, "size", 101);
         
         log("json..");
-        Generator gen = dataSet.createGenerator();
-        JSONGenerator visitor = new JSONGenerator();
-        boolean b = gen.generate(visitor);
+        GeneratorEx gen = dataSet.createGeneratorEx();
+        JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
+        boolean b = gen.generateValues(visitor);
         for(String s: visitor.outputL) {
             log(s);
         }
@@ -152,9 +154,9 @@ public class ExampleTests extends BaseWorldTest {
         DataSet dataSet = load("exampleBig.dnal");
         
         log("json..");
-        Generator gen = dataSet.createGenerator();
-        JSONGenerator visitor = new JSONGenerator();
-        gen.generate(visitor);
+        GeneratorEx gen = dataSet.createGeneratorEx();
+        JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
+        boolean b = gen.generateValues(visitor);
 //        for(String s: visitor.outputL) {
 //            log(s);
 //        }

@@ -1,4 +1,4 @@
-package org.dnal.outputex;
+package org.dnal.compiler.generate;
 
 import java.util.ArrayList;
 import java.util.List;

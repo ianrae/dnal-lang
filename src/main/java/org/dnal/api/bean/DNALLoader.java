@@ -2,10 +2,14 @@ package org.dnal.api.bean;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
+import org.dnal.api.GeneratorEx;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
+import org.dnal.compiler.generate.DNALTypeGeneratorEx;
+import org.dnal.compiler.generate.DNALValueGeneratorEx;
+import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
 import org.dnal.compiler.generate.old.DNALOutputGenerator;
 import org.dnal.compiler.generate.old.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
@@ -80,9 +84,17 @@ public class DNALLoader {
     		et.dumpErrors();
     	}
     	
-        SimpleFormatOutputGenerator smf = new SimpleFormatOutputGenerator();
-        Generator gen = clone.createGenerator();
-        boolean b = gen.generate(smf);
+        SimpleFormatOutputGeneratorEx smf = new SimpleFormatOutputGeneratorEx();
+        GeneratorEx gen = clone.createGeneratorEx();
+        boolean b = gen.generateTypes(smf);
+        if (! b) {
+            return;
+        }
+        for(String ss: smf.outputL) {
+            log(ss);
+        }
+        
+        b = gen.generateValues(smf);
         if (! b) {
             return;
         }
@@ -91,9 +103,18 @@ public class DNALLoader {
         }
     }
     public void dumpAsDNAL() {
-        DNALOutputGenerator smf = new DNALOutputGenerator();
-        Generator gen = clone.createGenerator();
-        boolean b = gen.generate(smf);
+        DNALTypeGeneratorEx smf = new DNALTypeGeneratorEx();
+        GeneratorEx gen = clone.createGeneratorEx();
+        boolean b = gen.generateTypes(smf);
+        if (! b) {
+            return;
+        }
+        for(String ss: smf.outputL) {
+            log(ss);
+        }
+        
+        DNALValueGeneratorEx smf2 = new DNALValueGeneratorEx();
+        b = gen.generateValues(smf2);
         if (! b) {
             return;
         }
