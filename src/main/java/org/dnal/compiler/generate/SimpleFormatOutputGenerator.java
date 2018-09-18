@@ -82,7 +82,9 @@ public class SimpleFormatOutputGenerator implements TypeGenerator, ValueGenerato
 			String s = String.format(" {");
 			outputL.add(s);
 		} else {
-			String s = String.format(" v%s {", placement.name);
+//			String s = String.format(" v%s {", placement.name);
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", placement.name, typeName);
 			outputL.add(s);
 		}
 	}

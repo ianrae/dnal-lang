@@ -113,7 +113,7 @@ public class TopLevelTests {
 	public void test2() {
 		XErrorTracker.logErrors = true;
 //		doFile("via3.dnal");
-		doFile("package2.dnal");
+		doFile("via1.dnal");
 //		doFile("list3.dnal");
 	}
 	
