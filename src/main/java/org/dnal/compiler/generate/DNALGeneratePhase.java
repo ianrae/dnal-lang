@@ -18,19 +18,19 @@ import org.dnal.core.DValue;
 import org.dnal.core.Shape;
 import org.dnal.core.repository.World;
 
-public class DNALGeneratePhaseEx extends ErrorTrackingBase {
+public class DNALGeneratePhase extends ErrorTrackingBase {
 	    private DTypeRegistry registry;
 	    private World world;
 	    private LineLocator lineLocator;
 
-	    public DNALGeneratePhaseEx(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
+	    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
 	        super(et, null);
 	        this.registry = registry;
 	        this.world = world;
 	        this.lineLocator = lineLocator;
 	    }
 	    
-	    public boolean generateTypes(TypeGeneratorEx visitor) {
+	    public boolean generateTypes(TypeGenerator visitor) {
 	        boolean b = false;
 	        try {
 	            b = doGenerateTypes(visitor);
@@ -39,7 +39,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        }
 	        return b;
 	    }
-	    public boolean generateValues(ValueGeneratorEx visitor) {
+	    public boolean generateValues(ValueGenerator visitor) {
 	        boolean b = false;
 	        try {
 	            b = doGenerateValues(visitor);
@@ -48,7 +48,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        }
 	        return b;
 	    }
-	    public boolean generateValue(ValueGeneratorEx visitor, DValue dval, String varName) {
+	    public boolean generateValue(ValueGenerator visitor, DValue dval, String varName) {
 	        boolean b = false;
 	        try {
 	            b = doGenerateValue(visitor, dval, varName);
@@ -58,7 +58,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        return b;
 	    }
 
-	    private boolean doGenerateTypes(TypeGeneratorEx visitor) throws Exception {
+	    private boolean doGenerateTypes(TypeGenerator visitor) throws Exception {
 	        List<DType> orderedTypeList = registry.getOrderedList();
 
 	        for(DType dtype: orderedTypeList) {
@@ -99,7 +99,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        return areNoErrors();
 	    }
 	    
-	    private boolean doGenerateValues(ValueGeneratorEx visitor) throws Exception {
+	    private boolean doGenerateValues(ValueGenerator visitor) throws Exception {
 	        List<String> orderedValueList = world.getOrderedList();
 	        for(String valueName: orderedValueList) {
 	        	DValue dval = world.findTopLevelValue(valueName);
@@ -113,7 +113,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        return areNoErrors();
 	    }
 	    
-	    private boolean doGenerateValue(ValueGeneratorEx visitor, DValue dval, String varName) throws Exception {
+	    private boolean doGenerateValue(ValueGenerator visitor, DValue dval, String varName) throws Exception {
         	doval(visitor, varName, dval, null, new GeneratorContext(), 0);
 
 	        if (! visitor.finish()) {
@@ -123,7 +123,7 @@ public class DNALGeneratePhaseEx extends ErrorTrackingBase {
 	        return areNoErrors();
 	    }
 
-	    private void doval(ValueGeneratorEx visitor, String varName, DValue dval, String name, GeneratorContext genctx, int indexParam) throws Exception {
+	    private void doval(ValueGenerator visitor, String varName, DValue dval, String name, GeneratorContext genctx, int indexParam) throws Exception {
 
 	        if (dval == null) {
 	            //optional field

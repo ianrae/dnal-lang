@@ -5,7 +5,7 @@ import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DValue;
 
-public interface ValueGeneratorEx {
+public interface ValueGenerator {
 
 	void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index);
 	void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx);

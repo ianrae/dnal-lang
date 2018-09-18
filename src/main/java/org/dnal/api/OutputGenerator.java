@@ -1,7 +1,7 @@
 package org.dnal.api;
 
-import org.dnal.compiler.generate.TypeGeneratorEx;
-import org.dnal.compiler.generate.ValueGeneratorEx;
+import org.dnal.compiler.generate.TypeGenerator;
+import org.dnal.compiler.generate.ValueGenerator;
 
 /**
  * a pair of generators, one for types and one for values.
@@ -11,6 +11,6 @@ import org.dnal.compiler.generate.ValueGeneratorEx;
  *
  */
 public class OutputGenerator {
-	public TypeGeneratorEx typeGenerator;
-	public ValueGeneratorEx valueGenerator;
+	public TypeGenerator typeGenerator;
+	public ValueGenerator valueGenerator;
 }

@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.api.Generator;
-import org.dnal.compiler.generate.DNALGeneratePhaseEx;
-import org.dnal.compiler.generate.TypeGeneratorEx;
-import org.dnal.compiler.generate.ValueGeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.TypeGenerator;
+import org.dnal.compiler.generate.ValueGenerator;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
@@ -36,8 +36,8 @@ public class GeneratorImpl implements Generator {
     }
 
 	@Override
-	public boolean generateTypes(TypeGeneratorEx visitor) {
-        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
+	public boolean generateTypes(TypeGenerator visitor) {
+        DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world, lineLocator);
         boolean b = phase.generateTypes(visitor);
         if (! b) {
             return false;
@@ -46,8 +46,8 @@ public class GeneratorImpl implements Generator {
 	}
 
 	@Override
-	public boolean generateValues(ValueGeneratorEx visitor) {
-        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
+	public boolean generateValues(ValueGenerator visitor) {
+        DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world, lineLocator);
         boolean b = phase.generateValues(visitor);
         if (! b) {
             return false;
@@ -56,8 +56,8 @@ public class GeneratorImpl implements Generator {
 	}
 
 	@Override
-	public boolean generateValue(ValueGeneratorEx visitor, DValue dval, String valueName) {
-        DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(context.et, registry, world, lineLocator);
+	public boolean generateValue(ValueGenerator visitor, DValue dval, String valueName) {
+        DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world, lineLocator);
         boolean b = phase.generateValue(visitor, dval, valueName);
         if (! b) {
             return false;

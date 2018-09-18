@@ -6,9 +6,9 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.generate.DNALGeneratePhaseEx;
-import org.dnal.compiler.generate.DNALTypeGeneratorEx;
-import org.dnal.compiler.generate.DNALValueGeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.DNALTypeGenerator;
+import org.dnal.compiler.generate.DNALValueGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
@@ -129,17 +129,17 @@ public class NewGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, null);
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world, null);
 		
 		if (genTypes) {
-			DNALTypeGeneratorEx visitor = new DNALTypeGeneratorEx();
+			DNALTypeGenerator visitor = new DNALTypeGenerator();
 			boolean b = phase.generateTypes(visitor);
 			assertEquals(true, b);
 			String output = flatten(visitor.outputL);
 			log("output: " + output);
 			assertEquals(expectedOutput, output);
 		} else if (genValues) {
-			DNALValueGeneratorEx visitor = new DNALValueGeneratorEx();
+			DNALValueGenerator visitor = new DNALValueGenerator();
 			boolean b = phase.generateValues(visitor);
 			assertEquals(true, b);
 			String output = flatten(visitor.outputL);

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.generate.DNALGeneratePhaseEx;
-import org.dnal.compiler.generate.JSONValueGeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.JSONValueGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.error.LineLocator;
@@ -77,8 +77,8 @@ public class JSONValueGeneratorExTests extends BaseTest {
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
         LineLocator lineLocator = new LineLocator(input);
-		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, world, lineLocator);
-		JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world, lineLocator);
+		JSONValueGenerator visitor = new JSONValueGenerator();
 		boolean b = phase.generateValues(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);

@@ -6,8 +6,8 @@ import java.util.List;
 
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.generate.DNALGeneratePhaseEx;
-import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.core.DTypeRegistry;
@@ -107,8 +107,8 @@ public class SimpleGeneratorTests extends BaseTest {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
 
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, getContext().world, null);
-		SimpleFormatOutputGeneratorEx visitor = new SimpleFormatOutputGeneratorEx();
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world, null);
+		SimpleFormatOutputGenerator visitor = new SimpleFormatOutputGenerator();
 		boolean b = phase.generateTypes(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);
@@ -119,8 +119,8 @@ public class SimpleGeneratorTests extends BaseTest {
 		ASTToDNALGenerator dnalGenerator = parseAndGenDVals(input, expectedSize);
 
         DTypeRegistry registry = getContext().registry;
-		DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(getContext().et, registry, getContext().world, null);
-		SimpleFormatOutputGeneratorEx visitor = new SimpleFormatOutputGeneratorEx();
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, getContext().world, null);
+		SimpleFormatOutputGenerator visitor = new SimpleFormatOutputGenerator();
 		boolean b = phase.generateValues(visitor);
 		assertEquals(true, b);
 		String output = flatten(visitor.outputL);

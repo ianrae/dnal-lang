@@ -3,13 +3,14 @@ package org.dnal.compiler.generate;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 
-public class JSONValueGeneratorEx implements ValueGeneratorEx {
+public class DNALValueGenerator implements ValueGenerator {
     public List<String> outputL = new ArrayList<>();
 	
 	private String getValueStr(DValue dval) {
@@ -38,7 +39,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 					break;
 				case STRING:
 					//add code to use either ' or "!!
-					s = String.format("\"%s\"", dval.asString());
+					s = String.format("'%s'", dval.asString());
 					break;
 				case ENUM:
 					s = doEnum(dval, dtype);
@@ -49,13 +50,13 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 		return s;
 	}
 	private String doEnum(DValue dval, DType dtype) {
-		return String.format("\"%s\"", dval.asString());
+		return dval.asString();
 	}
 	
 	@Override
 	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("{\"%s\": {", placement.name);
+			String s = String.format("let %s %s = {", placement.name, structType.getName());
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -63,23 +64,21 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s\"%s\":{", comma, placement.name);
+				String s = String.format("%s%s:{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
 	}
 	@Override
 	public void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx) {
-		if (placement.isTopLevelValue) {
-			appendCurrentList("}}");
-		} else {
-			appendCurrentList("}");
-		}
+		appendCurrentList("}");
 	}
 	@Override
 	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+		String typeName = listType.getName();
+		
 		if (placement.isTopLevelValue) {
-			String s = String.format("{\"%s\": [", placement.name);
+			String s = String.format("let %s %s = [", placement.name, typeName);
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -87,7 +86,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s[", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s\"%s\":[", comma, placement.name);
+				String s = String.format("%s%s:[", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
@@ -100,11 +99,7 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	
 	@Override
 	public void endList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx) {
-		if (placement.isTopLevelValue) {
-			appendCurrentList("]}");
-		} else {
-			appendCurrentList("]");
-		}
+		appendCurrentList("]");
 	}
 	@Override
 	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
@@ -115,19 +110,28 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 	@Override
 	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
 		String comma = (index == 0) ? "" : ", ";
-		String s = String.format("%s\"%s\":%s", comma, fieldName, this.getValueStr(dval));
+		String s = String.format("%s%s:%s", comma, fieldName, this.getValueStr(dval));
 		appendCurrentList(s);
+	}
+	
+	private String buildTypeName(DValue dval) {
+		return buildTypeName(dval.getType());
+	}
+	private String buildTypeName(DType dtype) {
+		String typeName = TypeInfo.parserTypeOf(dtype.getName());
+		return typeName;
 	}
 	
 	@Override
 	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
-		String s = String.format("{\"%s\": %s}", varName, this.getValueStr(dval));
+		String typeName = buildTypeName(dval);
+		String s = String.format("let %s %s = %s", varName, typeName, this.getValueStr(dval));
 		outputL.add(s);
 	}
 	@Override
 	public void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
 		if (placement.isTopLevelValue) {
-			String s = String.format("{\"%s\": {", placement.name);
+			String s = String.format("let %s %s = {", placement.name, mapType.getName());
 			outputL.add(s);
 		} else {
 			String comma = (index == 0) ? "" : ", ";
@@ -135,23 +139,19 @@ public class JSONValueGeneratorEx implements ValueGeneratorEx {
 				String s = String.format("%s{", comma);
 				appendCurrentList(s);
 			} else {
-				String s = String.format("%s\"%s\":{", comma, placement.name);
+				String s = String.format("%s%s:{", comma, placement.name);
 				appendCurrentList(s);
 			}
 		}
 	}
 	@Override
 	public void endMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx) {
-		if (placement.isTopLevelValue) {
-			appendCurrentList("}}");
-		} else {
-			appendCurrentList("}");
-		}
+		appendCurrentList("}");
 	}
 	@Override
 	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
 		String comma = (index == 0) ? "" : ", ";
-		String s = String.format("%s\"%s\":%s", comma, key, this.getValueStr(dval));
+		String s = String.format("%s%s:%s", comma, key, this.getValueStr(dval));
 		appendCurrentList(s);
 	}
 	

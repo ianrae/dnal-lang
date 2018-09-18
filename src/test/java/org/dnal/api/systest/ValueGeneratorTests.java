@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.DataSetImpl;
-import org.dnal.compiler.generate.DNALGeneratePhaseEx;
-import org.dnal.compiler.generate.DNALValueGeneratorEx;
-import org.dnal.compiler.generate.JSONValueGeneratorEx;
-import org.dnal.compiler.generate.ValueGeneratorEx;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.DNALValueGenerator;
+import org.dnal.compiler.generate.JSONValueGenerator;
+import org.dnal.compiler.generate.ValueGenerator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
@@ -19,20 +19,20 @@ public class ValueGeneratorTests extends SysTestBase {
 	
 	public static class ValueRenderer {
 		
-		public String render(DataSet ds, String varName, ValueGeneratorEx visitor) {
+		public String render(DataSet ds, String varName, ValueGenerator visitor) {
 			DataSetImpl dsimpl = (DataSetImpl) ds;
 			World world = dsimpl.getInternals().getWorld();
 	        DTypeRegistry registry = dsimpl.getCompilerContext().registry;
-			DNALGeneratePhaseEx phase = new DNALGeneratePhaseEx(dsimpl.getCompilerContext().et, registry, world, null);
+			DNALGeneratePhase phase = new DNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world, null);
 			DValue dval = ds.getValue(varName);
 			boolean b = phase.generateValue(visitor, dval, varName);
 			assertEquals(true, b);
 			String output = null;
-			if (visitor instanceof DNALValueGeneratorEx) {
-				DNALValueGeneratorEx dnalVisitor = (DNALValueGeneratorEx) visitor;
+			if (visitor instanceof DNALValueGenerator) {
+				DNALValueGenerator dnalVisitor = (DNALValueGenerator) visitor;
 				output = flatten(dnalVisitor.outputL);
-			} else if (visitor instanceof JSONValueGeneratorEx) {
-				JSONValueGeneratorEx dnalVisitor = (JSONValueGeneratorEx) visitor;
+			} else if (visitor instanceof JSONValueGenerator) {
+				JSONValueGenerator dnalVisitor = (JSONValueGenerator) visitor;
 				output = flatten(dnalVisitor.outputL);
 			}
 			return output;
@@ -53,7 +53,7 @@ public class ValueGeneratorTests extends SysTestBase {
     	DValue dval = ds.getValue("x");
     	assertEquals(14, dval.asInt());
     	ValueRenderer renderer = new ValueRenderer();
-		DNALValueGeneratorEx visitor = new DNALValueGeneratorEx();
+		DNALValueGenerator visitor = new DNALValueGenerator();
     	String s = renderer.render(ds, "x", visitor);
     	assertEquals("let x Foo = 14", s);
     }
@@ -64,7 +64,7 @@ public class ValueGeneratorTests extends SysTestBase {
     	DValue dval = ds.getValue("x");
     	assertEquals(14, dval.asInt());
     	ValueRenderer renderer = new ValueRenderer();
-		JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
+		JSONValueGenerator visitor = new JSONValueGenerator();
     	String s = renderer.render(ds, "x", visitor);
     	log(s);
     	assertEquals("{\"x\": 14}", s);

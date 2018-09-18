@@ -6,9 +6,9 @@ import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.DNALTypeGeneratorEx;
-import org.dnal.compiler.generate.DNALValueGeneratorEx;
-import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
+import org.dnal.compiler.generate.DNALTypeGenerator;
+import org.dnal.compiler.generate.DNALValueGenerator;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
 public class DNALLoader {
@@ -81,7 +81,7 @@ public class DNALLoader {
     		et.dumpErrors();
     	}
     	
-        SimpleFormatOutputGeneratorEx smf = new SimpleFormatOutputGeneratorEx();
+        SimpleFormatOutputGenerator smf = new SimpleFormatOutputGenerator();
         Generator gen = clone.createGeneratorEx();
         boolean b = gen.generateTypes(smf);
         if (! b) {
@@ -100,7 +100,7 @@ public class DNALLoader {
         }
     }
     public void dumpAsDNAL() {
-        DNALTypeGeneratorEx smf = new DNALTypeGeneratorEx();
+        DNALTypeGenerator smf = new DNALTypeGenerator();
         Generator gen = clone.createGeneratorEx();
         boolean b = gen.generateTypes(smf);
         if (! b) {
@@ -110,7 +110,7 @@ public class DNALLoader {
             log(ss);
         }
         
-        DNALValueGeneratorEx smf2 = new DNALValueGeneratorEx();
+        DNALValueGenerator smf2 = new DNALValueGenerator();
         b = gen.generateValues(smf2);
         if (! b) {
             return;

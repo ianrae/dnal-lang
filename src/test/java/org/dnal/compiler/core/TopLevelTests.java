@@ -13,7 +13,7 @@ import org.dnal.api.DataSet;
 import org.dnal.api.OutputGenerator;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
+import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
 import org.dnal.core.util.TextComparer;
 import org.dnal.core.util.TextFileReader;
 import org.dnal.core.util.TextFileWriter;
@@ -74,7 +74,7 @@ import org.junit.Test;
 
 public class TopLevelTests {
 
-	public static class MyVisitor extends SimpleFormatOutputGeneratorEx {
+	public static class MyVisitor extends SimpleFormatOutputGenerator {
 	    private String lf = System.getProperty("line.separator");
 
 		public boolean compare(String input) {

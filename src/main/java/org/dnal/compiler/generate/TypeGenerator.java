@@ -5,7 +5,7 @@ import org.dnal.core.DMapType;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 
-public interface TypeGeneratorEx {
+public interface TypeGenerator {
 
 	void structType(DStructType dtype, String typeName, String parentTypeName);
 
