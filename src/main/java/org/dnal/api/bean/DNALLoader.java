@@ -1,7 +1,6 @@
 package org.dnal.api.bean;
 
 import org.dnal.api.DataSet;
-import org.dnal.api.OldGenerator;
 import org.dnal.api.GeneratorEx;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
@@ -10,8 +9,6 @@ import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.generate.DNALTypeGeneratorEx;
 import org.dnal.compiler.generate.DNALValueGeneratorEx;
 import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
-import org.dnal.compiler.generate.old.DNALOutputGenerator;
-import org.dnal.compiler.generate.old.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
 public class DNALLoader {
