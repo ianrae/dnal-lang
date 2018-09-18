@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.dnal.api.BeanLoader;
 import org.dnal.api.DataSet;
-import org.dnal.api.Generator;
+import org.dnal.api.OldGenerator;
 import org.dnal.api.GeneratorEx;
 import org.dnal.api.Transaction;
 import org.dnal.api.TypeFilter;

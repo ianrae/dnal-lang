@@ -3,7 +3,7 @@ package org.dnal.api.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dnal.api.Generator;
+import org.dnal.api.OldGenerator;
 import org.dnal.compiler.generate.old.OldDNALGeneratePhase;
 import org.dnal.compiler.generate.old.OldOutputGenerator;
 import org.dnal.compiler.parser.error.LineLocator;
@@ -11,7 +11,7 @@ import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
 import org.dnal.core.repository.World;
 
-public class GeneratorImpl implements Generator {
+public class OldGeneratorImpl implements OldGenerator {
     private List<NewErrorMessage> errL = new ArrayList<>();
     protected World world;
     protected DTypeRegistry registry;
@@ -21,7 +21,7 @@ public class GeneratorImpl implements Generator {
 //    public Generator(DTypeRegistry registry, MyWorld world) {
 //        this(registry, world, null);
 //    }
-    public GeneratorImpl(DTypeRegistry registry, World world, CompilerContext context, LineLocator lineLocator) {
+    public OldGeneratorImpl(DTypeRegistry registry, World world, CompilerContext context, LineLocator lineLocator) {
         this.registry = registry;
         this.world = world;
         if (context.errL != null) {

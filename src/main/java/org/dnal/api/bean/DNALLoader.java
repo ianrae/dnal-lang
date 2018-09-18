@@ -1,7 +1,7 @@
 package org.dnal.api.bean;
 
 import org.dnal.api.DataSet;
-import org.dnal.api.Generator;
+import org.dnal.api.OldGenerator;
 import org.dnal.api.GeneratorEx;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;

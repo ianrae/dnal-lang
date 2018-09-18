@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
-import org.dnal.api.Generator;
+import org.dnal.api.OldGenerator;
 import org.dnal.api.GeneratorEx;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
