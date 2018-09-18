@@ -1,4 +1,4 @@
-package org.dnal.compiler.generate;
+package org.dnal.compiler.generate.old;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import org.dnal.core.DType;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public abstract class ValueGeneratorVisitor implements OutputGenerator {
+public abstract class ValueGeneratorVisitor implements OldOutputGenerator {
     public List<String> outputL = new ArrayList<>();
 
 	@Override

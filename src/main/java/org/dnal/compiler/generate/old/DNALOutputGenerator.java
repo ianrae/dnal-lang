@@ -1,10 +1,11 @@
-package org.dnal.compiler.generate;
+package org.dnal.compiler.generate.old;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Stack;
 
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
@@ -15,33 +16,41 @@ import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public class SimpleFormatOutputGenerator implements OutputGenerator {
+public class DNALOutputGenerator implements OldOutputGenerator {
     private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     
     public List<String> outputL = new ArrayList<>();
     private int inList; //0 means no
     private int inStruct; //0 means no
-    private int inMap; //0 means no
+    private Stack<String> shapeStack = new Stack<>();
+    private Stack<DStructType> structStack = new Stack<>();
+    private boolean haveSeenFirstRule;
     
     @Override
     public void startStructType(String name, DStructType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        String s = String.format("type %s %s", completeName, baseTypeName);
+            s += " {";
+            structStack.push((DStructType) dtype);
         outputL.add(s);
+        haveSeenFirstRule = false;
     }
     @Override
     public void startEnumType(String name, DStructType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        String s = String.format("type %s %s", completeName, baseTypeName);
+            s += " {";
+            structStack.push((DStructType) dtype);
         outputL.add(s);
+        haveSeenFirstRule = false;
     }
     @Override
     public void startType(String name, DType dtype) {
         String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
         String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
+        String s = String.format("type %s %s", completeName, baseTypeName);
         outputL.add(s);
     }
     
@@ -60,25 +69,45 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
     public void startListType(String name, DListType type) {
         String elType = getTypeName(type.getElementType());
         String baseTypeName = (type.getBaseType() == null) ? String.format("list<%s>", elType) : type.getBaseType().getName();
-        String s = String.format("type:%s:%s", name, baseTypeName);
+        String s = String.format("type %s %s", name, baseTypeName);
         outputL.add(s);
+        haveSeenFirstRule = false;
     }
+	@Override
+	public void startMapType(String name, DMapType type) throws Exception {
+        String elType = getTypeName(type.getElementType());
+        String baseTypeName = (type.getBaseType() == null) ? String.format("map<%s>", elType) : type.getBaseType().getName();
+        String s = String.format("type %s %s", name, baseTypeName);
+        outputL.add(s);
+        haveSeenFirstRule = false;
+	}
 
 
     @Override
     public void endType(String name, DType type) {
-        outputL.add("endtype");
+        outputL.add("end");
+        if (type instanceof DStructType) {
+            structStack.pop();
+        }
     }
 
     @Override
     public void structMember(String name, DType type) {
-        String s = String.format(" %s:%s", name, getTypeName(type));
+        String s = String.format(" %s %s", name, getTypeName(type));
+        boolean isOptional = structStack.peek().fieldIsOptional(name);
+        if (isOptional) {
+            s += " optional";
+        }
+        boolean isUnique = structStack.peek().fieldIsUnique(name);
+        if (isUnique) {
+            s += " unique";
+        }
         outputL.add(s);
     }
 
     @Override
     public void rule(int index, String ruleText, NRule rule) {
-        String s = String.format(" r: %s", ruleText);
+        String s = String.format(" %s", ruleText);
         outputL.add(s);
     }
 
@@ -89,32 +118,17 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
         }
         return space;
     }
-    
-    private String getShapeCode(DValue parentVal) {
-        if (parentVal == null) {
-            return "";
-        } else if (parentVal.getType().isStructShape()) {
-            return "S";
-        } else if (parentVal.getType().isListShape()) {
-            return "L";
-        } else if (parentVal.getType().isMapShape()) {
-            return "M";
-        } else {
-            return "";
-        }
-    }
     @Override
     public void value(String name, DValue dval, DValue parentVal) {
         String s;
-        String space = genIndent(inList + inStruct + inMap);
+        String space = genIndent(inList + inStruct);
         
-//        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
-        String shape = getShapeCode(parentVal);
+        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
 
         if (shape.equals("L")) {
             String strValue = DValToString(dval);
             s = String.format("%s%s", space, strValue);
-        } else if (shape.equals("S") || shape.equals("M")) {
+        } else if (shape.equals("S")) {
             String strValue = DValToString(dval);
             s = String.format("%sv%s:%s", space, name, strValue);
         } else {
@@ -148,14 +162,14 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
         String s = String.format("value:%s:%s [", name, getTypeName(value.getType()));
         outputL.add(s);
         inList++;
-//        shapeStack.push("L");
+        shapeStack.push("L");
     }
 
     @Override
     public void endList(String name, DValue value) {
         outputL.add("]");
         inList--;
-//        shapeStack.pop();
+        shapeStack.pop();
     }
 
     @Override
@@ -169,7 +183,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
             outputL.add(s);
         }
         inStruct++;
-//        shapeStack.push("S");
+        shapeStack.push("S");
     }
 
     @Override
@@ -182,7 +196,7 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
             outputL.add(s);
         }
         inStruct--;
-//        shapeStack.pop();
+        shapeStack.pop();
     }
 
     @Override
@@ -191,23 +205,15 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
 	@Override
 	public void setOptions(ConfigFileOptions configFileOptions) {
 	}
-
-	@Override
-	public void startMapType(String name, DMapType type) throws Exception {
-        String elType = getTypeName(type.getElementType());
-        String baseTypeName = (type.getBaseType() == null) ? String.format("map<%s>", elType) : type.getBaseType().getName();
-        String s = String.format("type:%s:%s", name, baseTypeName);
-        outputL.add(s);
-	}
+	
 	@Override
 	public void startMap(String name, DValue value) throws Exception {
-        String s = String.format("value:%s:%s {", name, getTypeName(value.getType()));
-        outputL.add(s);
-        inMap++;
+		// TODO Auto-generated method stub
+		
 	}
 	@Override
 	public void endMap(String name, DValue value) throws Exception {
-        outputL.add("}");
-        inMap--;
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dnal.api.Generator;
-import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.OutputGenerator;
+import org.dnal.compiler.generate.old.OldDNALGeneratePhase;
+import org.dnal.compiler.generate.old.OldOutputGenerator;
 import org.dnal.compiler.parser.error.LineLocator;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.NewErrorMessage;
@@ -32,8 +32,8 @@ public class GeneratorImpl implements Generator {
     }
     
     @Override
-    public boolean generate(OutputGenerator visitor) {
-        DNALGeneratePhase phase = new DNALGeneratePhase(context.et, registry, world, lineLocator);
+    public boolean generate(OldOutputGenerator visitor) {
+        OldDNALGeneratePhase phase = new OldDNALGeneratePhase(context.et, registry, world, lineLocator);
         boolean b = phase.generate(visitor);
         if (! b) {
             return false;

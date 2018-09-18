@@ -1,4 +1,4 @@
-package org.dnal.compiler.generate;
+package org.dnal.compiler.generate.old;
 
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
@@ -8,7 +8,7 @@ import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
 import org.dnal.dnalc.ConfigFileOptions;
 
-public interface OutputGenerator {
+public interface OldOutputGenerator {
 	void setOptions(ConfigFileOptions configFileOptions);
 	
     void startStructType(String name, DStructType dtype) throws Exception;

@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.DataSetImpl;
-import org.dnal.compiler.generate.DNALGeneratePhase;
-import org.dnal.compiler.generate.DNALValueVisitor;
-import org.dnal.compiler.generate.JSONValueVisitor;
-import org.dnal.compiler.generate.ValueGeneratorVisitor;
+import org.dnal.compiler.generate.old.OldDNALGeneratePhase;
+import org.dnal.compiler.generate.old.DNALValueVisitor;
+import org.dnal.compiler.generate.old.JSONValueVisitor;
+import org.dnal.compiler.generate.old.ValueGeneratorVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
@@ -23,7 +23,7 @@ public class ValueGeneratorTests extends SysTestBase {
 			DataSetImpl dsimpl = (DataSetImpl) ds;
 			World world = dsimpl.getInternals().getWorld();
 	        DTypeRegistry registry = dsimpl.getCompilerContext().registry;
-			DNALGeneratePhase phase = new DNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world, null);
+			OldDNALGeneratePhase phase = new OldDNALGeneratePhase(dsimpl.getCompilerContext().et, registry, world, null);
 			DValue dval = ds.getValue(varName);
 			boolean b = phase.generate(visitor, varName, dval);
 			assertEquals(true, b);

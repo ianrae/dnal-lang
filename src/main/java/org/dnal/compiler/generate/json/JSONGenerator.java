@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
-import org.dnal.compiler.generate.ValueGeneratorVisitor;
+import org.dnal.compiler.generate.old.ValueGeneratorVisitor;
 import org.dnal.core.DValue;
 import org.dnal.core.logger.Log;
 import org.dnal.core.util.TextFileWriter;

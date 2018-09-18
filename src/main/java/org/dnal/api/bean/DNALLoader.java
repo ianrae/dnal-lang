@@ -6,8 +6,8 @@ import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.DNALOutputGenerator;
-import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
+import org.dnal.compiler.generate.old.DNALOutputGenerator;
+import org.dnal.compiler.generate.old.SimpleFormatOutputGenerator;
 import org.dnal.core.DValue;
 
 public class DNALLoader {

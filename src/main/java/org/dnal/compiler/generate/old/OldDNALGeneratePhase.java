@@ -1,4 +1,4 @@
-package org.dnal.compiler.generate;
+package org.dnal.compiler.generate.old;
 
 import java.util.List;
 import java.util.Map;
@@ -18,17 +18,17 @@ import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
 
-public class DNALGeneratePhase extends ErrorTrackingBase {
+public class OldDNALGeneratePhase extends ErrorTrackingBase {
     private DTypeRegistry registry;
     private World world;
 
-    public DNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
+    public OldDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world, LineLocator lineLocator) {
         super(et, lineLocator);
         this.registry = registry;
         this.world = world;
     }
     
-    public boolean generate(OutputGenerator visitor) {
+    public boolean generate(OldOutputGenerator visitor) {
         boolean b = false;
         try {
             b = doGenerate(visitor);
@@ -38,7 +38,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         return b;
     }
 
-    public boolean doGenerate(OutputGenerator visitor) throws Exception {
+    public boolean doGenerate(OldOutputGenerator visitor) throws Exception {
         List<DType> orderedTypeList = registry.getOrderedList();
 
         for(DType dtype: orderedTypeList) {
@@ -89,14 +89,14 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
         return areNoErrors();
     }
-	private void doList(OutputGenerator visitor, DListType listType) throws Exception {
+	private void doList(OldOutputGenerator visitor, DListType listType) throws Exception {
         visitor.startListType(listType.getName(), listType);
     }
-    private void doMap(OutputGenerator visitor, DMapType mapType) throws Exception {
+    private void doMap(OldOutputGenerator visitor, DMapType mapType) throws Exception {
         visitor.startMapType(mapType.getName(), mapType);
 	}
 
-    private void doval(OutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
+    private void doval(OldOutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
 
         if (dval == null) {
             //optional field
@@ -148,7 +148,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
      * @param dval
      * @return
      */
-    public boolean generate(OutputGenerator visitor, String varName, DValue dval) {
+    public boolean generate(OldOutputGenerator visitor, String varName, DValue dval) {
         boolean b = false;
         try {
             b = doGenerateSingle(visitor, varName, dval);
@@ -158,7 +158,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
         return b;
     }
 
-    public boolean doGenerateSingle(OutputGenerator visitor, String varName, DValue dval) throws Exception {
+    public boolean doGenerateSingle(OldOutputGenerator visitor, String varName, DValue dval) throws Exception {
     	doval(visitor, 0, varName, dval, null);
         return areNoErrors();
     }

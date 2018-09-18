@@ -12,7 +12,7 @@ import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
+import org.dnal.compiler.generate.old.SimpleFormatOutputGenerator;
 import org.dnal.core.util.TextComparer;
 import org.dnal.core.util.TextFileReader;
 import org.dnal.core.util.TextFileWriter;

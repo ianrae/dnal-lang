@@ -10,7 +10,7 @@ import org.dnal.api.Generator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.OutputGenerator;
+import org.dnal.compiler.generate.old.OldOutputGenerator;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
@@ -50,7 +50,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compile(String path) {
         return compile(path, null);
     }
-    public DataSet compile(String path, OutputGenerator visitor) {
+    public DataSet compile(String path, OldOutputGenerator visitor) {
         if (! fileExists(path)) {
             return null;
         }
@@ -63,7 +63,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         
         return doCompile(visitor);
     }
-    public DataSet compile(InputStream stream, OutputGenerator visitor) {
+    public DataSet compile(InputStream stream, OldOutputGenerator visitor) {
         this.pushScope(new ErrorScope("stream", "", ""));
         boolean b = loadAndParse(stream);
         if (! b) {
@@ -73,7 +73,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return doCompile(visitor);
     }
     
-    private DataSet doCompile(OutputGenerator visitor) {
+    private DataSet doCompile(OldOutputGenerator visitor) {
         //now validate the DVALs
         boolean b = validatePhase();
         
@@ -87,7 +87,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compileString(String input) {
         return compileString(input, null);
     }
-    public DataSet compileString(String input, OutputGenerator visitor) {
+    public DataSet compileString(String input, OldOutputGenerator visitor) {
         this.pushScope(new ErrorScope("string", "", ""));
         boolean b = parseIntoDVals(input);
         if (! b) {
@@ -214,7 +214,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return b;
     }
     
-    private boolean generator(OutputGenerator visitor) {
+    private boolean generator(OldOutputGenerator visitor) {
         Generator generator = new GeneratorImpl(registry, world, context, getLineLocator());
         context.perf.startTimer("generate");
         boolean b = generator.generate(visitor);
