@@ -1,7 +1,7 @@
 package org.dnal.api.bean;
 
 import org.dnal.api.DataSet;
-import org.dnal.api.GeneratorEx;
+import org.dnal.api.Generator;
 import org.dnal.api.Transaction;
 import org.dnal.api.WorldException;
 import org.dnal.api.impl.CompilerImpl;
@@ -82,7 +82,7 @@ public class DNALLoader {
     	}
     	
         SimpleFormatOutputGeneratorEx smf = new SimpleFormatOutputGeneratorEx();
-        GeneratorEx gen = clone.createGeneratorEx();
+        Generator gen = clone.createGeneratorEx();
         boolean b = gen.generateTypes(smf);
         if (! b) {
             return;
@@ -101,7 +101,7 @@ public class DNALLoader {
     }
     public void dumpAsDNAL() {
         DNALTypeGeneratorEx smf = new DNALTypeGeneratorEx();
-        GeneratorEx gen = clone.createGeneratorEx();
+        Generator gen = clone.createGeneratorEx();
         boolean b = gen.generateTypes(smf);
         if (! b) {
             return;

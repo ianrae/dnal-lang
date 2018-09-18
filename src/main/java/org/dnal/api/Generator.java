@@ -7,7 +7,7 @@ import org.dnal.compiler.generate.ValueGeneratorEx;
 import org.dnal.core.DValue;
 import org.dnal.core.NewErrorMessage;
 
-public interface GeneratorEx {
+public interface Generator {
     
      boolean generateTypes(TypeGeneratorEx visitor);
      boolean generateValues(ValueGeneratorEx visitor);

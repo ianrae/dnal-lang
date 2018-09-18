@@ -12,7 +12,7 @@ public interface DataSet {
     void registerBeanLoader(BeanLoader<?> loader);
     DValue getValue(String varName);
     <T> T getAsBean(String varName, Class<T> clazz);
-    GeneratorEx createGeneratorEx();
+    Generator createGeneratorEx();
 
     DataSet cloneDataSet();
     DataSet cloneEmptyDataSet();

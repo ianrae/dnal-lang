@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
 import org.dnal.api.DataSet;
-import org.dnal.api.GeneratorEx;
+import org.dnal.api.Generator;
 import org.dnal.api.OutputGenerator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
@@ -215,7 +215,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     }
     
     private boolean generator(OutputGenerator visitor) {
-        GeneratorEx generator = new GeneratorImplEx(registry, world, context, getLineLocator());
+        Generator generator = new GeneratorImpl(registry, world, context, getLineLocator());
         context.perf.startTimer("generate");
         boolean b = true;
         if (visitor.typeGenerator != null) {

@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
-import org.dnal.api.GeneratorEx;
+import org.dnal.api.Generator;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.generate.JSONValueGeneratorEx;
@@ -135,7 +135,7 @@ public class ExampleTests extends BaseWorldTest {
         chkInt(val, 1, "size", 101);
         
         log("json..");
-        GeneratorEx gen = dataSet.createGeneratorEx();
+        Generator gen = dataSet.createGeneratorEx();
         JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
         boolean b = gen.generateValues(visitor);
         for(String s: visitor.outputL) {
@@ -150,7 +150,7 @@ public class ExampleTests extends BaseWorldTest {
         DataSet dataSet = load("exampleBig.dnal");
         
         log("json..");
-        GeneratorEx gen = dataSet.createGeneratorEx();
+        Generator gen = dataSet.createGeneratorEx();
         JSONValueGeneratorEx visitor = new JSONValueGeneratorEx();
         boolean b = gen.generateValues(visitor);
 //        for(String s: visitor.outputL) {
