@@ -13,7 +13,7 @@ import org.dnal.dnalc.ConfigFileOptions;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JSONGenerator extends ValueGeneratorVisitor {
+public class OldJSONGenerator extends OldValueGeneratorVisitor {
     ObjectMapper mapper = new ObjectMapper();
     public List<String> outputL = new ArrayList<>();
     private Stack<String> shapeStack = new Stack<>();
