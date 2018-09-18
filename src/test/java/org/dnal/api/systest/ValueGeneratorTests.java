@@ -1,19 +1,15 @@
 package org.dnal.api.systest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import org.dnal.api.DataSet;
 import org.dnal.api.impl.DataSetImpl;
-import org.dnal.compiler.generate.old.OldDNALGeneratePhase;
 import org.dnal.compiler.generate.DNALGeneratePhaseEx;
 import org.dnal.compiler.generate.DNALValueGeneratorEx;
 import org.dnal.compiler.generate.JSONValueGeneratorEx;
 import org.dnal.compiler.generate.ValueGeneratorEx;
-import org.dnal.compiler.generate.old.DNALValueVisitor;
-import org.dnal.compiler.generate.old.JSONValueVisitor;
-import org.dnal.compiler.generate.old.ValueGeneratorVisitor;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
 import org.dnal.core.repository.World;
