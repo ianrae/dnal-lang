@@ -6,11 +6,11 @@ import java.util.List;
 
 import org.codehaus.jparsec.error.ParserException;
 import org.dnal.api.DataSet;
-import org.dnal.api.Generator;
+import org.dnal.api.GeneratorEx;
+import org.dnal.api.OutputGenerator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.old.OldOutputGenerator;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
@@ -50,7 +50,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compile(String path) {
         return compile(path, null);
     }
-    public DataSet compile(String path, OldOutputGenerator visitor) {
+    public DataSet compile(String path, OutputGenerator visitor) {
         if (! fileExists(path)) {
             return null;
         }
@@ -63,7 +63,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         
         return doCompile(visitor);
     }
-    public DataSet compile(InputStream stream, OldOutputGenerator visitor) {
+    public DataSet compile(InputStream stream, OutputGenerator visitor) {
         this.pushScope(new ErrorScope("stream", "", ""));
         boolean b = loadAndParse(stream);
         if (! b) {
@@ -73,7 +73,7 @@ public class SourceCompiler extends ErrorTrackingBase {
         return doCompile(visitor);
     }
     
-    private DataSet doCompile(OldOutputGenerator visitor) {
+    private DataSet doCompile(OutputGenerator visitor) {
         //now validate the DVALs
         boolean b = validatePhase();
         
@@ -87,7 +87,7 @@ public class SourceCompiler extends ErrorTrackingBase {
     public DataSet compileString(String input) {
         return compileString(input, null);
     }
-    public DataSet compileString(String input, OldOutputGenerator visitor) {
+    public DataSet compileString(String input, OutputGenerator visitor) {
         this.pushScope(new ErrorScope("string", "", ""));
         boolean b = parseIntoDVals(input);
         if (! b) {
@@ -214,12 +214,19 @@ public class SourceCompiler extends ErrorTrackingBase {
         return b;
     }
     
-    private boolean generator(OldOutputGenerator visitor) {
-        Generator generator = new GeneratorImpl(registry, world, context, getLineLocator());
+    private boolean generator(OutputGenerator visitor) {
+        GeneratorEx generator = new GeneratorImplEx(registry, world, context, getLineLocator());
         context.perf.startTimer("generate");
-        boolean b = generator.generate(visitor);
+        boolean b = true;
+        if (visitor.typeGenerator != null) {
+        	b = generator.generateTypes(visitor.typeGenerator);
+        } 
+        boolean b2 = true;
+        if (visitor.valueGenerator != null) {
+        	b2 = generator.generateValues(visitor.valueGenerator);
+        }
         context.perf.endTimer("generate");
-        return b;
+        return b && b2;
     }
 
     public List<NewErrorMessage> getErrors() {

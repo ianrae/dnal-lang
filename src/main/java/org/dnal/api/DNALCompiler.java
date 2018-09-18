@@ -19,11 +19,11 @@ public interface DNALCompiler {
     CompilerOptions getCompilerOptions();
     void registryRuleFactory(RuleFactory factory);
     DataSet compile(String path);
-    DataSet compile(String path, OldOutputGenerator visitor);
+    DataSet compile(String path, OutputGenerator visitor);
     DataSet compile(InputStream stream);
-    DataSet compile(InputStream stream, OldOutputGenerator visitor);
+    DataSet compile(InputStream stream, OutputGenerator visitor);
     DataSet compileString(String input);
-    DataSet compileString(String input, OldOutputGenerator visitor);
+    DataSet compileString(String input, OutputGenerator visitor);
     List<NewErrorMessage> getErrors();
     String formatError(NewErrorMessage err);
 

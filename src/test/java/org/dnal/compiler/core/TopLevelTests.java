@@ -10,9 +10,10 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
+import org.dnal.api.OutputGenerator;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.old.SimpleFormatOutputGenerator;
+import org.dnal.compiler.generate.SimpleFormatOutputGeneratorEx;
 import org.dnal.core.util.TextComparer;
 import org.dnal.core.util.TextFileReader;
 import org.dnal.core.util.TextFileWriter;
@@ -73,7 +74,7 @@ import org.junit.Test;
 
 public class TopLevelTests {
 
-	public static class MyVisitor extends SimpleFormatOutputGenerator {
+	public static class MyVisitor extends SimpleFormatOutputGeneratorEx {
 	    private String lf = System.getProperty("line.separator");
 
 		public boolean compare(String input) {
@@ -139,7 +140,10 @@ public class TopLevelTests {
 		String dir = GENERATE_DIR;
 		String path = dir + dnalFile;
 //		log(path);
-		DataSet dataSet = compiler.compile(path, visitor);
+		OutputGenerator generator = new OutputGenerator();
+		generator.typeGenerator = visitor;
+		generator.valueGenerator = visitor;
+		DataSet dataSet = compiler.compile(path, generator);
 		boolean b = (dataSet != null);
 		assertEquals(true, b);
 		
