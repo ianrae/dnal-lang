@@ -68,26 +68,26 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 
 	        	if (dtype.isStructShape()) {
 	        		DStructType fste = (DStructType) dtype;
-	        		String typeName = TypeInfo.parserTypeOf(fste.getName());
-	        		String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
+	        		String typeName = TypeInfo.parserTypeOf(fste.getCompleteName());
+	        		String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getCompleteName();
 	        		visitor.structType(fste, typeName, parentName);
 	        	} else if (dtype.isShape(Shape.ENUM)) {  
 	        		DStructType structType = (DStructType) dtype;
-	        		String typeName = TypeInfo.parserTypeOf(structType.getName());
+	        		String typeName = TypeInfo.parserTypeOf(structType.getCompleteName());
 	        		visitor.enumType(structType, typeName);
 	        	} else if (dtype instanceof DListType) {
 	        		DListType listType = (DListType) dtype;
-	        		String typeName = TypeInfo.parserTypeOf(listType.getName());
-	        		String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
+	        		String typeName = TypeInfo.parserTypeOf(listType.getCompleteName());
+	        		String elementName = TypeInfo.parserTypeOf(listType.getElementType().getCompleteName());
 	        		visitor.listType(listType, typeName, elementName);
 	        	} else if (dtype instanceof DMapType) {
 	        		DMapType mapType = (DMapType) dtype;
-	        		String typeName = TypeInfo.parserTypeOf(mapType.getName());
-	        		String elementName = TypeInfo.parserTypeOf(mapType.getElementType().getName());
+	        		String typeName = TypeInfo.parserTypeOf(mapType.getCompleteName());
+	        		String elementName = TypeInfo.parserTypeOf(mapType.getElementType().getCompleteName());
 	        		visitor.mapType(mapType, typeName, elementName);
 	        	} else {
-	        		String typeName = TypeInfo.parserTypeOf(dtype.getName());
-	        		String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
+	        		String typeName = TypeInfo.parserTypeOf(dtype.getCompleteName());
+	        		String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getCompleteName());
 	        		visitor.scalarType(dtype, typeName, parentName);
 	        	}
 	        }

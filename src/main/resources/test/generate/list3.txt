@@ -6,11 +6,11 @@ type:A:list<X>
 endtype
 value:z:A [
  {
-  vx:44
-  vy:abc
- }
+ vx:44
+ vy:abc
+}
  {
-  vx:45
-  vy:def
- }
+ vx:45
+ vy:def
+}
 ]
