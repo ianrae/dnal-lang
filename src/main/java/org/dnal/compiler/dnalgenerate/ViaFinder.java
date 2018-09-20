@@ -118,20 +118,13 @@ public class ViaFinder extends ErrorTrackingBase {
 			return false;
 		}
 
-		//LATER use better match
-		if (tmp.getType().isShape(Shape.INTEGER)) {
-			int target = tmp.asInt();
-			Integer other = Integer.parseInt(via.valueExp.strValue()); //handle parsing errors!!
-			return (other.intValue() == target);
-		} else if (tmp.getType().isShape(Shape.LONG)) {
-			long target = tmp.asLong();
-			Long other = Long.parseLong(via.valueExp.strValue()); //handle parsing errors!!
-			return (other.longValue() == target);
-		} else {
-			String s1 = via.valueExp.strValue();
-			String s2 = tmp.asString();
-			return (s1.equals(s2));
+		ViaValueMatcher matcher = new ViaValueMatcher();
+		boolean b = matcher.match(via.valueExp.strValue(), tmp);
+		if (matcher.getErrMsg() != null) {
+			addError2s(via, "via '%s' - match failed: %s", via.fieldExp.name(), matcher.getErrMsg());
+			return false;
 		}
+		return b;
 	}
 
 	private List<Repository> buildRepoList(DType dtype) {
