@@ -14,7 +14,7 @@ public class ListTests extends SysTestBase {
     @Test
     public void test() throws Exception {
     	String src = "type User struct { firstName string } end ";
-    	src += " let x list<User> = [ {'bob'}, {'sue'} {'art'} ]";  //missing comma after sue
+    	src += " let x list<User> = [ {'bob'}, {'sue'}, {'art'} ]";  
         DNALCompiler compiler = createCompiler();
        	dataSetLoaded = compiler.compileString(src);
        	assertEquals(0, compiler.getErrors().size());
@@ -25,6 +25,21 @@ public class ListTests extends SysTestBase {
        	chkList(dval, 2, "art");
     }
 	
+    //TODO: missing comma should be a parse error -- fix later!!
+    @Test
+    public void testMissingComma() throws Exception {
+    	String src = "type User struct { firstName string } end ";
+    	src += " let x list<User> = [ {'bob'}, {'sue'} {'art'} ]";  //missing comma after sue
+        DNALCompiler compiler = createCompiler();
+       	dataSetLoaded = compiler.compileString(src);
+       	assertEquals(0, compiler.getErrors().size());
+       	DValue dval = dataSetLoaded.getValue("x");
+       	assertEquals(3, dval.asList().size());
+       	chkList(dval, 0, "bob");
+       	chkList(dval, 1, "sue");
+       	chkList(dval, 2, "art");
+    }
+    
 	//---
 	private String dnal = "";
 	
