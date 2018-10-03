@@ -19,10 +19,10 @@ public class ListTests extends SysTestBase {
        	dataSetLoaded = compiler.compileString(src);
        	assertEquals(0, compiler.getErrors().size());
        	DValue dval = dataSetLoaded.getValue("x");
-       	assertEquals(2, dval.asList().size());
-       	assertEquals("bob", dval.asList().get(0).asStruct().getField("firstName").asString());
-       	assertEquals("sue", dval.asList().get(1).asStruct().getField("firstName").asString());
+       	assertEquals(3, dval.asList().size());
        	chkList(dval, 0, "bob");
+       	chkList(dval, 1, "sue");
+       	chkList(dval, 2, "art");
     }
 	
 	//---
