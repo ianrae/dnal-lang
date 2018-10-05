@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;

@@ -3,7 +3,7 @@ package org.dnal.compiler.dnalgenerate;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.UniqueRule;
