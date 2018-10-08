@@ -109,9 +109,11 @@ public class DNALTypeGenerator implements TypeGenerator {
         for(NRule rule: dtype.getRawRules()) {
             String ruleText = rule.getRuleText();
             if (rule instanceof UniqueRule) {
-            	ruleText= String.format("unique %s", ruleText); 
+            	//not needed
+//            	ruleText= String.format("unique %s", ruleText); 
+            } else {
+            	joiner.add(ruleText); 
             }
-            joiner.add(ruleText); 
         }
 
         return joiner.toString();
