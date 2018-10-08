@@ -27,20 +27,36 @@ public class DNALTypeGenerator implements TypeGenerator {
 		String s = String.format("type %s %s {%s}%s end", typeName, parentTypeName, body, rulesStr);
 		outputL.add(s);
 	}
-	private String getStructMembers(DStructType dtype) {
+	protected String getStructMembers(DStructType dtype) {
 		StringJoiner joiner = new StringJoiner(", ");
         for(TypePair pair: dtype.getAllFields()) {
-        	String field = pair.name;
-        	String fieldTypeName = TypeInfo.parserTypeOf(pair.type.getName());
-        	String optional = (dtype.fieldIsOptional(field)) ? " optional": "";
-        	String unique = (dtype.fieldIsUnique(field)) ? " unique": "";
-        	String s = String.format("%s %s%s%s", field, fieldTypeName, optional, unique);
+        	String fieldTypeName = getFieldTypeName(dtype, pair); 
+        	String optional = getFieldOptional(dtype, pair); 
+        	String unique = getFieldUnique(dtype, pair); 
+        	String s = getAllFields(dtype, pair, fieldTypeName, optional, unique);
             joiner.add(s); 
         }
 
         return joiner.toString();
 	}
 
+	protected String getAllFields(DStructType dtype, TypePair pair, String fieldTypeName, String optional,
+			String unique) {
+    	String s = String.format("%s %s%s%s", pair.name, fieldTypeName, optional, unique);
+		return s;
+	}
+	protected String getFieldUnique(DStructType dtype, TypePair pair) {
+    	String unique = dtype.fieldIsUnique(pair.name) ? " unique": "";
+    	return unique;
+	}
+	protected String getFieldOptional(DStructType dtype, TypePair pair) {
+    	String optional = dtype.fieldIsOptional(pair.name) ? " optional": "";
+		return optional;
+	}
+	protected String getFieldTypeName(DStructType dtype, TypePair pair) {
+    	String fieldTypeName = TypeInfo.parserTypeOf(pair.type.getName());
+    	return fieldTypeName;
+	}
 	@Override
 	public void enumType(DStructType enumType, String typeName) {
 		String parentName = "enum";
@@ -52,7 +68,7 @@ public class DNALTypeGenerator implements TypeGenerator {
 		String s = String.format("type %s %s {%s}%s end", typeName, parentName, body, rulesStr);
 		outputL.add(s);
 	}
-	private String getEnumMembers(DStructType enumType) {
+	protected String getEnumMembers(DStructType enumType) {
 		StringJoiner joiner = new StringJoiner(", ");
         for(String field: enumType.orderedList()) {
             joiner.add(field); 
@@ -88,7 +104,7 @@ public class DNALTypeGenerator implements TypeGenerator {
 		String s = String.format("type %s %s%s end", typeName, parentName, rulesStr);
 		outputL.add(s);
 	}
-	private String getRuleStr(DType dtype) {
+	protected String getRuleStr(DType dtype) {
 		StringJoiner joiner = new StringJoiner(" ");
         for(NRule rule: dtype.getRawRules()) {
             String ruleText = rule.getRuleText();

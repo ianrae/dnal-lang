@@ -13,7 +13,7 @@ import org.dnal.core.DValue;
 public class DNALValueGenerator implements ValueGenerator {
     public List<String> outputL = new ArrayList<>();
 	
-	private String getValueStr(DValue dval) {
+    protected String getValueStr(DValue dval) {
 		if (dval.getObject() == null) {
 			return "null";
 		}
@@ -49,7 +49,7 @@ public class DNALValueGenerator implements ValueGenerator {
 		}
 		return s;
 	}
-	private String doEnum(DValue dval, DType dtype) {
+    protected String doEnum(DValue dval, DType dtype) {
 		return dval.asString();
 	}
 	
@@ -92,7 +92,7 @@ public class DNALValueGenerator implements ValueGenerator {
 		}
 	}
 	
-	private void appendCurrentList(String str) {
+	protected void appendCurrentList(String str) {
 		String s = outputL.remove(outputL.size() - 1);
 		outputL.add(s + str);
 	}
@@ -114,10 +114,10 @@ public class DNALValueGenerator implements ValueGenerator {
 		appendCurrentList(s);
 	}
 	
-	private String buildTypeName(DValue dval) {
+	protected String buildTypeName(DValue dval) {
 		return buildTypeName(dval.getType());
 	}
-	private String buildTypeName(DType dtype) {
+	protected String buildTypeName(DType dtype) {
 		String typeName = TypeInfo.parserTypeOf(dtype.getName());
 		return typeName;
 	}
