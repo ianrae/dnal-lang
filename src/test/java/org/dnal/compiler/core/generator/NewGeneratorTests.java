@@ -106,7 +106,7 @@ public class NewGeneratorTests extends BaseTest {
     @Test
     public void testTypeStruct() {
 //    	chkTypeGen("type Foo struct { name string optional, age int} end",  "type Foo struct {name string optional, age int} end|", 1);
-    	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} unique age end|", 1);
+    	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} end|", 1);
     }
     @Test
     public void testTypeMap() {
