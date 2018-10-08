@@ -4,7 +4,7 @@
   <groupId>org.dnal-lang</groupId>
   <artifactId>dnal</artifactId>
   <packaging>jar</packaging>
-  <version>0.2.2</version>
+  <version>0.2.3</version>
 
   <name>dnal</name>
   <url>http://dnal-lang.org</url>
