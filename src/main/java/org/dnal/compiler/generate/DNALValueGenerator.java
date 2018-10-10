@@ -109,6 +109,9 @@ public class DNALValueGenerator implements ValueGenerator {
 	}
 	@Override
 	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
+		if (dval == null) { //optional values can be null
+			return;
+		}
 		String comma = (index == 0) ? "" : ", ";
 		String s = String.format("%s%s:%s", comma, fieldName, this.getValueStr(dval));
 		appendCurrentList(s);
