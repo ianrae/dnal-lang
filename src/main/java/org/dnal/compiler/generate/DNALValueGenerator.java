@@ -38,8 +38,22 @@ public class DNALValueGenerator implements ValueGenerator {
 					s = Double.valueOf(dval.asNumber()).toString();
 					break;
 				case STRING:
-					//add code to use either ' or "!!
-					s = String.format("'%s'", dval.asString());
+				{
+					//DNAL supports ' or " as string delimiter.
+					//so if value contains ' then use ", and vice versa
+					//if both are present then use ' and escape ' as '' (sql comment style)
+					String str = dval.asString();
+					if (str.contains("'")) {
+						if (str.contains("\"")) {
+							str = str.replace("'", "''");
+							s = String.format("'%s'", str);
+						} else {
+							s = String.format("\"%s\"", str);
+						}
+					} else {
+						s = String.format("'%s'", str);
+					}
+				}
 					break;
 				case ENUM:
 					s = doEnum(dval, dtype);
