@@ -53,6 +53,7 @@ public class BaseValidationTests extends BaseTest {
         //TODO: clean this up
         CompilerContext compilerContext = new CompilerContext(null, null, null, null,null);
         compilerContext.world = world;
+        compilerContext.registry = getContext().registry;
         
         ValidationPhase validator = new ValidationPhase(compilerContext, getContext().et, getContext().validateOptions, lineLocator);
     
