@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jparsec.functors.Pair;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.ast.ViaExp;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -14,14 +15,14 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
 import org.dnal.core.DValue;
-import org.dnal.core.Shape;
-import org.dnal.core.repository.World;
 import org.dnal.core.repository.Repository;
+import org.dnal.core.repository.World;
 
 public class ViaFinder extends ErrorTrackingBase {
 
 	private World world;
 	private DTypeRegistry registry;
+	private List<Pair<String, DValue>> pendingL; //transaction items. not yet added to repo but need validation of uniqueness
 
 	public ViaFinder(World world, DTypeRegistry registry, XErrorTracker et, LineLocator locator) {
 		super(et, locator);
@@ -66,6 +67,26 @@ public class ViaFinder extends ErrorTrackingBase {
 
 	public boolean calculateUnique(DStructType structType, String fieldName) {
 		Map<String,Integer> map = new HashMap<>();
+		
+		/* validating a pending transaction add means we need to check the uniquess
+		 * of a value in pendingL but not yet in repo.
+		 */
+		if (pendingL != null) {
+			for(Pair<String,DValue> pair: pendingL) {
+				DValue dval = pair.b;
+				if (dval.getType() == structType || isChildTypeOf(dval, structType)) {
+					DValue inner = dval.asStruct().getField(fieldName);
+					if (inner != null) {
+						String str = inner.asString();
+						if (map.containsKey(str)) {
+							return false;
+						} else {
+							map.put(str, 0);
+						}
+					}
+				}
+			}
+		}
 
 		List<Repository> repoList = buildRepoList(structType);
 		for(Repository repo: repoList) {
@@ -104,6 +125,16 @@ public class ViaFinder extends ErrorTrackingBase {
 		return true;
 	}
 
+	private boolean isChildTypeOf(DValue dval, DStructType structType) {
+		List<DType> childL = registry.getChildTypes(structType);
+		for(DType type: childL) {
+			if (dval.getType() == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	private boolean isMatch(DValue dval, ViaExp via) {
 		if (via == null || via.valueExp == null) {
 			addError2s(via, "via '%s' - null", via.fieldExp.name(), "");
@@ -133,6 +164,7 @@ public class ViaFinder extends ErrorTrackingBase {
 		if (repo != null) {
 			repoList.add(repo);
 		}
+		
 		List<DType> childL = registry.getChildTypes(dtype);
 		for(DType tmp: childL) {
 			repo = world.getRepoFor(tmp);
@@ -156,6 +188,10 @@ public class ViaFinder extends ErrorTrackingBase {
 			}
 		}
 		return repoList;
+	}
+
+	public void setPendingL(List<Pair<String, DValue>> pendingL) {
+		this.pendingL = pendingL;
 	}
 
 	//    public Exp convertToExp(DValue dval) {

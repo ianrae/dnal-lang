@@ -25,7 +25,7 @@ public class UniqueRuleTests extends SysTestBase {
     	
     	trans.add("x33", dval);
     	boolean b = trans.commit();
-    	assertEquals(true, b);
+    	assertEquals(false, b);
     	
         this.registry.dump();
         this.world.dump();

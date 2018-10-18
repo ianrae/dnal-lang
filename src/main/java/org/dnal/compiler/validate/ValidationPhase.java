@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jparsec.functors.Pair;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
@@ -24,6 +25,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 	private ValidationOptions validateOptions;
 	private List<DValue> futureValues;
 	private CompilerContext context;
+	private List<Pair<String, DValue>> pendingL; //transaction items. not yet added to repo but need validation of uniqueness
 
 	public ValidationPhase(CompilerContext context, XErrorTracker et, ValidationOptions validateOptions, LineLocator locator) {
 		super(et, locator);
@@ -31,11 +33,12 @@ public class ValidationPhase extends ErrorTrackingBase {
 		this.validateOptions = validateOptions;
 		futureValues = new ArrayList<>();
 	}
-	public ValidationPhase(CompilerContext context, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
+	public ValidationPhase(CompilerContext context, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues, List<Pair<String, DValue>> pendingList) {
 		super(et, null);
 		this.context = context;
 		this.validateOptions = validateOptions;
 		this.futureValues = futureValues;
+		this.pendingL = pendingList;
 	}
 
 	public boolean validate() {
@@ -79,7 +82,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		
 		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once
-		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions, futureValues, context);
+		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions, futureValues, context, pendingL);
 		ctx.setCurrentVarName(varName);
 		runner.evaluate(dval, ctx);
 		return runner.getValidationErrors().isEmpty();

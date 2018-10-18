@@ -172,6 +172,7 @@ public class SimpleNRuleRunner  {
 		        if (rule instanceof UniqueRule) {
 		        	UniqueRule urule = (UniqueRule) rule;
 		        	urule.setContext(ctx.getCompilerContext());
+		        	urule.setPendingL(ctx.getPendingL());
 		        }
 		        
 		        if (inner.run(dval, rule, ctx)) {
