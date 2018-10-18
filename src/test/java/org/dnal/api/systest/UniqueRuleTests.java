@@ -25,13 +25,59 @@ public class UniqueRuleTests extends SysTestBase {
     	
     	trans.add("x33", dval);
     	boolean b = trans.commit();
-    	assertEquals(false, b);
+    	assertEquals(false, b);  //should fail
     	
         this.registry.dump();
         this.world.dump();
     }
 
+    @Test
+    public void testUniqueInTransClone() {
+    	String src = buildDNAL(99, 100, 101);
+    	DataSet ds1 = load(src, true);
+    	assertEquals(1, ds1.size());
+    	DataSet ds = ds1.cloneDataSet();
+    	assertEquals(1, ds.size());
+    	
+    	Transaction trans = ds.createTransaction();
+    	StructBuilder builder = trans.createStructBuilder("Foo");
+    	builder.addField("x", "99");
+    	DValue dval = builder.finish();
+    	assertNotNull(dval);
+    	
+    	trans.add("x33", dval);
+    	boolean b = trans.commit();
+    	assertEquals(false, b);
+    	assertEquals(1, ds.size());
+    	assertEquals(1, ds1.size());
+    	
+        this.registry.dump();
+        this.world.dump();
+    }
     
+    @Test
+    public void testUniqueInTransCloneOK() {
+    	String src = buildDNAL(99, 100, 101);
+    	DataSet ds1 = load(src, true);
+    	assertEquals(1, ds1.size());
+    	DataSet ds = ds1.cloneDataSet();
+    	assertEquals(1, ds.size());
+    	
+    	Transaction trans = ds.createTransaction();
+    	StructBuilder builder = trans.createStructBuilder("Foo");
+    	builder.addField("x", "102");
+    	DValue dval = builder.finish();
+    	assertNotNull(dval);
+    	
+    	trans.add("x33", dval);
+    	boolean b = trans.commit();
+    	assertEquals(true, b);
+    	assertEquals(2, ds.size());
+    	assertEquals(1, ds1.size());
+    	
+        this.registry.dump();
+        this.world.dump();
+    }
 
     //-----------------------
 	private String buildDNAL(int n1, int n2, int n3) {

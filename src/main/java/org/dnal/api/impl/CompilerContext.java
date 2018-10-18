@@ -46,6 +46,15 @@ public class CompilerContext {
         this.compilerOptions = options;
     }
     
+    public CompilerContext clone() {
+    	CompilerContext copy = new CompilerContext(packageName, runawayCounter, loader, sourceDir, compilerOptions);
+    	copy.crf = this.crf;
+    	copy.et = this.et;
+    	copy.registry = this.registry;
+    	copy.world = this.world;
+    	return copy;
+    }
+    
     public void addOldErrorMsg(ErrorType errType, String message) {
         NewErrorMessage err = new NewErrorMessage();
         err.setErrorType(NewErrorMessage.Type.IO_ERROR); //!!
@@ -55,7 +64,6 @@ public class CompilerContext {
         err.setSrcFile("?");
 //        err.setTypeName("?");
         this.errL.add(err);
-    	
     }
 
 }
