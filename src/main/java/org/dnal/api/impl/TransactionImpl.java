@@ -95,7 +95,7 @@ public class TransactionImpl implements Transaction {
     }
 
     private boolean validateSingleValue(Pair<String,DValue> pair) {
-        ValidationPhase validator = new ValidationPhase(world, context.et, validateOptions, futureValues);
+        ValidationPhase validator = new ValidationPhase(context, context.et, validateOptions, futureValues);
 
         DValue dval = pair.b;
         String varName = pair.a;

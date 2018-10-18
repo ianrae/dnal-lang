@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.error.ErrorTrackingBase;
 import org.dnal.compiler.parser.error.LineLocator;
@@ -16,24 +17,23 @@ import org.dnal.core.nrule.NRuleContext;
 import org.dnal.core.nrule.SimpleNRuleRunner;
 import org.dnal.core.repository.Repository;
 import org.dnal.core.repository.World;
-import org.dnal.core.repository.WorldListener;
 
 public class ValidationPhase extends ErrorTrackingBase {
 
-	private WorldListener world;
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 	private ValidationOptions validateOptions;
 	private List<DValue> futureValues;
+	private CompilerContext context;
 
-	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, LineLocator locator) {
+	public ValidationPhase(CompilerContext context, XErrorTracker et, ValidationOptions validateOptions, LineLocator locator) {
 		super(et, locator);
-		this.world = world;
+		this.context = context;
 		this.validateOptions = validateOptions;
 		futureValues = new ArrayList<>();
 	}
-	public ValidationPhase(WorldListener world, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
+	public ValidationPhase(CompilerContext context, XErrorTracker et, ValidationOptions validateOptions, List<DValue> futureValues) {
 		super(et, null);
-		this.world = world;
+		this.context = context;
 		this.validateOptions = validateOptions;
 		this.futureValues = futureValues;
 	}
@@ -45,7 +45,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 		 * could end up validating some values multiple times
 		 */
 
-		Map<DType,Repository> repoMap = world.getRepoMap();
+		Map<DType,Repository> repoMap = context.world.getRepoMap();
 		for(DType type : repoMap.keySet()) {
 			Repository repo = repoMap.get(type);
 			Log.debugLog("repo %s: %d", type.getName(), repo.size());
@@ -56,8 +56,8 @@ public class ValidationPhase extends ErrorTrackingBase {
 			    //if the validation state is not UNKNOWN.
 				//					if (! dval.getValState().equals(ValidationState.UNKNOWN)) {
 				String varName = "unknown";
-				if (world instanceof World) {
-					World worldObj = (World) world;
+				if (context.world instanceof World) {
+					World worldObj = (World) context.world;
 					varName = worldObj.findTopValueValueName(dval);
 					if (varName == null) {
 						varName = "unk";
@@ -79,7 +79,7 @@ public class ValidationPhase extends ErrorTrackingBase {
 		SimpleNRuleRunner runner = new SimpleNRuleRunner();
 		
 		//pass in alreadyRunMap so we can avoid executing UniqueRule instances more than once
-		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions, futureValues);
+		NRuleContext ctx = new NRuleContext(getET(), alreadyRunMap, validateOptions, futureValues, context);
 		ctx.setCurrentVarName(varName);
 		runner.evaluate(dval, ctx);
 		return runner.getValidationErrors().isEmpty();

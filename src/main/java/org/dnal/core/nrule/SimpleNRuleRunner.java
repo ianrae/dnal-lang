@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
@@ -166,6 +167,13 @@ public class SimpleNRuleRunner  {
 			ctx.setCurrentTypeName(dtype.getName());
 		    for(NRule rule : dtype.getRules()) {
 		        totalNumRules++;
+		        
+		        //fix. UniqueRule needs the current compiler context
+		        if (rule instanceof UniqueRule) {
+		        	UniqueRule urule = (UniqueRule) rule;
+		        	urule.setContext(ctx.getCompilerContext());
+		        }
+		        
 		        if (inner.run(dval, rule, ctx)) {
 		            passCount++;
 		        }

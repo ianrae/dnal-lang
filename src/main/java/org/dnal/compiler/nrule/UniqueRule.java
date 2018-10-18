@@ -78,4 +78,8 @@ public class UniqueRule extends NRuleBase {
     protected boolean onEval(DValue dval, NRuleContext ctx) {
         return true;
     }
+
+	public void setContext(CompilerContext context) {
+		this.context = context;
+	}
 }

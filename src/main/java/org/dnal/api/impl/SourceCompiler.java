@@ -202,7 +202,7 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean validatePhase() {
         context.perf.startTimer("validate");
-        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions, getLineLocator());
+        ValidationPhase validator = new ValidationPhase(context, context.et, context.validateOptions, getLineLocator());
         
         //save validator in case 'future' values need to be resolved
         mostRecentValidator = validator;
