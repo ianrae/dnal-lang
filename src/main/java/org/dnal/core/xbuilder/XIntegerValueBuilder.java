@@ -22,6 +22,10 @@ public class XIntegerValueBuilder extends XDValueBuilder {
 		Integer nval = null;
 		try {
 			nval = Integer.parseInt(input);
+			
+			//use .valueOf to save memory. it re-uses the same instances for common values.
+			nval = Integer.valueOf(nval.intValue());
+			
 			this.newDVal = new DValueImpl(type, nval);
 		} catch (NumberFormatException e) {
 			addParsingError(String.format("'%s' is not an integer", input), input);

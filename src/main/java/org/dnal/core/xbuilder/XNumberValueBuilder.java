@@ -22,6 +22,10 @@ public class XNumberValueBuilder extends XDValueBuilder {
         Double nval = null;
         try {
             nval = Double.parseDouble(input);
+            
+			//use .valueOf to save memory. it re-uses the same instances for common values.
+			nval = Double.valueOf(nval.doubleValue());
+			
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
             addParsingError(String.format("'%s' is not an number", input), input);

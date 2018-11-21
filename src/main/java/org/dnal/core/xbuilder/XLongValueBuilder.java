@@ -22,6 +22,10 @@ public class XLongValueBuilder extends XDValueBuilder {
         Long nval = null;
         try {
             nval = Long.parseLong(input);
+            
+			//use .valueOf to save memory. it re-uses the same instances for common values.
+			nval = Long.valueOf(nval.longValue());
+            
             this.newDVal = new DValueImpl(type, nval);
         } catch (NumberFormatException e) {
             addParsingError(String.format("'%s' is not a long", input), input);
