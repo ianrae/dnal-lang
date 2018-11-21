@@ -1,7 +1,9 @@
 package org.dnal.core.repository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
@@ -11,6 +13,7 @@ import org.dnal.core.logger.Log;
 public class MockRepository implements Repository {
 	private List<DValue> list = new ArrayList<>();
 	private DType type;
+	private Map<DValue,String> inRepoMap = new HashMap<>();
 	
 	public MockRepository(DType type) {
 		this.type = type;
@@ -30,6 +33,7 @@ public class MockRepository implements Repository {
 	public void add(DValue dval) {
 		Log.debugLog("MR:add %s", dval.getType().getName());
 		list.add(dval);
+		inRepoMap.put(dval, "");
 	}
 
 	@Override
@@ -39,7 +43,8 @@ public class MockRepository implements Repository {
 
 	@Override
 	public boolean inRepo(DValue dval) {
-		return list.contains(dval);
+//		return list.contains(dval);
+		return inRepoMap.containsKey(dval);
 	}
 
 //	@Override
