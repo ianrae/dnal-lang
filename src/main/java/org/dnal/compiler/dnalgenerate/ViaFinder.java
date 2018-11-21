@@ -37,13 +37,19 @@ public class ViaFinder extends ErrorTrackingBase {
 			addError2s(via, "via '%s' - unknown type '%s'", via.fieldExp.name(), via.typeExp.name());
 			return null;
 		}
+		Map<DValue,DValue> alreadyHandledMap = new HashMap<>();
 
 		List<Repository> repoList = buildRepoList(dtype);
 
 		List<DValue> matchL = new ArrayList<>();
 		for(Repository repo: repoList) {
 			for(DValue tmp: repo.getAll()) {
+				if (alreadyHandledMap.containsKey(tmp)) {
+					continue;
+				}
+				
 				if (isMatch(tmp, via)) {
+					alreadyHandledMap.put(tmp, tmp);
 					matchL.add(tmp);
 				}
 			}
@@ -54,7 +60,12 @@ public class ViaFinder extends ErrorTrackingBase {
 			for(DValue tmp: repo.getAll()) {
 				List<DValue> list = tmp.asList();
 				for(DValue element: list) {
+					if (alreadyHandledMap.containsKey(element)) {
+						continue;
+					}
+					
 					if (isMatch(element, via)) {
+						alreadyHandledMap.put(element, element);
 						matchL.add(element);
 					}
 				}
