@@ -72,19 +72,26 @@ public class TransactionImpl implements Transaction {
     	
         try {
 			//validate
-			for(Pair<String,DValue> pair: pendingL) {
-			    if (! validateSingleValue(pair)) {
-			        return false;
-			    }
-			}
+    		if (validateOptions.isModeSet(ValidationOptions.VALIDATEMODE_NONE)) {
+    			//don't validate
+    		} else {
+    			for(Pair<String,DValue> pair: pendingL) {
+    				if (! validateSingleValue(pair)) {
+    					return false;
+    				}
+    			}
+    		}
 
 			//everything is valid, so add to world
 			for(Pair<String,DValue> pair: pendingL) {
 			    String name = pair.a;
 			    DValue dval = pair.b;
-			    //add all sub-vals
-			    AddObserver observer = new AddObserver(world);
-			    observer.observe(dval);
+			    
+			    if (validateOptions.addSubValuesInTransactions) {
+			    	//add all sub-vals
+			    	AddObserver observer = new AddObserver(world);
+			    	observer.observe(dval);
+			    }
 
 			    world.addTopLevelValue(name, dval);
 			}

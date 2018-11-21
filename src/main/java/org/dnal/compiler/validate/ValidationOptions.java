@@ -20,6 +20,11 @@ public class ValidationOptions {
 	//we need a place to pass data to custom rules
 	public Map<String,Object> passThroughMap = new HashMap<>();
 	
+	//when doing transaction.commit we normally add all sub-objects recursively
+	//eg.fields of structs. This puts all values into their repos, even scalars  
+	//Very slow and not needed in all cases.
+	public boolean addSubValuesInTransactions = true;
+	
 	public boolean isModeSet(int mode) {
 		if (mode == VALIDATEMODE_NONE && validationMode == 0) {
 			return true;

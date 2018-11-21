@@ -26,6 +26,7 @@ public class AddObserver {
         }
         
         if (dval.getType().isScalarShape()) {
+        	//scalars don't have any sub-values
         } else if (dval.getType().isStructShape()) {
             DStructHelper helper = new DStructHelper(dval);
             for(String fieldName: helper.getFieldNames()) {
