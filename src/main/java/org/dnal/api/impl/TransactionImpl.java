@@ -45,7 +45,6 @@ public class TransactionImpl implements Transaction {
     private DataSet ds;
     private ValidationOptions validateOptions; //local to the trans
 	private List<DValue> futureValues = new ArrayList<>();
-    
 
     public TransactionImpl(DTypeRegistry registry, World world, CompilerContext context, Map<Class<?>, BeanLoader<?>> loaderRegistry, DataSet ds) {
         this.world = world;
@@ -91,6 +90,11 @@ public class TransactionImpl implements Transaction {
 			    	//add all sub-vals
 			    	AddObserver observer = new AddObserver(world);
 			    	observer.observe(dval);
+			    }
+			    
+			    if (world.findTopLevelValue(name) != null) {
+			    	context.et.addAPIError(String.format("top-level var '%s' already exists", name));
+			    	return false;
 			    }
 
 			    world.addTopLevelValue(name, dval);

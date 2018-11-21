@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import org.dnal.api.DataSet;
 import org.dnal.api.Transaction;
 import org.dnal.core.DValue;
-import org.dnal.core.NewErrorMessage;
 import org.dnal.core.builder.StructBuilder;
 import org.dnal.core.logger.ErrorMessageLogger;
 import org.junit.Test;

@@ -879,10 +879,11 @@ public class PersistenceTests extends BaseWorldTest {
         chkPersistId(dval, 1L);
         Long id = (Long) dval.getPersistenceId();
         
-        DValue dval2 = createPerson(ds, "x1", "def", 1);
+        //can't create a 2nd x1. all top-level vars must have unique names
+        DValue dval2 = createPerson(ds, "x2", "def", 2);
         DValueImpl impl2 = (DValueImpl) dval2;
         impl2.setPersistenceId(id); //hack
-        assertEquals(1, ds.size());
+        assertEquals(2, ds.size());
         cache.putValue(dval, dval2, false);
         chkPersistId(dval2, 1L);
         
