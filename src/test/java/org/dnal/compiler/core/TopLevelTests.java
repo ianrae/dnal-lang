@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.dnal.api.DNALCompiler;
 import org.dnal.api.DataSet;
+import org.dnal.api.OutputGenerator;
 import org.dnal.api.impl.CompilerImpl;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.generate.SimpleFormatOutputGenerator;
@@ -112,7 +113,7 @@ public class TopLevelTests {
 	public void test2() {
 		XErrorTracker.logErrors = true;
 //		doFile("via3.dnal");
-		doFile("map1.dnal");
+		doFile("via1.dnal");
 //		doFile("list3.dnal");
 	}
 	
@@ -139,7 +140,10 @@ public class TopLevelTests {
 		String dir = GENERATE_DIR;
 		String path = dir + dnalFile;
 //		log(path);
-		DataSet dataSet = compiler.compile(path, visitor);
+		OutputGenerator generator = new OutputGenerator();
+		generator.typeGenerator = visitor;
+		generator.valueGenerator = visitor;
+		DataSet dataSet = compiler.compile(path, generator);
 		boolean b = (dataSet != null);
 		assertEquals(true, b);
 		

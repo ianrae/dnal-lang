@@ -2,332 +2,20 @@ package org.dnal.compiler.core.generator;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.StringJoiner;
 
-import org.apache.commons.lang.StringUtils;
 import org.dnal.compiler.core.BaseTest;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
-import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.nrule.UniqueRule;
+import org.dnal.compiler.generate.DNALGeneratePhase;
+import org.dnal.compiler.generate.DNALTypeGenerator;
+import org.dnal.compiler.generate.DNALValueGenerator;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
-import org.dnal.compiler.parser.error.ErrorTrackingBase;
-import org.dnal.compiler.parser.error.TypeInfo;
-import org.dnal.core.DListType;
-import org.dnal.core.DMapType;
-import org.dnal.core.DStructType;
-import org.dnal.core.DType;
 import org.dnal.core.DTypeRegistry;
-import org.dnal.core.DValue;
-import org.dnal.core.Shape;
-import org.dnal.core.TypePair;
-import org.dnal.core.nrule.NRule;
 import org.dnal.core.repository.World;
 import org.junit.Test;
 
 public class NewGeneratorTests extends BaseTest {
-	
-	public static class NewOutputGenerator {
-	    public List<String> outputL = new ArrayList<>();
-		public boolean generateTypes = false;
-		public boolean generateValues = false;
-		
-		public void structType(DStructType dtype, String typeName, String parentTypeName) {
-			if (!generateTypes) {
-				return;
-			}
-			String rulesStr = getRuleStr(dtype);
-			if (! StringUtils.isEmpty(rulesStr)) {
-				rulesStr = String.format(" %s", rulesStr);
-			}
-			String body = getStructMembers(dtype);
-			String s = String.format("type %s %s {%s}%s end", typeName, parentTypeName, body, rulesStr);
-			outputL.add(s);
-		}
-		private String getStructMembers(DStructType dtype) {
-			StringJoiner joiner = new StringJoiner(", ");
-            for(TypePair pair: dtype.getAllFields()) {
-            	String field = pair.name;
-            	String fieldTypeName = TypeInfo.parserTypeOf(pair.type.getName());
-            	String optional = (dtype.fieldIsOptional(field)) ? " optional": "";
-            	String unique = (dtype.fieldIsUnique(field)) ? " unique": "";
-            	String s = String.format("%s %s%s%s", field, fieldTypeName, optional, unique);
-                joiner.add(s); 
-            }
-
-            return joiner.toString();
-		}
-
-
-
-		public void enumType(DStructType enumType, String typeName) {
-			if (!generateTypes) {
-				return;
-			}
-			String parentName = "enum";
-			String rulesStr = getRuleStr(enumType);
-			if (! StringUtils.isEmpty(rulesStr)) {
-				rulesStr = String.format(" %s", rulesStr);
-			}
-			String body = getEnumMembers(enumType);
-			String s = String.format("type %s %s {%s}%s end", typeName, parentName, body, rulesStr);
-			outputL.add(s);
-		}
-		private String getEnumMembers(DStructType enumType) {
-			StringJoiner joiner = new StringJoiner(", ");
-            for(String field: enumType.orderedList()) {
-                joiner.add(field); 
-            }
-
-            return joiner.toString();
-		}
-		public void listType(DListType listType, String typeName, String elementName) {
-			if (!generateTypes) {
-				return;
-			}
-			String rulesStr = getRuleStr(listType);
-			if (! StringUtils.isEmpty(rulesStr)) {
-				rulesStr = String.format(" %s", rulesStr);
-			}
-			String s = String.format("type %s list<%s>%s end", typeName, elementName, rulesStr);
-			outputL.add(s);
-		}
-		public void mapType(DMapType mapType) {
-			if (!generateTypes) {
-				return;
-			}
-			// TODO Auto-generated method stub
-			
-		}
-		public void scalarType(DType dtype, String typeName, String parentName) {
-			if (!generateTypes) {
-				return;
-			}
-			String rulesStr = getRuleStr(dtype);
-			if (! StringUtils.isEmpty(rulesStr)) {
-				rulesStr = String.format(" %s", rulesStr);
-			}
-			String s = String.format("type %s %s%s end", typeName, parentName, rulesStr);
-			outputL.add(s);
-		}
-		private String getRuleStr(DType dtype) {
-			StringJoiner joiner = new StringJoiner(" ");
-            for(NRule rule: dtype.getRawRules()) {
-                String ruleText = rule.getRuleText();
-                if (rule instanceof UniqueRule) {
-                	ruleText= String.format("unique %s", ruleText); 
-                }
-                joiner.add(ruleText); 
-            }
-
-            return joiner.toString();
-		}
-		public void topLevelValue(String varName, DValue dval, String typeName) {
-			if (!generateValues) {
-				return;
-			}
-			
-			String valueStr = getValueStr(dval);
-			String s = String.format("let %s %s = %s", varName, typeName, valueStr);
-			
-			outputL.add(s);
-		}
-		private String getValueStr(DValue dval) {
-			if (dval.getObject() == null) {
-				return "null";
-			}
-			
-			String s = null;
-			DType dtype = dval.getType();
-			if (dtype.isScalarShape()) {
-				switch (dval.getType().getShape()) {
-					case BOOLEAN:
-						s = Boolean.valueOf(dval.asBoolean()).toString();
-						break;
-					case DATE:
-						s = Long.valueOf(dval.asDate().getTime()).toString(); //??use sdf formatter??
-						break;
-					case INTEGER:
-						s = Integer.valueOf(dval.asInt()).toString();
-						break;
-					case LONG:
-						s = Long.valueOf(dval.asLong()).toString();
-						break;
-					case NUMBER:
-						s = Double.valueOf(dval.asNumber()).toString();
-						break;
-					case STRING:
-						//add code to use either ' or "!!
-						s = String.format("'%s'", dval.asString());
-						break;
-					case ENUM:
-						s = doEnum(dval, dtype);
-					default:
-						break;
-				}
-			} else if (dtype.isListShape()) {
-				DListType listType = (DListType) dtype;
-				s = doList(dval, listType);
-			} else if (dtype.isStructShape()) {
-				DStructType structType = (DStructType) dtype;
-				s = doStruct(dval, structType);
-			} else if (dtype.isMapShape()) {
-				DMapType mapType = (DMapType) dtype;
-				s = doMap(dval, mapType);
-			}
-			return s;
-		}
-		private String doMap(DValue dval, DMapType mapType) {
-			StringJoiner joiner = new StringJoiner(", ");
-			//!!should fields be in alpha order?
-			for(String fieldName: dval.asMap().keySet()) {
-				DValue inner = dval.asMap().get(fieldName);
-				String s = getValueStr(inner);
-				String fieldStr = String.format("%s:%s", fieldName, s);
-				joiner.add(fieldStr);
-			}
-			return String.format("{%s}", joiner.toString());
-		}
-		private String doStruct(DValue dval, DStructType structType) {
-			StringJoiner joiner = new StringJoiner(", ");
-			//!!should fields be in alpha order?
-			for(String fieldName: dval.asStruct().getFieldNames()) {
-				DValue inner = dval.asStruct().getField(fieldName);
-				String s = getValueStr(inner);
-				String fieldStr = String.format("%s:%s", fieldName, s);
-				joiner.add(fieldStr);
-				
-			}
-			return String.format("{%s}", joiner.toString());
-		}
-		private String doEnum(DValue dval, DType dtype) {
-			DStructType enumType = (DStructType) dtype;
-			return dval.asString();
-		}
-		private String doList(DValue dval, DListType listType) {
-			StringJoiner joiner = new StringJoiner(", ");
-			for(DValue inner: dval.asList()) {
-				String s = getValueStr(inner);
-				joiner.add(s);
-				
-			}
-			return String.format("[%s]", joiner.toString());
-		}
-	}
-	
-	public static class NewDNALGeneratePhase extends ErrorTrackingBase {
-	    private DTypeRegistry registry;
-	    private World world;
-
-	    public NewDNALGeneratePhase(XErrorTracker et, DTypeRegistry registry, World world) {
-	        super(et, null);
-	        this.registry = registry;
-	        this.world = world;
-	    }
-	    
-	    public boolean generate(NewOutputGenerator visitor) {
-	        boolean b = false;
-	        try {
-	            b = doGenerate(visitor);
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        }
-	        return b;
-	    }
-
-	    public boolean doGenerate(NewOutputGenerator visitor) throws Exception {
-	        List<DType> orderedTypeList = registry.getOrderedList();
-
-	        for(DType dtype: orderedTypeList) {
-	            if (TypeInfo.isBuiltIntype(dtype.getName())) {
-	                continue;
-	            }
-	            
-	            if (dtype.isStructShape()) {
-	                DStructType fste = (DStructType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(fste.getName());
-	    			String parentName = (fste.getBaseType() == null) ? "struct" : fste.getBaseType().getName();
-	                visitor.structType(fste, typeName, parentName);
-	            } else if (dtype.isShape(Shape.ENUM)) {  
-	                DStructType structType = (DStructType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(structType.getName());
-	                visitor.enumType(structType, typeName);
-	            } else if (dtype instanceof DListType) {
-	                DListType listType = (DListType) dtype;
-	    			String typeName = TypeInfo.parserTypeOf(listType.getName());
-	    			String elementName = TypeInfo.parserTypeOf(listType.getElementType().getName());
-	                visitor.listType(listType, typeName, elementName);
-	            } else if (dtype instanceof DMapType) {
-	            	DMapType mapType = (DMapType) dtype;
-	                visitor.mapType(mapType);
-	            } else {
-	    			String typeName = TypeInfo.parserTypeOf(dtype.getName());
-	    			String parentName = TypeInfo.parserTypeOf(dtype.getBaseType().getName());
-	                visitor.scalarType(dtype, typeName, parentName);
-	            }
-	        }
-
-	        List<String> orderedValueList = world.getOrderedList();
-	        for(String valueName: orderedValueList) {
-	            DValue dval = world.findTopLevelValue(valueName);
-//	            doval(visitor, 0, valueName, dval, null);
-				String typeName = TypeInfo.parserTypeOf(dval.getType().getName());
-	            visitor.topLevelValue(valueName, dval, typeName);
-	        }
-
-
-	        return areNoErrors();
-	    }
-
-//	    private void doval(OutputGenerator visitor, int indent, String valueName, DValue dval, DValue parentVal) throws Exception {
-//
-//	        if (dval == null) {
-//	            //optional field
-//	            visitor.value(valueName, null, parentVal);
-//	        } else if (dval.getType().isStructShape()) {
-//	            visitor.startStruct(valueName, dval);
-//	            
-//	            DStructHelper helper = new DStructHelper(dval);
-//
-//	            int index = 0;
-//	            DStructType structType = (DStructType) dval.getType();
-//	            for(String fieldName : structType.orderedList()) {
-//	                DValue inner = helper.getField(fieldName);
-//	                doval(visitor, indent+1, fieldName, inner, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endStruct(valueName, dval);
-//	        } else if (dval.getType().isListShape()) {
-//	            visitor.startList(valueName, dval);
-//	            List<DValue> elementL = dval.asList();
-//
-//	            int index = 0;
-//	            for(DValue el: elementL) {
-//	                doval(visitor, indent+1, "", el, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endList(valueName, dval);
-//	        } else if (dval.getType().isMapShape()) {
-//	            visitor.startMap(valueName, dval);
-//	            Map<String,DValue> map = dval.asMap();
-//
-//	            int index = 0;
-//	            for(String key: map.keySet()) {
-//	            	DValue el = map.get(key);            	
-//	                doval(visitor, indent+1, key, el, dval); //!recursion!
-//	                index++;
-//	            }
-//	            visitor.endMap(valueName, dval);
-//	        } else {
-////	          String shape = this.doc.getShape(valueExp.type);
-////	          boolean isScalar = TypeInfo.isScalarType(new IdentExp(shape));
-//	            visitor.value(valueName, dval, parentVal);
-//	        }
-//	    }
-	}	
-	
 	
 	@Test
 	public void test() {
@@ -352,7 +40,8 @@ public class NewGeneratorTests extends BaseTest {
     
     @Test
     public void test1b() {
-        chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {age:33, name:'amy'}|", 2);
+//        chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {age:33, name:'amy'}|", 2);
+        chkGen("type Foo struct { name string, age int } end let x Foo = { 'amy', 33 }",  "let x Foo = {name:'amy', age:33}|", 2);
     }
     @Test
     public void test2() {
@@ -417,7 +106,11 @@ public class NewGeneratorTests extends BaseTest {
     @Test
     public void testTypeStruct() {
 //    	chkTypeGen("type Foo struct { name string optional, age int} end",  "type Foo struct {name string optional, age int} end|", 1);
-    	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} unique age end|", 1);
+    	chkTypeGen("type Foo struct { name string optional, age int unique } end",  "type Foo struct {name string optional, age int unique} end|", 1);
+    }
+    @Test
+    public void testTypeMap() {
+    	chkTypeGen("type SizeMap map<int> end",  "type SizeMap map<int> end|", 1);
     }
     
     //------------------
@@ -436,16 +129,25 @@ public class NewGeneratorTests extends BaseTest {
 
 		World world = getContext().world;
         DTypeRegistry registry = getContext().registry;
-		NewDNALGeneratePhase phase = new NewDNALGeneratePhase(getContext().et, registry, world);
-		NewOutputGenerator visitor = new NewOutputGenerator();
-		visitor.generateTypes = genTypes;
-		visitor.generateValues = genValues;
-		boolean b = phase.generate(visitor);
-		assertEquals(true, b);
-		String output = flatten(visitor.outputL);
-		log("output: " + output);
+		DNALGeneratePhase phase = new DNALGeneratePhase(getContext().et, registry, world, null);
 		
-		assertEquals(expectedOutput, output);
+		if (genTypes) {
+			DNALTypeGenerator visitor = new DNALTypeGenerator();
+			boolean b = phase.generateTypes(visitor);
+			assertEquals(true, b);
+			String output = flatten(visitor.outputL);
+			log("output: " + output);
+			assertEquals(expectedOutput, output);
+		} else if (genValues) {
+			DNALValueGenerator visitor = new DNALValueGenerator();
+			boolean b = phase.generateValues(visitor);
+			assertEquals(true, b);
+			String output = flatten(visitor.outputL);
+			log("output: " + output);
+			assertEquals(expectedOutput, output);
+		} else {
+			assertEquals(1,2); //fail
+		}
 	}
 
 	private ASTToDNALGenerator parseAndGenDVals(String input, int expectedSize) {

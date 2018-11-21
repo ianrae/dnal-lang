@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.codehaus.jparsec.functors.Pair;
+import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.validate.ValidationOptions;
 import org.dnal.core.DValue;
@@ -17,17 +19,22 @@ public class NRuleContext {
 	private Map<NRule,Integer> alreadyRunMap = new HashMap<>();
 	private ValidationOptions validateOptions;
 	private List<DValue> futureValues;
+	private CompilerContext compilerContext;  //only needed for UniqueRule
+	private List<Pair<String, DValue>> pendingL; //transaction items. not yet added to repo but need validation of uniqueness
 
 	public NRuleContext(XErrorTracker et) {
 		this.et = et;
 		this.validateOptions = new ValidationOptions();
 		this.futureValues = new ArrayList<>();
 	}
-	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap, ValidationOptions validateOptions, List<DValue> futureValues) {
+	public NRuleContext(XErrorTracker et, Map<NRule,Integer> alreadyRunMap, ValidationOptions validateOptions, 
+			List<DValue> futureValues, CompilerContext context, List<Pair<String, DValue>> pendingL) {
 		this.et = et;
 		this.validateOptions = validateOptions;
 		this.alreadyRunMap = alreadyRunMap;
 		this.futureValues = futureValues;
+		this.compilerContext = context;
+		this.pendingL = pendingL;
 	}
 	public void addError(ErrorType errType, String message) {
         NewErrorMessage nem = new NewErrorMessage();
@@ -79,5 +86,11 @@ public class NRuleContext {
 	}
 	public void addFutureValue(DValueProxy dval) {
 		futureValues.add(dval);
+	}
+	public CompilerContext getCompilerContext() {
+		return compilerContext;
+	}
+	public List<Pair<String, DValue>> getPendingL() {
+		return pendingL;
 	}
 }

@@ -90,7 +90,12 @@ public class DataSetImpl implements DataSet {
             DType type = registry.getType(typeName);
             newWorld.typeRegistered(type);
         }
-        DataSetImpl clone = new DataSetImpl(registry, newWorld, context);
+        
+        //create a copy of context so new ds is isolated
+        CompilerContext cloneCtx = context.clone();
+        cloneCtx.world = newWorld;
+        cloneCtx.registry = registry;
+        DataSetImpl clone = new DataSetImpl(registry, newWorld, cloneCtx);
         return clone;
     }
     
@@ -116,7 +121,11 @@ public class DataSetImpl implements DataSet {
         	newWorld.addTopLevelValue(varName, dval);
         }
         
-        DataSetImpl clone = new DataSetImpl(registry, newWorld, context);
+        //create a copy of context so new ds is isolated
+        CompilerContext cloneCtx = context.clone();
+        cloneCtx.world = newWorld;
+        cloneCtx.registry = registry;
+        DataSetImpl clone = new DataSetImpl(registry, newWorld, cloneCtx);
         return clone;
     }
     

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.dnal.compiler.nrule.UniqueRule;
 import org.dnal.compiler.parser.error.TypeInfo;
 import org.dnal.core.DListType;
 import org.dnal.core.DMapType;
@@ -13,117 +14,184 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.nrule.NRule;
-import org.dnal.dnalc.ConfigFileOptions;
 
-public class SimpleFormatOutputGenerator implements OutputGenerator {
-    private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-    
-    public List<String> outputL = new ArrayList<>();
-    private int inList; //0 means no
-    private int inStruct; //0 means no
-    private int inMap; //0 means no
-    
-    @Override
-    public void startStructType(String name, DStructType dtype) {
-        String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
-        String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
-        outputL.add(s);
-    }
-    @Override
-    public void startEnumType(String name, DStructType dtype) {
-        String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
-        String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
-        outputL.add(s);
-    }
-    @Override
-    public void startType(String name, DType dtype) {
-        String baseTypeName = TypeInfo.getBaseTypeName(dtype, true);
-        String completeName = dtype.getCompleteName();
-        String s = String.format("type:%s:%s", completeName, baseTypeName);
-        outputL.add(s);
-    }
-    
-    
-    private String getTypeName(DType dtype) {
-        String typeName = dtype.getName();
-        if (TypeInfo.isBuiltIntype(typeName)) {
-            typeName = TypeInfo.parserTypeOf(typeName);
-        } else {
-            typeName = dtype.getCompleteName();
+public class SimpleFormatOutputGenerator implements TypeGenerator, ValueGenerator {
+	private static final DateFormat df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
+	public List<String> outputL = new ArrayList<>();
+
+	// -- types --
+	@Override
+	public void structType(DStructType structType, String typeName, String parentTypeName) {
+		String s = String.format("type:%s:%s", typeName, parentTypeName);
+		outputL.add(s);
+		for(String fName: structType.orderedList()) {
+			DType innerType = structType.getFields().get(fName);
+			s = String.format(" %s:%s", fName, getTypeName(innerType));
+			outputL.add(s);
+		}
+		addRules(structType);
+		outputL.add("endtype");
+	}
+
+	@Override
+	public void enumType(DStructType enumType, String typeName) {
+		String s = String.format("type:%s:enum", typeName);
+		outputL.add(s);
+		for(String fName: enumType.orderedList()) {
+			DType innerType = enumType.getFields().get(fName);
+			s = String.format(" %s:%s", fName, getTypeName(innerType));
+			outputL.add(s);
+		}
+		addRules(enumType);
+		outputL.add("endtype");
+	}
+
+	@Override
+	public void listType(DListType listType, String typeName, String elementName) {
+		String s = String.format("type:%s:list<%s>", typeName, elementName);
+		outputL.add(s);
+		addRules(listType);
+		outputL.add("endtype");
+	}
+
+	@Override
+	public void mapType(DMapType mapType, String typeName, String elementName) {
+		String s = String.format("type:%s:map<%s>", typeName, elementName);
+		outputL.add(s);
+		addRules(mapType);
+		outputL.add("endtype");
+	}
+
+	@Override
+	public void scalarType(DType dtype, String typeName, String parentName) {
+		String s = String.format("type:%s:%s", typeName, parentName);
+		outputL.add(s);
+		addRules(dtype);
+		outputL.add("endtype");
+	}
+
+	// -- values --
+	@Override
+	public void startStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", placement.name, typeName);
+			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" {");
+			outputL.add(s);
+		} else {
+//			String s = String.format(" v%s {", placement.name);
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", placement.name, typeName);
+			outputL.add(s);
+		}
+	}
+
+	@Override
+	public void endStruct(ValuePlacement placement, DValue dval, DStructType structType, GeneratorContext genctx) {
+		outputL.add("}");
+	}
+
+	@Override
+	public void startList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s [", placement.name, typeName);
+			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" [");
+			outputL.add(s);
+		} else {
+			String s = String.format(" v%s [", placement.name);
+			outputL.add(s);
+		}
+	}
+
+	@Override
+	public void endList(ValuePlacement placement, DValue dval, DListType listType, GeneratorContext genctx) {
+		outputL.add("]");
+	}
+
+	@Override
+	public void startMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx, int index) {
+		if (placement.isTopLevelValue) {
+			String typeName = getTypeName(dval.getType());
+			String s = String.format("value:%s:%s {", placement.name, typeName);
+			outputL.add(s);
+		} else if (placement.name == null) {
+			String s = String.format(" {");
+			outputL.add(s);
+		} else {
+			String s = String.format(" v%s {", placement.name);
+			outputL.add(s);
+		}
+	}
+
+	@Override
+	public void endMap(ValuePlacement placement, DValue dval, DMapType mapType, GeneratorContext genctx) {
+		outputL.add("}");
+	}
+
+	@Override
+	public void listElementValue(DValue dval, GeneratorContext genctx, int index) {
+		String value = DValToString(dval);
+		String s = String.format(" %s", value);
+		outputL.add(s);
+	}
+
+	@Override
+	public void structMemberValue(String fieldName, DValue dval, GeneratorContext genctx, int index) {
+		String value = DValToString(dval);
+		String s = String.format(" v%s:%s", fieldName, value);
+		outputL.add(s);
+	}
+
+	@Override
+	public void mapMemberValue(String key, DValue dval, GeneratorContext genctx, int index) {
+		String value = DValToString(dval);
+		String s = String.format(" v%s:%s", key, value);
+		outputL.add(s);
+	}
+
+	@Override
+	public void scalarValue(String varName, DValue dval, GeneratorContext genctx) {
+		if (varName != null) {
+			String typeName = getTypeName(dval.getType());
+			String value = DValToString(dval);
+			String s = String.format("value:%s:%s:%s", varName, typeName, value);
+			outputL.add(s);
+		}
+	}
+
+	//--helpers--
+	private void addRules(DType dtype) {
+        for(NRule rule: dtype.getRawRules()) {
+            String ruleText = rule.getRuleText();
+            if (rule instanceof UniqueRule) {
+            	ruleText= String.format("unique %s", ruleText); 
+            }
+            outputL.add(" r: " + ruleText); 
         }
-        return typeName;
-    }
+	}
+	private String getTypeName(DType dtype) {
+		String typeName = dtype.getName();
+		if (TypeInfo.isBuiltIntype(typeName)) {
+			typeName = TypeInfo.parserTypeOf(typeName);
+		} else {
+			typeName = dtype.getCompleteName();
+		}
+		return typeName;
+	}
 
-    @Override
-    public void startListType(String name, DListType type) {
-        String elType = getTypeName(type.getElementType());
-        String baseTypeName = (type.getBaseType() == null) ? String.format("list<%s>", elType) : type.getBaseType().getName();
-        String s = String.format("type:%s:%s", name, baseTypeName);
-        outputL.add(s);
-    }
-
-
-    @Override
-    public void endType(String name, DType type) {
-        outputL.add("endtype");
-    }
-
-    @Override
-    public void structMember(String name, DType type) {
-        String s = String.format(" %s:%s", name, getTypeName(type));
-        outputL.add(s);
-    }
-
-    @Override
-    public void rule(int index, String ruleText, NRule rule) {
-        String s = String.format(" r: %s", ruleText);
-        outputL.add(s);
-    }
-
-    private String genIndent(int amount) {
-        String space = "";
-        for(int i = 0; i < amount; i++) {
-            space += " ";
-        }
-        return space;
-    }
-    
-    private String getShapeCode(DValue parentVal) {
-        if (parentVal == null) {
-            return "";
-        } else if (parentVal.getType().isStructShape()) {
-            return "S";
-        } else if (parentVal.getType().isListShape()) {
-            return "L";
-        } else if (parentVal.getType().isMapShape()) {
-            return "M";
-        } else {
-            return "";
-        }
-    }
-    @Override
-    public void value(String name, DValue dval, DValue parentVal) {
-        String s;
-        String space = genIndent(inList + inStruct + inMap);
-        
-//        String shape = (shapeStack.isEmpty()) ? "" : shapeStack.peek();
-        String shape = getShapeCode(parentVal);
-
-        if (shape.equals("L")) {
-            String strValue = DValToString(dval);
-            s = String.format("%s%s", space, strValue);
-        } else if (shape.equals("S") || shape.equals("M")) {
-            String strValue = DValToString(dval);
-            s = String.format("%sv%s:%s", space, name, strValue);
-        } else {
-            String strValue = DValToString(dval);
-            s = String.format("%svalue:%s:%s:%s", space, name, getTypeName(dval.getType()), strValue);
-        }
-        outputL.add(s);
-    }
-    
+	private String genIndent(int amount) {
+		String space = "";
+		for(int i = 0; i < amount; i++) {
+			space += " ";
+		}
+		return space;
+	}
     private String DValToString(DValue dval) {
         if (dval == null) {
             return "null";
@@ -136,78 +204,14 @@ public class SimpleFormatOutputGenerator implements OutputGenerator {
             return obj.toString();
         }
     }
-
-    @Override
-    public void enumMember(String name, DType memberType) {
-        String s = String.format(" %s:%s", name, getTypeName(memberType));
-        outputL.add(s);
-    }
-
-    @Override
-    public void startList(String name, DValue value) {
-        String s = String.format("value:%s:%s [", name, getTypeName(value.getType()));
-        outputL.add(s);
-        inList++;
-//        shapeStack.push("L");
-    }
-
-    @Override
-    public void endList(String name, DValue value) {
-        outputL.add("]");
-        inList--;
-//        shapeStack.pop();
-    }
-
-    @Override
-    public void startStruct(String name, DValue dval) {
-        if (inList == 0) {
-            String s = String.format("value:%s:%s {", name, dval.getType().getName());
-            outputL.add(s);
-        } else {
-            String space = genIndent(inList);
-            String s = String.format("%s{", space);
-            outputL.add(s);
-        }
-        inStruct++;
-//        shapeStack.push("S");
-    }
-
-    @Override
-    public void endStruct(String name, DValue value) {
-        if (inList == 0) {
-            outputL.add("}");
-        } else {
-            String space = genIndent(inList);
-            String s = String.format("%s}", space);
-            outputL.add(s);
-        }
-        inStruct--;
-//        shapeStack.pop();
-    }
-
-    @Override
-    public void finish() {
-    }
-	@Override
-	public void setOptions(ConfigFileOptions configFileOptions) {
-	}
-
-	@Override
-	public void startMapType(String name, DMapType type) throws Exception {
-        String elType = getTypeName(type.getElementType());
-        String baseTypeName = (type.getBaseType() == null) ? String.format("map<%s>", elType) : type.getBaseType().getName();
-        String s = String.format("type:%s:%s", name, baseTypeName);
-        outputL.add(s);
+	private void appendCurrentList(String str) {
+		String s = outputL.remove(outputL.size() - 1);
+		outputL.add(s + str);
 	}
 	@Override
-	public void startMap(String name, DValue value) throws Exception {
-        String s = String.format("value:%s:%s {", name, getTypeName(value.getType()));
-        outputL.add(s);
-        inMap++;
+	public boolean finish() {
+		return true;
 	}
-	@Override
-	public void endMap(String name, DValue value) throws Exception {
-        outputL.add("}");
-        inMap--;
-	}
+
+
 }

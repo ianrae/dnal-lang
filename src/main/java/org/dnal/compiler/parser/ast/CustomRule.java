@@ -20,8 +20,8 @@ public class CustomRule extends RuleExp {
 			List<Exp> list = new ArrayList<>();
 			if (! args.isEmpty()) {
 				for(List<Exp> sublist : args) {
-					if (! sublist.isEmpty()) {
-						list.add(sublist.get(0));
+					for(Exp inner: sublist) {
+						list.add(inner);
 					}
 				}
 			}
@@ -37,8 +37,8 @@ public class CustomRule extends RuleExp {
             List<Exp> list = new ArrayList<>();
             if (! args.isEmpty()) {
                 for(List<Exp> sublist : args) {
-                    if (! sublist.isEmpty()) {
-                        list.add(sublist.get(0));
+					for(Exp inner: sublist) {
+                        list.add(inner);
                     }
                 }
             }

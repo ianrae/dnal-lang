@@ -12,8 +12,8 @@ value:a10:Address {
 }
 value:x:Person {
  vname:abc
-value:addr:Address {
-  vstreet:queen st
-  vcity:Ottawa
+ vaddr {
+ vstreet:queen st
+ vcity:Ottawa
 }
 }

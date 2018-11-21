@@ -14,7 +14,7 @@ value:z:string:Ottawa
 value:x:Person {
  vname:abc
 value:addr:Address {
-  vstreet:queen st
-  vcity:Ottawa
+ vstreet:queen st
+ vcity:Ottawa
 }
 }

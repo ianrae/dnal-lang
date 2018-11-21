@@ -14,12 +14,12 @@ public class IsaRuleExp extends RuleExp {
         StringBuilder sb = new StringBuilder();
         boolean flag = false;
         for(List<IdentExp> sublist : arg) {
-            if (! sublist.isEmpty()) {
-                if (flag) {
-                    sb.append('.');
-                }
-                sb.append(sublist.get(0).val);
-                flag = true;
+        	for(IdentExp inner: sublist) {
+        		if (flag) {
+        			sb.append('.');
+        		}
+        		sb.append(inner.val);
+        		flag = true;
             }
         }
         this.val = sb.toString();

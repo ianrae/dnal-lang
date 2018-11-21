@@ -20,11 +20,13 @@ public class PackageParser extends ParserBase {
                         if (! arg0.isEmpty()) {
                             for(List<IdentExp> sublist : arg0) {
                                 if (! sublist.isEmpty()) {
-                                    if (flag) {
-                                        sb.append('.');
+                                    for(IdentExp inner: sublist) {
+                                    	if (flag) {
+                                    		sb.append('.');
+                                    	}
+                                    	sb.append(inner.val);
+                                    	flag = true;
                                     }
-                                    sb.append(sublist.get(0).val);
-                                    flag = true;
                                 }
                             }
                         }
@@ -43,11 +45,13 @@ public class PackageParser extends ParserBase {
                         if (! arg0.isEmpty()) {
                             for(List<IdentExp> sublist : arg0) {
                                 if (! sublist.isEmpty()) {
-                                    if (flag) {
-                                        sb.append('.');
+                                    for(IdentExp inner: sublist) {
+                                    	if (flag) {
+                                    		sb.append('.');
+                                    	}
+                                    	sb.append(inner.val);
+                                    	flag = true;
                                     }
-                                    sb.append(sublist.get(0).val);
-                                    flag = true;
                                 }
                             }
                         }

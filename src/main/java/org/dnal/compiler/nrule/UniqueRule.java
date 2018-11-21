@@ -1,5 +1,8 @@
 package org.dnal.compiler.nrule;
 
+import java.util.List;
+
+import org.codehaus.jparsec.functors.Pair;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.dnalgenerate.ViaFinder;
 import org.dnal.compiler.validate.ValidationOptions;
@@ -15,6 +18,7 @@ public class UniqueRule extends NRuleBase {
     
     private String fieldName;
     private CompilerContext context;
+	private List<Pair<String, DValue>> pendingL; //transaction items. not yet added to repo but need validation of uniqueness
 
     public UniqueRule(String name, String fieldName, DType type, CompilerContext context) {
         super(name);
@@ -63,6 +67,7 @@ public class UniqueRule extends NRuleBase {
     	ctx.addToAlreadyRunMap(this);
     	
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et, null);
+        finder.setPendingL(this.pendingL); //can be null
         boolean b = finder.calculateUnique(structType, fieldName);
         Log.debugLog("UniqueRule executed %b", b);
     	
@@ -78,4 +83,12 @@ public class UniqueRule extends NRuleBase {
     protected boolean onEval(DValue dval, NRuleContext ctx) {
         return true;
     }
+
+	public void setContext(CompilerContext context) {
+		this.context = context;
+	}
+
+	public void setPendingL(List<Pair<String, DValue>> pendingL) {
+		this.pendingL = pendingL;
+	}
 }

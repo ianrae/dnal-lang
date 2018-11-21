@@ -7,10 +7,10 @@ import java.util.List;
 import org.codehaus.jparsec.error.ParserException;
 import org.dnal.api.DataSet;
 import org.dnal.api.Generator;
+import org.dnal.api.OutputGenerator;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.et.XErrorTracker;
-import org.dnal.compiler.generate.OutputGenerator;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.FullParser;
 import org.dnal.compiler.parser.ast.Exp;
@@ -202,7 +202,7 @@ public class SourceCompiler extends ErrorTrackingBase {
 
     private boolean validatePhase() {
         context.perf.startTimer("validate");
-        ValidationPhase validator = new ValidationPhase(this.world, context.et, context.validateOptions, getLineLocator());
+        ValidationPhase validator = new ValidationPhase(context, context.et, context.validateOptions, getLineLocator());
         
         //save validator in case 'future' values need to be resolved
         mostRecentValidator = validator;
@@ -217,9 +217,16 @@ public class SourceCompiler extends ErrorTrackingBase {
     private boolean generator(OutputGenerator visitor) {
         Generator generator = new GeneratorImpl(registry, world, context, getLineLocator());
         context.perf.startTimer("generate");
-        boolean b = generator.generate(visitor);
+        boolean b = true;
+        if (visitor.typeGenerator != null) {
+        	b = generator.generateTypes(visitor.typeGenerator);
+        } 
+        boolean b2 = true;
+        if (visitor.valueGenerator != null) {
+        	b2 = generator.generateValues(visitor.valueGenerator);
+        }
         context.perf.endTimer("generate");
-        return b;
+        return b && b2;
     }
 
     public List<NewErrorMessage> getErrors() {

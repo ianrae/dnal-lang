@@ -128,7 +128,9 @@ public class VarParser {
 						if (! arg0.isEmpty()) {
 							for(List<Exp> sublist : arg0) {
 								if (! sublist.isEmpty()) {
-									list.add(sublist.get(0));
+									for(Exp inner: sublist) {
+										list.add(inner);
+									}
 								}
 							}
 						}
@@ -147,8 +149,8 @@ public class VarParser {
 					public StructAssignExp map(List<List<Exp>> arg0) {
 						List<Exp> list = new ArrayList<>();
 						for(List<Exp> sublist : arg0) {
-							if (! sublist.isEmpty()) {
-								list.add(sublist.get(0));
+							for(Exp inner: sublist) {
+								list.add(inner);
 							}
 						}
 						return new StructAssignExp(list);

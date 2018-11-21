@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.dnalgenerate.ASTToDNALGenerator;
 import org.dnal.compiler.dnalgenerate.CustomRuleFactory;
 import org.dnal.compiler.nrule.StandardRuleFactory;
@@ -48,7 +49,13 @@ public class BaseValidationTests extends BaseTest {
         World world = getContext().world;
         getContext().validateOptions.validationMode = validationMode;
         LineLocator lineLocator = null;
-        ValidationPhase validator = new ValidationPhase(world, getContext().et, getContext().validateOptions, lineLocator);
+        
+        //TODO: clean this up
+        CompilerContext compilerContext = new CompilerContext(null, null, null, null,null);
+        compilerContext.world = world;
+        compilerContext.registry = getContext().registry;
+        
+        ValidationPhase validator = new ValidationPhase(compilerContext, getContext().et, getContext().validateOptions, lineLocator);
     
 //      DType type = dnalGenerator.getRegistry().getType("Foo");
 //      for(NRule rule: CustomRuleRegistry.getRuleRunners()) {
