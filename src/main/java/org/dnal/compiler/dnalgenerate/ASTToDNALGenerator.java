@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dnal.api.impl.AddObserver;
 import org.dnal.api.impl.CompilerContext;
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.nrule.UniqueRule;
@@ -116,6 +117,11 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		DValue dval = valueGenerator.buildTopLevelValue(typeExp);
 		if (dval != null) {
+			
+	    	//add all sub-vals (needed for vias and unique)
+	    	AddObserver observer = new AddObserver(world);
+	    	observer.observe(dval);
+			
 			String completeName = packageHelper.buildCompleteName(typeExp.var.name());
 			world.addTopLevelValue(completeName, dval);
 		}

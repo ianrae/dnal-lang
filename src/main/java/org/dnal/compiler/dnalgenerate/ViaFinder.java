@@ -67,6 +67,7 @@ public class ViaFinder extends ErrorTrackingBase {
 
 	public boolean calculateUnique(DStructType structType, String fieldName) {
 		Map<String,Integer> map = new HashMap<>();
+		Map<DValue,DValue> alreadyHandledMap = new HashMap<>();
 		
 		/* validating a pending transaction add means we need to check the uniquess
 		 * of a value in pendingL but not yet in repo.
@@ -77,10 +78,15 @@ public class ViaFinder extends ErrorTrackingBase {
 				if (dval.getType() == structType || isChildTypeOf(dval, structType)) {
 					DValue inner = dval.asStruct().getField(fieldName);
 					if (inner != null) {
+						if (alreadyHandledMap.containsKey(inner)) {
+							continue;
+						}
+						
 						String str = inner.asString();
 						if (map.containsKey(str)) {
 							return false;
 						} else {
+							alreadyHandledMap.put(inner, inner);
 							map.put(str, 0);
 						}
 					}
@@ -93,10 +99,15 @@ public class ViaFinder extends ErrorTrackingBase {
 			for(DValue tmp: repo.getAll()) {
 				DValue inner = tmp.asStruct().getField(fieldName);
 				if (inner != null) {
+					if (alreadyHandledMap.containsKey(inner)) {
+						continue;
+					}
+					
 					String str = inner.asString();
 					if (map.containsKey(str)) {
 						return false;
 					} else {
+						alreadyHandledMap.put(inner, inner);
 						map.put(str, 0);
 					}
 				}
@@ -111,10 +122,15 @@ public class ViaFinder extends ErrorTrackingBase {
 				for(DValue element: list) {
 					DValue inner = element.asStruct().getField(fieldName);
 					if (inner != null) {
+						if (alreadyHandledMap.containsKey(inner)) {
+							continue;
+						}
+
 						String str = inner.asString();
 						if (map.containsKey(str)) {
 							return false;
 						} else {
+							alreadyHandledMap.put(inner, inner);
 							map.put(str, 0);
 						}
 					}

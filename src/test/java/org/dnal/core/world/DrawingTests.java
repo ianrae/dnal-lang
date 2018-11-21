@@ -88,7 +88,7 @@ public class DrawingTests extends BaseWorldTest {
             
         }
         
-        assertEquals(14, NRuleRunnerImpl.ruleCounter);
+        assertEquals(23, NRuleRunnerImpl.ruleCounter);
     }
     
     private DataSet load(String dnalFilename) {
