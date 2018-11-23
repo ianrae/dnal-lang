@@ -117,7 +117,6 @@ public class ASTToDNALGenerator extends ErrorTrackingBase implements TypeVisitor
 
 		DValue dval = valueGenerator.buildTopLevelValue(typeExp);
 		if (dval != null) {
-			
 	    	//add all sub-vals (needed for vias and unique)
 	    	AddObserver observer = new AddObserver(world);
 	    	observer.observe(dval);
