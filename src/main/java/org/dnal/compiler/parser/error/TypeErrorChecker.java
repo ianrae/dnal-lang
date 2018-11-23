@@ -25,7 +25,7 @@ public class TypeErrorChecker extends ErrorCheckerBase {
 	private void checkType(FullTypeExp typeExp) {
 		IdentExp ident = typeExp.var;
 		checkIdent(ident, "type");
-		seenTypes.add(ident.strValue());
+		seenTypesMap.put(ident.strValue(), "");
 
 		ident = typeExp.type;
 		checkType(ident, "type", typeExp.var.strValue());

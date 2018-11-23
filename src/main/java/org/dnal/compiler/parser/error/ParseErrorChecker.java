@@ -29,7 +29,7 @@ public class ParseErrorChecker {
 		typeChecker.checkForErrors();
 
 		valueChecker = new ValueErrorChecker(doc, et, lineLocator);
-		valueChecker.setSeenTypes(typeChecker.seenTypes);
+		valueChecker.setSeenTypes(typeChecker.seenTypesMap);
 		valueChecker.checkForErrors();
 		
 		int endCount = et.getErrorCount();

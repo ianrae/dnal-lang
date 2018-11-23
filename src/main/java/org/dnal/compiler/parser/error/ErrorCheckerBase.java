@@ -1,14 +1,17 @@
 package org.dnal.compiler.parser.error;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.compiler.et.XErrorTracker;
 import org.dnal.compiler.parser.DNALDocument;
 import org.dnal.compiler.parser.ast.IdentExp;
 
 public class ErrorCheckerBase extends ErrorTrackingBase {
-	protected List<String> seenTypes = new ArrayList<>();
+//	protected List<String> seenTypes = new ArrayList<>();
+	protected Map<String,String> seenTypesMap = new HashMap<>();
 
 	public ErrorCheckerBase(DNALDocument doc, XErrorTracker et, LineLocator locator) {
 		super(doc, et, locator);
@@ -35,10 +38,10 @@ public class ErrorCheckerBase extends ErrorTrackingBase {
 	}
 
 	private boolean isAlreadyDefinedType(IdentExp typeNameExp) {
-		if (seenTypes.contains(typeNameExp.strValue())) {
+		if (seenTypesMap.containsKey(typeNameExp.strValue())) {
 			return true;
 		}
-		seenTypes.add(typeNameExp.strValue());
+		seenTypesMap.put(typeNameExp.strValue(),"");
 		return false;
 	}
 
@@ -46,8 +49,8 @@ public class ErrorCheckerBase extends ErrorTrackingBase {
 		return TypeInfo.isPrimitiveType(ident);
 	}
 
-	public void setSeenTypes(List<String> seenTypes) {
-		this.seenTypes = seenTypes;
+	public void setSeenTypes(Map<String,String> map) {
+		this.seenTypesMap = map;
 	}
 
 }

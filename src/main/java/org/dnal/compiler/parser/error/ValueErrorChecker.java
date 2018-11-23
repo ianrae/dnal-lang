@@ -34,7 +34,7 @@ public class ValueErrorChecker extends ErrorCheckerBase {
 	private void checkValue(FullAssignmentExp valueExp) {
 		IdentExp ident = valueExp.var;
 		checkIdent(ident, NAME);
-		seenTypes.add(ident.strValue());
+		seenTypesMap.put(ident.strValue(), "");
 
 		ident = valueExp.type;
 		if (valueExp.isListVar()) {
