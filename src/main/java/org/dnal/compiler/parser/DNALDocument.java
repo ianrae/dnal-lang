@@ -1,7 +1,9 @@
 package org.dnal.compiler.parser;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dnal.compiler.parser.ast.Exp;
 import org.dnal.compiler.parser.ast.FullAssignmentExp;
@@ -13,6 +15,7 @@ import org.dnal.compiler.parser.ast.RuleDeclExp;
 
 public class DNALDocument {
 	private List<Exp> statementList;
+	private Map<String,FullTypeExp> typesMap = null;
 
 	public DNALDocument(List<Exp> list) {
 		this.statementList = list;
@@ -47,10 +50,20 @@ public class DNALDocument {
         return declL;
     }
 	public List<FullTypeExp> getTypes() {
+		boolean buildMap = false;
+		if (typesMap == null) {
+			typesMap = new HashMap<>();
+			buildMap = true;
+		}
 		List<FullTypeExp> typeL = new ArrayList<>();
 		for (Exp exp : statementList) {
 			if (isTypeExp(exp)) {
-				typeL.add((FullTypeExp) exp);
+				FullTypeExp ftexp = (FullTypeExp) exp;
+				typeL.add(ftexp);
+				if (buildMap) {
+					String typeName = ftexp.var.strValue();
+					typesMap.put(typeName, ftexp);
+				}
 			}
 		}
 		return typeL;
@@ -106,12 +119,16 @@ public class DNALDocument {
 	}
 	
 	public FullTypeExp findType(String typeName) {
-		for(FullTypeExp type : this.getTypes()) {
-			if (type.var.strValue().equals(typeName)) {
-				return type;
-			}
+		if (typesMap == null) {
+			this.getTypes();
 		}
-		return null;
+		return typesMap.get(typeName);
+//		for(FullTypeExp type : this.getTypes()) {
+//			if (type.var.strValue().equals(typeName)) {
+//				return type;
+//			}
+//		}
+//		return null;
 	}
 	public FullAssignmentExp findValue(String varName) {
 		for(FullAssignmentExp type : this.getValues()) {
