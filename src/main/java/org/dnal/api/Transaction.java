@@ -25,6 +25,7 @@ public interface Transaction {
     void add(String name, DValue dval);
     boolean commit();
     List<NewErrorMessage> getValErrorList();
+	String formatError(NewErrorMessage err);
     DataSet getDataSet();
     ValidationOptions getValidationOptions();
     

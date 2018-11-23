@@ -120,6 +120,13 @@ public class TransactionImpl implements Transaction {
     public List<NewErrorMessage> getValErrorList() {
     	return errorList;
     }
+	@Override
+	public String formatError(NewErrorMessage err) {
+		if (context == null || err == null) {
+			return null;
+		}
+		return context.et.errToString(err);
+	}
 
     @Override
     public DValue createFromBean(Object bean) throws WorldException {
