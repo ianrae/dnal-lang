@@ -16,7 +16,8 @@ import org.dnal.compiler.parser.ast.RuleDeclExp;
 public class DNALDocument {
 	private List<Exp> statementList;
 	private Map<String,FullTypeExp> typesMap = null;
-
+	private Map<String,FullAssignmentExp> valuesMap = null;
+	
 	public DNALDocument(List<Exp> list) {
 		this.statementList = list;
 	}
@@ -69,10 +70,21 @@ public class DNALDocument {
 		return typeL;
 	}
 	public List<FullAssignmentExp> getValues() {
+		boolean buildMap = false;
+		if (valuesMap == null) {
+			valuesMap = new HashMap<>();
+			buildMap = true;
+		}
+		
 		List<FullAssignmentExp> valueL = new ArrayList<>();
 		for (Exp exp : statementList) {
 			if (exp instanceof FullAssignmentExp) {
-				valueL.add((FullAssignmentExp) exp);
+				FullAssignmentExp fae = (FullAssignmentExp) exp;
+				valueL.add(fae);
+				if (buildMap) {
+					String varName = fae.var.strValue();
+					valuesMap.put(varName, fae);
+				}
 			}
 		}
 		return valueL;
@@ -131,12 +143,16 @@ public class DNALDocument {
 //		return null;
 	}
 	public FullAssignmentExp findValue(String varName) {
-		for(FullAssignmentExp type : this.getValues()) {
-			if (type.var.strValue().equals(varName)) {
-				return type;
-			}
+		if (valuesMap == null) {
+			this.getValues();
 		}
-		return null;
+		return valuesMap.get(varName);
+//		for(FullAssignmentExp type : this.getValues()) {
+//			if (type.var.strValue().equals(varName)) {
+//				return type;
+//			}
+//		}
+//		return null;
 	}
     public List<Exp> getStatementList() {
         return statementList;
