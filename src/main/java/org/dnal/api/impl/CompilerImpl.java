@@ -49,7 +49,7 @@ public class CompilerImpl implements DNALCompiler {
         if (context == null) {
         	//for now always use proxy values just to test them better
         	//note. they are required for certain features (not yet implemented)
-            compilerOptions.useProxyDValues(true);
+//            compilerOptions.useProxyDValues(true);
             ImportLoader loader = (compilerOptions.isUseMockImportLoader()) ? new MockImportLoader() : new DefaultImportLoader();
             String dir = "src/main/resources/test/example"; //!!
             context = new CompilerContext("", 0, loader, dir, compilerOptions);
