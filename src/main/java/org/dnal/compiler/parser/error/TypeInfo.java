@@ -28,6 +28,13 @@ public class TypeInfo {
 		UNKNOWN_TYPE
 	}
 	
+	private static final String[] arPrimitiveType = new String[] { "int", "long", "number", "date", "boolean", "string", "list", "struct", "map", "enum", "any" };
+	private static final List<String> listPrimitiveTypes = Arrays.asList(arPrimitiveType);
+	
+	private static final String[] arScalarType = new String[] { "int", "long", "number", "date", "boolean", "string", "enum" };
+	private static final List<String> listScalarType = Arrays.asList(arScalarType);
+	
+	
 	public static Type typeOf(IdentExp ident) {
 		return typeOf(ident.val);
 	}
@@ -49,16 +56,16 @@ public class TypeInfo {
 	}
 
 	public static boolean isPrimitiveType(IdentExp ident) {
-		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "list", "struct", "map", "enum", "any" };
-		List<String> list = Arrays.asList(ar);
+//		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "list", "struct", "map", "enum", "any" };
+//		List<String> list = Arrays.asList(ar);
 
-		return (list.contains(ident.val));
+		return (listPrimitiveTypes.contains(ident.val));
 	}
 	public static boolean isScalarType(IdentExp ident) {
-		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "enum" };
-		List<String> list = Arrays.asList(ar);
+//		String[] ar = new String[] { "int", "long", "number", "date", "boolean", "string", "enum" };
+//		List<String> list = Arrays.asList(ar);
 
-		return (list.contains(ident.val));
+		return (listScalarType.contains(ident.val));
 	}
 
 
