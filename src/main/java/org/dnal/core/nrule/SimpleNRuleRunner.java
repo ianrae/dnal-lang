@@ -10,7 +10,6 @@ import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
-import org.dnal.core.DValueImpl;
 import org.dnal.core.DValueInternal;
 import org.dnal.core.DValueProxy;
 import org.dnal.core.ErrorType;
@@ -95,7 +94,7 @@ public class SimpleNRuleRunner  {
 			    	boolean validateThis = ctx.getValidateOptions().isModeSet(ValidationOptions.VALIDATEMODE_EXISTENCE);
 			        if (validateThis && !structType.fieldIsOptional(fieldName)) {
 			        	ctx.addError(ErrorType.RULEFAIL, String.format("fieldName '%s' can't be null. is not optional", fieldName));
-			        	DValueImpl dvalimpl = (DValueImpl) dval;
+			        	DValueInternal dvalimpl = (DValueInternal) dval;
 			        	dvalimpl.changeValidState(ValidationState.INVALID);
 			        	scorer.score(dval);
 			        }
@@ -126,7 +125,7 @@ public class SimpleNRuleRunner  {
 
 	private void setCompositeScore(DValue dval) {
 		ValidationScorer scorer = stack.peek();
-		DValueImpl impl = (DValueImpl) dval;
+		DValueInternal impl = (DValueInternal) dval;
 
 		switch(dval.getValState()) {
 		case UNKNOWN:
