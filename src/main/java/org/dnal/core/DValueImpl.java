@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class DValueImpl implements DValue {
+public class DValueImpl implements DValue, DValueInternal {
     private DType type;
     private Object object;
     private ValidationState valState = ValidationState.UNKNOWN;
@@ -34,6 +34,7 @@ public class DValueImpl implements DValue {
         return valState == ValidationState.VALID;
     }
 
+    @Override    
     public void changeValidState(ValidationState valState) {
         this.valState = valState;
     }
@@ -107,6 +108,7 @@ public class DValueImpl implements DValue {
         return persistenceId;
     }
 
+    @Override
     public void setPersistenceId(Object persistenceId) {
         this.persistenceId = persistenceId;
     }

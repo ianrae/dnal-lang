@@ -11,6 +11,7 @@ import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
 import org.dnal.core.DValueImpl;
+import org.dnal.core.DValueInternal;
 import org.dnal.core.DValueProxy;
 import org.dnal.core.ErrorType;
 import org.dnal.core.NewErrorMessage;
@@ -183,7 +184,7 @@ public class SimpleNRuleRunner  {
 		    dtype = dtype.getBaseType();
 		}
 
-        DValueImpl impl = (DValueImpl) dval;
+        DValueInternal impl = (DValueInternal) dval;
 		boolean b = (passCount == totalNumRules);
 		if (b) {
 			impl.changeValidState(ValidationState.VALID);
