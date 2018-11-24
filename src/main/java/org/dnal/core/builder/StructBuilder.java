@@ -214,4 +214,8 @@ public class StructBuilder extends Builder {
 	public List<NewErrorMessage> getValidationErrors() {
 		return valErrorList;
 	}
+
+	public DStructType getStructType() {
+		return structType;
+	}
 }
