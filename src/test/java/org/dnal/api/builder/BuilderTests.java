@@ -122,4 +122,21 @@ public class BuilderTests extends SysTestBase {
         assertEquals(false, structBuilder.wasSuccessful());
     }
     
+    @Test
+    public void testStructRef6() {
+    	String src = "type Address struct { id string } end";
+    	src += " type Person struct { name string, addr Address } end";
+        chk(src, 2, 0);
+        Transaction trans = this.dataSetLoaded.createTransaction();
+        IntBuilder ibuilder = trans.createIntBuilder();
+        DValue addr = ibuilder.buildFrom(14); //build wrong type. should be a struct
+        
+        StructBuilder structBuilder = trans.createStructBuilder("Person");
+        structBuilder.addField("name", "");
+        structBuilder.addField("addr", addr);
+        DValue dvalStruct = structBuilder.finish();
+        assertNull(dvalStruct);
+        assertEquals(1, structBuilder.getValidationErrors().size());
+        assertEquals(false, structBuilder.wasSuccessful());
+    }
 }
