@@ -41,7 +41,7 @@ public class AddObserver {
 				}
 			}
 		} else if (dval.getType().isShape(Shape.ENUM)) {
-			DStructHelper helper = new DStructHelper(dval);
+			DStructHelper helper = dval.asStruct();
 			for(String fieldName: helper.getFieldNames()) {
 				DValue field = helper.getField(fieldName);
 				doObserve(field, true); //**recursion**

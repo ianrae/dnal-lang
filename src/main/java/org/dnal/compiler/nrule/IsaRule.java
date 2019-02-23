@@ -73,7 +73,7 @@ public class IsaRule extends NRuleBase {
             }
         }
         
-        DStructHelper helper = new DStructHelper(dval);
+        DStructHelper helper = dval.asStruct();
         DValue inner = helper.getField(rule.fieldName);
         if (inner == null) { //when isa is an optional field and not set
         	return true;

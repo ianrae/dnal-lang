@@ -104,7 +104,7 @@ public class OldDNALGeneratePhase extends ErrorTrackingBase {
         } else if (dval.getType().isStructShape()) {
             visitor.startStruct(valueName, dval);
             
-            DStructHelper helper = new DStructHelper(dval);
+            DStructHelper helper = dval.asStruct();
 
             int index = 0;
             DStructType structType = (DStructType) dval.getType();

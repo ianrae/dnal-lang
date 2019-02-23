@@ -306,7 +306,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
         List<DValue> list2 = new ArrayList<>();
         for(DValue dval: list) {
             String idField = viaExp.fieldExp.name();
-            DStructHelper helper = new DStructHelper(dval);
+            DStructHelper helper = dval.asStruct();
             DValue inner = helper.getField(idField);
             list2.add(inner);
         }
@@ -353,7 +353,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                             //hack!
                             if (via.extraViaExp != null) {
                                 for(DValue gg: element.asList()) {
-                                    DStructHelper h3 = new DStructHelper(gg);
+                                    DStructHelper h3 = gg.asStruct();
                                     DValue j3 = h3.getField(via.extraViaExp.fieldExp.name());
                                     builder.addElement(maybeGenProxy(j3));
                                 }
@@ -588,7 +588,7 @@ public class ASTToDNALValueGenerator extends ErrorTrackingBase  {
                     DValue member = this.buildValue(tmp);
                     
                     if (via != null && via.extraViaExp != null) {
-                        DStructHelper h3 = new DStructHelper(member);
+                        DStructHelper h3 = member.asStruct();
                         DValue j3 = h3.getField(via.extraViaExp.fieldExp.name());
                         builder.addField(fieldName, j3);
                     } else {
