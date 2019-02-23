@@ -138,7 +138,7 @@ public class DNALGeneratePhase extends ErrorTrackingBase {
 	        	visitor.startStruct(placement, dval, structType, genctx, indexParam);
 	        	
 	        	genctx.pushShapeCode(GeneratorContext.STRUCT);
-	            DStructHelper helper = new DStructHelper(dval);
+	            DStructHelper helper = dval.asStruct();
 
 	            int index = 0;
 	            for(String fieldName : structType.orderedList()) {

@@ -169,7 +169,7 @@ public class ViaFinder extends ErrorTrackingBase {
 		}
 
 		//ONLY structs for now!!
-		DStructHelper helper = new DStructHelper(dval);
+		DStructHelper helper = dval.asStruct(); 
 		DValue tmp = helper.getField(via.fieldExp.name());
 		if (tmp == null) {
 			addError2s(via, "via '%s' - unknown match", via.fieldExp.name(), "");

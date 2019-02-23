@@ -27,7 +27,7 @@ public class EmptyRule extends Custom1RuleBase<VirtualString>  {
         
         if (dval.getType().isShape(Shape.STRUCT)) {
             String fieldName = crule.argL.get(0).strValue();
-            DStructHelper helper = new DStructHelper(dval);
+            DStructHelper helper = dval.asStruct();
             tmp = helper.getField(fieldName);
         }
         boolean pass = tmp.asString().isEmpty();

@@ -10,7 +10,7 @@ public class VirtualDateMember extends VirtualDate implements StructMember {
 
     @Override
     public void resolve(DValue dval, NRuleContext ctx) {
-        DStructHelper helper = new DStructHelper(dval);
+        DStructHelper helper = dval.asStruct();
         DValue tmp = helper.getField(fieldName);
         if (tmp != null) {
         	super.resolve(tmp, ctx);
@@ -23,7 +23,7 @@ public class VirtualDateMember extends VirtualDate implements StructMember {
     }
 	@Override
 	public boolean containsValue(DValue dval) {
-        DStructHelper helper = new DStructHelper(dval);
+        DStructHelper helper = dval.asStruct();
         DValue tmp = helper.getField(fieldName);
         return (tmp != null);
 	}

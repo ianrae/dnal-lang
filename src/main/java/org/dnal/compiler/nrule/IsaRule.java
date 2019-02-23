@@ -60,7 +60,7 @@ public class IsaRule extends NRuleBase {
             }
                     
             if (innerType.isShape(Shape.LIST)) {
-                DStructHelper helper = new DStructHelper(dval);
+                DStructHelper helper = dval.asStruct();
                 DValue inner = helper.getField(rule.fieldName);
                 //eval each element!!!
                 int passCount = 0;

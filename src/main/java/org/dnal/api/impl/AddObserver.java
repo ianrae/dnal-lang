@@ -32,7 +32,7 @@ public class AddObserver {
 		if (dval.getType().isScalarShape()) {
 			//scalars don't have any sub-values
 		} else if (dval.getType().isStructShape()) {
-			DStructHelper helper = new DStructHelper(dval);
+			DStructHelper helper = dval.asStruct();
 			for(String fieldName: helper.getFieldNames()) {
 				DValue field = helper.getField(fieldName);
 				//ignore optional fields
