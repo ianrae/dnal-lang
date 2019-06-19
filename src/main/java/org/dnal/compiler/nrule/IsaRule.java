@@ -78,7 +78,6 @@ public class IsaRule extends NRuleBase {
         if (inner == null) { //when isa is an optional field and not set
         	return true;
         }
-        System.out.println("xxx " + inner.asString());
         
         return checkOne(inner, ctx);
     }
@@ -95,7 +94,6 @@ public class IsaRule extends NRuleBase {
             this.addRuleFailedError(ctx, this.getRuleText());
             return false;
         }
-        System.out.println(String.format("vvvv%d", list.size()));
         return list.size() == 1;
     }
 

@@ -117,6 +117,12 @@ public class MapTests extends SysTestBase {
 		assertEquals("abc", s);
 	}
 	@Test
+	public void testValueParseString2() {
+		DValue mapDVal = compileSingleMapValue("type SizeMap map<string> end let z SizeMap = { x:'abc' }", "z");
+		String s = mapDVal.asMap().get("x").asString();
+		assertEquals("abc", s);
+	}
+	@Test
 	public void testValueParseList() {
 		String src1 = "type NameList list<string> end ";
 		DValue mapDVal = compileSingleMapValue(src1 + "type SizeMap map<NameList> end let z SizeMap = { x:['abc','def'] }", "z");
