@@ -139,13 +139,13 @@ public class ViaSysTests extends SysTestBase {
     public void test515fail2() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa xxPerson.code"); //wrong field
-        chkFail(src, 6, "null- failed");
+        chkFail(src, 6, "unknown type");
     }
     @Test
     public void test515fail3() {
         String src = buildBoth1();
         src = src.replace("personCode isa Person.code", "personCode isa Person.xxcode"); //wrong field
-        chkFail(src, 6, "via 'xxcode' - unknown match");
+        chkFail(src, 9, "via 'xxcode' - unknown match");
     }
     
     //TYPE 6 - BOTH-MULTI

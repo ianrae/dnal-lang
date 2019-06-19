@@ -131,19 +131,19 @@ public class XErrorTracker {
         
         if (! errinfoStack.isEmpty()) {
         	ErrorInfo errinfo = errinfoStack.peek();
-            if (errinfo.getCurrentTypeName() != null) {
+            if (errinfo.getCurrentTypeName() != null && err.getTypeName() == null) {
             	err.setTypeName(errinfo.getCurrentTypeName());
             }
-            if (errinfo.getCurrentFieldName() != null) {
+            if (errinfo.getCurrentFieldName() != null && err.getFieldName() == null) {
             	err.setFieldName(errinfo.getCurrentFieldName());
             }
-            if (errinfo.getCurrentVarName() != null) {
+            if (errinfo.getCurrentVarName() != null && err.getVarName() == null) {
             	err.setVarName(errinfo.getCurrentVarName());
             }
-            if (errinfo.getCurrentActualValue() != null) {
+            if (errinfo.getCurrentActualValue() != null && err.getActualValue() == null) {
             	err.setActualValue(errinfo.getCurrentActualValue());
             }
-            if (errinfo.getCurrentListIndex() >= 0) {
+            if (errinfo.getCurrentListIndex() >= 0 && err.getListIndex() < 0) {
             	err.setListIndex(errinfo.getCurrentListIndex());
             }
         }

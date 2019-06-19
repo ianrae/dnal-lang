@@ -12,9 +12,13 @@ import org.dnal.core.DStructHelper;
 import org.dnal.core.DStructType;
 import org.dnal.core.DType;
 import org.dnal.core.DValue;
+import org.dnal.core.ErrorType;
+import org.dnal.core.NewErrorMessage;
 import org.dnal.core.Shape;
 import org.dnal.core.nrule.NRuleBase;
 import org.dnal.core.nrule.NRuleContext;
+
+import net.sf.cglib.core.CollectionUtils;
 
 public class IsaRule extends NRuleBase {
 	public static final String NAME = "isa";
@@ -90,8 +94,13 @@ public class IsaRule extends NRuleBase {
         ViaExp via = new ViaExp(0, typeName, fieldName, new StringExp(value));
         ViaFinder finder = new ViaFinder(context.world, context.registry, context.et, null);
         List<DValue> list = finder.findMatches(via);
-        if (list == null) {
-            this.addRuleFailedError(ctx, this.getRuleText());
+        if (list == null || list.isEmpty()) {
+            NewErrorMessage nem = new NewErrorMessage();
+            nem.setErrorName(ErrorType.RULEFAIL.name());
+            nem.setMessage(this.getName() + ": failed");
+            nem.setActualValue(value);
+            nem.setFieldName(rule.fieldName);
+            ctx.addError(nem);
             return false;
         }
         return list.size() == 1;
